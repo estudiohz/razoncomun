@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { FormularioArticulo } from '@/components/blog/FormularioArticulo';
-import { Contenedor } from '@/components/layout/Contenedor';
 import { requireEditor } from '@/lib/blog/guard';
 import type { Articulo, Categoria } from '@/lib/blog/tipos';
 import { metadatosPagina } from '@/lib/seo';
@@ -37,14 +36,14 @@ export default async function EditorArticuloPage({
   }
 
   return (
-    <Contenedor className="py-12">
+    <div className="py-2">
       <Link href="/admin/articulos" className="text-[14px] text-gris no-underline hover:underline">
         ← Volver a artículos
       </Link>
-      <h1 className="mb-8 mt-3 text-[34px] font-bold leading-tight text-titular">
+      <h1 className="mb-6 mt-3 text-[24px] font-bold leading-tight text-titular min-[720px]:text-[32px]">
         {articulo ? 'Editar artículo' : 'Nuevo artículo'}
       </h1>
       <FormularioArticulo articulo={articulo} categorias={(categorias ?? []) as Categoria[]} />
-    </Contenedor>
+    </div>
   );
 }
