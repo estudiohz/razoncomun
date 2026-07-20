@@ -29,6 +29,12 @@ export function Nav() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href="/entrar"
+              className="text-sm font-medium text-cuerpo no-underline hover:text-titular"
+            >
+              Entrar
+            </Link>
             <Boton href="/afiliate" variante="grad" className="px-[22px] py-[9px] text-sm">
               Afíliate
             </Boton>

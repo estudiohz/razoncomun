@@ -20,6 +20,12 @@ export function Footer() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/entrar"
+            className="text-[13px] font-medium text-cuerpo no-underline hover:text-titular"
+          >
+            Entrar
+          </Link>
         </div>
       </Contenedor>
     </footer>

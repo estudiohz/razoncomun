@@ -38,10 +38,11 @@ services:
       CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN:-https://www.razoncomun.com}
       PORT: 8787
     networks:
-      # Misma red que brain-ingest -- ver ese compose para el porqué de
-      # `external: true` y la advertencia de verificar el nombre real antes
-      # de cada primer despliegue con `docker network ls | grep ollama`.
+      # rc-ollama-internal: para alcanzar Ollama (embeddings). dokploy-network:
+      # para que Traefik y la webapp lo alcancen. Verificar el nombre real de
+      # la red de Ollama con `docker network ls | grep ollama` antes de desplegar.
       - rc-ollama-internal
+      - dokploy-network
     # Puerto NO publicado al host directamente -- Dokploy debe exponerlo vía su
     # proxy (dominio propio, ej. brain-api.razoncomun.com) con HTTPS, para que
     # tanto la web (otro stack de Dokploy) como el bot de Discord (si se aloja
@@ -70,6 +71,9 @@ networks:
   rc-ollama-internal:
     external: true
     name: ${OLLAMA_INTERNAL_NETWORK:-rc-ollama_rc-ollama-internal}
+  dokploy-network:
+    external: true
+    name: ${DOKPLOY_NETWORK:-dokploy-network}
 
 # ─────────────────────────────────────────────────────────────────────────
 # Despliegue (Dokploy) -- PENDIENTE, requiere merge de feat/brain a main:
