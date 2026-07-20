@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { getUsuarioYPerfil } from '@/lib/auth/niveles';
-import { CUOTA_REFERENCIA_CENTS } from '@/lib/stripe/config';
-import { TEXTO_CONSENTIMIENTO_AFILIACION, TEXTO_AVISO_MANDATO_SEPA, formatearCents } from '@/lib/afiliacion/consentimiento';
-import { crearCheckoutSepa } from './actions';
+import { AltaSepa } from './AltaSepa';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Afíliate',
@@ -34,12 +32,7 @@ const ESCALERA = [
   },
 ] as const;
 
-export default async function AfiliatePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string; afiliacion?: string }>;
-}) {
-  const { error, afiliacion } = await searchParams;
+export default async function AfiliatePage() {
   const { user, perfil, supabase } = await getUsuarioYPerfil();
 
   let yaAfiliado = false;
@@ -92,27 +85,6 @@ export default async function AfiliatePage({
           })}
         </section>
 
-        {error === 'falta_consentimiento' && (
-          <p className="rounded-boton border border-red-300 bg-red-50 px-4 py-3 text-[13.5px] text-red-700">
-            Debes marcar la casilla de consentimiento para continuar.
-          </p>
-        )}
-        {error === 'periodo_invalido' && (
-          <p className="rounded-boton border border-red-300 bg-red-50 px-4 py-3 text-[13.5px] text-red-700">
-            Elige una periodicidad de cuota antes de continuar.
-          </p>
-        )}
-        {error === 'stripe_sin_url' && (
-          <p className="rounded-boton border border-red-300 bg-red-50 px-4 py-3 text-[13.5px] text-red-700">
-            No se pudo iniciar el pago con Stripe. Inténtalo de nuevo en un momento.
-          </p>
-        )}
-        {afiliacion === 'cancelado' && (
-          <p className="rounded-boton border border-linea bg-panel px-4 py-3 text-[13.5px] text-cuerpo">
-            Has cancelado el proceso de alta. Puedes retomarlo cuando quieras.
-          </p>
-        )}
-
         {/* ALTA */}
         {yaAfiliado ? (
           <section className="rounded-tarjeta border border-linea bg-panel p-8 text-center shadow-nav">
@@ -130,64 +102,28 @@ export default async function AfiliatePage({
         ) : (
           <section className="rounded-tarjeta border border-linea bg-panel p-8 shadow-nav">
             <h2 className="text-center text-[22px] font-extrabold text-titular">Elige tu cuota</h2>
-            <form action={crearCheckoutSepa} className="mt-6 space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex cursor-pointer flex-col rounded-boton border border-linea bg-white p-5 has-[:checked]:border-accion has-[:checked]:ring-2 has-[:checked]:ring-accion/30">
-                  <input type="radio" name="periodo" value="monthly" defaultChecked className="sr-only" />
-                  <span className="text-[12px] font-bold uppercase tracking-wide text-gris">Mensual</span>
-                  <span className="mt-1 text-[28px] font-extrabold text-titular">
-                    {formatearCents(CUOTA_REFERENCIA_CENTS.monthly)}
-                    <span className="text-[14px] font-semibold text-gris">/mes</span>
-                  </span>
-                </label>
-                <label className="flex cursor-pointer flex-col rounded-boton border border-linea bg-white p-5 has-[:checked]:border-accion has-[:checked]:ring-2 has-[:checked]:ring-accion/30">
-                  <input type="radio" name="periodo" value="annual" className="sr-only" />
-                  <span className="text-[12px] font-bold uppercase tracking-wide text-gris">
-                    Anual <span className="text-accion">· 2 meses gratis</span>
-                  </span>
-                  <span className="mt-1 text-[28px] font-extrabold text-titular">
-                    {formatearCents(CUOTA_REFERENCIA_CENTS.annual)}
-                    <span className="text-[14px] font-semibold text-gris">/año</span>
-                  </span>
-                </label>
-              </div>
 
-              <div className="rounded-boton border border-linea bg-white p-4 text-[12.5px] leading-relaxed text-cuerpo">
-                <p className="font-bold text-titular">Sobre el cobro por domiciliación SEPA</p>
-                <p className="mt-1">{TEXTO_AVISO_MANDATO_SEPA}</p>
-              </div>
-
-              <label className="flex items-start gap-3 text-[13px] leading-relaxed text-cuerpo">
-                <input
-                  type="checkbox"
-                  name="consentimiento"
-                  required
-                  className="mt-0.5 h-4 w-4 rounded border-linea text-accion"
-                />
-                <span>{TEXTO_CONSENTIMIENTO_AFILIACION}</span>
-              </label>
-
-              {user ? (
-                <button
-                  type="submit"
-                  className="w-full rounded-boton bg-accion px-5 py-3.5 text-[15px] font-bold text-white shadow-boton hover:-translate-y-0.5"
-                >
-                  Continuar con la domiciliación SEPA
-                </button>
-              ) : (
+            {user ? (
+              <AltaSepa email={user.email ?? ''} nombreInicial={perfil?.display_name ?? null} />
+            ) : (
+              <div className="mt-6 space-y-4 text-center">
+                <p className="text-[14px] text-cuerpo">
+                  Para afiliarte necesitas una cuenta (registro sin fricción: Google, Facebook o email,
+                  sin verificación previa). Una vez dentro, vuelves aquí y completas tu domiciliación
+                  SEPA sin salir de la web.
+                </p>
                 <Link
                   href="/entrar?next=/afiliate"
                   className="block w-full rounded-boton bg-accion px-5 py-3.5 text-center text-[15px] font-bold text-white shadow-boton hover:-translate-y-0.5"
                 >
                   Entra o regístrate para afiliarte
                 </Link>
-              )}
-
-              <p className="text-center text-[12px] text-gris">
-                Tu cuota desgrava en el IRPF (20%, hasta 600€/año). Recibirás certificado fiscal anual
-                descargable desde tu perfil.
-              </p>
-            </form>
+                <p className="text-[12px] text-gris">
+                  Tu cuota desgrava en el IRPF (20%, hasta 600€/año). Recibirás certificado fiscal
+                  anual descargable desde tu perfil.
+                </p>
+              </div>
+            )}
           </section>
         )}
       </div>
