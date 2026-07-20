@@ -68,10 +68,16 @@ USER nextjs
 
 EXPOSE 3000
 
-# Healthcheck simple contra la propia app (Dokploy también puede definir el
-# suyo vía dominio, esto ayuda a `docker compose ps` y a Dokploy's healthchecks
-# si los usa). Ajustar la ruta si rc-04-front expone /api/health.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+# ⚠️ OBLIGATORIO para Next standalone en Docker: sin HOSTNAME=0.0.0.0 el
+# server.js se ata solo a localhost y NADIE de fuera del contenedor lo alcanza
+# — ni Traefik (502 en bucle) ni el healthcheck. Fue exactamente lo que pasó
+# en el primer despliegue real de la webapp.
+ENV HOSTNAME="0.0.0.0"
+
+# Healthcheck contra la propia app. Se usa 127.0.0.1 y NO `localhost`: en Alpine
+# `localhost` resuelve primero a `::1` (IPv6), donde el server no escucha, y
+# wget devuelve "connection refused" aunque la app esté sana en IPv4.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
 
 CMD ["node", "server.js"]
