@@ -99,6 +99,45 @@ las columnas, incluida contraparte) autenticado como `service_role` o como usuar
 aparte (UPDATE `published=true` fila a fila) que un admin/tesorería ejecuta desde el panel, no
 algo que el import deba hacer automáticamente.
 
+## Estado (fuera de ola, rc-02-datos — has_password, 20/07/2026)
+
+**0025_has_password.sql**, migración aditiva sobre el esquema de la Ola 1 (una sola función,
+sin tocar tablas existentes). **Escrita y lista, NO aplicada ni verificada en vivo** en esta
+tarea: el entorno de esta sesión no tenía definidas `RC_BASE_URL`/`RC_SERVICE_ROLE_KEY`/
+`RC_ANON_KEY`/`RC_JWT_SECRET` (ni un `infra/.env` con valores reales), así que no había forma
+de conectar contra `dev-api.razoncomun.com` ni con psql (Opción B) ni con `/pg/query` (Opción C).
+Queda pendiente para quien tenga esas credenciales:
+
+```bash
+# Opción B (si hay DATABASE_URL):
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/0025_has_password.sql
+
+# Opción C (Kong /pg/query, con las variables que ya usa scripts/smoke):
+export RC_BASE_URL=https://dev-api.razoncomun.com
+export RC_SERVICE_ROLE_KEY=...
+# aplicar el contenido del archivo vía POST {RC_BASE_URL}/pg/query (ver "OBLIGATORIO
+# declarar UTF-8" más abajo) y luego verificar con las tres consultas de este README.
+```
+
+- `public.has_password()`: `language sql stable security definer set search_path = public, auth`.
+  Devuelve `encrypted_password is not null and encrypted_password <> ''` para `auth.uid()`, o
+  `false` (nunca `null`) si no hay sesión. Sin parámetro `user_id` a propósito: un autenticado
+  solo puede preguntar por su propia contraseña, nunca la de otro (ver comentario en el propio
+  archivo — motivo: enumeración de cuentas "solo magic link" de cara a account-takeover).
+- Privilegios: mismo patrón que `ai_provider_credentials` (0016) — `revoke ... from public, anon,
+  authenticated` explícito (un `revoke from public` no basta en este proyecto) + `grant execute`
+  solo a `authenticated`. `anon` queda fuera a propósito.
+- **Verificación pendiente (script listo para quien tenga credenciales):** aplicar la migración
+  en `dev`, crear con `service_role` dos usuarios de prueba en `auth.users` — uno con
+  `encrypted_password` no vacío, otro con `encrypted_password` NULL (típico de alta por magic
+  link) — firmar un JWT de cada uno (`scripts/smoke/lib/jwt.py` ya sabe hacerlo) y llamar
+  `select public.has_password()` vía PostgREST RPC (`POST /rest/v1/rpc/has_password` con
+  `Authorization: Bearer <jwt>`) esperando `true` y `false` respectivamente; repetir sin
+  `Authorization` (o con `apikey` anon sin JWT) esperando `false`. Como la función no acepta
+  `user_id`, la prueba de "no puede consultar la de otro" es por diseño (no hay superficie que
+  probar): documentado aquí para que quede explícito en el informe de verificación cuando se
+  ejecute.
+
 ## Cómo aplicar las migraciones
 
 Cada archivo de `migrations/*.sql` está envuelto en `begin; ... commit;` y es idempotente
