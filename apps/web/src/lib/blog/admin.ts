@@ -150,6 +150,35 @@ export async function guardarArticulo(
   return { ok: true, slug, aviso };
 }
 
+/**
+ * Elimina uno o varios artículos (borrado en masa desde el listado).
+ *
+ * RLS (`articles_write_editor`, `for all`) ya exige `is_editor()`; `requireEditor`
+ * es la segunda capa. No hay FKs entrantes hacia `articles`, así que el DELETE
+ * no arrastra dependencias. La portada en Storage queda huérfana a propósito:
+ * puede estar compartida y su limpieza no es crítica.
+ */
+export async function eliminarArticulos(ids: string[]): Promise<ResultadoAccion> {
+  const { supabase } = await requireEditor();
+
+  const limpios = Array.from(new Set((ids ?? []).map((s) => String(s).trim()).filter(Boolean)));
+  if (limpios.length === 0) {
+    return { ok: false, error: 'No hay artículos seleccionados.' };
+  }
+
+  const { error } = await supabase.from('articles').delete().in('id', limpios);
+  if (error) {
+    return { ok: false, error: `No se han podido eliminar: ${error.message}` };
+  }
+
+  revalidatePath('/blog');
+  revalidatePath('/observatorio');
+  revalidatePath('/sitemap.xml');
+  revalidatePath('/admin/articulos');
+
+  return { ok: true };
+}
+
 /** Sube una portada al bucket público y devuelve su URL definitiva. */
 export async function subirPortada(
   _previo: { url?: string; error?: string } | null,
