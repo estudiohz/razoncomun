@@ -138,6 +138,46 @@ export function renderizarMarkdown(markdown: string): {
       continue;
     }
 
+    // Regla horizontal (--- o *** en su propia línea). Antes que la lista para
+    // no confundir "---" con un item de lista con guion.
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(linea)) {
+      salida.push('<hr />');
+      i += 1;
+      continue;
+    }
+
+    // Tabla GFM: bloque de líneas que empiezan por "|", con una fila
+    // separadora "| --- | --- |" en segunda posición. Migración del WordPress.
+    if (/^\|.*\|\s*$/.test(linea) && i + 1 < lineas.length && /^\|[\s:|-]+\|\s*$/.test(lineas[i + 1])) {
+      const filas: string[][] = [];
+      const celdas = (l: string) =>
+        l
+          .trim()
+          .replace(/^\|/, '')
+          .replace(/\|\s*$/, '')
+          .split('|')
+          .map((c) => c.replace(/\\\|/g, '|').trim());
+      const cabecera = celdas(linea);
+      i += 2; // salta cabecera + separadora
+      while (i < lineas.length && /^\|.*\|\s*$/.test(lineas[i])) {
+        filas.push(celdas(lineas[i]));
+        i += 1;
+      }
+      const th = cabecera.map((c) => `<th>${enLinea(escapar(c))}</th>`).join('');
+      const cuerpo = filas
+        .map(
+          (f) =>
+            `<tr>${cabecera
+              .map((_, j) => `<td>${enLinea(escapar(f[j] ?? ''))}</td>`)
+              .join('')}</tr>`,
+        )
+        .join('');
+      salida.push(
+        `<div class="rc-tabla-wrap"><table><thead><tr>${th}</tr></thead><tbody>${cuerpo}</tbody></table></div>`,
+      );
+      continue;
+    }
+
     // Lista no ordenada
     if (/^[-*]\s+/.test(linea)) {
       const items: string[] = [];
@@ -146,6 +186,17 @@ export function renderizarMarkdown(markdown: string): {
         i += 1;
       }
       salida.push(`<ul>${items.join('')}</ul>`);
+      continue;
+    }
+
+    // Lista ordenada (1. item)
+    if (/^\d+\.\s+/.test(linea)) {
+      const items: string[] = [];
+      while (i < lineas.length && /^\d+\.\s+/.test(lineas[i])) {
+        items.push(`<li>${enLinea(escapar(lineas[i].replace(/^\d+\.\s+/, '')))}</li>`);
+        i += 1;
+      }
+      salida.push(`<ol>${items.join('')}</ol>`);
       continue;
     }
 
@@ -167,7 +218,7 @@ export function renderizarMarkdown(markdown: string): {
     while (
       i < lineas.length &&
       lineas[i].trim() &&
-      !/^(##|###)\s|^>|^[-*]\s|^:::|^!\[/.test(lineas[i])
+      !/^(##|###)\s|^>|^[-*]\s|^\d+\.\s|^:::|^!\[|^\||^(-{3,}|\*{3,}|_{3,})\s*$/.test(lineas[i])
     ) {
       parrafo.push(lineas[i].trim());
       i += 1;

@@ -62,3 +62,7 @@ Thumbs.db
 # n8n (exports deben revisarse a mano antes de commitear, ver n8n/README.md)
 ############################
 n8n/**/*.credentials.json
+
+# Migracion WP: imagenes pesadas fuera del repo publico (ya estan en Storage)
+scripts/migracion-wp/assets/
+scripts/migracion-wp/wp-snapshot.json

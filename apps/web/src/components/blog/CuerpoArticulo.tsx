@@ -38,6 +38,13 @@ export function CuerpoArticulo({ html, className }: { html: string; className?: 
         // Figuras
         '[&_figure]:my-[30px] [&_figure_img]:rounded-[14px]',
         '[&_figcaption]:mt-2 [&_figcaption]:text-center [&_figcaption]:text-[12.5px] [&_figcaption]:text-gris',
+        // Regla horizontal
+        '[&_hr]:my-8 [&_hr]:border-0 [&_hr]:border-t [&_hr]:border-linea',
+        // Tablas (migradas del WordPress): scroll horizontal en móvil, sin desbordar
+        '[&_.rc-tabla-wrap]:my-7 [&_.rc-tabla-wrap]:overflow-x-auto',
+        '[&_table]:w-full [&_table]:min-w-[480px] [&_table]:border-collapse [&_table]:text-[15px]',
+        '[&_th]:border [&_th]:border-linea [&_th]:bg-panel [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:text-tinta',
+        '[&_td]:border [&_td]:border-linea [&_td]:px-3 [&_td]:py-2 [&_td]:align-top [&_td]:text-cuerpo',
         // Caja de dato destacado (:::dato)
         '[&_.rc-dato]:my-[26px] [&_.rc-dato]:rounded-[12px] [&_.rc-dato]:border [&_.rc-dato]:border-linea [&_.rc-dato]:border-l-4 [&_.rc-dato]:border-l-titular [&_.rc-dato]:bg-panel [&_.rc-dato]:px-[26px] [&_.rc-dato]:py-[22px]',
         '[&_.rc-dato-n]:text-[34px] [&_.rc-dato-n]:font-extrabold [&_.rc-dato-n]:leading-none [&_.rc-dato-n]:text-tinta',
