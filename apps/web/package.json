@@ -21,6 +21,7 @@
     "stripe": "^22.3.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "22.10.7",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "19.0.7",

@@ -1,0 +1,11 @@
+# Artefactos de ejecución de Playwright — NUNCA al repo (público)
+/test-results/
+/playwright-report/
+/blob-report/
+/.cache/
+
+# Sesión de test: contiene tokens de acceso reales. JAMÁS commitear.
+/.auth/
+
+# NO ignorar los baselines de regresión visual: viven en *-snapshots/ y
+# DEBEN versionarse para que un cambio de CSS salga en rojo.
