@@ -137,6 +137,37 @@ entorno local o en la config del servicio en Dokploy.
 > `U+00C3` (`Ã`) no aparece en español correcto: si hay filas, la carga se corrompió.
 > Ojo: si el daño incluye `U+FFFD` (`�`) la pérdida es **irreversible** y hay que
 > recargar desde el `.sql`, no reconvertir.
+>
+> #### ⚠️ Buscar TRES patrones, no solo `Ã` (lección de la Ola 4)
+>
+> El barrido inicial solo buscaba `Ã` (chr 195) — mojibake de vocales acentuadas
+> por doble codificación UTF-8→Latin1. **rc-10 encontró dos patrones más que ese
+> barrido declaraba "limpios":**
+>
+> - **`chr(226)` (`â`)** — el símbolo `€` (bytes `E2 82 AC`) decodificado como
+>   CP1252 se convierte en `â‚¬`. Apareció en el punto 17 del manifiesto
+>   (`~16.000€`), su versión pública y el corpus del cerebro. **Reparación
+>   quirúrgica** (`replace(col, chr(226)||chr(8218)||chr(172), chr(8364))`), NO
+>   la conversión global `LATIN1→UTF8`, que rompería los acentos correctos del
+>   resto del campo.
+> - **`chr(65533)` (`U+FFFD`, `�`)** — carácter de reemplazo, pérdida
+>   irreversible. Apareció en `audit_log.meta`: **la ruta del chat corrompió la
+>   entrada del usuario** (bug de ruta viva, no dato legacy). Recargar desde
+>   origen, no reconvertir.
+>
+> ```sql
+> -- comprobación COMPLETA post-carga (los tres patrones, debe devolver 0):
+> select count(*) from manifesto_points
+>  where position(chr(195) in body) > 0    -- Ã  (Latin1)
+>     or position(chr(226) in body) > 0    -- â‚¬ (CP1252, euro)
+>     or position(chr(65533) in body) > 0; -- �  (perdida irreversible)
+> ```
+>
+> Y el barrido debe correr con `PYTHONIOENCODING=utf-8` / `python -X utf8`: el
+> detector original **crasheaba** al imprimir las filas con `U+FFFD` (la
+> herramienta fallaba justo sobre los datos que debía mostrar). Cubrir también
+> los catálogos: `pg_description` (COMMENT ON), `pg_proc.prosrc` (cuerpos de
+> función), `pg_constraint`, `pg_policies`.
 
 ### Reaplicar en limpio (drop y recrear, SOLO en un entorno de desarrollo)
 
