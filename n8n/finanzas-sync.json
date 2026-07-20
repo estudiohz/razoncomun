@@ -1,0 +1,130 @@
+{
+  "name": "RC · finanzas-sync",
+  "meta": {
+    "description": "Cron 3x/dia: lee Stripe (balance de plataforma + facturas del mes) y Wise (saldo + movimientos de la cuenta del partido), agrega, y hace upsert en Supabase (finance_snapshots + finance_expenses) para alimentar la pagina publica /cuentas. Ver docs/tecnico/afiliados-y-transparencia.md. Ningun credential embebido: los nodos HTTP usan credenciales de n8n referenciadas por nombre, configuradas aparte en el panel (nunca en este export).",
+    "instanceId": "razoncomun-n8n-export"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "cronExpression", "expression": "0 7,14,21 * * *" }
+          ]
+        }
+      },
+      "id": "trigger-cron",
+      "name": "Cron 3x/dia (07h, 14h, 21h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-200, 0]
+    },
+    {
+      "parameters": {
+        "url": "https://api.stripe.com/v1/invoices",
+        "method": "GET",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "status", "value": "paid" },
+            { "name": "limit", "value": "100" },
+            { "name": "created[gte]", "value": "={{ Math.floor(new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime()/1000) }}" }
+          ]
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi"
+      },
+      "id": "http-stripe-invoices",
+      "name": "Stripe · facturas pagadas del mes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [80, -120],
+      "credentials": {
+        "stripeApi": { "id": "PLACEHOLDER_CREDENTIAL_ID", "name": "Stripe (Razon Comun, test)" }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.transferwise.com/v4/profiles/{{ $json.wiseProfileId }}/balances",
+        "method": "GET",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [{ "name": "types", "value": "STANDARD" }]
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "http-wise-balance",
+      "name": "Wise · saldo de la cuenta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [80, 120],
+      "credentials": {
+        "httpHeaderAuth": { "id": "PLACEHOLDER_CREDENTIAL_ID", "name": "Wise API token (Razon Comun)" }
+      },
+      "notes": "NO VERIFICADO (declarado en el informe de rc-07): sin cuenta/token Wise reales disponibles en esta sesion. Endpoint y forma de la respuesta a confirmar contra la API real de Wise antes de activar en produccion."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agrega Stripe (ingresos del mes, num. cuotas) + Wise (saldo) en el formato de finance_snapshots.\nconst stripeInvoices = $items('Stripe \\u00b7 facturas pagadas del mes').map(i => i.json);\nconst wiseBalance = $items('Wise \\u00b7 saldo de la cuenta')[0]?.json ?? {};\n\nconst incomeMonthCents = stripeInvoices.reduce((acc, inv) => acc + (inv.amount_paid ?? 0), 0);\nconst membersCount = new Set(stripeInvoices.map(inv => inv.customer)).size;\nconst balanceCents = Math.round((wiseBalance.amount?.value ?? 0) * 100);\n\nreturn [{\n  json: {\n    taken_at: new Date().toISOString(),\n    balance_cents: balanceCents,\n    income_month_cents: incomeMonthCents,\n    members_count: membersCount,\n  },\n}];"
+      },
+      "id": "code-aggregate",
+      "name": "Agregar snapshot",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [340, 0]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.SUPABASE_PUBLIC_URL }}/rest/v1/finance_snapshots",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_SERVICE_ROLE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json; charset=utf-8" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        }
+      },
+      "id": "http-upsert-snapshot",
+      "name": "Supabase · insert finance_snapshots",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [560, 0],
+      "notes": "service_role va en las credenciales/variables de entorno de n8n, NUNCA en este JSON exportado (C5, revision-seguridad.md)."
+    }
+  ],
+  "connections": {
+    "Cron 3x/dia (07h, 14h, 21h)": {
+      "main": [
+        [
+          { "node": "Stripe · facturas pagadas del mes", "type": "main", "index": 0 },
+          { "node": "Wise · saldo de la cuenta", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Stripe · facturas pagadas del mes": {
+      "main": [[{ "node": "Agregar snapshot", "type": "main", "index": 0 }]]
+    },
+    "Wise · saldo de la cuenta": {
+      "main": [[{ "node": "Agregar snapshot", "type": "main", "index": 0 }]]
+    },
+    "Agregar snapshot": {
+      "main": [[{ "node": "Supabase · insert finance_snapshots", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "notas_de_estado": [
+    "GENERADO por rc-07-afiliacion, NO desplegado ni activado en la instancia real de n8n (n8n.estudiohorizontal.es) — falta credencial Wise real y decision pendiente (I2, revision-seguridad.md) sobre instancia propia vs compartida con la agencia.",
+    "finance_expenses (gastos linea a linea) se alimenta hoy a mano/por seed de prueba (ver supabase/seeds/test-data/9002_finance_fixtures.sql) porque Wise no expone 'gastos con concepto' en un unico endpoint simple sin mapear categorias — pendiente de diseno con Sergio: que categorias existen y como se calculan a partir de los movimientos de Wise.",
+    "Antes de activar en produccion: crear credenciales reales en el panel de n8n (Stripe API key test/live segun corresponda, Wise API token), fijar SUPABASE_PUBLIC_URL y SUPABASE_SERVICE_ROLE_KEY como variables de entorno de la instancia n8n (no en el JSON), y decidir el mapeo de categorias de gasto."
+  ]
+}

@@ -82,6 +82,36 @@ export default async function PerfilPage() {
           </div>
         </section>
 
+        {/* AFILIACIÓN / CERTIFICADO FISCAL (rc-07) */}
+        {afiliacionActiva && (
+          <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
+            <h2 className="text-[16px] font-bold text-titular">Tu afiliación</h2>
+            <p className="mt-2 text-[13.5px] text-cuerpo">
+              Cuota {afiliacionActiva.billing_period === 'annual' ? 'anual' : 'mensual'}, afiliado/a
+              desde el {formatearFecha(afiliacionActiva.started_at)}. Gestiona el método de pago o date
+              de baja desde el Customer Portal de Stripe (enlace en el próximo correo de recibo).
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <a
+                href={`/api/afiliacion/certificado?year=${new Date().getFullYear() - 1}`}
+                className="rounded-boton bg-accion px-4 py-2.5 text-[13px] font-bold text-white shadow-boton hover:-translate-y-0.5"
+              >
+                Descargar certificado fiscal {new Date().getFullYear() - 1}
+              </a>
+              <a
+                href={`/api/afiliacion/certificado?year=${new Date().getFullYear()}`}
+                className="rounded-boton border border-linea bg-white px-4 py-2.5 text-[13px] font-bold text-titular hover:border-titular"
+              >
+                Certificado del año en curso
+              </a>
+            </div>
+            <p className="mt-3 text-[12px] text-gris">
+              Tu cuota desgrava el 20% en el IRPF (límite 600€/año, LO 8/2007). Si no hay cuotas
+              cobradas en el año elegido, la descarga devolverá un aviso en vez del PDF.
+            </p>
+          </section>
+        )}
+
         {/* DATOS */}
         <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
           <h2 className="text-[16px] font-bold text-titular">Datos personales</h2>
