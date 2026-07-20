@@ -57,3 +57,48 @@ export function clientIpFrom(request: Request): string | null {
   if (xff) return xff.split(',')[0].trim();
   return null;
 }
+
+const INGEST_TRIGGER_SECRET = process.env.INGEST_TRIGGER_SECRET || '';
+
+export class BrainAdminNotConfiguredError extends Error {
+  constructor() {
+    super(
+      'La indexación no está configurada (falta BRAIN_SERVICE_URL y/o INGEST_TRIGGER_SECRET en la web). Pídeselo a Sergio.',
+    );
+    this.name = 'BrainAdminNotConfiguredError';
+  }
+}
+
+/**
+ * Variante de `callBrainService` para los endpoints de administración
+ * (`/admin/*`) de rc-brain-service, que exigen la cabecera `X-Ingest-Secret`
+ * en vez de ir abiertos como `/chat` u `/opina/turn`. El secreto
+ * (`INGEST_TRIGGER_SECRET`) se lee de `process.env` aquí mismo y nunca sale
+ * de este módulo server-side -- no se pasa a props ni a componentes cliente.
+ *
+ * Usada por `indexarCerebro` (lib/brain/wikiAdmin.ts) para disparar la
+ * ingesta bajo demanda desde el botón "Indexar al cerebro" de
+ * /admin/cerebro.
+ */
+export async function callBrainAdmin(path: string, body: unknown) {
+  if (!BRAIN_SERVICE_URL || !INGEST_TRIGGER_SECRET) throw new BrainAdminNotConfiguredError();
+
+  const res = await fetch(`${BRAIN_SERVICE_URL}${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Ingest-Secret': INGEST_TRIGGER_SECRET,
+    },
+    body: JSON.stringify(body ?? {}),
+    cache: 'no-store',
+  });
+
+  const text = await res.text();
+  let json: unknown;
+  try {
+    json = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(`rc-brain-service devolvió una respuesta no-JSON (status ${res.status}).`);
+  }
+  return { status: res.status, body: json };
+}

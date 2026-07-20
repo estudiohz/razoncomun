@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { slugificar } from '@/lib/blog/markdown';
 import { requireEditorCerebro } from './guard';
+import { callBrainAdmin, BrainAdminNotConfiguredError } from './serviceClient';
 
 // `requireEditorCerebro` vive en `./guard` porque este módulo es `'use server'`:
 // solo puede exportar funciones async serializables, y aquella devuelve un
@@ -207,4 +208,63 @@ export async function eliminarCategoria(id: string): Promise<ResultadoAccion> {
   revalidatePath('/admin/cerebro/categorias');
   revalidatePath('/admin/cerebro');
   return { ok: true };
+}
+
+export interface ResultadoIndexado extends ResultadoAccion {
+  entries_indexed?: number;
+  chunks_inserted?: number;
+  skipped?: number;
+}
+
+type RespuestaIngesta =
+  | { ok: true; entries_indexed: number; chunks_inserted: number; skipped: number }
+  | { ok: false; error: string };
+
+/**
+ * Dispara la ingesta bajo demanda en rc-brain-service (`POST /admin/ingest`),
+ * botón "Indexar al cerebro" de /admin/cerebro.
+ *
+ * `mode: 'pending'` (uso normal) solo procesa las entradas sin
+ * `indexed_at`; `mode: 'all'` reindexa todo (opción secundaria, para forzar
+ * tras cambiar el modelo de embeddings, por ejemplo). El trabajo real
+ * (generar embeddings, upsert en `brain_documents`, marcar `indexed_at`) lo
+ * hace el servicio -- esta acción solo autentica al llamante (`is_editor`),
+ * dispara la llamada y traduce la respuesta para la UI.
+ *
+ * Si `BRAIN_SERVICE_URL`/`INGEST_TRIGGER_SECRET` no están configurados en la
+ * web, `callBrainAdmin` lanza `BrainAdminNotConfiguredError`: aquí se
+ * convierte en un resultado controlado en vez de dejar que reviente la
+ * Server Action.
+ */
+export async function indexarCerebro(mode: 'pending' | 'all' = 'pending'): Promise<ResultadoIndexado> {
+  await requireEditorCerebro();
+
+  let respuesta: { status: number; body: unknown };
+  try {
+    respuesta = await callBrainAdmin('/admin/ingest', { mode });
+  } catch (e) {
+    if (e instanceof BrainAdminNotConfiguredError) return { ok: false, error: e.message };
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : 'No se ha podido contactar con el cerebro.',
+    };
+  }
+
+  const cuerpo = respuesta.body as RespuestaIngesta | null;
+
+  if (!cuerpo || cuerpo.ok !== true) {
+    const errorServicio = cuerpo && cuerpo.ok === false ? cuerpo.error : null;
+    return {
+      ok: false,
+      error: errorServicio || `El cerebro respondió con un error (status ${respuesta.status}).`,
+    };
+  }
+
+  revalidatePath('/admin/cerebro');
+  return {
+    ok: true,
+    entries_indexed: cuerpo.entries_indexed,
+    chunks_inserted: cuerpo.chunks_inserted,
+    skipped: cuerpo.skipped,
+  };
 }

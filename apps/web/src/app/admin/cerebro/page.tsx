@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { requireEditorCerebro } from '@/lib/brain/guard';
 import { metadatosPagina } from '@/lib/seo';
-import { CerebroClient, type FilaEntrada, type GrupoCategoria } from './CerebroClient';
+import { CerebroClient, IndexarBarra, type FilaEntrada, type GrupoCategoria } from './CerebroClient';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Cerebro',
@@ -44,10 +44,16 @@ export default async function CerebroAdminPage({
   const categoriaSlug = (sp.categoria ?? '').trim();
   const areaId = (sp.area ?? '').trim();
 
-  const [{ data: categorias, error: errorCategorias }, { data: areas }] = await Promise.all([
-    supabase.from('brain_categories').select('id, slug, name, position, created_at').order('position'),
-    supabase.from('categories').select('id, slug, name, color').order('name'),
-  ]);
+  const [{ data: categorias, error: errorCategorias }, { data: areas }, { count: pendientesCount }] =
+    await Promise.all([
+      supabase.from('brain_categories').select('id, slug, name, position, created_at').order('position'),
+      supabase.from('categories').select('id, slug, name, color').order('name'),
+      // Contador global de pendientes de indexar -- deliberadamente SIN los
+      // filtros de q/categoria/area de abajo: el botón "Indexar al cerebro"
+      // dispara la ingesta de TODAS las entradas pendientes, no solo las que
+      // se ven en el listado filtrado.
+      supabase.from('brain_entries').select('id', { count: 'exact', head: true }).is('indexed_at', null),
+    ]);
 
   const listaCategorias = categorias ?? [];
   const categoriaFiltro = categoriaSlug ? listaCategorias.find((c) => c.slug === categoriaSlug) : null;
@@ -124,6 +130,8 @@ export default async function CerebroAdminPage({
           </Link>
         </div>
       </div>
+
+      <IndexarBarra pendientes={pendientesCount ?? 0} />
 
       {error ? (
         <p className="rounded-tarjeta border border-linea bg-white p-6 text-cuerpo">

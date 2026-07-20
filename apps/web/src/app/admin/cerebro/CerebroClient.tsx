@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import { createPortal } from 'react-dom';
-import { eliminarEntradas } from '@/lib/brain/wikiAdmin';
+import { eliminarEntradas, indexarCerebro, type ResultadoIndexado } from '@/lib/brain/wikiAdmin';
 import { cn } from '@/lib/cn';
 
 export interface FilaEntrada {
@@ -72,6 +72,92 @@ function IndexadoChip({ indexado }: { indexado: boolean }) {
     >
       {indexado ? 'En el cerebro' : 'Pendiente de indexar'}
     </span>
+  );
+}
+
+/**
+ * Botón "Indexar al cerebro" + contador de pendientes.
+ *
+ * `pendientes` cuenta TODAS las entradas sin `indexed_at` (no solo las del
+ * filtro activo del listado) -- viene de una query aparte en la page, así el
+ * contador no se mueve al buscar/filtrar. `router.refresh()` tras un éxito
+ * revalida el server component: los chips "En el cerebro"/"Pendiente de
+ * indexar" de cada fila y este mismo contador quedan al día.
+ */
+export function IndexarBarra({ pendientes }: { pendientes: number }) {
+  const router = useRouter();
+  const [pendiente, iniciar] = useTransition();
+  const [resultado, setResultado] = useState<ResultadoIndexado | null>(null);
+  const [mostrarForzar, setMostrarForzar] = useState(false);
+
+  function ejecutar(mode: 'pending' | 'all') {
+    setResultado(null);
+    iniciar(async () => {
+      const r = await indexarCerebro(mode);
+      setResultado(r);
+      if (r.ok) router.refresh();
+    });
+  }
+
+  return (
+    <div className="mb-4 rounded-tarjeta border border-linea bg-white p-4">
+      <div className="flex flex-col gap-3 min-[720px]:flex-row min-[720px]:items-center min-[720px]:justify-between">
+        <span
+          className={cn(
+            'w-fit rounded-full px-2.5 py-0.5 text-[11.5px] font-bold',
+            pendientes > 0 ? 'bg-naranja/15 text-naranja' : 'bg-accion/10 text-accion',
+          )}
+        >
+          {pendientes > 0
+            ? `${pendientes} entrada${pendientes === 1 ? '' : 's'} pendiente${pendientes === 1 ? '' : 's'} de indexar`
+            : 'Todo el cerebro está indexado'}
+        </span>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {mostrarForzar && (
+            <button
+              type="button"
+              onClick={() => ejecutar('all')}
+              disabled={pendiente}
+              className="rounded-boton border border-linea bg-white px-3 py-2 text-[13px] font-semibold text-gris hover:border-titular disabled:opacity-50"
+            >
+              Reindexar todo
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setMostrarForzar((v) => !v)}
+            className="text-[12.5px] font-semibold text-gris underline decoration-dotted underline-offset-2 hover:text-titular"
+          >
+            {mostrarForzar ? 'ocultar' : 'forzar reindexado completo'}
+          </button>
+          <button
+            type="button"
+            onClick={() => ejecutar('pending')}
+            disabled={pendiente || pendientes === 0}
+            className="rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white shadow-boton transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+          >
+            {pendiente ? 'Indexando…' : 'Indexar al cerebro'}
+          </button>
+        </div>
+      </div>
+
+      {resultado && (
+        <p
+          className={cn(
+            'mt-3 text-[13px] font-semibold',
+            resultado.ok ? 'text-accion' : 'text-magenta',
+          )}
+        >
+          {resultado.ok
+            ? `Indexadas ${resultado.entries_indexed ?? 0} entrada${resultado.entries_indexed === 1 ? '' : 's'} (${resultado.chunks_inserted ?? 0} fragmento${resultado.chunks_inserted === 1 ? '' : 's'}).` +
+              (resultado.skipped
+                ? ` ${resultado.skipped} entrada${resultado.skipped === 1 ? '' : 's'} se saltaron por texto corrupto — revísalas.`
+                : '')
+            : resultado.error}
+        </p>
+      )}
+    </div>
   );
 }
 
