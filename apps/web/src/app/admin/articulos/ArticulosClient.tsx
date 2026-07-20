@@ -77,10 +77,15 @@ function Miniatura({ src, alt, size }: { src: string | null; alt: string; size: 
   );
 }
 
-/** Estado como texto compacto de color (para la línea de meta). */
-function EstadoTexto({ status }: { status: 'draft' | 'published' }) {
+/** Estado como chip con fondo (mismo lenguaje visual que las demás tags). */
+function EstadoChip({ status }: { status: 'draft' | 'published' }) {
   return (
-    <span className={cn('font-bold', status === 'published' ? 'text-accion' : 'text-gris')}>
+    <span
+      className={cn(
+        'rounded-full px-2.5 py-0.5 text-[11.5px] font-bold',
+        status === 'published' ? 'bg-accion/10 text-accion' : 'bg-gris/15 text-gris',
+      )}
+    >
       {status === 'published' ? 'Publicado' : 'Borrador'}
     </span>
   );
@@ -244,15 +249,15 @@ export function ArticulosClient({ filas, total, page, per, q, totalPaginas, tama
       ) : (
         <>
           {/* Móvil: tarjetas apiladas con checkbox */}
-          <ul className="rounded-tarjeta border border-linea bg-white min-[720px]:hidden">
-            {filas.map((a) => {
+          <ul className="overflow-hidden rounded-tarjeta border border-linea bg-white min-[720px]:hidden">
+            {filas.map((a, i) => {
               const marcado = seleccion.has(a.id);
               return (
                 <li
                   key={a.id}
                   className={cn(
-                    'flex gap-3 border-b border-linea/60 p-4 last:border-0',
-                    marcado && 'bg-accion/5',
+                    'flex items-start gap-3 border-b border-linea/60 p-4 last:border-0',
+                    marcado ? 'bg-accion/5' : i % 2 === 1 ? 'bg-fondo' : 'bg-white',
                   )}
                 >
                   <input
@@ -262,7 +267,6 @@ export function ArticulosClient({ filas, total, page, per, q, totalPaginas, tama
                     aria-label={`Seleccionar ${a.title}`}
                     className="mt-1 h-[18px] w-[18px] shrink-0 accent-accion"
                   />
-                  <Miniatura src={a.portada} alt={a.title} size={52} />
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/admin/articulos/${a.id}`}
@@ -270,26 +274,22 @@ export function ArticulosClient({ filas, total, page, per, q, totalPaginas, tama
                     >
                       {a.title}
                     </Link>
-                    <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-[12.5px] text-gris">
-                      <EstadoTexto status={a.status} />
-                      {a.autor && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span className="truncate">{a.autor}</span>
-                        </>
-                      )}
-                      <span aria-hidden="true">·</span>
-                      <span>{a.publicado}</span>
-                    </p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-gris">
+                      <EstadoChip status={a.status} />
+                      <span className="truncate">
+                        {[a.autor, a.publicado].filter(Boolean).join(' · ')}
+                      </span>
+                    </div>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px]">
-                      <span className="rounded-full bg-fondo px-2.5 py-0.5 font-semibold text-cuerpo">
+                      <span className="rounded-full bg-white px-2.5 py-0.5 font-semibold text-cuerpo ring-1 ring-linea">
                         {a.categoria}
                       </span>
-                      <span className="rounded-full bg-fondo px-2.5 py-0.5 font-semibold text-cuerpo">
+                      <span className="rounded-full bg-white px-2.5 py-0.5 font-semibold text-cuerpo ring-1 ring-linea">
                         {a.seccion}
                       </span>
                     </div>
                   </div>
+                  <Miniatura src={a.portada} alt={a.title} size={56} />
                 </li>
               );
             })}
@@ -321,12 +321,15 @@ export function ArticulosClient({ filas, total, page, per, q, totalPaginas, tama
                 </tr>
               </thead>
               <tbody>
-                {filas.map((a) => {
+                {filas.map((a, i) => {
                   const marcado = seleccion.has(a.id);
                   return (
                     <tr
                       key={a.id}
-                      className={cn('border-b border-linea/60 last:border-0', marcado && 'bg-accion/5')}
+                      className={cn(
+                        'border-b border-linea/60 last:border-0',
+                        marcado ? 'bg-accion/5' : i % 2 === 1 ? 'bg-fondo' : 'bg-white',
+                      )}
                     >
                       <td className="px-4 py-4">
                         <input
