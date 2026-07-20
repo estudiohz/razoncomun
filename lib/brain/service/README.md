@@ -53,9 +53,44 @@ que concentra:
 | `POST /classify-opinion` | `Bearer BRAIN_INTERNAL_TOKEN` | n8n/Discord (uso interno) | — |
 | `POST /neutrality-suite/run` | `Bearer BRAIN_INTERNAL_TOKEN` | manual/n8n | — |
 | `POST /provider/verify` | `Bearer BRAIN_INTERNAL_TOKEN` | panel admin/manual (D-016) | — |
+| `POST /admin/ingest` | cabecera `X-Ingest-Secret` = `INGEST_TRIGGER_SECRET` | servidor-a-servidor (botón "indexar ahora" del panel admin) | — |
 
 Sin `BRAIN_INTERNAL_TOKEN` configurado, las rutas internas devuelven **501**
 (fail-closed) — nunca sirven "vacío" como si fuera 200 legítimo.
+
+`/admin/ingest` es más estricto todavía: sin `INGEST_TRIGGER_SECRET`
+configurado, o con un valor que no coincide con la cabecera
+`X-Ingest-Secret`, responde **401** con el mismo mensaje genérico en ambos
+casos (nunca 501, nunca detalle que revele si el env existe) -- no es un
+canal de chat, dispara trabajo con coste real (embeddings de toda la wiki),
+así que no puede tener ninguna vía de invocación sin el secreto correcto. No
+pasa por el rate-limit del chat (no es un canal de usuario final).
+
+Body: `{ "mode": "pending" | "all" }` (por defecto `"pending"` si se omite).
+`"pending"` indexa solo `brain_entries` con `indexed_at IS NULL`; `"all"`
+reindexa todas. Reutiliza EXACTAMENTE la misma lógica que el connector batch
+`lib/brain/ingest/src/connectors/brainEntries.mjs` (título antepuesto,
+refuerzo de FAQ, salvaguarda anti-mojibake D-009, `visibility` heredada
+literal de cada entrada -- I3, borrado-e-inserción idempotente por
+`entry_id`) -- vendorizada en `src/ingestWiki.mjs` + `src/chunking.mjs`
+porque este servicio se construye con su propio contexto Docker, separado
+del job batch (mismo motivo que `sqlLiteral.mjs`). Respuesta 200:
+`{ ok: true, entries_indexed, chunks_inserted, skipped }`; en error:
+`{ ok: false, error }`.
+
+Verificado end-to-end con `EMBEDDINGS_PROVIDER=mock` contra el Postgres real
+de dev (`dev-api.razoncomun.com`), confirmando primero que `brain_entries`
+estaba vacía de verdad para no tocar datos reales: 27/27 comprobaciones OK
+(401 sin secreto, 401 con secreto incorrecto, 401 con el env sin configurar
+-- mismo mensaje en los tres casos --, 400 con `mode` inválido, `pending`
+indexa solo lo pendiente y es idempotente, `all` reindexa todo incluida una
+entrada ya indexada -- borra su chunk viejo de verdad --, la entrada con
+corrupción D-009 se salta siempre y nunca queda marcada, la visibilidad
+`internal`/`public` se hereda literal, y ninguna de las dos operaciones deja
+filas duplicadas al repetirse). Pendiente de confirmar solo la calidad
+semántica de los embeddings reales (bge-m3/Ollama, no alcanzable desde esta
+máquina) -- la mecánica de chunk/embed/upsert/marcado es la misma que ya usa
+el job batch, verificada semánticamente en la Ola 1 de rc-08-brain.
 
 ## Verificación hecha en esta máquina (sin Ollama, sin ANTHROPIC_API_KEY)
 
