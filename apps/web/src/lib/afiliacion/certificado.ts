@@ -18,12 +18,29 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * Sergio) decida dónde vive ese dato antes de ir a producción.
  */
 
+/**
+ * Datos fiscales de la entidad emisora.
+ *
+ * ⚠️ NO se incrustan en el código: este repositorio es PÚBLICO y el domicilio
+ * fiscal del partido coincide con un domicilio particular. El CIF de un partido
+ * inscrito es información pública, pero la dirección no tiene por qué estar en
+ * GitHub — va en las variables de entorno del servicio en Dokploy, igual que
+ * MAILER_TEMPLATES_BASE_URL.
+ *
+ * Aparecerá en cada certificado emitido, que es donde la ley exige que conste.
+ *
+ * Si faltan, el certificado se emite con un aviso visible en lugar de datos
+ * inventados: un certificado fiscal con un CIF incorrecto es peor que uno que
+ * declara estar incompleto.
+ */
 const ENTIDAD = {
-  nombre: 'Razón Común',
-  descripcion: 'Partido político inscrito en el Registro de Partidos Políticos del Ministerio del Interior',
-  // Placeholders — Sergio debe confirmar CIF y domicilio fiscal reales antes de emitir certificados de verdad.
-  cif: '[CIF PENDIENTE DE CONFIRMAR]',
-  domicilio: '[Domicilio fiscal pendiente de confirmar]',
+  nombre: process.env.RC_ENTIDAD_NOMBRE ?? 'Razón Común',
+  descripcion:
+    'Partido político inscrito en el Registro de Partidos Políticos del Ministerio del Interior',
+  cif: process.env.RC_ENTIDAD_CIF ?? '[CIF NO CONFIGURADO — revisar RC_ENTIDAD_CIF]',
+  domicilio:
+    process.env.RC_ENTIDAD_DOMICILIO ??
+    '[Domicilio fiscal no configurado — revisar RC_ENTIDAD_DOMICILIO]',
 };
 
 export type DatosCertificado = {
