@@ -51,6 +51,34 @@ services:
     networks:
       - rc-ollama-internal
 
+  # Descarga bge-m3 una sola vez y termina. Sustituye al `docker exec ... ollama
+  # pull` manual que documentaba este fichero: sin esto el stack arranca sin
+  # modelo y rc-08-brain no puede generar embeddings, de modo que el despliegue
+  # no era reproducible desde cero sin acceso SSH al VPS.
+  # Idempotente: si el modelo ya está en el volumen, /api/pull no vuelve a
+  # descargarlo. `restart: "no"` para que no reintente en bucle al terminar.
+  ollama-init:
+    container_name: rc-ollama-init
+    image: curlimages/curl:8.11.1
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    command:
+      - "-sS"
+      - "--fail"
+      - "--max-time"
+      - "1800"
+      - "-X"
+      - "POST"
+      - "http://ollama:11434/api/pull"
+      - "-H"
+      - "content-type: application/json"
+      - "-d"
+      - '{"model":"bge-m3","stream":false}'
+    networks:
+      - rc-ollama-internal
+
 networks:
   rc-ollama-internal:
     driver: bridge
