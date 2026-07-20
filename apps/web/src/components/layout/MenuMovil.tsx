@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cerrarSesion } from '@/app/perfil/actions';
 import { IconoRed } from '@/components/layout/iconos-redes';
 import { cn } from '@/lib/cn';
@@ -31,6 +32,11 @@ interface MenuMovilProps {
  */
 export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
   const [abierto, setAbierto] = useState(false);
+  const [montado, setMontado] = useState(false);
+
+  // El overlay se renderiza con portal a <body> (ver más abajo). Solo podemos
+  // portalar en cliente: marcamos el montaje para no tocar `document` en SSR.
+  useEffect(() => setMontado(true), []);
 
   // Bloqueo de scroll del body + cierre con Escape mientras el overlay está abierto.
   useEffect(() => {
@@ -70,14 +76,20 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
         </svg>
       </button>
 
-      {abierto && (
-        <div
-          id="menu-movil"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Menú de navegación"
-          className="fixed inset-0 z-[60] flex flex-col bg-fondo motion-safe:animate-[sube_.3s_ease]"
-        >
+      {abierto &&
+        montado &&
+        createPortal(
+          // Portal a <body>: el nav padre tiene `backdrop-blur`, que crea un
+          // containing block para position:fixed y anclaba el overlay a la barra
+          // (dejándolo sin fondo a pantalla completa). Fuera de ese ancestro,
+          // `fixed inset-0` cubre el viewport y `bg-fondo` pinta sólido.
+          <div
+            id="menu-movil"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menú de navegación"
+            className="fixed inset-0 z-[60] flex flex-col bg-fondo motion-safe:animate-[sube_.3s_ease]"
+          >
           {/* Cabecera del overlay: marca + cerrar */}
           <div className="flex items-center justify-between px-6 pt-6">
             <span className="text-sm font-bold uppercase tracking-wide text-titular">Razón Común</span>
@@ -187,8 +199,9 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
               </a>
             ))}
           </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

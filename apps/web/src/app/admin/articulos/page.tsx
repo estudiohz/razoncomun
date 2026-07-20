@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Contenedor } from '@/components/layout/Contenedor';
 import { requireEditor } from '@/lib/blog/guard';
 import { metadatosPagina } from '@/lib/seo';
 
@@ -40,15 +39,17 @@ export default async function ArticulosAdminPage() {
   const nombreCat = (c: Fila['categoria']) => (Array.isArray(c) ? c[0]?.name : c?.name) ?? '—';
 
   return (
-    <Contenedor className="py-12">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+    <div className="py-2">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-[13px] font-bold uppercase tracking-[.12em] text-accion">Panel</p>
-          <h1 className="text-[34px] font-bold leading-tight text-titular">Artículos</h1>
+          <p className="text-[12px] font-bold uppercase tracking-[.12em] text-accion">Panel</p>
+          <h1 className="text-[24px] font-bold leading-tight text-titular min-[720px]:text-[32px]">
+            Artículos
+          </h1>
         </div>
         <Link
           href="/admin/articulos/nuevo"
-          className="rounded-boton bg-accion px-6 py-3 text-[15px] font-bold text-white shadow-boton transition-transform hover:-translate-y-0.5"
+          className="rounded-boton bg-accion px-5 py-2.5 text-[14px] font-bold text-white shadow-boton transition-transform hover:-translate-y-0.5"
         >
           Nuevo artículo
         </Link>
@@ -63,7 +64,43 @@ export default async function ArticulosAdminPage() {
           Todavía no hay artículos. Crea el primero.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-tarjeta border border-linea bg-white">
+        <>
+          {/* Móvil: lista de tarjetas apiladas — sin scroll horizontal, el
+              título aprovecha todo el ancho. */}
+          <ul className="rounded-tarjeta border border-linea bg-white min-[720px]:hidden">
+            {filas.map((a) => (
+              <li key={a.id} className="border-b border-linea/60 p-4 last:border-0">
+                <Link
+                  href={`/admin/articulos/${a.id}`}
+                  className="block text-[16px] font-bold leading-snug text-titular no-underline hover:underline"
+                >
+                  {a.title}
+                </Link>
+                <span className="mt-0.5 block break-all text-[12.5px] text-gris">/{a.slug}</span>
+                <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[12px]">
+                  <span className="rounded-full bg-fondo px-2.5 py-0.5 font-semibold text-cuerpo">
+                    {nombreCat(a.categoria)}
+                  </span>
+                  <span className="rounded-full bg-fondo px-2.5 py-0.5 font-semibold text-cuerpo">
+                    {a.source_type === 'observatorio' ? 'Observatorio' : 'Blog'}
+                  </span>
+                  <span
+                    className={
+                      a.status === 'published'
+                        ? 'rounded-full bg-accion/10 px-2.5 py-0.5 font-bold text-accion'
+                        : 'rounded-full bg-gris/15 px-2.5 py-0.5 font-bold text-gris'
+                    }
+                  >
+                    {a.status === 'published' ? 'Publicado' : 'Borrador'}
+                  </span>
+                  <span className="text-gris">{fecha(a.published_at)}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          {/* Escritorio: tabla completa. */}
+          <div className="hidden overflow-x-auto rounded-tarjeta border border-linea bg-white min-[720px]:block">
           <table className="w-full min-w-[720px] border-collapse text-left text-[15px]">
             <thead>
               <tr className="border-b border-linea text-[13px] uppercase tracking-[.08em] text-gris">
@@ -106,8 +143,9 @@ export default async function ArticulosAdminPage() {
               ))}
             </tbody>
           </table>
-        </div>
+          </div>
+        </>
       )}
-    </Contenedor>
+    </div>
   );
 }

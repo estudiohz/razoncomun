@@ -31,7 +31,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="min-h-screen bg-fondo">
-      <div className="mx-auto w-full max-w-wrap px-5 py-6 min-[960px]:flex min-[960px]:gap-8 min-[960px]:px-8 min-[960px]:py-10">
+      <div className="mx-auto w-full max-w-wrap px-4 py-6 min-[960px]:flex min-[960px]:gap-8 min-[960px]:px-8 min-[960px]:py-10">
         <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} />
         <div className="min-w-0 flex-1 space-y-5">
           <header className="flex flex-wrap items-center justify-between gap-3">
