@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { Contenedor } from '@/components/layout/Contenedor';
 import { EtiquetaCategoriaBlog } from './EtiquetaCategoriaBlog';
 import { CuerpoArticulo } from './CuerpoArticulo';
 import { IndiceArticulo } from './IndiceArticulo';
@@ -13,9 +11,24 @@ import { site } from '@/lib/site';
 import type { ArticuloConRelaciones } from '@/lib/blog/tipos';
 
 /**
- * Ficha de artículo — fiel a `bocetos-home/blog-articulo.html`:
- * migas > cabecera centrada (etiqueta, h1, subtítulo, meta con avatar) >
- * imagen hero 21/9 > rejilla 75% artículo / 25% sidebar sticky.
+ * Ficha de artículo — layout de blog clásico (rediseño D-022, decisión de Sergio,
+ * referencia visual estilo nintenderos.com). Cabecera alineada a la IZQUIERDA y
+ * a ancho completo, en este orden exacto:
+ *
+ *   etiqueta → título → entradilla → imagen destacada → metadatos → contenido
+ *
+ * Cambios respecto al diseño anterior (los 6 de Sergio):
+ *  1. Sin migas de pan VISIBLES (se quitaron por estética). El `BreadcrumbList`
+ *     JSON-LD SIGUE emitiéndose en `VistaSlug` (lib/blog/seo.ts → jsonLdArticulo):
+ *     invisible para el usuario, presente para Google. No es un cambio de SEO.
+ *  2-4. Etiqueta, título y entradilla a la izquierda y al 100% de ancho de la
+ *     columna (antes centrados y estrechos).
+ *  5. Metadatos (autor · fecha · lectura) DEBAJO de la imagen y ANTES del
+ *     contenido (antes iban arriba, sobre la imagen y centrados).
+ *
+ * Se conserva el resto del sistema: rejilla 75/25 con índice lateral sticky,
+ * relacionados, sello de trazabilidad y compartir. Colores por tokens (D-021,
+ * ya AA); no se toca ningún color.
  *
  * La usan /blog/[slug] y /observatorio/[slug] sin cambios.
  */
@@ -23,11 +36,12 @@ export function FichaArticulo({
   articulo,
   relacionados,
   base = '/blog',
-  nombreSeccion = 'Blog',
 }: {
   articulo: ArticuloConRelaciones;
   relacionados: ArticuloConRelaciones[];
   base?: string;
+  /** Aceptado por compatibilidad con las llamadas; ya no se muestra (las migas
+   *  visibles se retiraron; el breadcrumb vive solo en el JSON-LD). */
   nombreSeccion?: string;
 }) {
   const { html, indice } = renderizarMarkdown(articulo.body);
@@ -36,66 +50,52 @@ export function FichaArticulo({
 
   return (
     <>
-      <Contenedor>
-        <nav
-          className="pt-6 text-[13px] font-semibold text-gris"
-          aria-label="Ruta de navegación"
-        >
-          <Link href={base} className="no-underline hover:text-titular">
-            {nombreSeccion}
-          </Link>
-          {articulo.categoria && (
-            <>
-              {' › '}
-              <Link
-                href={`${base}/${articulo.categoria.slug}`}
-                className="no-underline hover:text-titular"
-              >
-                {articulo.categoria.name}
-              </Link>
-            </>
-          )}
-          {' › '}
-          <span>{articulo.title}</span>
-        </nav>
-      </Contenedor>
-
-      <Contenedor as="header">
-        <div className="mx-auto max-w-[820px] pb-2 pt-[26px] text-center">
+      {/* Cabecera a ancho de columna, alineada a la izquierda. Comparte el
+          mismo contenedor (max-w-[1200px] px-8) que la rejilla de contenido de
+          abajo para que etiqueta, título, entradilla, imagen, metadatos y cuerpo
+          arranquen todos en el mismo margen izquierdo. */}
+      <div className="mx-auto max-w-[1200px] px-8">
+        <header className="pt-8 min-[981px]:pt-10">
           {articulo.categoria && <EtiquetaCategoriaBlog categoria={articulo.categoria} />}
-          <h1 className="my-[18px] mt-4 text-[clamp(28px,3.8vw,44px)] font-extrabold leading-[1.16] text-tinta">
+          <h1 className="mt-4 text-[clamp(28px,3.8vw,44px)] font-extrabold leading-[1.16] text-tinta">
             {articulo.title}
           </h1>
           {articulo.excerpt && (
-            <p className="mx-auto max-w-[60ch] text-[18px] text-cuerpo">{articulo.excerpt}</p>
+            <p className="mt-[18px] text-[18px] leading-[1.55] text-cuerpo">
+              {articulo.excerpt}
+            </p>
           )}
-          <div className="mt-[22px] flex flex-wrap items-center justify-center gap-3 text-[13.5px] font-semibold text-gris">
-            <span className="flex items-center gap-[9px]">
-              <span aria-hidden className="h-[30px] w-[30px] rounded-full bg-grad" />
-              {articulo.autor?.display_name ?? 'Redacción de Razón Común'}
-            </span>
-            <span aria-hidden className="h-[3px] w-[3px] rounded-full bg-gris" />
-            <time dateTime={articulo.published_at ?? undefined}>
-              {fechaLarga(articulo.published_at)}
-            </time>
-            <span aria-hidden className="h-[3px] w-[3px] rounded-full bg-gris" />
-            <span>{minutosLectura(articulo.body)} min de lectura</span>
+        </header>
+
+        {articulo.cover_image && (
+          <div className="mt-8 overflow-hidden rounded-[22px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={articulo.cover_image}
+              alt=""
+              className="aspect-[21/9] w-full object-cover shadow-[0_24px_60px_rgba(27,61,156,.12)]"
+            />
           </div>
-        </div>
-      </Contenedor>
+        )}
 
-      {articulo.cover_image && (
-        <div className="mx-auto mt-[34px] max-w-[1100px] overflow-hidden rounded-[22px] px-8 shadow-none min-[1164px]:px-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={articulo.cover_image}
-            alt=""
-            className="aspect-[21/9] w-full rounded-[22px] object-cover shadow-[0_24px_60px_rgba(27,61,156,.12)]"
-          />
+        {/* Metadatos: DEBAJO de la imagen destacada y ANTES del contenido,
+            alineados a la izquierda. Línea inferior para separar del cuerpo. */}
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-b border-linea pb-7 text-[13.5px] font-semibold text-gris">
+          <span className="flex items-center gap-[9px]">
+            <span aria-hidden className="h-[30px] w-[30px] rounded-full bg-grad" />
+            {articulo.autor?.display_name ?? 'Redacción de Razón Común'}
+          </span>
+          <span aria-hidden className="h-[3px] w-[3px] rounded-full bg-gris" />
+          <time dateTime={articulo.published_at ?? undefined}>
+            {fechaLarga(articulo.published_at)}
+          </time>
+          <span aria-hidden className="h-[3px] w-[3px] rounded-full bg-gris" />
+          <span>{minutosLectura(articulo.body)} min de lectura</span>
         </div>
-      )}
+      </div>
 
-      <div className="mx-auto mt-[52px] grid max-w-[1200px] grid-cols-1 gap-10 px-8 min-[981px]:grid-cols-[75%_25%] min-[981px]:gap-0">
+      {/* Rejilla 75/25: artículo + sidebar sticky (se conserva). */}
+      <div className="mx-auto mt-[40px] grid max-w-[1200px] grid-cols-1 gap-10 px-8 min-[981px]:grid-cols-[75%_25%] min-[981px]:gap-0">
         <article className="min-[981px]:pr-14">
           <CuerpoArticulo html={html} />
           <SelloTrazabilidad sello={sello} />
