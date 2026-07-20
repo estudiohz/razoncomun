@@ -60,6 +60,45 @@ verificadas en vivo contra `dev-api.razoncomun.com` sobre el esquema ya desplega
 **Pendiente de decisión de Sergio, NO implementado:** NIF/DNI de afiliados en `profiles` — ver
 el informe de cierre de esta tarea (o `decisiones-construccion.md`) para la propuesta de diseño.
 
+## Estado (fuera de ola, rc-02-datos — encargo transparencia financiera, 20/07/2026)
+
+**0023_finance_movements.sql**, aplicada y verificada en vivo vía `POST /pg/query` y también
+en vivo vía `/rest/v1/...` real (Kong/PostgREST) contra `dev-api.razoncomun.com`, migración
+aditiva sobre el esquema de la Ola 1 + D-016:
+
+- `finance_expenses.expense_type` (`fijo|recurrente|puntual`, default `puntual`): las 5 filas
+  existentes migraron sin pérdida de datos a `puntual` (Sergio no pidió reclasificar el
+  histórico; queda para que tesorería lo revise si alguna era en realidad fija/recurrente).
+- `finance_movements`: importación mensual del CSV de Wise, con `counterparty_name`/
+  `counterparty_ref` (dato sensible RGPD Art. 9 / LO 8/2007) accesibles SOLO a
+  `is_admin()`/`is_treasurer()` vía RLS (`select`/`insert`/`update`/`delete`, sin policy alguna
+  para `anon` ni para `authenticated` sin cargo — RLS deniega por defecto pese al GRANT amplio
+  del esquema). `published boolean default false` es el gate de aprobación manual.
+- `finance_movements_public`: vista propiedad de `postgres` (verificado `rolbypassrls=true` en
+  este entorno) que proyecta SOLO `id, dated, description, amount_cents, direction, currency,
+  category` de las filas `published=true` — sin `counterparty_*`, sin `import_batch`/`source`.
+  `security_barrier=true` + `revoke all` / `grant select` explícito a `anon, authenticated`
+  (defensa en profundidad frente a que Postgres pudiera tratarla como vista auto-actualizable).
+- Índices: `dated desc`, `import_batch`, y un parcial `dated desc where published` para la
+  consulta real de `/cuentas`.
+- Fixture nuevo `seeds/test-data/9003_finance_movements_fixtures.sql`: usuario `treasurer_user`
+  (cargo `positions.role='treasurer'`, ausente en `9001_fixtures.sql`) + 4 movimientos de
+  ejemplo (2 publicados, 2 pendientes, todos con contraparte ficticia) para poder probar en
+  RLS real la rama `is_treasurer()` separada de `is_admin()`.
+- **Hallazgo colateral corregido:** al verificar "0 mojibake" se encontró `U+FFFD` (pérdida
+  irreversible, mismo patrón que documenta D-009) en `finance_expenses.concept` ("Créditos
+  API de IA...", cargado por una ejecución anterior de `9002_finance_fixtures.sql` sin el
+  transporte UTF-8 correcto). El `.sql` en disco estaba bien codificado; se corrigió
+  recargando ese seed con `pgq.py` (UTF-8 explícito). No relacionado con esta migración, pero
+  se deja documentado aquí por aparecer durante esta verificación.
+
+**Nota para rc-07-afiliacion:** consumir `finance_movements_public` (nunca `finance_movements`)
+desde `/cuentas`; el import mensual del CSV de Wise debe insertar en `finance_movements` (todas
+las columnas, incluida contraparte) autenticado como `service_role` o como usuario con cargo
+`admin`/`treasurer`, y dejar `published=false` por defecto — la publicación es un paso manual
+aparte (UPDATE `published=true` fila a fila) que un admin/tesorería ejecuta desde el panel, no
+algo que el import deba hacer automáticamente.
+
 ## Cómo aplicar las migraciones
 
 Cada archivo de `migrations/*.sql` está envuelto en `begin; ... commit;` y es idempotente
