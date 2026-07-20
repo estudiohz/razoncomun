@@ -163,10 +163,17 @@ export function Seguridad2FA() {
           <p className="text-[13px] text-cuerpo">
             Escanea este código con Google Authenticator, Authy o similar:
           </p>
-          {/* qr_code de Supabase es un <svg> ya listo para inyectar */}
-          <div
-            className="mx-auto h-[180px] w-[180px] [&_svg]:h-full [&_svg]:w-full"
-            dangerouslySetInnerHTML={{ __html: qr }}
+          {/* qr_code de Supabase es un DATA URI (data:image/svg+xml;utf-8,<svg…>),
+              NO un <svg> suelto: hay que usarlo como src de <img>, no inyectarlo
+              como HTML (si no, el prefijo "data:image/..." sale como texto y el
+              SVG desborda solapandose con la clave manual). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={qr}
+            alt="Código QR para configurar la verificación en dos pasos"
+            width={180}
+            height={180}
+            className="mx-auto block h-[180px] w-[180px] rounded bg-white p-2"
           />
           {secreto && (
             <p className="break-all text-center text-[11.5px] text-gris">

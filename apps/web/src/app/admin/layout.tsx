@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminSidebar, AdminMobileMenu } from '@/components/admin/AdminSidebar';
 import { AdminBreadcrumbs } from '@/components/admin/AdminBreadcrumbs';
 
 export const metadata: Metadata = metadatosPagina({
@@ -31,11 +31,14 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="min-h-screen bg-fondo">
-      <div className="mx-auto flex w-full max-w-wrap gap-8 px-8 py-10">
+      <div className="mx-auto w-full max-w-wrap px-5 py-6 min-[960px]:flex min-[960px]:gap-8 min-[960px]:px-8 min-[960px]:py-10">
         <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} />
         <div className="min-w-0 flex-1 space-y-5">
           <header className="flex flex-wrap items-center justify-between gap-3">
-            <AdminBreadcrumbs />
+            <div className="flex items-center gap-3">
+              <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} />
+              <AdminBreadcrumbs />
+            </div>
             <p className="text-[12.5px] text-gris">
               {perfil.display_name ?? perfil.email} ·{' '}
               <span className="font-bold text-titular">{esAdmin ? 'Administrador' : 'Editor'}</span>
