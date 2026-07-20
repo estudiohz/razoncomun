@@ -1,0 +1,44 @@
+# bot/docker-compose.discord-bot.yml
+#
+# Bot de Discord del RC-Brain, PENDIENTE de DISCORD_BOT_TOKEN (Sergio).
+# Recomendado desplegarlo en el MISMO stack que rc-brain-service (añadir este
+# servicio al compose de lib/brain/service/, o desplegarlo aparte y usar
+# BRAIN_SERVICE_URL con la URL pública) -- si va en el mismo stack, puede
+# hablarle por DNS interno de Compose (http://brain-service:8787) sin pasar
+# por el dominio público ni el internal_token viajando por internet.
+
+name: rc-brain-discord-bot
+
+services:
+  discord-bot:
+    container_name: rc-brain-discord-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_GUILD_ID: ${DISCORD_GUILD_ID}
+      BRAIN_SERVICE_URL: ${BRAIN_SERVICE_URL:-http://brain-service:8787}
+      BRAIN_INTERNAL_TOKEN: ${BRAIN_INTERNAL_TOKEN}
+      DISCORD_TEAM_CHANNEL_IDS: ${DISCORD_TEAM_CHANNEL_IDS:-}
+    networks:
+      - rc-brain-net
+
+networks:
+  # Si se despliega junto a rc-brain-service, usar la red de ESE stack en vez
+  # de esta (editar a `external: true` + el nombre real) para DNS interno.
+  rc-brain-net: {}
+
+# ─────────────────────────────────────────────────────────────────────────
+# Despliegue (Dokploy) -- PENDIENTE de:
+#   1. Sergio crea la aplicación en discord.com/developers/applications,
+#      activa "Message Content Intent" (Bot > Privileged Gateway Intents),
+#      invita el bot al servidor con permisos "Send Messages" + "Use Slash Commands".
+#   2. Variables de entorno aquí + `node src/registerCommands.mjs` una vez
+#      (registra /opina en el servidor).
+#   3. Recomendado: mover este servicio al MISMO compose que rc-brain-service
+#      para que puedan compartir red interna sin exponer BRAIN_INTERNAL_TOKEN
+#      fuera del VPS.
+# ─────────────────────────────────────────────────────────────────────────

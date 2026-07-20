@@ -1,0 +1,92 @@
+# lib/brain/service/docker-compose.brain-service.yml
+#
+# rc-brain-service como servicio Docker Compose PERSISTENTE de Dokploy --
+# a diferencia de rc-brain-ingest (docker-compose.brain-ingest.yml, corre y
+# termina), este queda escuchando (restart: unless-stopped). Concentra RAG +
+# constitución + generación + logging para tres consumidores:
+#   1. El proxy fino de la web (apps/web/src/app/api/chat, /api/opina) -> HTTPS pública.
+#   2. El bot de Discord (bot/) -> /chat-team, /classify-opinion (Bearer interno).
+#   3. n8n (observatorio, digest de Opina) -> /classify-opinion, /neutrality-suite/run.
+#
+# Necesita la red interna de Ollama (igual que brain-ingest) PARA LOS
+# EMBEDDINGS DE CONSULTA -- sin ella, /chat y /opina/turn no pueden recuperar
+# nada del corpus (fallan con un error claro, no en silencio).
+
+name: rc-brain-service
+
+services:
+  brain-service:
+    container_name: rc-brain-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: bge-m3
+      EMBEDDINGS_PROVIDER: ollama
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
+      OUT_OF_CORPUS_THRESHOLD: ${OUT_OF_CORPUS_THRESHOLD:-0.55}
+      RETRIEVAL_LIMIT: ${RETRIEVAL_LIMIT:-5}
+      BRAIN_INTERNAL_TOKEN: ${BRAIN_INTERNAL_TOKEN}
+      BRAIN_IP_HASH_SALT: ${BRAIN_IP_HASH_SALT}
+      RATE_LIMIT_PER_IP_PER_HOUR: ${RATE_LIMIT_PER_IP_PER_HOUR:-30}
+      RATE_LIMIT_PER_SESSION_PER_HOUR: ${RATE_LIMIT_PER_SESSION_PER_HOUR:-20}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN:-https://www.razoncomun.com}
+      PORT: 8787
+    networks:
+      # Misma red que brain-ingest -- ver ese compose para el porqué de
+      # `external: true` y la advertencia de verificar el nombre real antes
+      # de cada primer despliegue con `docker network ls | grep ollama`.
+      - rc-ollama-internal
+    # Puerto NO publicado al host directamente -- Dokploy debe exponerlo vía su
+    # proxy (dominio propio, ej. brain-api.razoncomun.com) con HTTPS, para que
+    # tanto la web (otro stack de Dokploy) como el bot de Discord (si se aloja
+    # fuera de esta red) puedan alcanzarlo. Si en cambio el bot de Discord se
+    # despliega EN ESTE MISMO stack (recomendado, ver bot/docker-compose.discord-bot.yml),
+    # puede hablarle por DNS interno de Compose (http://brain-service:8787) sin pasar por el dominio público.
+
+  # Verificación post-deploy: golpea /health y falla el despliegue si el
+  # servicio no arrancó bien -- mismo patrón "autoverificable" que brain-control.
+  brain-service-healthcheck:
+    container_name: rc-brain-service-healthcheck
+    image: node:20-alpine
+    restart: "no"
+    depends_on:
+      - brain-service
+    entrypoint:
+      [
+        "sh",
+        "-c",
+        "sleep 5 && node -e \"fetch('http://brain-service:8787/health').then(r=>r.json()).then(j=>{console.log(JSON.stringify(j)); if(!j.ok) process.exit(1)}).catch(e=>{console.error(e); process.exit(1)})\"",
+      ]
+    networks:
+      - rc-ollama-internal
+
+networks:
+  rc-ollama-internal:
+    external: true
+    name: ${OLLAMA_INTERNAL_NETWORK:-rc-ollama_rc-ollama-internal}
+
+# ─────────────────────────────────────────────────────────────────────────
+# Despliegue (Dokploy) -- PENDIENTE, requiere merge de feat/brain a main:
+#   1. Nuevo servicio -> Docker Compose, repo github.com/estudiohz/razoncomun,
+#      rama main, ruta: lib/brain/service/docker-compose.brain-service.yml
+#   2. Variables de entorno: SUPABASE_PUBLIC_URL, SERVICE_ROLE_KEY (copiar de
+#      "rc-supabase"), ANTHROPIC_API_KEY (PENDIENTE DE SERGIO),
+#      BRAIN_INTERNAL_TOKEN (generar un secreto largo, ej. `openssl rand -hex 32`,
+#      pegarlo aquí Y en la config del bot de Discord / n8n),
+#      BRAIN_IP_HASH_SALT (otro secreto aleatorio), CORS_ALLOW_ORIGIN.
+#   3. Confirmar `docker network ls | grep ollama` antes del deploy (mismo aviso
+#      que brain-ingest -- Dokploy genera un appName nuevo por stack).
+#   4. Exponer el servicio con dominio propio en Dokploy (ej. brain-api.razoncomun.com)
+#      apuntando al puerto 8787 del contenedor `brain-service`, con HTTPS.
+#   5. Deploy. Revisar logs de `rc-brain-service-healthcheck`: debe imprimir
+#      {"ok":true,...} y salir 0.
+#   6. Actualizar en la web (stack aparte) la variable BRAIN_SERVICE_URL con la
+#      URL pública del paso 4, y BRAIN_INTERNAL_TOKEN si el bot de Discord /
+#      n8n corren fuera de este stack.
+# ─────────────────────────────────────────────────────────────────────────

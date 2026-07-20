@@ -1,0 +1,125 @@
+{
+  "name": "observatorio-diario",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "cronExpression", "expression": "0 7 * * *" }] } },
+      "id": "trigger-diario",
+      "name": "Cada día 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.rssUrl}}",
+        "options": {}
+      },
+      "id": "leer-fuentes-rss",
+      "name": "Leer fuentes RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [220, 0],
+      "notes": "PENDIENTE: lista real de fuentes (RSS de prensa económica/política) a definir con el equipo. Placeholder: itera sobre un Set de URLs configurado en un nodo Set anterior (no incluido aquí para no fijar fuentes sin validar con Sergio)."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.BRAIN_SERVICE_URL}}/chat-team",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [{ "name": "Authorization", "value": "=Bearer {{$env.BRAIN_INTERNAL_TOKEN}}" }]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "=Redacta un borrador de artículo del Observatorio (300-450 palabras, tono técnico y sin ideología, citando el programa de Razón Común donde aplique) sobre esta noticia: {{$json.title}} -- {{$json.contentSnippet}}"
+            },
+            { "name": "sessionId", "value": "=n8n-observatorio-{{$json.link}}" }
+          ]
+        }
+      },
+      "id": "redactar-borrador",
+      "name": "RC-Brain: redactar borrador",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 0],
+      "notes": "Usa rc-brain-service /chat-team (corpus completo) para que el borrador sea coherente con el programa ya publicado -- NUNCA se publica sin paso humano (nodo siguiente)."
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=**Borrador del Observatorio** (noticia: {{$('Leer fuentes RSS').item.json.title}})\\n\\n{{$json.answer}}\\n\\n✅ Reaccionar con 👍 para aprobar y publicar, 👎 para descartar.",
+        "options": {}
+      },
+      "id": "aprobacion-discord",
+      "name": "Discord: pedir aprobación",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [660, 0],
+      "notes": "Credencial de Discord (webhook del canal de equipo) NO incluida en este export -- configurar en el propio n8n (C5, repo público sin credenciales)."
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "days"
+      },
+      "id": "esperar-reaccion",
+      "name": "Esperar reacción (o usar Wait for Webhook si el bot de Discord confirma)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [880, 0],
+      "notes": "PENDIENTE DE DISEÑO: la forma robusta de esto es un Webhook que el bot de Discord (bot/) dispara al detectar la reacción 👍/👎 en el mensaje de arriba (bot/src/index.mjs no incluye ese listener todavía -- fuera de presupuesto de esta ola, ver informe). Este nodo Wait es un placeholder documentado, NO una solución final."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [{ "leftValue": "={{$json.aprobado}}", "rightValue": true, "operator": { "type": "boolean", "operation": "equals" } }],
+          "combinator": "and"
+        }
+      },
+      "id": "if-aprobado",
+      "name": "¿Aprobado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.WEB_BASE_URL}}/api/admin/blog/publicar",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{$env.BLOG_ADMIN_TOKEN}}" }] },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "titulo", "value": "={{$('Leer fuentes RSS').item.json.title}}" },
+            { "name": "contenido", "value": "={{$('RC-Brain: redactar borrador').item.json.answer}}" },
+            { "name": "departamento", "value": "observatorio" }
+          ]
+        }
+      },
+      "id": "publicar-blog",
+      "name": "Publicar en el blog (rc-05)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, -80],
+      "notes": "Endpoint /api/admin/blog/publicar es de rc-05-blog -- confirmar la ruta y el esquema de auth exactos con ese agente antes de activar este workflow en producción; no asumido aquí."
+    }
+  ],
+  "connections": {
+    "Cada día 07:00": { "main": [[{ "node": "Leer fuentes RSS", "type": "main", "index": 0 }]] },
+    "Leer fuentes RSS": { "main": [[{ "node": "RC-Brain: redactar borrador", "type": "main", "index": 0 }]] },
+    "RC-Brain: redactar borrador": { "main": [[{ "node": "Discord: pedir aprobación", "type": "main", "index": 0 }]] },
+    "Discord: pedir aprobación": { "main": [[{ "node": "Esperar reacción (o usar Wait for Webhook si el bot de Discord confirma)", "type": "main", "index": 0 }]] },
+    "Esperar reacción (o usar Wait for Webhook si el bot de Discord confirma)": { "main": [[{ "node": "¿Aprobado?", "type": "main", "index": 0 }]] },
+    "¿Aprobado?": { "main": [[{ "node": "Publicar en el blog (rc-05)", "type": "main", "index": 0 }], []] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "estado": "BORRADOR NO DESPLEGADO -- sacrificado por presupuesto en la Ola 3 de rc-08-brain (prioridad: chat web > gate > Opina > esto). Fuentes RSS, endpoint de publicación de rc-05 y el mecanismo de aprobación por reacción de Discord están marcados como pendientes en las notas de cada nodo. Sin credenciales embebidas (C5)."
+  }
+}

@@ -1,10 +1,12 @@
 # n8n/
 
-Esqueleto para los workflows de automatización de Razón Común (observatorio de noticias, clasificador de opiniones, sync de finanzas, ingesta del RC-Brain — ver `docs/tecnico/rc-brain.md` y `docs/tecnico/chatbot-opina.md`). Propiedad principal: **rc-08-brain**.
+Workflows de automatización de Razón Común (observatorio de noticias, autopublicación en redes — ver `docs/tecnico/rc-brain.md` y Pilar 1.11 de `docs/vision-plataforma.md`). Propiedad principal: **rc-08-brain**.
 
-## Estado (Ola 0)
+## Estado (Ola 3)
 
-Vacío deliberadamente. La infraestructura de n8n en sí **ya existe** en el VPS (`n8n.estudiohorizontal.es`, compartida con la agencia — ver `docs/tecnico/revision-seguridad.md`, hallazgo I2, decisión pendiente ⏳ sobre si el partido monta instancia propia).
+`observatorio-diario.json` y `redes-autopublicacion.json`: **borradores de forma, NO importados ni activados** en ninguna instancia de n8n -- sacrificados deliberadamente por presupuesto (prioridad de la ola: chat web > gate > Opina > esto, ver informe final de rc-08-brain). Cada nodo lleva una nota explicando qué falta para poder activarlo de verdad: fuentes RSS reales, el endpoint exacto de publicación de rc-05-blog, el mecanismo de aprobación por reacción de Discord, y el token de Metricool (Sergio). Import de prueba con `node -e "JSON.parse(...)"` hecho (JSON válido), **nunca ejecutados contra n8n real**.
+
+No se ha tocado la instancia compartida de la agencia (`n8n.estudiohorizontal.es`) -- la decisión I2 (instancia propia vs. compartida) sigue pendiente y no correspondía tomarla en esta ola.
 
 ## Qué va aquí más adelante
 

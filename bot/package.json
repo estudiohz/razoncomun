@@ -1,0 +1,15 @@
+{
+  "name": "rc-brain-discord-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot de Discord del RC-Brain (Ola 3, rc-08-brain). Habla con rc-brain-service por HTTP -- nunca toca Postgres/Ollama/Anthropic directamente.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/index.mjs",
+    "register-commands": "node src/registerCommands.mjs"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  }
+}

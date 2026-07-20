@@ -1,0 +1,131 @@
+{
+  "name": "redes-autopublicacion",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rc-blog-publicado",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-blog-publicado",
+      "name": "Webhook: artículo publicado (rc-05)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "notes": "Pilar 1.11 de vision-plataforma.md (autopublicación en redes). Disparado por rc-05-blog al publicar un artículo -- confirmar con ese agente el payload exacto (esperado: {titulo, resumen, url, departamento}); no asumido, solo documentado aquí."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.BRAIN_SERVICE_URL}}/chat-team",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "=Bearer {{$env.BRAIN_INTERNAL_TOKEN}}" }] },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "=A partir de este artículo ya publicado, redacta 3 variantes cortas para redes sociales EN JSON: {\"x\": \"...(<=280 car.)\", \"instagram\": \"...\", \"linkedin\": \"...\"}. Cita el dato/punto del programa si aplica. Artículo: {{$json.titulo}} -- {{$json.resumen}} ({{$json.url}})"
+            },
+            { "name": "sessionId", "value": "=n8n-redes-{{$json.url}}" }
+          ]
+        }
+      },
+      "id": "generar-variantes",
+      "name": "RC-Brain: generar variantes por red",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrae el bloque JSON de la respuesta de texto de RC-Brain (puede venir con\n// prosa alrededor pese al prompt -- no confiar ciegamente, ver I4).\nconst text = $input.first().json.answer || '';\nconst start = text.indexOf('{');\nconst end = text.lastIndexOf('}');\nif (start === -1 || end === -1) {\n  throw new Error('RC-Brain no devolvió un JSON de variantes reconocible: ' + text.slice(0, 200));\n}\nconst parsed = JSON.parse(text.slice(start, end + 1));\nreturn [{ json: parsed }];"
+      },
+      "id": "parsear-variantes",
+      "name": "Parsear JSON de variantes (validado)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.metricool.com/api/v2/scheduler/posts",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "X-Mc-Auth", "value": "={{$credentials.metricoolApi.token}}" }] },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "network", "value": "twitter" },
+            { "name": "text", "value": "={{$json.x}}" }
+          ]
+        }
+      },
+      "id": "publicar-x",
+      "name": "Metricool: programar X",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, -120],
+      "notes": "PENDIENTE DE SERGIO: API key de Metricool. Credencial `metricoolApi` referenciada por nombre, sin token embebido (C5). Endpoint/payload de Metricool a confirmar contra su documentación oficial vigente antes de activar -- este export es un borrador de forma, no probado contra la API real."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.metricool.com/api/v2/scheduler/posts",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "X-Mc-Auth", "value": "={{$credentials.metricoolApi.token}}" }] },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "network", "value": "instagram" },
+            { "name": "text", "value": "={{$json.instagram}}" }
+          ]
+        }
+      },
+      "id": "publicar-instagram",
+      "name": "Metricool: programar Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.metricool.com/api/v2/scheduler/posts",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "X-Mc-Auth", "value": "={{$credentials.metricoolApi.token}}" }] },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "network", "value": "linkedin" },
+            { "name": "text", "value": "={{$json.linkedin}}" }
+          ]
+        }
+      },
+      "id": "publicar-linkedin",
+      "name": "Metricool: programar LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 120]
+    }
+  ],
+  "connections": {
+    "Webhook: artículo publicado (rc-05)": { "main": [[{ "node": "RC-Brain: generar variantes por red", "type": "main", "index": 0 }]] },
+    "RC-Brain: generar variantes por red": { "main": [[{ "node": "Parsear JSON de variantes (validado)", "type": "main", "index": 0 }]] },
+    "Parsear JSON de variantes (validado)": {
+      "main": [
+        [
+          { "node": "Metricool: programar X", "type": "main", "index": 0 },
+          { "node": "Metricool: programar Instagram", "type": "main", "index": 0 },
+          { "node": "Metricool: programar LinkedIn", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "estado": "BORRADOR NO DESPLEGADO -- sacrificado por presupuesto en la Ola 3 de rc-08-brain. Pendiente de: token de Metricool (Sergio), confirmación del payload real del webhook de rc-05, y validación del endpoint de Metricool contra su documentación vigente. Sin credenciales embebidas (C5)."
+  }
+}

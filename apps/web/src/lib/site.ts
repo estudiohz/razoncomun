@@ -18,6 +18,7 @@ export const navPrincipal = [
   { label: 'Programa', href: '/programa' },
   { label: 'Observatorio', href: '/observatorio' },
   { label: 'Blog', href: '/blog' },
+  { label: 'Pregunta a la IA', href: '/pregunta' },
   { label: 'Cuentas', href: '/cuentas' },
 ] as const;
 
@@ -35,6 +36,7 @@ export const rutasPublicas = [
   '/programa',
   '/observatorio',
   '/blog',
+  '/pregunta',
   '/cuentas',
   '/afiliate',
 ] as const;
