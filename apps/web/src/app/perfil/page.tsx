@@ -7,6 +7,7 @@ import { actualizarPerfil, cerrarSesion } from './actions';
 import { Seguridad2FA } from './Seguridad2FA';
 import { ExportarBorrarCuenta } from './ExportarBorrarCuenta';
 import { VerificarIdentidad } from './VerificarIdentidad';
+import { MisVotos } from '@/components/participacion/MisVotos';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Mi perfil',
@@ -157,6 +158,19 @@ export default async function PerfilPage() {
           </p>
           <div className="mt-4">
             <ExportarBorrarCuenta />
+          </div>
+        </section>
+
+        {/* PARTICIPACIÓN: verificación del propio voto (D-001, voto público nominal) */}
+        <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
+          <h2 className="text-[16px] font-bold text-titular">Mis votos</h2>
+          <p className="mt-1 text-[13px] text-gris">
+            Verifica que lo que emitiste quedó registrado tal cual. El voto es público con tu
+            nombre (D-001): esta misma información es visible para cualquiera en la página de la
+            votación.
+          </p>
+          <div className="mt-4">
+            <MisVotos supabase={supabase} userId={user.id} />
           </div>
         </section>
 
