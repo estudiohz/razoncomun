@@ -76,7 +76,7 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Menú de navegación"
-          className="fixed inset-0 z-[60] flex flex-col bg-fondo/95 backdrop-blur-xl motion-safe:animate-[sube_.3s_ease]"
+          className="fixed inset-0 z-[60] flex flex-col bg-fondo motion-safe:animate-[sube_.3s_ease]"
         >
           {/* Cabecera del overlay: marca + cerrar */}
           <div className="flex items-center justify-between px-6 pt-6">
