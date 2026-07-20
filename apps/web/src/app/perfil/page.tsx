@@ -5,6 +5,7 @@ import { metadatosPagina } from '@/lib/seo';
 import { requireUsuario } from '@/lib/auth/niveles';
 import { cerrarSesion } from './actions';
 import { PerfilDatosForm } from './PerfilDatosForm';
+import { ContrasenaForm } from './ContrasenaForm';
 import { Seguridad2FA } from './Seguridad2FA';
 import { ExportarBorrarCuenta } from './ExportarBorrarCuenta';
 import { VerificarIdentidad } from './VerificarIdentidad';
@@ -30,11 +31,15 @@ export default async function PerfilPage() {
   // cuanto existe el usuario; si por lo que sea faltara, no seguimos.
   if (!perfil) redirect('/entrar');
 
-  const [{ data: provincias }, { data: cargos }, { data: miembros }] = await Promise.all([
-    supabase.from('territories').select('id, name').eq('type', 'province').order('name'),
-    supabase.from('positions').select('role, scope, started_at').eq('user_id', user.id).is('ended_at', null),
-    supabase.from('members').select('status, billing_period, started_at').eq('user_id', user.id),
-  ]);
+  const [{ data: provincias }, { data: cargos }, { data: miembros }, { data: tieneContrasena }] =
+    await Promise.all([
+      supabase.from('territories').select('id, name').eq('type', 'province').order('name'),
+      supabase.from('positions').select('role, scope, started_at').eq('user_id', user.id).is('ended_at', null),
+      supabase.from('members').select('status, billing_period, started_at').eq('user_id', user.id),
+      // has_password() (migración 0025, rc-02): true si el usuario ya tiene
+      // contraseña en GoTrue, false si entró siempre por enlace mágico.
+      supabase.rpc('has_password'),
+    ]);
 
   const afiliacionActiva = miembros?.find((m) => m.status === 'active');
 
@@ -124,6 +129,15 @@ export default async function PerfilPage() {
               newsletterOptInAt={perfil.newsletter_opt_in_at}
               provincias={provincias ?? []}
             />
+          </div>
+        </section>
+
+        {/* CONTRASEÑA (aviso de rc-03: quien entra por enlace mágico nunca
+            fija una y no tenía dónde hacerlo) */}
+        <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
+          <h2 className="text-[16px] font-bold text-titular">Contraseña</h2>
+          <div className="mt-4">
+            <ContrasenaForm tieneContrasenaInicial={Boolean(tieneContrasena)} />
           </div>
         </section>
 
