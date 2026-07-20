@@ -58,6 +58,27 @@ insert into auth.users (
    now(), '{"provider":"email"}', '{"fixture":"member_canceled"}', now(), now())
 on conflict (id) do nothing;
 
+-- ⚠️ OBLIGATORIO tras insertar en auth.users a mano (ver D-011 en
+-- docs/tecnico/decisiones-construccion.md).
+-- GoTrue está escrito en Go y mapea estas columnas a `string` NO anulable. Si
+-- quedan en NULL —que es lo que ocurre al no incluirlas en el INSERT de
+-- arriba— el escaneo de filas falla y `GET /auth/v1/admin/users` devuelve
+-- 500 "Database error finding users", bloqueando cualquier panel que liste
+-- usuarios (rc-09-admin). El fallo pasa desapercibido porque `getUserById`
+-- sigue devolviendo 200: solo revienta al LISTAR.
+-- Las altas reales creadas por GoTrue ya traen '' por defecto; esto solo hace
+-- falta para filas insertadas directamente por un seed.
+update auth.users set
+  confirmation_token         = coalesce(confirmation_token, ''),
+  recovery_token             = coalesce(recovery_token, ''),
+  email_change_token_new     = coalesce(email_change_token_new, ''),
+  email_change               = coalesce(email_change, ''),
+  email_change_token_current = coalesce(email_change_token_current, ''),
+  phone_change               = coalesce(phone_change, ''),
+  phone_change_token         = coalesce(phone_change_token, ''),
+  reauthentication_token     = coalesce(reauthentication_token, '')
+where email like '%@razoncomun.invalid';
+
 -- El trigger on_auth_user_created ya debería haber creado las filas de profiles; este
 -- INSERT defensivo con ON CONFLICT DO NOTHING garantiza idempotencia por si el DELETE de
 -- arriba y este INSERT corren en el mismo script (incluso si el trigger no llegara a
