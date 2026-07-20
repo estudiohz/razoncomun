@@ -1,0 +1,13 @@
+{
+  "name": "rc-brain-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servicio persistente del RC-Brain (Ola 3, rc-08-brain): RAG + constitución + generación + logging para el chat público, el bot de Discord y Opina. Cero dependencias externas a propósito (igual que rc-brain-ingest).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.mjs"
+  }
+}

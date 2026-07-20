@@ -1,10 +1,13 @@
 import { Contenedor } from '@/components/layout/Contenedor';
+import { OpinaMiniChat } from '@/components/chat/OpinaMiniChat';
 
 /**
  * "Habla con nuestra IA" — registro tech (Jarvis). Fondo noche #0A1633 con
  * retícula técnica, glows morado/cian animados y el aro del logo como núcleo
- * de IA con anillos de pulso y órbita. UI conversacional SIN backend (rc-08
- * conecta el chat real). Fiel a boceto-4-teal.html.
+ * de IA con anillos de pulso y órbita. Fiel a boceto-4-teal.html.
+ *
+ * La UI conversacional (input + burbujas) vive en <OpinaMiniChat> (rc-08):
+ * llama a /api/opina, que dispara el entrevistador de chatbot-opina.md.
  */
 export function IASection() {
   return (
@@ -41,23 +44,7 @@ export function IASection() {
                 comunidad la delibera y la vota. Tu idea puede acabar en el programa.
               </p>
 
-              <div className="flex max-w-[470px] items-center gap-3 rounded-[18px] border border-cian/30 bg-white/[.06] py-2 pl-[22px] pr-2 backdrop-blur-[6px]">
-                <span className="cursor-parpadeo flex-1 overflow-hidden whitespace-nowrap text-[15px] text-white/[.65] after:ml-1.5 after:inline-block after:h-[1em] after:w-0.5 after:align-[-2px] after:bg-cian after:content-['']">
-                  Escribe tu idea para España…
-                </span>
-                <button
-                  type="button"
-                  aria-label="Enviar idea"
-                  className="h-11 w-11 flex-shrink-0 rounded-[13px] bg-grad text-lg font-extrabold text-white transition-transform duration-200 hover:scale-[1.08]"
-                >
-                  →
-                </button>
-              </div>
-
-              <p className="mt-4 max-w-[52ch] text-[12.5px] text-white/[.45]">
-                Siempre declarada: te responde una IA. Aporta imparcialidad y soluciones
-                contrastadas; las decisiones las toman siempre personas.
-              </p>
+              <OpinaMiniChat />
             </div>
 
             {/* Núcleo de IA */}
