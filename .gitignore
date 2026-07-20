@@ -66,3 +66,4 @@ n8n/**/*.credentials.json
 # Migracion WP: imagenes pesadas fuera del repo publico (ya estan en Storage)
 scripts/migracion-wp/assets/
 scripts/migracion-wp/wp-snapshot.json
+scripts/migracion-wp/__pycache__/
