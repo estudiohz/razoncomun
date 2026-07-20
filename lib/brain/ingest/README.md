@@ -4,6 +4,16 @@
 > ingesta/embeddings. El chat "Pregunta a Razón Común", el bot de Discord, el
 > clasificador de Opina y los workflows n8n son la Ola 3 — no viven aquí todavía.
 
+**Estado: Ola 1 cerrada por el orquestador (D-010).** Manifiesto desplegado e
+indexado con `bge-m3` real (30 chunks, dimensión 1024, normas de vector
+25,2–27,0), 5 preguntas de control + 3 fuera-de-corpus verificadas contra
+Ollama real, servicio `brain-control` en el compose autoverifica cada
+despliegue. El corpus de documentación (`docs/ideario`, `docs/marca`,
+`docs/referencias`, `docs/vision-plataforma.md`/`50-ideas-acogida.md`) se
+sirve ahora desde Supabase Storage (ver más abajo) — pendiente de que el
+orquestador despliegue esta versión del job para verificar sus conteos reales
+contra Ollama.
+
 ## Qué hace
 
 Lee el corpus (manifiesto + documentación del proyecto), lo trocea, genera
@@ -16,10 +26,10 @@ anteriores (por `source` + una clave de idempotencia en `metadata`).
 ## Por qué cero dependencias
 
 Todo el código (`src/*.mjs`) usa solo built-ins de Node 20+ (`fetch` global,
-`node:fs/promises`, `node:path`). No hay `npm install` en el `Dockerfile`.
-Motivo: es un job pequeño, de un solo propósito, que se audita fácil (repo
-público) y no arrastra un `node_modules` ni superficie de supply-chain para
-algo que no lo necesita.
+`TextDecoder`, `node:path` donde hace falta). No hay `npm install` en el
+`Dockerfile`. Motivo: es un job pequeño, de un solo propósito, que se audita
+fácil (repo público) y no arrastra un `node_modules` ni superficie de
+supply-chain para algo que no lo necesita.
 
 ## Cómo llega este job a Postgres — decisión de diseño
 
@@ -33,197 +43,234 @@ justo `service_role`).
 Motivos:
 1. **Un único camino de código, probado de verdad en dos sitios.** El mismo
    `src/pgClient.mjs` funciona sin cambios en producción (dentro del VPS) y
-   en esta máquina de desarrollo (sin acceso a la red Docker del VPS) — así
-   es como se pudieron correr pruebas reales contra la base de datos real
-   antes de desplegar nada (ver "Qué se probó" más abajo).
+   en una máquina de desarrollo sin acceso a la red Docker del VPS — así se
+   pudieron correr pruebas reales contra la base de datos real antes de
+   desplegar nada.
 2. **Evita la ambigüedad de redes cruzadas entre stacks de Dokploy.**
    `rc-supabase-internal` no está declarada `external: true` en el compose
-   de Supabase — para que un contenedor de OTRO stack Compose se una a ella
-   habría que descubrir el nombre real que Docker le asignó (`docker network
-   ls` en el VPS) y no hay garantía de que Dokploy no cambie ese prefijo. El
-   endpoint HTTPS ya está verificado funcionando end-to-end (D-005 en
-   `docs/tecnico/decisiones-construccion.md`) y no depende de qué red Docker
-   exista en cada stack.
-3. **`brain_documents` no tiene RLS para nadie salvo `service_role`** (migración
-   `0012_brain.sql`), así que de todas formas hace falta esa clave — usar el
-   endpoint HTTPS con ella no añade superficie nueva.
+   de Supabase — unirse a ella desde OTRO stack Compose exige descubrir el
+   nombre real que Docker le asignó, y Dokploy antepone su propio prefijo de
+   proyecto (confirmado en la práctica, ver más abajo). El endpoint HTTPS ya
+   está verificado funcionando end-to-end (D-005) y no depende de qué red
+   Docker exista en cada stack.
+3. **`brain_documents` no tiene RLS para nadie salvo `service_role`**
+   (migración `0012_brain.sql`), así que de todas formas hace falta esa
+   clave — usar el endpoint HTTPS con ella no añade superficie nueva.
 
 Contrapartida asumida: sin transacciones ACID multi-sentencia estrictas (cada
 sentencia SQL es una llamada HTTP independiente) y sin placeholders
 parametrizados server-side — el escapado seguro de literales lo hace
 `src/sqlLiteral.mjs` (comillas dobladas, validación de tipo antes de
-interpolar). Para el volumen de este pipeline (cientos-miles de chunks, no
-tráfico transaccional concurrente) es una simplificación razonable.
+interpolar).
 
 ## Redes: cómo llega este job a Ollama
 
 Ollama **sí** debe alcanzarse por red interna Docker — es una decisión
-deliberada de `rc-01-infra` no exponerlo a internet (`infra/docker-compose.ollama.yml`).
-El contenedor de este job debe unirse a la red `rc-ollama-internal`.
+deliberada de `rc-01-infra` no exponerlo a internet
+(`infra/docker-compose.ollama.yml`). El contenedor de este job (y el de
+`brain-control`) deben unirse a esa red.
 
-Como esa red tampoco está declarada `external: true` en el compose de Ollama
-(mismo problema que con Supabase, pero aquí no hay atajo HTTP porque Ollama
-no está detrás de Kong), `docker-compose.brain-ingest.yml` la referencia como
-`external: true` con un nombre por defecto razonado (`rc-ollama_rc-ollama-internal`,
-según cómo Compose v2 nombra redes no-externas cuando el archivo declara
-`name: rc-ollama`), **pero hay que confirmarlo en el VPS antes del primer
-despliegue**:
+Como esa red no está declarada `external: true` en el compose de Ollama,
+`docker-compose.brain-ingest.yml` la referencia como `external: true` con un
+nombre configurable por variable de entorno. **Confirmado en el primer
+despliegue real (D-010): el nombre NO es el que se podía anticipar por el
+`name:` del compose de Ollama — Dokploy antepone un `appName` generado por
+stack** (en ese despliegue fue
+`compose-transmit-solid-state-driver-l7gn7j_rc-ollama-internal`). Esto puede
+volver a cambiar en el siguiente despliegue de este servicio si Dokploy
+genera un `appName` distinto — **verificar con `docker network ls | grep
+ollama` antes de cada deploy**, no solo el primero, y pasar
+`OLLAMA_INTERNAL_NETWORK=<nombre-real>` como variable de entorno del
+servicio en Dokploy si no coincide con el default.
 
-```bash
-docker network ls | grep ollama
-```
+## Corpus de documentos: de bind mount a Supabase Storage (D-010)
 
-Si el nombre real difiere, pasar `OLLAMA_INTERNAL_NETWORK=<nombre-real>` como
-variable de entorno del servicio en Dokploy.
+**Historia de esta decisión (para que no se repita el análisis):** la
+versión original de este pipeline evitaba copiar `docs/ideario`,
+`docs/tecnico` y `docs/marca` al repo público (razonamiento íntegro más
+abajo) montándolos como bind mount de solo lectura, poblado por `rsync`/`scp`
+en el host del VPS. Esa vía quedó bloqueada: desplegar el bind mount requiere
+SSH al VPS, que no estaba disponible en el momento del primer despliegue real
+(Ola 1). **El orquestador resolvió el bloqueo subiendo el corpus a un bucket
+PRIVADO de Supabase Storage** (`corpus`) y me pidió sustituir el conector de
+bind mount por uno que lea de ahí — es lo que hace
+`src/connectors/corpusStorage.mjs`.
 
-## Corpus de documentos: por qué NO vive en este repo público
+Por qué Storage no reabre el problema de seguridad que evitaba el bind
+mount: el bucket es **privado** (confirmado: listar/descargar sin
+`service_role` devuelve 400; con `service_role`, 200) y **`docs/tecnico/` NO
+se subió** — ver el motivo en la siguiente sección. Es la misma separación
+público/privado, solo que el "fuera del repo" ahora es Storage en vez de un
+directorio del host.
 
-`docs/ideario/`, `docs/tecnico/` y `docs/marca/` viven en un repositorio
-**privado** de documentación (ver `README.md` raíz: "no vive en este repo de
-código"), separado de `github.com/estudiohz/razoncomun` (público). Esto es
-deliberado y hay que respetarlo, especialmente para `docs/tecnico/`:
-contiene el análisis de seguridad en curso (`revision-seguridad.md`),
-decisiones de infraestructura con detalles operativos del VPS
-(`decisiones-construccion.md`, `stack-y-despliegue.md`) y el modelo de datos
-completo. Aunque el chat público solo consulta `visibility='public'` en
-`brain_documents`, **estar en un repo público es otra cosa**: cualquiera
-puede leer el `.md` en crudo desde GitHub sin pasar por ninguna política de
-`visibility`. Publicar ese contenido tal cual sería entregar a un adversario
-un mapa detallado de qué está reforzado y qué no — lo contrario de lo que
-persigue C5 (transparencia del *código*, no de la postura de seguridad en
-construcción).
+### Por qué `docs/tecnico/` sigue excluido (decisión del orquestador, no revertir)
 
-**Decisión de este agente:** el corpus de documentos NO se copia al repo.
-Se monta como bind mount de solo lectura en el contenedor, poblado en el
-host del VPS fuera de git (mismo patrón que ya usa `infra/backup/` para
-`BACKUP_DIR`, fuera del árbol del repo):
+`docs/tecnico/` contiene el análisis de seguridad en curso
+(`revision-seguridad.md`) y detalles operativos del VPS
+(`decisiones-construccion.md`, `stack-y-despliegue.md`, `modelo-datos.md`).
+La versión original de este pipeline lo iba a ingerir marcado
+`visibility='internal'` (solo para el futuro bot de equipo). El orquestador
+**lo descartó por completo, no solo lo marcó interno**: aporta poco al
+cerebro (describe cómo se construyó la web, no qué piensa el partido) y un
+fallo en el filtro de `visibility` del chat público expondría material que
+ayuda a atacar la infraestructura — riesgo asimétrico. Este código lo refleja
+en dos capas, no solo por omisión:
+1. El bucket `corpus` simplemente no tiene una carpeta `tecnico/` (verificado).
+2. `FOLDER_VISIBILITY` en `corpusStorage.mjs` es una **lista blanca** de
+   carpetas reconocidas (`ideario`, `marca`, `referencias`, `general`).
+   Cualquier carpeta que no esté ahí —incluida `tecnico` si algún día
+   apareciera en el bucket por error— se **ignora con un aviso**, nunca se
+   ingiere "por si acaso".
 
-```
-/opt/rc-corpus/
-├── public/           <- visibility='public' en brain_documents
-│   ├── ideario/*.md  (principios, democracia-semidirecta, programa-vivo,
-│   │                  estructura-organizativa: filosofía del partido —
-│   │                  pública por diseño, punto 25 del manifiesto:
-│   │                  "prohibido el silencio estratégico")
-│   └── marca/*.md    (identidad visual: guía de marca, sin nada sensible)
-└── internal/
-    └── tecnico/*.md  <- visibility='internal' (solo para el futuro bot de
-                          equipo en Discord, Ola 3 — nunca para el chat público)
-```
+### Mapeo carpeta → visibilidad (fijado por el orquestador)
 
-**Poblarlo (una vez, y cada vez que cambien los docs)**, desde la máquina
-que tiene el repo de documentación clonado:
+| Carpeta del bucket | `visibility` | Motivo |
+|---|---|---|
+| `ideario/*` | `public` | Filosofía del partido — punto 25 del manifiesto: "prohibido el silencio estratégico" |
+| `marca/*` | `public` | Identidad visual, sin nada sensible |
+| `referencias/*` | `public` | Es posición pública del partido (benchmark, ejemplos internacionales que informan la estrategia) |
+| `general/*` | `internal` | Visión de producto y estrategia de captación (`vision-plataforma.md`, `50-ideas-acogida.md`) — útil para el cerebro interno, no para el chat público |
 
-```bash
-# Ejemplo con rsync sobre SSH (ajustar host/ruta al VPS real):
-rsync -av --delete "docs/ideario/" usuario@vps:/opt/rc-corpus/public/ideario/
-rsync -av --delete "docs/marca/"   usuario@vps:/opt/rc-corpus/public/marca/
-rsync -av --delete "docs/tecnico/" usuario@vps:/opt/rc-corpus/internal/tecnico/
-```
+Esto difiere del mapeo que proponía la versión de bind mount de este agente
+(que agrupaba todo lo no-`tecnico` como `public` sin la categoría
+`referencias`/`general` diferenciada) — es un cambio de criterio del
+orquestador, aplicado tal cual.
 
-O, si el orquestador despliega con la misma API/SSH de Dokploy usada en
-D-004/D-005, cualquier mecanismo equivalente de copia (scp, `docker cp` a un
-volumen, etc.) — lo único que importa es que el contenido llegue a esas tres
-rutas en el host **sin pasar por el repo público**.
+### Codificación — lección de D-009 aplicada aquí
 
-**Alternativa descartada (a propósito):** copiar `docs/` al repo público
-(`lib/brain/corpus/`). Habría sido más simple operativamente (nada que
-sincronizar fuera de git) pero incumple la separación público/privado ya
-establecida para la documentación del proyecto y publicaría contenido de
-seguridad en curso. Si Sergio prefiere esa vía para *solo* `ideario/` y
-`marca/` (que son públicos por naturaleza, no `tecnico/`), es un cambio de
-una tarde — decidir explícitamente, no asumir.
+`docs/tecnico/decisiones-construccion.md` documenta un bug real detectado en
+esta misma ola: los seeds se aplicaron con doble codificación UTF-8 (`ó` →
+`Ã³`) porque el transporte HTTP no declaraba el charset — silencioso, sin
+ningún síntoma visible (HTTP 200, conteos correctos), y llegó a corromper el
+93% de `brain_documents` antes de detectarse, con embeddings calculados sobre
+texto roto. Este conector:
 
-**Mapeo de `source` (limitación de esquema, no de este código):** el `CHECK`
-de `brain_documents.source` (propiedad de rc-02, no se toca) admite:
-`manifiesto | estatutos | blog | decision | opinion | video | estudio`.
-Ninguno describe con precisión "documentación de ideario/técnico/marca". Se
-usa `estudio` como el menos incorrecto (rc-brain.md ya lo describe como
-corpus de referencia/informes) y se guarda el área real en
-`metadata.area` (`ideario`, `marca`, `tecnico`) para no perder la
-distinción. **Sugerencia para rc-02**, no bloqueante: añadir un valor propio
-(p. ej. `'docs'`) en una futura migración.
+1. Descarga el objeto como bytes (`arrayBuffer()`), nunca `res.text()` a
+   ciegas.
+2. Decodifica **explícitamente** como UTF-8 con `new TextDecoder("utf-8",
+   {fatal:true})` — si hubiera una secuencia de bytes inválida, lanza en vez
+   de sustituir silenciosamente por `U+FFFD`.
+3. Escanea el texto ya decodificado en busca de `U+00C3` ("Ã"): esa letra no
+   existe en español, así que su presencia es la huella casi inequívoca de
+   mojibake que ya venía roto antes de llegar aquí. Si aparece, **rechaza el
+   documento entero con un error**, no lo indexa "total, ya se verá".
+
+**Comprobación real (verificación de este agente, no solo del orquestador):**
+descarga real de `ideario/principios.md` desde el bucket, decodificado con
+`TextDecoder({fatal:true})` → 3564 bytes, 3505 caracteres, **0 apariciones de
+`U+00C3`**, acentos correctos (`QUÉ`, `POR QUÉ`) en el texto resultante.
+
+### Mapeo de `source` (limitación de esquema, no de este código)
+
+El `CHECK` de `brain_documents.source` (propiedad de rc-02, no se toca)
+admite: `manifiesto | estatutos | blog | decision | opinion | video |
+estudio`. Ninguno describe con precisión "documentación de ideario/marca/
+referencias/visión". Se usa `estudio` como el menos incorrecto y se guarda
+el área real en `metadata.area` (`ideario`, `marca`, `referencias`,
+`general`) para no perder la distinción. **Sugerencia para rc-02**, no
+bloqueante: añadir un valor propio (p. ej. `'docs'`) en una futura migración.
 
 ## Chunking
 
 `src/chunking.mjs`: parte por encabezados Markdown (`#`/`##`/`###`), agrupa
 párrafos hasta ~1100 caracteres con ~150 de solape (configurable por env),
 sin partir nunca un párrafo por la mitad, y antepone la ruta de encabezados
-como contexto a cada chunk (mejora mucho la recuperación de fragmentos
-cortos). Los puntos del manifiesto (36-91 caracteres de cuerpo, muy cortos)
-generan **un chunk por punto** con el título antepuesto.
+como contexto a cada chunk. Los puntos del manifiesto (36-91 caracteres de
+cuerpo, muy cortos) generan **un chunk por punto** con el título antepuesto.
+
+## Conteos reales (verificados contra el bucket/BD reales de esta sesión)
+
+**Manifiesto (ya desplegado, D-010):** 30 puntos → 30 chunks, `visibility='public'`,
+`source='manifiesto'`, embeddings `bge-m3` reales (norma 25,2–27,0).
+
+**Corpus de documentos (Storage, pendiente de desplegar con esta versión):**
+9 ficheros `.md` en el bucket → **82 chunks**, `source='estudio'`:
+
+| Fichero | Chunks | `visibility` |
+|---|---|---|
+| `ideario/democracia-semidirecta.md` | 6 | public |
+| `ideario/estructura-organizativa.md` | 7 | public |
+| `ideario/principios.md` | 9 | public |
+| `ideario/programa-vivo.md` | 7 | public |
+| `marca/identidad-visual.md` | 9 | public |
+| `referencias/benchmark-vox.md` | 5 | public |
+| `referencias/ejemplos-internacionales.md` | 8 | public |
+| `general/50-ideas-acogida.md` | 8 | internal |
+| `general/vision-plataforma.md` | 23 | internal |
+
+**Total esperado tras el despliegue de esta versión: 112 chunks** en
+`brain_documents` (30 manifiesto + 82 docs) — 81 `public` (30 manifiesto + 51
+docs), 31 `internal` (todos de `general/*`).
+
+Verificado ejecutando de verdad `node src/index.mjs --sources=manifiesto,docs
+--dry-run` contra el bucket real (con `EMBEDDINGS_PROVIDER=mock,
+RC_BRAIN_TEST_RUN=1` para no depender de Ollama en esta comprobación de
+conteos — la mecánica de lectura/chunking es idéntica con el proveedor real,
+solo cambia el vector). Comprobación de codificación en la misma corrida: **9
+ficheros escaneados, 0 con mojibake (`U+00C3`) detectado**.
 
 ## Qué se probó (evidencia real) y qué queda pendiente
 
-Ollama **no es alcanzable desde esta máquina** (red interna del VPS, por
-diseño — ver brief). Por tanto, todo lo que depende de generar embeddings
-*semánticamente reales* con `bge-m3` queda pendiente del despliegue en el
-VPS. Lo que SÍ se pudo probar de verdad, contra el Postgres real
-(`brain_documents`, vía el mismo endpoint HTTPS que usa producción):
+Ollama es inalcanzable desde esta máquina de desarrollo (red interna del
+VPS, por diseño). Lo que se pudo probar de verdad contra los sistemas reales
+(Postgres vía el mismo endpoint HTTPS que usa producción, y el bucket real
+de Storage):
 
-1. **Chunking sobre contenido real.** Los 16 ficheros de
-   `docs/ideario` + `docs/marca` + `docs/tecnico` producen 186 chunks
-   (38 público + 148 interno) con el chunker de este pipeline. Sumados a los
-   30 puntos del manifiesto (1 chunk cada uno): **216 chunks en total**
-   esperados en el primer despliegue real. Verificado con
-   `node src/index.mjs --sources=manifiesto,docs --dry-run` (ver salida
-   completa en el informe de esta ola).
+1. **Chunking + lectura sobre contenido real** (ver tabla de arriba).
 2. **Mecánica de idempotencia**, con `EMBEDDINGS_PROVIDER=mock` (vectores
-   deterministas, NO semánticos — solo para probar inserción/borrado/orden,
-   bloqueado salvo `RC_BRAIN_TEST_RUN=1`) contra la tabla real, con filas
-   marcadas y borradas al terminar (no queda ningún resto):
+   deterministas, NO semánticos, bloqueado salvo `RC_BRAIN_TEST_RUN=1`)
+   contra la tabla real, con filas marcadas y borradas al terminar:
    - 1ª ingesta de 2 documentos de prueba → 3 chunks insertados.
-   - 2ª ingesta idéntica → sigue en 3 (no 6): el delete-then-insert funciona.
-   - 3ª ingesta con contenido cambiado → pasa a 2 chunks correctamente.
-   - Orden por similitud coseno: la consulta con el texto exacto de un chunk
-     devuelve ese chunk en primer lugar con similitud `1.0` exacta.
-3. **Dimensión e índice**, contra la tabla real:
-   - `atttypmod` de la columna `embedding` = `1024` ✅.
-   - Con 600 filas de prueba insertadas (mock) + `ANALYZE`, `EXPLAIN (FORMAT
-     JSON)` sobre `ORDER BY embedding <=> ... LIMIT 5` elige **Index Scan
-     using brain_documents_embedding_ivfflat_idx** por decisión propia del
-     planificador (sin forzar nada) — confirmado también con
-     `enable_seqscan=off`. Limpiado por completo al terminar
-     (`brain_documents` quedó en 0 filas, igual que antes de la prueba).
+   - 2ª ingesta idéntica → sigue en 3 (no 6).
+   - 3ª con contenido cambiado → pasa a 2 correctamente.
+   - Orden por similitud coseno: el texto exacto de un chunk se recupera en
+     top-1 con similitud `1.0`.
+3. **Dimensión e índice**, contra la tabla real: `atttypmod` de `embedding` =
+   `1024` ✅; con 600 filas de prueba + `ANALYZE`, `EXPLAIN (FORMAT JSON)`
+   elige `Index Scan using brain_documents_embedding_ivfflat_idx` por
+   decisión propia del planificador. Limpiado por completo al terminar.
+4. **Storage real**: bucket privado confirmado (400 sin credenciales, 200 con
+   `service_role`), listado de las 4 carpetas y 9 ficheros, descarga y
+   decodificación UTF-8 explícita verificada sin mojibake.
 
-**Lo que NO se pudo verificar en esta sesión** (requiere `bge-m3` real en el
-VPS): las 5 preguntas de control deben devolver el punto/documento correcto
-por similitud semántica real, y las 3 preguntas fuera de corpus deben dar
-similitud baja. `src/controlQuestions.mjs` ya implementa ambas pruebas —
-solo falta ejecutarlas tras el despliegue (ver siguiente sección). Con
-`EMBEDDINGS_PROVIDER=mock` estas pruebas no tienen ningún valor semántico
-(vectores aleatorios no relacionados con el texto), así que no se han
-"simulado" para no reportar un resultado engañoso.
+**Ya verificado por el orquestador, no por este agente en esta máquina**
+(D-010, con acceso real a Ollama en el VPS): las 5 preguntas de control y las
+3 fuera-de-corpus contra el manifiesto, con `bge-m3` real, y vecinos por
+similitud coseno temáticamente coherentes.
 
-## Cómo desplegar y verificar (para quien tenga acceso al VPS)
+**Pendiente:** las preguntas de control aún no cubren el corpus de
+documentos (`ideario`/`marca`/`referencias`/`general`) recién migrado a
+Storage — `src/controlQuestions.mjs` solo tiene las 5+3 originales sobre
+puntos del manifiesto. Ampliarlo con preguntas sobre el corpus de documentos
+es un complemento razonable, no bloqueante para este gate (que pedía
+correcto por manifiesto).
+
+## Cómo desplegar y verificar
 
 ```bash
-# 1. Confirmar el nombre real de la red de Ollama:
+# 1. Confirmar el nombre real de la red de Ollama (puede cambiar entre
+#    despliegues -- D-010):
 docker network ls | grep ollama
 
-# 2. Poblar el corpus de documentos en el host (ver sección de arriba).
+# 2. Nada que poblar en el host -- el corpus de documentos ya vive en el
+#    bucket privado de Supabase Storage "corpus".
 
-# 3. Desplegar en Dokploy:
-#    Nuevo servicio -> Docker Compose -> repo github.com/estudiohz/razoncomun,
-#    rama main, ruta: lib/brain/ingest/docker-compose.brain-ingest.yml
-#    Variables de entorno: SUPABASE_PUBLIC_URL, SERVICE_ROLE_KEY (copiar de
-#    la config del servicio "rc-supabase", D-004) y OLLAMA_INTERNAL_NETWORK
-#    si el paso 1 dio un nombre distinto al default.
+# 3. Desplegar/re-desplegar en Dokploy:
+#    Docker Compose -> repo github.com/estudiohz/razoncomun, rama main,
+#    ruta: lib/brain/ingest/docker-compose.brain-ingest.yml
+#    Variables: SUPABASE_PUBLIC_URL, SERVICE_ROLE_KEY (copiar de "rc-supabase",
+#    D-004), OLLAMA_INTERNAL_NETWORK si el paso 1 dio un nombre distinto.
 
-# 4. Verificar el resultado en los logs del servicio (Dokploy): debe terminar
-#    con el resumen "Documentos procesados / Chunks insertados / ..." y
-#    exit code 0.
+# 4. `brain-ingest` corre e ingiere; `brain-control` arranca solo cuando
+#    `brain-ingest` terminó bien y verifica las preguntas de control contra
+#    Ollama real, saliendo con código 1 si algo falla. Ver logs en Dokploy.
 
 # 5. Confirmar el conteo real:
 curl -sS -X POST "https://dev-api.razoncomun.com/pg/query" \
   -H "apikey: $SERVICE_ROLE_KEY" -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query":"select source, visibility, count(*) from brain_documents group by 1,2 order by 1,2;"}'
-
-# 6. Correr las preguntas de control (dentro de un contenedor con acceso a
-#    Ollama, p. ej. `docker compose run --rm brain-ingest node src/controlQuestions.mjs`
-#    o añadiendo un servicio puntual equivalente):
-EMBEDDINGS_PROVIDER=ollama node src/controlQuestions.mjs
+# Esperado: manifiesto/public=30, estudio/public=51, estudio/internal=31 (total 112)
 ```
 
 ## Variables de entorno
@@ -234,12 +281,11 @@ Ver `.env.example` (documentado línea a línea). Nunca commitear `.env` real
 
 ## Re-ejecución (mantenimiento normal)
 
-Volver a lanzar el servicio en Dokploy (o `docker compose up` de nuevo) es
-siempre seguro: cada documento se identifica por su clave de idempotencia
-(`point_id` para el manifiesto, `file` para los docs) y se borra-e-inserta
-entero, así que un cambio en el manifiesto o en la documentación se refleja
-sin duplicados ni basura de la versión anterior. Cuando existan `articles`
-(blog, Ola 3 con rc-05) y `decisions`/`opinions`, extender con nuevos
-conectores en `src/connectors/` siguiendo la misma forma (`{ source, refId,
-visibility, idempotencyKey, chunks }`) que ya usan `manifesto.mjs` y
-`corpusDocs.mjs`.
+Volver a lanzar el servicio en Dokploy es siempre seguro: cada documento se
+identifica por su clave de idempotencia (`point_id` para el manifiesto,
+`file` para los docs de Storage) y se borra-e-inserta entero, así que un
+cambio en el manifiesto o en el bucket se refleja sin duplicados ni basura de
+la versión anterior. Cuando existan `articles` (blog, Ola 3 con rc-05) y
+`decisions`/`opinions`, extender con nuevos conectores en `src/connectors/`
+siguiendo la misma forma (`{ source, refId, visibility, idempotencyKey,
+chunks }`) que ya usan `manifesto.mjs` y `corpusStorage.mjs`.

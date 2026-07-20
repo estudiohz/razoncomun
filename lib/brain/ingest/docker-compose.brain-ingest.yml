@@ -27,16 +27,12 @@ services:
       OLLAMA_URL: http://ollama:11434
       OLLAMA_MODEL: bge-m3
       EMBEDDINGS_PROVIDER: ollama
-      CORPUS_PUBLIC_DIR: /corpus/public
-      CORPUS_INTERNAL_DIR: /corpus/internal
-    volumes:
-      # Bind mounts de SOLO LECTURA del corpus de documentos -- ver
-      # lib/brain/ingest/README.md "Corpus de documentos: por qué NO vive en
-      # este repo público". Rutas en el HOST del VPS, pobladas una vez (y
-      # cada vez que cambien los docs) por rsync/scp desde el repo privado de
-      # documentación -- comando exacto en el README.
-      - ${RC_CORPUS_HOST_DIR:-/opt/rc-corpus}/public:/corpus/public:ro
-      - ${RC_CORPUS_HOST_DIR:-/opt/rc-corpus}/internal:/corpus/internal:ro
+      CORPUS_STORAGE_BUCKET: ${CORPUS_STORAGE_BUCKET:-corpus}
+    # Sin `volumes:` -- el corpus de documentos ya no es un bind mount (D-010):
+    # vive en el bucket privado de Supabase Storage "corpus" y se lee por
+    # HTTPS con la misma SERVICE_ROLE_KEY de arriba (src/connectors/corpusStorage.mjs).
+    # Esto también elimina la dependencia de SSH/acceso al filesystem del VPS
+    # para desplegar este servicio -- solo hace falta la red de Ollama de abajo.
     networks:
       # Red interna de Ollama -- declarada `external: true` porque este
       # servicio vive en un stack Compose DISTINTO al de docker-compose.ollama.yml
@@ -89,13 +85,17 @@ networks:
 #   2. Variables de entorno del servicio: SUPABASE_PUBLIC_URL, SERVICE_ROLE_KEY
 #      (copiar de la config de "rc-supabase", D-004) y, si el nombre real de
 #      red difiere del default, OLLAMA_INTERNAL_NETWORK.
-#   3. Confirmar en el VPS antes del primer deploy:
+#   3. Confirmar en el VPS antes de CADA deploy (Dokploy genera un appName
+#      nuevo por stack -- D-010, no asumir que se repite):
 #        docker network ls | grep ollama
 #      y corregir OLLAMA_INTERNAL_NETWORK si no coincide.
-#   4. Poblar el corpus de documentos en el host (una vez, y cada vez que
-#      cambien los docs) -- ver README para el comando de rsync exacto.
-#   5. Deploy. El contenedor corre, ingiere y termina con exit code 0. Ver
-#      logs en Dokploy para el resumen (documentos/chunks/filas borradas).
+#   4. Corpus de documentos: ya subido al bucket privado de Supabase Storage
+#      "corpus" -- nada que poblar en el host, sin SSH necesario para esto.
+#   5. Deploy. `brain-ingest` corre, ingiere y termina con exit code 0;
+#      `brain-control` arranca solo cuando `brain-ingest` terminó bien y
+#      verifica las preguntas de control + fuera-de-corpus contra Ollama real,
+#      saliendo con código 1 si algo falla -- ver logs en Dokploy.
 #   6. Re-ejecutar (nuevo "Deploy" en Dokploy) cada vez que el manifiesto o
-#      los docs cambien -- es idempotente, no hace falta borrar nada a mano.
+#      los docs del bucket cambien -- es idempotente, no hace falta borrar
+#      nada a mano.
 # ─────────────────────────────────────────────────────────────────────────
