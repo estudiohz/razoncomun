@@ -19,6 +19,7 @@ export const adminNav: AdminNavItem[] = [
   { href: '/admin/usuarios', label: 'Usuarios', disponible: true },
   { href: '/admin/organizacion', label: 'Cargos y territorio', disponible: true, soloAdmin: true },
   { href: '/admin/manifiesto', label: 'Manifiesto', disponible: true, soloAdmin: true },
+  { href: '/admin/ajustes', label: 'Ajustes', disponible: true, soloAdmin: true },
   { href: '/admin/articulos', label: 'Artículos', disponible: true, dueño: 'rc-05-blog' },
   { href: '/admin/participacion', label: 'Participación', disponible: true, dueño: 'rc-06-participacion' },
   { href: '/admin/afiliados', label: 'Afiliados', disponible: true, dueño: 'rc-07-afiliacion' },

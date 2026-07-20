@@ -29,3 +29,15 @@ export function serviceRoleKeySupabase(): string {
 export function urlSitio(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 }
+
+/**
+ * Clave maestra de cifrado de `ai_provider_credentials` (D-016,
+ * 0016_ai_provider_credentials.sql). Vive SOLO en el entorno del servidor —
+ * nunca se persiste en la BD, nunca se envía al navegador. Se pasa como
+ * parámetro en cada llamada a `ai_credentials_set`/`ai_credentials_get_active`.
+ * SOLO server-side: nunca importar `env.ts` desde un componente 'use client'
+ * (ya se cumple hoy — todo lo que llama a esto vive en Server Actions).
+ */
+export function masterKeyCredencialesIA(): string {
+  return requerida('AI_CREDENTIALS_MASTER_KEY', process.env.AI_CREDENTIALS_MASTER_KEY);
+}
