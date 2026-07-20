@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Base — fiel a boceto-4-teal.html
+   ============================================================ */
+@layer base {
+  :root {
+    --azul: #24af9a;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-fondo text-cuerpo font-sans antialiased;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--azul);
+    letter-spacing: -0.02em;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+/* ============================================================
+   Utilidades de marca (máscaras/retículas imposibles con Tailwind)
+   ============================================================ */
+@layer components {
+  .wrap {
+    @apply mx-auto w-full px-8;
+    max-width: 1240px;
+  }
+
+  /* ── HERO ─────────────────────────── */
+  .hero-reticula {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: linear-gradient(90deg, #000 34%, transparent 72%);
+    mask-image: linear-gradient(90deg, #000 34%, transparent 72%);
+  }
+  .hero-personas {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%),
+      linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 16%),
+      linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    mask-composite: intersect;
+  }
+
+  /* ── Rotatorio de slogans ─────────── */
+  .rota {
+    display: block;
+    height: 1.1em;
+    overflow: hidden;
+    font-size: 0.62em;
+  }
+  .rota .track {
+    display: block;
+  }
+  .rota i {
+    display: block;
+    height: 1.1em;
+    line-height: 1.1;
+    font-style: normal;
+    white-space: nowrap;
+    color: #6fe9d8;
+  }
+
+  /* ── IA "Jarvis": retícula técnica y núcleo ── */
+  .ia-reticula {
+    background-image: linear-gradient(rgba(43, 199, 232, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(43, 199, 232, 0.06) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(80% 90% at 50% 50%, #000 20%, transparent 100%);
+    mask-image: radial-gradient(80% 90% at 50% 50%, #000 20%, transparent 100%);
+  }
+
+  /* Ajustes responsive del hero al breakpoint del boceto (960px) */
+  @media (max-width: 960px) {
+    /* El encuadre responsive del vídeo vive en las utilidades `max-[960px]:*`
+       de Hero.tsx: Tailwind emite `utilities` DESPUÉS de `components`, así que
+       un override aquí quedaría muerto. No reintroducir `.hero-personas`. */
+    .rota {
+      font-size: clamp(16px, 5.4vw, 0.68em);
+    }
+  }
+
+  /* ── Parallax Discord ─────────────── */
+  .parallax-bg {
+    background-image: linear-gradient(
+        120deg,
+        rgba(24, 161, 155, 0.86) 0%,
+        rgba(88, 101, 242, 0.82) 55%,
+        rgba(163, 69, 205, 0.86) 100%
+      ),
+      url('/cta-debate.jpg');
+    background-size: cover, cover;
+    background-position: center, center;
+    background-attachment: fixed, fixed;
+  }
+  @media (hover: none), (max-width: 960px) {
+    .parallax-bg {
+      background-attachment: scroll, scroll;
+    }
+  }
+}
+
+/* ============================================================
+   Animaciones — TODAS respetan prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .rota .track {
+    animation: rueda 10.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  @keyframes rueda {
+    0%,
+    26% {
+      transform: translateY(0);
+    }
+    33%,
+    59% {
+      transform: translateY(-1.1em);
+    }
+    66%,
+    92% {
+      transform: translateY(-2.2em);
+    }
+    100% {
+      transform: translateY(-3.3em);
+    }
+  }
+
+  .fade {
+    animation: sube 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .fade.d1 {
+    animation-delay: 0.12s;
+  }
+  @keyframes sube {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .glow-flota-1 {
+    animation: flota 9s ease-in-out infinite alternate;
+  }
+  .glow-flota-2 {
+    animation: flota 11s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes flota {
+    from {
+      transform: translateY(-14px);
+    }
+    to {
+      transform: translateY(14px);
+    }
+  }
+
+  .anillo {
+    animation: pulso 4.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  .anillo.a2 {
+    animation-delay: 1.6s;
+  }
+  .anillo.a3 {
+    animation-delay: 3.2s;
+  }
+  @keyframes pulso {
+    0% {
+      transform: scale(0.55);
+      opacity: 0.85;
+    }
+    100% {
+      transform: scale(1.45);
+      opacity: 0;
+    }
+  }
+
+  .orbita {
+    animation: gira 22s linear infinite;
+  }
+  @keyframes gira {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .cursor-parpadeo::after {
+    animation: parpadeo 1.05s steps(1) infinite;
+  }
+  @keyframes parpadeo {
+    50% {
+      opacity: 0;
+    }
+  }
+}

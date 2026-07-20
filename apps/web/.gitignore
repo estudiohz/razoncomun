@@ -1,0 +1,15 @@
+# dependencias
+/node_modules
+
+# builds
+/.next
+/out
+/build
+next-env.d.ts
+
+# entorno
+.env*.local
+
+# varios
+*.tsbuildinfo
+.DS_Store
