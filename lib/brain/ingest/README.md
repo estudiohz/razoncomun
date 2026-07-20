@@ -283,9 +283,146 @@ Ver `.env.example` (documentado línea a línea). Nunca commitear `.env` real
 
 Volver a lanzar el servicio en Dokploy es siempre seguro: cada documento se
 identifica por su clave de idempotencia (`point_id` para el manifiesto,
-`file` para los docs de Storage) y se borra-e-inserta entero, así que un
-cambio en el manifiesto o en el bucket se refleja sin duplicados ni basura de
-la versión anterior. Cuando existan `articles` (blog, Ola 3 con rc-05) y
-`decisions`/`opinions`, extender con nuevos conectores en `src/connectors/`
-siguiendo la misma forma (`{ source, refId, visibility, idempotencyKey,
-chunks }`) que ya usan `manifesto.mjs` y `corpusStorage.mjs`.
+`file` para los docs de Storage, `entry_id` para la wiki de conocimiento) y
+se borra-e-inserta entero, así que un cambio en el manifiesto, el bucket o la
+wiki se refleja sin duplicados ni basura de la versión anterior. Cuando
+existan `articles` (blog, Ola 3 con rc-05) y `decisions`/`opinions`, extender
+con nuevos conectores en `src/connectors/` siguiendo la misma forma
+(`{ source, refId, visibility, idempotencyKey, chunks }`) que ya usan
+`manifesto.mjs`, `corpusStorage.mjs` y `brainEntries.mjs`.
+
+## Wiki de conocimiento (`brain_entries` -> `source='conocimiento'`)
+
+`src/connectors/brainEntries.mjs` indexa `public.brain_entries` (migración
+`0024_brain_wiki.sql`) -- la wiki editable por el equipo (admin/editor) desde
+el panel, pensada literalmente "como artículos": título + cuerpo markdown +
+categoría propia (`brain_categories`) + área temática opcional
+(`public.categories`, el mismo catálogo de departamentos del blog).
+
+**Comando:**
+
+```bash
+# Solo las entradas pendientes (indexed_at IS NULL) -- uso normal/cron:
+node src/index.mjs --sources=conocimiento
+
+# Reindexado COMPLETO (todas las entradas, hayan cambiado o no) -- tras
+# cambiar CHUNK_TARGET_CHARS/CHUNK_OVERLAP_CHARS, o para una primera carga:
+node src/index.mjs --sources=conocimiento --all
+
+# Combinable con las otras fuentes en la misma corrida:
+node src/index.mjs --sources=manifiesto,docs,conocimiento
+
+# Atajo equivalente (el script antepone --sources=manifiesto,docs pero la
+# última bandera --sources= gana, ver parseArgs en index.mjs):
+scripts/rc-brain-ingest.sh --sources=conocimiento
+```
+
+**Por qué el título va SIEMPRE antepuesto al cuerpo antes de trocear.** El
+texto que se pasa a `chunkMarkdown()` es `"# {title}\n\n{body}"`. Como
+`chunkMarkdown` trata ese `#` como un encabezado de nivel 1 y antepone el
+heading a **cada** chunk que resulta de esa sección (no solo al primero), el
+título queda presente en absolutamente todos los chunks de la entrada. Es
+decisivo para preguntas ciudadanas tipo FAQ ("¿Qué cuota de autónomos vais a
+cobrar?"): la pregunta literal (el título) viaja pegada a cada fragmento de
+la respuesta, así que cualquier trozo que se recupere por similitud arrastra
+también la pregunta que lo motivó. Para la categoría `preguntas-frecuentes`
+(slug de `brain_categories`) se refuerza aún más: el título se repite una
+segunda vez como `**Pregunta:** {title}` justo debajo del heading.
+
+**Visibilidad:** se hereda literalmente de `brain_entries.visibility`
+(`internal`/`public`) -- **no se reinterpreta ni se degrada nunca a
+`public`**. Es el punto crítico de seguridad de este connector (I3,
+`revision-seguridad.md`): una entrada `internal` en la wiki debe seguir
+siendo invisible para el endpoint de chat público, exactamente igual que el
+resto del corpus.
+
+**Metadata por chunk:** `entry_id`, `title`, `category` (slug de
+`brain_categories`), `area` (nombre de `public.categories` si `area_id` no es
+null), `origin` (`manual`/`proposal`), `chunk_index`, `chunk_count`. Guardar
+`category`/`area` aquí deja el terreno preparado para una recuperación
+*topic-aware* futura (filtrar/ponderar por departamento antes de la
+similitud), aunque hoy `retrieval.mjs` no lo usa todavía.
+
+**`indexed_at`:** el job solo lo marca (`update brain_entries set indexed_at
+= now()`) **después** de insertar con éxito los chunks de esa entrada
+concreta (ver el gancho `onIndexed` en `ingest.mjs`) -- si el INSERT fallara
+a medias, la entrada sigue marcada como pendiente para el siguiente intento,
+nunca se da por indexada una entrada a medio escribir.
+
+**Salvaguarda anti-corrupción (D-009), por ENTRADA, no por corrida entera:**
+igual que `corpusStorage.mjs`, se escanea el texto en busca de `U+FFFD`
+(carácter de reemplazo) y `U+00C3` "Ã" (huella de doble codificación UTF-8).
+A diferencia de `corpusStorage.mjs` (que aborta toda la ingesta si aparece),
+aquí solo se descarta la entrada afectada -- se registra un aviso, no se
+indexa, no se marca `indexed_at`, y el resto de la wiki se ingiere con
+normalidad. Verificado con una entrada de prueba con "Ã" en el título y el
+cuerpo: se saltó sola, sin tocar las otras dos entradas de la misma corrida
+ni detener el proceso.
+
+**Verificación end-to-end real (esta sesión, limpiada al terminar):** 2
+entradas de prueba (`brain_entries` estaba vacía) -- una FAQ pública ("¿Qué
+cuota de autónomos vais a cobrar?", categoría `preguntas-frecuentes`, área
+Autónomos) y una nota interna ("Criterios internos para gestionar el despido
+de un trabajador", `visibility='internal'`, área Empleo) -- contra el
+Postgres real (`dev-api.razoncomun.com`), con `EMBEDDINGS_PROVIDER=mock`
+(Ollama no es alcanzable desde esta máquina de desarrollo, igual que en las
+verificaciones previas de este mismo job -- ver más abajo qué queda
+pendiente de Ollama real):
+
+1. Primera corrida (`--sources=conocimiento`, modo pendientes): 2 entradas ->
+   7 chunks (4 FAQ + 3 nota interna), `ref_id` = id real de cada entrada,
+   `visibility` heredada correctamente (`public`/`internal`), `metadata`
+   con `title`/`category`/`area`/`entry_id` correctos, título presente en
+   los 4 chunks de la FAQ. `indexed_at` quedó seteado en ambas.
+2. Segunda corrida (modo pendientes, sin cambios): 0 entradas encontradas --
+   no reprocesa lo ya indexado.
+3. Tercera corrida (`--all`): reindexa las 2 igual, borra 7 e inserta 7 --
+   sin duplicar.
+4. Edité el `body` de la FAQ directamente en Postgres: el trigger
+   `brain_entries_reset_indexed_at` puso su `indexed_at=NULL`
+   automáticamente (la nota interna, sin tocar, conservó su `indexed_at`).
+   Corrida en modo pendientes: encontró **solo** la FAQ editada (1 entrada),
+   borró sus 4 chunks viejos e insertó 5 nuevos -- la nota interna no se
+   reprocesó (siguió con sus 3 chunks intactos).
+5. Entrada de prueba con mojibake ("Ã") en título y cuerpo: se saltó con
+   aviso claro, 0 chunks insertados, `indexed_at` quedó `NULL`.
+6. Recuperación (`lib/brain/service/src/retrieval.mjs`, con el mismo
+   `EMBEDDINGS_PROVIDER=mock`): consultando con el **texto exacto** del
+   chunk 0 de la FAQ (necesario porque el mock no es semántico, solo
+   determinista por texto exacto -- misma limitación ya declarada para el
+   resto del corpus), `retrieve(text, {visibility:'public'})` devolvió la FAQ
+   en **top-1 con similitud 1.0**, `source='conocimiento'`. La misma consulta
+   con `visibility: null` (canal interno) SÍ incluyó el chunk `internal` de
+   la nota de despido. Comprobación adversaria: consultando con
+   `visibility:'public'` usando el título/texto de la nota **interna**, cero
+   filas `internal` aparecieron en el resultado -- el filtro de visibilidad
+   de `retrieval.mjs` no tuvo que cambiarse porque ya filtra correctamente
+   (ver hallazgo más abajo).
+7. Limpieza: las 3 entradas de prueba y sus 8 chunks se borraron al terminar;
+   `brain_entries` volvió a 0 filas y los totales de `brain_documents` por
+   `source`/`visibility` volvieron exactamente a los 112 de antes (30
+   manifiesto + 51 estudio-public + 31 estudio-internal), 0 en
+   `source='conocimiento'`.
+
+**Pendiente (declarado, no verificado en esta sesión):** todo lo anterior
+usa `EMBEDDINGS_PROVIDER=mock` porque Ollama no es alcanzable desde esta
+máquina (red interna del VPS, igual que en las verificaciones previas de
+manifiesto/docs). No se ha comprobado que una pregunta ciudadana
+**parafraseada** (no el texto exacto) recupere semánticamente bien la FAQ
+correcta con `bge-m3` real -- eso requiere correr esto en el VPS o con acceso
+a Ollama real, igual que quedó pendiente para el corpus de `docs/`.
+
+## Hallazgo sobre `lib/brain/service/src/retrieval.mjs` (recuperación)
+
+`retrieve()` **no filtra por `source` en absoluto** -- la query es
+`select ... from brain_documents where true <cláusula de visibilidad>`, sin
+ninguna condición sobre `source`. Eso significa que el nuevo
+`source='conocimiento'` se recupera automáticamente por similitud en cuanto
+hay filas, tanto en el chat público (`visibility:'public'`, con el filtro
+`and visibility = 'public'`) como en el canal interno (`visibility: null`,
+sin cláusula -- todo el corpus). **No hizo falta tocar `retrieval.mjs`**: ya
+estaba escrito de forma agnóstica a `source`, y la verificación end-to-end de
+arriba lo confirma con datos reales (la FAQ de prueba apareció en la consulta
+pública sin ningún cambio en este fichero). Tampoco se tocó el filtro de
+visibilidad (I3) ni el guardrail anti-inyección (I4, `injectionGuard.mjs`,
+que no se llegó a rozar en este trabajo).
