@@ -13,3 +13,4 @@ next-env.d.ts
 # varios
 *.tsbuildinfo
 .DS_Store
+.next-prod/

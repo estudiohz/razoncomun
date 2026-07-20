@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { requireUsuario } from '@/lib/auth/niveles';
-import { actualizarPerfil, cerrarSesion } from './actions';
+import { cerrarSesion } from './actions';
+import { PerfilDatosForm } from './PerfilDatosForm';
 import { Seguridad2FA } from './Seguridad2FA';
 import { ExportarBorrarCuenta } from './ExportarBorrarCuenta';
 import { VerificarIdentidad } from './VerificarIdentidad';
@@ -115,57 +116,15 @@ export default async function PerfilPage() {
         {/* DATOS */}
         <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
           <h2 className="text-[16px] font-bold text-titular">Datos personales</h2>
-          <form action={actualizarPerfil} className="mt-4 space-y-4">
-            <div>
-              <label htmlFor="display_name" className="mb-1.5 block text-[13.5px] font-semibold">
-                Nombre a mostrar
-              </label>
-              <input
-                id="display_name"
-                name="display_name"
-                defaultValue={perfil.display_name ?? ''}
-                className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
-              />
-            </div>
-            <div>
-              <label htmlFor="origin_province_id" className="mb-1.5 block text-[13.5px] font-semibold">
-                Provincia de origen <span className="font-normal text-gris">(opcional, autodeclarado)</span>
-              </label>
-              <select
-                id="origin_province_id"
-                name="origin_province_id"
-                defaultValue={perfil.origin_province_id ?? ''}
-                className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
-              >
-                <option value="">Sin especificar</option>
-                {provincias?.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <label className="flex items-center gap-2.5 text-[13.5px] text-cuerpo">
-              <input
-                type="checkbox"
-                name="newsletter_opt_in"
-                defaultChecked={perfil.newsletter_opt_in}
-                className="h-4 w-4 rounded border-linea text-accion"
-              />
-              Recibir la newsletter
-              {perfil.newsletter_opt_in_at && (
-                <span className="text-[12px] text-gris">
-                  (opt-in del {formatearFecha(perfil.newsletter_opt_in_at)})
-                </span>
-              )}
-            </label>
-            <button
-              type="submit"
-              className="rounded-boton bg-accion px-5 py-2.5 text-[13.5px] font-bold text-white shadow-boton hover:-translate-y-0.5"
-            >
-              Guardar cambios
-            </button>
-          </form>
+          <div className="mt-4">
+            <PerfilDatosForm
+              displayNameInicial={perfil.display_name ?? ''}
+              provinciaInicial={perfil.origin_province_id}
+              newsletterInicial={perfil.newsletter_opt_in}
+              newsletterOptInAt={perfil.newsletter_opt_in_at}
+              provincias={provincias ?? []}
+            />
+          </div>
         </section>
 
         {/* 2FA */}
