@@ -52,6 +52,31 @@ services:
     # `docs` exige poblar antes /opt/rc-corpus en el host (requiere SSH).
     command: ["--sources=${RC_INGEST_SOURCES:-manifiesto,docs}"]
 
+  # Verificacion automatica tras la ingesta: ejecuta las 5 preguntas de control
+  # y las 3 fuera-de-corpus contra Ollama real. Sale con codigo 1 si alguna
+  # falla, asi que el exit code del contenedor ES el veredicto del gate --
+  # necesario porque la API de Dokploy no expone logs de contenedor.
+  # Hace el despliegue autoverificable: si la ingesta deja el corpus en mal
+  # estado, esto lo delata sin intervencion humana.
+  brain-control:
+    container_name: rc-brain-control
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["node", "src/controlQuestions.mjs"]
+    restart: "no"
+    depends_on:
+      brain-ingest:
+        condition: service_completed_successfully
+    environment:
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: bge-m3
+      EMBEDDINGS_PROVIDER: ollama
+    networks:
+      - rc-ollama-internal
+
 networks:
   rc-ollama-internal:
     external: true
