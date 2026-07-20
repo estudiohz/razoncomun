@@ -1,0 +1,76 @@
+# infra/docker-compose.ollama.yml
+# Ollama sirviendo el modelo de embeddings bge-m3 para el RC-Brain (pgvector).
+#
+# Decisión cerrada (docs/tecnico/revision-seguridad.md "Decisión cerrada:
+# embeddings del RC-Brain"): bge-m3 local vía Ollama, dimensión 1024,
+# coste 0€, multilingüe con español excelente. CPU es suficiente para el
+# volumen esperado (ingesta por lotes + consultas puntuales, no tráfico alto).
+#
+# ⚠️ RAM: bge-m3 cargado en memoria ronda ~2GB. En un VPS de 8GB compartido
+# con Supabase (~1-1.5GB) + n8n (~0.3-0.5GB) + la webapp Next.js (~0.2-0.3GB)
+# puede apretar bajo carga simultánea. MEDIR con `free -h` nada más levantar
+# este servicio (ver GUIA-DOKPLOY.md §6) — si no cabe con margen razonable,
+# la alternativa sin cambiar la dimensión del vector es servir bge-m3 con
+# TEI (text-embeddings-inference, huggingface/text-embeddings-inference),
+# más ligero en RAM porque no carga el runtime completo de Ollama. El cambio
+# es solo de "quién sirve el modelo" — el pipeline de ingesta de rc-08-brain
+# no cambia (misma URL de embeddings, mismo vector(1024)).
+#
+# CERO SECRETOS: Ollama no requiere credenciales para uso local en red interna.
+
+name: rc-ollama
+
+services:
+  ollama:
+    container_name: rc-ollama
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    # Sin publicar puerto a internet: solo alcanzable desde otros contenedores
+    # (n8n, futuros scripts de ingesta de rc-08-brain) por la red interna.
+    # Para depurar desde el propio VPS: `docker exec -it rc-ollama ollama list`
+    # o añadir temporalmente "127.0.0.1:11434:11434" a ports.
+    expose:
+      - "11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    environment:
+      OLLAMA_HOST: "0.0.0.0:11434"
+      # Mantener el modelo cargado en RAM entre peticiones (evita recargar
+      # ~2GB en cada llamada). Bajar a "5m" si la RAM aprieta y se prefiere
+      # liberar memoria entre ráfagas de ingesta a costa de latencia.
+      OLLAMA_KEEP_ALIVE: "30m"
+      # Ollama no expone una var de "pull al arrancar": el modelo se descarga
+      # una vez con el comando de abajo y queda persistido en el volumen
+      # ollama-models, sobrevive a reinicios/redeploys del contenedor.
+    networks:
+      - rc-ollama-internal
+
+networks:
+  rc-ollama-internal:
+    driver: bridge
+    # Esta red debe poder alcanzarse desde n8n y desde los scripts de
+    # rc-08-brain. Si n8n corre en un stack Compose distinto en Dokploy,
+    # unir también ese servicio a "rc-ollama-internal" (o exponer Ollama en
+    # la red de Dokploy) — decisión a tomar en la Ola 1 con rc-08-brain.
+
+volumes:
+  ollama-models:
+
+# ─────────────────────────────────────────────────────────────────────────
+# Primer arranque — descargar bge-m3 (una sola vez, persiste en el volumen):
+#
+#   docker compose -f infra/docker-compose.ollama.yml up -d
+#   docker exec -it rc-ollama ollama pull bge-m3
+#
+# Verificar que responde:
+#   docker exec -it rc-ollama ollama list
+#   curl http://localhost:11434/api/embeddings -d '{"model":"bge-m3","prompt":"prueba"}'
+#     (si se expuso el puerto para depurar; si no, ejecutar el curl DESDE
+#     dentro de otro contenedor de la misma red, p.ej. desde n8n)
+# ─────────────────────────────────────────────────────────────────────────

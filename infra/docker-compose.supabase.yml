@@ -1,0 +1,399 @@
+# infra/docker-compose.supabase.yml
+# Stack Supabase self-hosted para Razón Común, adaptado para Dokploy.
+#
+# Origen: adaptado de la referencia oficial de Supabase self-hosting
+#   https://github.com/supabase/supabase/blob/master/docker/docker-compose.yml
+#   (verificado con WebFetch/curl el 19/07/2026 — ver infra/GUIA-DOKPLOY.md §1
+#   para el detalle exacto de qué se adaptó y por qué).
+#
+# Servicios incluidos (según brief rc-01, Ola 0): db (Postgres 17 + pgvector),
+# auth (GoTrue), rest (PostgREST), storage (+ imgproxy, dependencia obligatoria
+# de storage para transformación de imágenes), realtime, meta (postgres-meta),
+# kong (API gateway), studio (panel admin).
+#
+# Deliberadamente OMITIDOS (documentado en GUIA-DOKPLOY.md §2, no un olvido):
+#   - supavisor (pooler de conexiones): la webapp y n8n se conectan directo a
+#     `db:5432` por red interna de Docker; en un VPS de 8GB compartido con
+#     Ollama no compensa el coste de RAM de otro servicio para el volumen
+#     esperado. Añadir más adelante si hay agotamiento de conexiones.
+#   - functions (Edge Functions/Deno): ningún agente del equipo tiene previsto
+#     usarlas (RC-Brain usa n8n + rutas server de Next.js). Añadir si hace falta.
+#   - Analytics/Logflare/Vector: no vienen en el compose oficial por defecto.
+#
+# CERO SECRETOS EN ESTE ARCHIVO: todo valor sensible es ${VARIABLE} sin default,
+# y vive en infra/.env (NO versionado — ver .gitignore) o en las variables de
+# entorno del servicio "supabase" dentro de Dokploy.
+
+name: rc-supabase
+
+services:
+
+  studio:
+    container_name: rc-supabase-studio
+    image: supabase/studio:2026.07.07-sha-a6a04f2
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://localhost:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})\""
+        ]
+      timeout: 10s
+      interval: 5s
+      retries: 3
+      start_period: 20s
+    environment:
+      HOSTNAME: "0.0.0.0"
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER_READ_WRITE: postgres
+      PG_META_CRYPTO_KEY: ${PG_META_CRYPTO_KEY}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS}
+      PGRST_DB_MAX_ROWS: ${PGRST_DB_MAX_ROWS:-1000}
+      PGRST_DB_EXTRA_SEARCH_PATH: ${PGRST_DB_EXTRA_SEARCH_PATH:-public}
+      DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION:-Razón Común}
+      DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT:-Razón Común}
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+      ENABLED_FEATURES_LOGS_ALL: "false"
+      SNIPPETS_MANAGEMENT_FOLDER: /app/snippets
+      EDGE_FUNCTIONS_MANAGEMENT_FOLDER: /app/edge-functions
+    volumes:
+      - studio-snippets:/app/snippets:z
+    networks:
+      - rc-supabase-internal
+
+  kong:
+    container_name: rc-supabase-kong
+    image: kong/kong:3.9.1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      studio:
+        condition: service_healthy
+    ports:
+      # Bind solo a loopback: el acceso público real pasa por Dokploy/Traefik
+      # (que se une a la red rc-supabase-public, ver más abajo), no por el
+      # puerto crudo del host. Útil para `curl` de verificación por SSH/túnel.
+      - "127.0.0.1:${KONG_HTTP_PORT:-8000}:8000/tcp"
+      - "127.0.0.1:${KONG_HTTPS_PORT:-8443}:8443/tcp"
+    volumes:
+      - ./supabase/volumes/api/kong.yml:/home/kong/temp.yml:ro,z
+      - ./supabase/volumes/api/kong-entrypoint.sh:/home/kong/kong-entrypoint.sh:ro,z
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/kong.yml
+      KONG_ROUTER_FLAVOR: expressions
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_DNS_NOT_FOUND_TTL: 1
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth,request-termination,ip-restriction,post-function
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      KONG_PROXY_ACCESS_LOG: /dev/stdout combined
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      DASHBOARD_USERNAME: ${DASHBOARD_USERNAME}
+      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD}
+    entrypoint: ["/bin/sh", "/home/kong/kong-entrypoint.sh"]
+    networks:
+      - rc-supabase-internal
+      - rc-supabase-public
+
+  auth:
+    container_name: rc-supabase-auth
+    image: supabase/gotrue:v2.189.0
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9999/health"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      GOTRUE_SITE_URL: ${SITE_URL}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS:-}
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_ISSUER: ${API_EXTERNAL_URL}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: ${ENABLE_ANONYMOUS_USERS:-false}
+      GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL}
+      GOTRUE_SMTP_HOST: ${SMTP_HOST}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT}
+      GOTRUE_SMTP_USER: ${SMTP_USER}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS}
+      GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME}
+      GOTRUE_MAILER_URLPATHS_INVITE: "/auth/v1/verify"
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: "/auth/v1/verify"
+      GOTRUE_MAILER_URLPATHS_RECOVERY: "/auth/v1/verify"
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: "/auth/v1/verify"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+      GOTRUE_SMS_AUTOCONFIRM: "false"
+      # Rate limiting (C3 revision-seguridad.md): límites de GoTrue activados.
+      # Los valores concretos los ajusta rc-03-auth según necesidad real; estos
+      # son un punto de partida conservador, no valores oficiales por defecto.
+      GOTRUE_RATE_LIMIT_EMAIL_SENT: ${GOTRUE_RATE_LIMIT_EMAIL_SENT:-3}
+      GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS: ${GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS:-30}
+      GOTRUE_RATE_LIMIT_TOKEN_REFRESH: ${GOTRUE_RATE_LIMIT_TOKEN_REFRESH:-150}
+      GOTRUE_RATE_LIMIT_VERIFY: ${GOTRUE_RATE_LIMIT_VERIFY:-30}
+      # OAuth Google/Facebook: rc-03-auth descomenta y configura en Ola 2
+      # (guía AUTH-SETUP.md propia de ese agente). Aquí solo se reservan las vars.
+      # GOTRUE_EXTERNAL_GOOGLE_ENABLED: ${GOOGLE_ENABLED}
+      # GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      # GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_SECRET}
+      # GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${API_EXTERNAL_URL}/callback
+      # Multi-factor (2FA obligatorio para admins/cargos — I5 revision-seguridad.md)
+      # lo activa/exige rc-03-auth vía RLS + middleware; aquí solo se habilita GoTrue:
+      GOTRUE_MFA_TOTP_ENROLL_ENABLED: "true"
+      GOTRUE_MFA_TOTP_VERIFY_ENABLED: "true"
+      GOTRUE_MFA_MAX_ENROLLED_FACTORS: "10"
+    networks:
+      - rc-supabase-internal
+
+  rest:
+    container_name: rc-supabase-rest
+    image: postgrest/postgrest:v14.12
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "postgrest", "--ready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public,graphql_public}
+      PGRST_DB_MAX_ROWS: ${PGRST_DB_MAX_ROWS:-1000}
+      PGRST_DB_EXTRA_SEARCH_PATH: ${PGRST_DB_EXTRA_SEARCH_PATH:-public}
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
+    command: ["postgrest"]
+    networks:
+      - rc-supabase-internal
+
+  realtime:
+    # Nombre de contenedor tal cual lo exige la imagen oficial: Realtime
+    # construye el tenant id parseando el subdominio de este nombre.
+    container_name: realtime-dev.rc-supabase-realtime
+    image: supabase/realtime:v2.102.3
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sSfL --head -o /dev/null -H \"Authorization: Bearer ${ANON_KEY}\" http://localhost:4000/api/tenants/realtime-dev/health"
+        ]
+      timeout: 5s
+      interval: 30s
+      retries: 3
+      start_period: 10s
+    environment:
+      PORT: 4000
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      DB_AFTER_CONNECT_QUERY: 'SET search_path TO _realtime'
+      DB_ENC_KEY: ${REALTIME_DB_ENC_KEY}
+      API_JWT_SECRET: ${JWT_SECRET}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      METRICS_JWT_SECRET: ${JWT_SECRET}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+      RUN_JANITOR: "true"
+      DISABLE_HEALTHCHECK_LOGGING: "true"
+    networks:
+      - rc-supabase-internal
+
+  storage:
+    container_name: rc-supabase-storage
+    image: supabase/storage-api:v1.60.4
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+      imgproxy:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://storage:5000/status"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+      start_period: 10s
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      STORAGE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      REQUEST_ALLOW_X_FORWARDED_PATH: "true"
+      FILE_SIZE_LIMIT: ${STORAGE_FILE_SIZE_LIMIT:-52428800}
+      STORAGE_BACKEND: file
+      GLOBAL_S3_BUCKET: ${GLOBAL_S3_BUCKET:-stub}
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: ${STORAGE_TENANT_ID:-rc-supabase}
+      REGION: ${REGION:-stub}
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:5001
+      S3_PROTOCOL_ACCESS_KEY_ID: ${S3_PROTOCOL_ACCESS_KEY_ID}
+      S3_PROTOCOL_ACCESS_KEY_SECRET: ${S3_PROTOCOL_ACCESS_KEY_SECRET}
+    volumes:
+      - supabase-storage-data:/var/lib/storage:z
+    networks:
+      - rc-supabase-internal
+
+  imgproxy:
+    container_name: rc-supabase-imgproxy
+    image: darthsim/imgproxy:v3.30.1
+    restart: unless-stopped
+    volumes:
+      - supabase-storage-data:/var/lib/storage:z
+    healthcheck:
+      test: ["CMD", "imgproxy", "health"]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    environment:
+      IMGPROXY_BIND: ":5001"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_AUTO_WEBP: ${IMGPROXY_AUTO_WEBP:-true}
+      IMGPROXY_MAX_SRC_RESOLUTION: 16.8
+    networks:
+      - rc-supabase-internal
+
+  meta:
+    container_name: rc-supabase-meta
+    image: supabase/postgres-meta:v0.96.6
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: ${POSTGRES_HOST}
+      PG_META_DB_PORT: ${POSTGRES_PORT}
+      PG_META_DB_NAME: ${POSTGRES_DB}
+      PG_META_DB_USER: postgres
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      CRYPTO_KEY: ${PG_META_CRYPTO_KEY}
+    networks:
+      - rc-supabase-internal
+
+  db:
+    container_name: rc-supabase-db
+    image: supabase/postgres:17.6.1.136
+    restart: unless-stopped
+    volumes:
+      - ./supabase/volumes/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
+      - ./supabase/volumes/db/webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
+      - ./supabase/volumes/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
+      - ./supabase/volumes/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
+      - ./supabase/volumes/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql:Z
+      - ./supabase/volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
+      # pgvector + pg_trgm: se ejecuta antes que roles/jwt (orden alfabético "00-")
+      - ./supabase/volumes/db/00-extensions.sql:/docker-entrypoint-initdb.d/init-scripts/00-extensions.sql:Z
+      # Volumen NOMBRADO (no bind-mount al checkout de git como hace el compose
+      # oficial): en Dokploy el directorio del compose vive dentro del árbol
+      # clonado por git y un `git clean`/re-clone accidental no debe poder
+      # borrar la base de datos. Ver GUIA-DOKPLOY.md §1 "Adaptaciones".
+      - supabase-db-data:/var/lib/postgresql/data:Z
+      - db-config:/etc/postgresql-custom
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: ${POSTGRES_PORT}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      POSTGRES_DB: ${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXP: ${JWT_EXPIRY:-3600}
+    command:
+      [
+        "postgres",
+        "-c",
+        "config_file=/etc/postgresql/postgresql.conf",
+        "-c",
+        "log_min_messages=fatal"
+      ]
+    networks:
+      - rc-supabase-internal
+
+networks:
+  # Red interna del stack (db, auth, rest, storage, realtime, meta <-> kong/studio).
+  rc-supabase-internal:
+    driver: bridge
+  # Red compartida con el Traefik de Dokploy para poder asignar dominios
+  # (studio.razoncomun.com, api.razoncomun.com) desde la pestaña "Domains"
+  # de Dokploy sin publicar puertos directos a internet. El NOMBRE real de
+  # esta red externa lo crea/gestiona Dokploy — verificar en el propio panel
+  # (Settings > Server > Traefik, o `docker network ls` en el VPS) y ajustar
+  # aquí si no se llama igual. Ver GUIA-DOKPLOY.md §4.
+  rc-supabase-public:
+    external: true
+    name: ${DOKPLOY_TRAEFIK_NETWORK:-dokploy-network}
+
+volumes:
+  supabase-db-data:
+  supabase-storage-data:
+  studio-snippets:
+  db-config:

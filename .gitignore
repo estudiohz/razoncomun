@@ -1,0 +1,64 @@
+# .gitignore raíz — razoncomun (repo PÚBLICO, github.com/estudiohz/razoncomun)
+#
+# Regla de oro (C5, docs/tecnico/revision-seguridad.md): cero secretos desde
+# el commit 1. Si algo tiene pinta de credencial, va aquí ANTES de escribirlo,
+# no después.
+
+############################
+# Secretos y entornos locales
+############################
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+!infra/backup/**/*.key.example
+# Claves privadas de age (backups): nunca en el repo, ni de ejemplo.
+*-key.txt
+AGE-SECRET-KEY*
+
+############################
+# Node / Next.js (apps/web)
+############################
+node_modules/
+.next/
+out/
+build/
+dist/
+.turbo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+############################
+# Supabase / Postgres locales
+############################
+infra/supabase/volumes/db/data/
+infra/supabase/volumes/functions/
+supabase/.branches/
+supabase/.temp/
+*.sql.gz
+*.sql.gz.age
+
+############################
+# Backups (nunca deben acabar en el repo aunque cifrados)
+############################
+infra/backup/**/*.sql.gz.age
+infra/backup/**/daily/
+infra/backup/**/monthly/
+
+############################
+# Sistema operativo / editores
+############################
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+############################
+# n8n (exports deben revisarse a mano antes de commitear, ver n8n/README.md)
+############################
+n8n/**/*.credentials.json
