@@ -32,6 +32,9 @@ services:
       OUT_OF_CORPUS_THRESHOLD: ${OUT_OF_CORPUS_THRESHOLD:-0.55}
       RETRIEVAL_LIMIT: ${RETRIEVAL_LIMIT:-5}
       BRAIN_INTERNAL_TOKEN: ${BRAIN_INTERNAL_TOKEN}
+      # Secreto del endpoint POST /admin/ingest (indexacion de la wiki bajo
+      # demanda desde /admin/cerebro). Mismo valor en el env de la webapp.
+      INGEST_TRIGGER_SECRET: ${INGEST_TRIGGER_SECRET}
       BRAIN_IP_HASH_SALT: ${BRAIN_IP_HASH_SALT}
       RATE_LIMIT_PER_IP_PER_HOUR: ${RATE_LIMIT_PER_IP_PER_HOUR:-30}
       RATE_LIMIT_PER_SESSION_PER_HOUR: ${RATE_LIMIT_PER_SESSION_PER_HOUR:-20}
