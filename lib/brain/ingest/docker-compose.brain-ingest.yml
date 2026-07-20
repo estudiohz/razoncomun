@@ -1,0 +1,76 @@
+# lib/brain/ingest/docker-compose.brain-ingest.yml
+#
+# Job de ingesta del RC-Brain como servicio Docker Compose de Dokploy.
+# Patrón: igual que "ollama-init" en infra/docker-compose.ollama.yml -- corre,
+# hace su trabajo, termina (restart: "no"). NO es un servicio persistente. Se
+# vuelve a lanzar ("Deploy" en Dokploy, o `docker compose up` de nuevo) cada
+# vez que haga falta re-indexar (cambia el manifiesto, cambian los docs...):
+# el propio job es idempotente (delete-then-insert por documento), así que
+# relanzarlo siempre es seguro.
+#
+# Zona de este agente (rc-08-brain): lib/brain/, scripts/. NO se toca nada
+# bajo infra/ (zona de rc-01-infra) -- por eso este compose vive aquí y no
+# ahí, aunque despliegue "infraestructura" en sentido amplio.
+
+name: rc-brain-ingest
+
+services:
+  brain-ingest:
+    container_name: rc-brain-ingest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: "no"
+    environment:
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: bge-m3
+      EMBEDDINGS_PROVIDER: ollama
+      CORPUS_PUBLIC_DIR: /corpus/public
+      CORPUS_INTERNAL_DIR: /corpus/internal
+    volumes:
+      # Bind mounts de SOLO LECTURA del corpus de documentos -- ver
+      # lib/brain/ingest/README.md "Corpus de documentos: por qué NO vive en
+      # este repo público". Rutas en el HOST del VPS, pobladas una vez (y
+      # cada vez que cambien los docs) por rsync/scp desde el repo privado de
+      # documentación -- comando exacto en el README.
+      - ${RC_CORPUS_HOST_DIR:-/opt/rc-corpus}/public:/corpus/public:ro
+      - ${RC_CORPUS_HOST_DIR:-/opt/rc-corpus}/internal:/corpus/internal:ro
+    networks:
+      # Red interna de Ollama -- declarada `external: true` porque este
+      # servicio vive en un stack Compose DISTINTO al de docker-compose.ollama.yml
+      # (cada uno es un "servicio Compose" separado en Dokploy). Confirmar el
+      # nombre real con `docker network ls | grep ollama` antes del primer
+      # despliegue -- el valor de abajo es el esperado según el `name: rc-ollama`
+      # de infra/docker-compose.ollama.yml (Compose v2 nombra las redes no
+      # declaradas `external` como `<project>_<network-key>`), pero Dokploy
+      # puede anteponer su propio prefijo de proyecto: VERIFICAR, no asumir.
+      - rc-ollama-internal
+    # Configurable para poder ingerir solo una fuente. Util porque el conector
+    # de manifiesto lee de la BD y NO necesita el corpus montado, mientras que
+    # `docs` exige poblar antes /opt/rc-corpus en el host (requiere SSH).
+    command: ["--sources=${RC_INGEST_SOURCES:-manifiesto,docs}"]
+
+networks:
+  rc-ollama-internal:
+    external: true
+    name: ${OLLAMA_INTERNAL_NETWORK:-rc-ollama_rc-ollama-internal}
+
+# ─────────────────────────────────────────────────────────────────────────
+# Despliegue (Dokploy):
+#   1. Nuevo servicio -> Docker Compose, repo github.com/estudiohz/razoncomun,
+#      rama main, ruta: lib/brain/ingest/docker-compose.brain-ingest.yml
+#   2. Variables de entorno del servicio: SUPABASE_PUBLIC_URL, SERVICE_ROLE_KEY
+#      (copiar de la config de "rc-supabase", D-004) y, si el nombre real de
+#      red difiere del default, OLLAMA_INTERNAL_NETWORK.
+#   3. Confirmar en el VPS antes del primer deploy:
+#        docker network ls | grep ollama
+#      y corregir OLLAMA_INTERNAL_NETWORK si no coincide.
+#   4. Poblar el corpus de documentos en el host (una vez, y cada vez que
+#      cambien los docs) -- ver README para el comando de rsync exacto.
+#   5. Deploy. El contenedor corre, ingiere y termina con exit code 0. Ver
+#      logs en Dokploy para el resumen (documentos/chunks/filas borradas).
+#   6. Re-ejecutar (nuevo "Deploy" en Dokploy) cada vez que el manifiesto o
+#      los docs cambien -- es idempotente, no hace falta borrar nada a mano.
+# ─────────────────────────────────────────────────────────────────────────

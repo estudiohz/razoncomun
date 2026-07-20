@@ -1,0 +1,15 @@
+{
+  "name": "rc-brain-ingest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Job de ingesta + embeddings del RC-Brain (Ola 1, rc-08-brain). Cero dependencias externas a propósito.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "ingest": "node src/index.mjs",
+    "ingest:dry-run": "node src/index.mjs --dry-run",
+    "control-questions": "node src/controlQuestions.mjs"
+  }
+}
