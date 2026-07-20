@@ -7,7 +7,9 @@
    ============================================================ */
 @layer base {
   :root {
-    --azul: #24af9a;
+    /* Titulares — oscurecido de #24af9a → #177f6f para WCAG AA (4,50:1 sobre
+       el fondo real #f2f6fc). Debe coincidir con el token `titular` de Tailwind. */
+    --azul: #177f6f;
   }
   html {
     scroll-behavior: smooth;

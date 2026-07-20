@@ -23,14 +23,21 @@ const config: Config = {
         morado: '#8B30D9',
         magenta: '#C3369E',
         naranja: '#E8792F',
-        teal: '#16B8A0',
+        // Teal de marca. `DEFAULT` (#16B8A0) es DECORATIVO — banda del hero,
+        // aros, tintes de fondo sin texto encima: no lleva texto, se conserva
+        // claro para mantener el aire de marca. `texto` (#0F7F6E) es la variante
+        // apta para texto: 4,52:1 sobre el fondo real #F2F6FC (WCAG AA).
+        teal: { DEFAULT: '#16B8A0', texto: '#0F7F6E' },
         cian: '#2BC7E8',
-        // El boceto usa "azul" como color de titulares: un teal saturado.
-        titular: '#24AF9A',
-        // Verde de botón sólido del boceto (.btn-grad)
-        accion: '#2BA79E',
-        // Neutros
-        gris: '#777777',
+        // Color de titulares (h1/h2/h3). Oscurecido de #24AF9A → #177F6F para
+        // cumplir WCAG AA: 4,50:1 sobre el fondo real #F2F6FC (D-021).
+        titular: '#177F6F',
+        // Verde de botón sólido del boceto (.btn-grad). Oscurecido de #2BA79E →
+        // #157F70: texto blanco encima 4,88:1 y como texto 4,50:1 (WCAG AA).
+        accion: '#157F70',
+        // Neutros. Gris de texto oscurecido de #777777 → #6F6F6F: 4,63:1 sobre
+        // #F2F6FC (WCAG AA; #777777 daba 4,13:1 sobre el fondo real).
+        gris: '#6F6F6F',
         cuerpo: '#5A6780',
         // Superficies (tema claro siempre)
         fondo: '#F2F6FC',
