@@ -200,10 +200,13 @@ services:
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${JWT_SECRET}
       PGRST_DB_USE_LEGACY_GUCS: "false"
-      # Sin esto, el healthcheck `postgrest --ready` falla siempre con
-      # "Admin server is not running" — el servicio sirve bien en :3000 pero
-      # Docker lo marca unhealthy. Valor del compose oficial de Supabase.
+      # Ambas son necesarias para el healthcheck `postgrest --ready` (valores
+      # del compose oficial de Supabase). Sin PORT: "Admin server is not
+      # running". Sin HOST: "--ready cannot be used when server-host is !4".
+      # El admin server escucha solo en localhost; el API principal sigue en
+      # todas las interfaces para que Kong lo alcance.
       PGRST_ADMIN_SERVER_PORT: 3001
+      PGRST_ADMIN_SERVER_HOST: localhost
       PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
       PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
     command: ["postgrest"]
