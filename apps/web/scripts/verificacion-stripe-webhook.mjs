@@ -10,7 +10,9 @@ import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
 const APP_URL = 'http://localhost:3000';
-const WEBHOOK_SECRET = 'whsec_dev_local_a8e1d6b8610de115325379dfb01c4fd3a0c6528e87d79379';
+// Nunca hardcodear un whsec en un repo público, aunque sea de dev-local: se
+// lee del entorno, igual que el resto de credenciales (hallazgo de rc-10).
+const WEBHOOK_SECRET = process.env.RC_STRIPE_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET;
 const SUPABASE_URL = 'https://dev-api.razoncomun.com';
 const SERVICE_ROLE_KEY = process.env.RC_SERVICE_ROLE_KEY;
 

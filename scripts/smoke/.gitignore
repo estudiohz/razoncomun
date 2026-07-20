@@ -1,0 +1,8 @@
+# La suite lee las claves del ENTORNO. Nada de secretos en el repo (publico).
+*.env
+.env
+.env.*
+*.secret
+*.key
+__pycache__/
+*.pyc
