@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { EmailOtpType } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
+import { origenPublico } from '@/lib/supabase/env';
 import { aplicarMetadataAlta, destinoTrasVerificar } from '@/lib/auth/alta';
 
 /**
@@ -20,7 +21,8 @@ import { aplicarMetadataAlta, destinoTrasVerificar } from '@/lib/auth/alta';
  * evidencia en el informe de cierre de ola.
  */
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = origenPublico(request);
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
   const next = searchParams.get('next') ?? '/perfil';

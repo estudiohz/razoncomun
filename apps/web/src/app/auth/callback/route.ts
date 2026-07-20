@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { origenPublico } from '@/lib/supabase/env';
 import { destinoTrasVerificar } from '@/lib/auth/alta';
 
 /**
@@ -9,7 +10,8 @@ import { destinoTrasVerificar } from '@/lib/auth/alta';
  * proveedor, el flujo entra por aquí igual que el de email.
  */
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = origenPublico(request);
   const code = searchParams.get('code');
   const next = searchParams.get('next') ?? '/perfil';
 
