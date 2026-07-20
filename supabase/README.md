@@ -78,6 +78,41 @@ con la `service_role` key (headers `apikey` y `Authorization: Bearer <service_ro
 migraciones aplican en limpio. La `service_role` key **nunca** va en el repo: vive en el
 entorno local o en la config del servicio en Dokploy.
 
+> ### ⚠️ OBLIGATORIO al usar la Opción C: declarar UTF-8
+>
+> **Este método corrompió silenciosamente los seeds la primera vez que se aplicaron**
+> (20/07/2026, ver D-009 en `docs/tecnico/decisiones-construccion.md`). El manifiesto y
+> los nombres de provincias quedaron con doble codificación: `Córdoba` → `CÃ³rdoba`,
+> `Ecuación` → `EcuaciÃ³n`. **Los archivos `.sql` en disco estaban correctos**: el daño
+> se produjo en el transporte HTTP.
+>
+> Nada falla de forma visible: la petición devuelve 200, los conteos cuadran y el gate
+> parece verde. Solo se detecta mirando el contenido real.
+>
+> Al enviar SQL por HTTP hay que **codificar el cuerpo explícitamente en UTF-8 y
+> declararlo en la cabecera**:
+>
+> ```python
+> body = json.dumps({"query": sql}).encode("utf-8")   # <- explicito
+> req.add_header("content-type", "application/json; charset=utf-8")
+> req.add_header("content-length", str(len(body)))    # longitud en BYTES, no en chars
+> ```
+>
+> Con `curl`, evitar `-d` con texto acentuado desde shells de Windows: usar
+> `--data-binary @archivo.json` con el archivo guardado en UTF-8.
+>
+> **Comprobación obligatoria tras aplicar cualquier seed con acentos** (debe devolver 0):
+>
+> ```sql
+> select count(*) from territories      where name  like '%' || U&'\00C3' || '%';
+> select count(*) from manifesto_points where title like '%' || U&'\00C3' || '%'
+>                                          or body like '%' || U&'\00C3' || '%';
+> ```
+>
+> `U+00C3` (`Ã`) no aparece en español correcto: si hay filas, la carga se corrompió.
+> Ojo: si el daño incluye `U+FFFD` (`�`) la pérdida es **irreversible** y hay que
+> recargar desde el `.sql`, no reconvertir.
+
 ### Reaplicar en limpio (drop y recrear, SOLO en un entorno de desarrollo)
 
 ```sql
