@@ -35,6 +35,31 @@ desviaciones declaradas respecto a `docs/tecnico/modelo-datos.md` (p. ej. `propo
 ambigüedad de `ballots.weight`): ver comentarios al principio de cada archivo de migración
 afectado y el informe de la Ola 1.
 
+## Estado (fuera de ola, rc-02-datos — D-016)
+
+**0016_ai_provider_credentials.sql** y **0017_manifesto_versions_dedupe.sql**, aplicadas y
+verificadas en vivo contra `dev-api.razoncomun.com` sobre el esquema ya desplegado de la Ola 1
+(migración aditiva, sin tocar tablas existentes):
+
+- `ai_provider_credentials`: claves de los proveedores de IA (Anthropic/OpenAI/Google) cifradas
+  con `pgcrypto` (`pgp_sym_encrypt`/`pgp_sym_decrypt`), clave maestra **recibida siempre como
+  parámetro desde el entorno de la app, nunca almacenada en la base**. Índice único parcial
+  `(active) WHERE active` garantiza un solo proveedor activo a nivel de esquema. RLS activada
+  sin policies (como `brain_documents`, 0012) + `REVOKE` explícito a `anon`/`authenticated` a
+  nivel de tabla Y de las funciones `ai_credentials_set`/`ai_credentials_get_active`/
+  `ai_credentials_revert` (ver nota en el propio archivo: un `REVOKE ... FROM PUBLIC` no basta
+  en este proyecto porque los privilegios por defecto se conceden directamente a `anon` y
+  `authenticated`, no vía `PUBLIC` — hay que revocarlos de cada rol explícitamente).
+  `ai_credentials_revert` guarda el proveedor anterior (`previous_credential_id`) para que la
+  suite de neutralidad (`ai_evals`, 0014) pueda revertir automáticamente si el resultado tras un
+  cambio cae por debajo del 95% (D-016).
+- `manifesto_point_versions`: purgados los 16 registros duplicados de desarrollo (45→29 filas,
+  15 combinaciones `(point_id, version)` repetidas → 0) y añadida `UNIQUE (point_id, version)`
+  (deuda D-014).
+
+**Pendiente de decisión de Sergio, NO implementado:** NIF/DNI de afiliados en `profiles` — ver
+el informe de cierre de esta tarea (o `decisiones-construccion.md`) para la propuesta de diseño.
+
 ## Cómo aplicar las migraciones
 
 Cada archivo de `migrations/*.sql` está envuelto en `begin; ... commit;` y es idempotente
