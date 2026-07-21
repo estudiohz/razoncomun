@@ -134,11 +134,11 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
                 <button
                   type="button"
                   onClick={() => (editandoModelo ? setEditandoModelo(false) : abrirEditorModelo())}
-                  aria-label="Editar modelo"
                   title="Editar modelo"
-                  className="grid h-9 w-9 place-items-center rounded-boton border border-linea text-titular hover:border-titular"
+                  className="flex h-9 items-center gap-1.5 rounded-boton border border-linea px-3 text-[12.5px] font-bold text-titular hover:border-titular"
                 >
                   <IconoLapiz />
+                  Editar
                 </button>
                 <button
                   type="button"
