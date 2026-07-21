@@ -352,7 +352,7 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
                   className="mt-2"
                   value={modelCustom}
                   onChange={(e) => setModelCustom(e.target.value)}
-                  placeholder="id exacto del modelo, ej. gemini-2.5-flash"
+                  placeholder="id exacto del modelo, ej. gemini-flash-latest"
                   aria-label="Id del modelo (escrito a mano)"
                 />
               )}

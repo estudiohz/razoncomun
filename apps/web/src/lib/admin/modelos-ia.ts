@@ -43,11 +43,16 @@ export type ModeloIA = {
  * priorizan los modelos del free tier (presupuesto 0-30 €/mes del partido).
  */
 export const MODELOS_POR_PROVEEDOR: Record<ProveedorIA, ModeloIA[]> = {
+  // Alias "-latest": apuntan siempre al modelo estable vigente y NO se
+  // desactivan para proyectos nuevos (a diferencia de los ids con versión fija
+  // como `gemini-2.5-flash`, que Google bloquea para usuarios nuevos con un 404
+  // "no longer available to new users"). Verificado en julio 2026 con una key
+  // de proyecto nuevo: `gemini-flash-latest` responde 200; `gemini-2.5-flash` da 404.
   google: [
-    { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', recomendado: true, nota: 'gratis · rápido' },
-    { id: 'gemini-2.5-flash-lite', label: 'Gemini 2.5 Flash-Lite', nota: 'gratis · el más económico' },
-    { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro', nota: 'más capaz · free tier limitado' },
-    { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', nota: 'gratis' },
+    { id: 'gemini-flash-latest', label: 'Gemini Flash (latest)', recomendado: true, nota: 'gratis · rápido · siempre al día' },
+    { id: 'gemini-flash-lite-latest', label: 'Gemini Flash-Lite (latest)', nota: 'gratis · el más económico' },
+    { id: 'gemini-pro-latest', label: 'Gemini Pro (latest)', nota: 'más capaz · free tier limitado' },
+    { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', nota: 'estable' },
   ],
   anthropic: [
     { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5', recomendado: true, nota: 'económico' },
