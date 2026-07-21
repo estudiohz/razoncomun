@@ -199,6 +199,30 @@ export function PanelPais({ parametros, partidas, beta, demografiaPais }: Props)
   const [rutaGasto, setRutaGasto] = useState<string[]>([]);
   const [rutaIngreso, setRutaIngreso] = useState<string[]>([]);
 
+  // Sergio: "estas tarjetas deben ser misma altura" — las tarjetas "Reparto
+  // por área" de Gastos e Ingresos tienen listas de distinta longitud
+  // (24 áreas de gasto vs. ~19 de ingreso), así que su altura natural nunca
+  // coincide por CSS puro (son dos <Bloque> independientes, no filas de una
+  // misma grid). Se mide la altura NATURAL de cada tarjeta (el contenido,
+  // no la caja con min-height ya aplicado) y se aplica el máximo como
+  // min-height a ambas — se recalcula solo con ResizeObserver, sin depender
+  // del estado interno de cada Bloque.
+  const refDonutGasto = useRef<HTMLDivElement>(null);
+  const refDonutIngreso = useRef<HTMLDivElement>(null);
+  const [alturaDonut, setAlturaDonut] = useState<number>();
+
+  useEffect(() => {
+    const elementos = [refDonutGasto.current, refDonutIngreso.current].filter(
+      (el): el is HTMLDivElement => el !== null,
+    );
+    if (elementos.length === 0) return;
+    const recalcular = () => setAlturaDonut(Math.max(...elementos.map((el) => el.offsetHeight)));
+    recalcular();
+    const observer = new ResizeObserver(recalcular);
+    elementos.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   function irADesglose(id: string) {
     const fila = partidaPorId.get(id);
     if (!fila) return;
@@ -254,6 +278,8 @@ export function PanelPais({ parametros, partidas, beta, demografiaPais }: Props)
               overridesPartidas={overridesPartidas}
               onMoverParametro={moverParametro}
               onMoverPartida={moverPartida}
+              donutContenidoRef={refDonutGasto}
+              donutMinHeight={alturaDonut}
             />
           </div>
         </section>
@@ -276,6 +302,8 @@ export function PanelPais({ parametros, partidas, beta, demografiaPais }: Props)
               overridesPartidas={overridesPartidas}
               onMoverParametro={moverParametro}
               onMoverPartida={moverPartida}
+              donutContenidoRef={refDonutIngreso}
+              donutMinHeight={alturaDonut}
             />
           </div>
         </section>
@@ -387,6 +415,8 @@ export function Bloque({
   onMoverParametro,
   onMoverPartida,
   raizFija,
+  donutContenidoRef,
+  donutMinHeight,
 }: {
   tipo: TipoPartida;
   ruta: string[];
@@ -404,6 +434,16 @@ export function Bloque({
   onMoverPartida: (id: string, nombre: string, centsNuevo: number) => void;
   /** Id de la partida raíz a la que esta instancia de `Bloque` queda acotada (página de ministerio). */
   raizFija?: string;
+  /** Ref al contenido NATURAL de la tarjeta "Reparto por área" (sin el
+   * min-height aplicado), para que el padre pueda medir su altura real y
+   * sincronizarla con la del Bloque hermano (Sergio: "estas tarjetas deben
+   * ser misma altura" — Gastos e Ingresos tienen listas de distinta
+   * longitud, así que el contenido nunca coincide por sí solo). */
+  donutContenidoRef?: React.RefObject<HTMLDivElement | null>;
+  /** Altura mínima (px) ya calculada por el padre como el máximo entre
+   * Gastos e Ingresos — se aplica al contenedor EXTERNO, nunca al medido,
+   * para no contaminar la siguiente medición con el min-height anterior. */
+  donutMinHeight?: number;
 }) {
   // Toggle "que alterne ambas gráficas" (Sergio, corregido tras ver el
   // resultado): NO va en las filas individuales — esas ya se ven bien
@@ -454,29 +494,34 @@ export function Bloque({
   return (
     <div>
       {hayDatosRaices && (
-        <div className="mb-4 rounded-boton border border-linea bg-white p-4">
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[11.5px] font-bold uppercase tracking-wide text-gris">
-              Reparto por área — {vistaDonut === 'rc' ? 'propuesta RC' : 'actual (oficial)'}
-            </p>
-            <div className="flex items-center gap-1 rounded-full border border-linea bg-fondo p-0.5 text-[11px] font-bold">
-              {(['actual', 'rc'] as const).map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setVistaDonut(v)}
-                  aria-pressed={vistaDonut === v}
-                  className={cn(
-                    'rounded-full px-2.5 py-1 transition-colors',
-                    vistaDonut === v ? 'bg-white text-titular shadow-nav' : 'text-gris hover:text-titular',
-                  )}
-                >
-                  {v === 'actual' ? 'Actual' : 'Razón Común'}
-                </button>
-              ))}
+        <div
+          className="mb-4 rounded-boton border border-linea bg-white p-4"
+          style={donutMinHeight !== undefined ? { minHeight: donutMinHeight } : undefined}
+        >
+          <div ref={donutContenidoRef}>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[11.5px] font-bold uppercase tracking-wide text-gris">
+                Reparto por área — {vistaDonut === 'rc' ? 'propuesta RC' : 'actual (oficial)'}
+              </p>
+              <div className="flex items-center gap-1 rounded-full border border-linea bg-fondo p-0.5 text-[11px] font-bold">
+                {(['actual', 'rc'] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setVistaDonut(v)}
+                    aria-pressed={vistaDonut === v}
+                    className={cn(
+                      'rounded-full px-2.5 py-1 transition-colors',
+                      vistaDonut === v ? 'bg-white text-titular shadow-nav' : 'text-gris hover:text-titular',
+                    )}
+                  >
+                    {v === 'actual' ? 'Actual' : 'Razón Común'}
+                  </button>
+                ))}
+              </div>
             </div>
+            <DonutChart segmentos={segmentosRaices} titulo={tipo === 'gasto' ? 'Gastos' : 'Ingresos'} />
           </div>
-          <DonutChart segmentos={segmentosRaices} titulo={tipo === 'gasto' ? 'Gastos' : 'Ingresos'} />
         </div>
       )}
 
