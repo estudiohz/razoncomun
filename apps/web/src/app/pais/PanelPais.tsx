@@ -405,12 +405,14 @@ export function Bloque({
   /** Id de la partida raíz a la que esta instancia de `Bloque` queda acotada (página de ministerio). */
   raizFija?: string;
 }) {
-  // Toggle "que alterne ambas gráficas" (Sergio): comparte estado para TODAS
-  // las filas de este Bloque, no una por fila — flip de "ver todo el bloque
-  // en Actual" a "verlo todo en RC" es más útil para comparar de un vistazo
-  // que un interruptor individual por partida. "Ambos" (por defecto) es el
-  // comportamiento de siempre.
-  const [vista, setVista] = useState<'ambos' | 'actual' | 'rc'>('ambos');
+  // Toggle "que alterne ambas gráficas" (Sergio, corregido tras ver el
+  // resultado): NO va en las filas individuales — esas ya se ven bien
+  // mostrando siempre Actual+RC con el fondo suave. El toggle es para los
+  // GRÁFICOS DE DONUT (reparto por área), que solo pueden mostrar una
+  // composición a la vez — alterna entre el reparto Actual y el propuesto
+  // por RC, compartido por el donut de este Bloque y por el de cada
+  // `FilaPartida` con hijos (mismo flip afecta a todos los donuts a la vez).
+  const [vistaDonut, setVistaDonut] = useState<'actual' | 'rc'>('rc');
 
   const nivelActualId = ruta.length > 0 ? ruta[ruta.length - 1] : (raizFija ?? null);
   const idsNivel =
@@ -431,17 +433,17 @@ export function Bloque({
     }),
   );
 
-  // Donut de reparto (S2.1, item 2a): SIEMPRE el reparto de las ÁREAS RAÍZ
-  // de este bloque sobre el total del bloque, lado RC — independiente del
-  // nivel de drill-down en el que esté el visitante (las raíces no
-  // cambian). "Eso mismo se repite en los ministerios" vive dentro de cada
-  // `FilaPartida` con hijos (ver más abajo), con el dataset de sus hijos.
+  // Donut de reparto (S2.1, item 2a): el reparto de las ÁREAS RAÍZ de este
+  // bloque sobre el total del bloque — independiente del nivel de
+  // drill-down en el que esté el visitante (las raíces no cambian). "Eso
+  // mismo se repite en los ministerios" vive dentro de cada `FilaPartida`
+  // con hijos (ver más abajo), con el dataset de sus hijos.
   const raicesTipo = partidas
     .filter((p) => p.tipo === tipo && p.parent_id === null)
     .sort((a, b) => a.orden - b.orden);
   const segmentosRaices = raicesTipo.map((r) => ({
     nombre: r.nombre,
-    valor: infoPorId.get(r.id)?.rc.propioCents ?? 0,
+    valor: (vistaDonut === 'rc' ? infoPorId.get(r.id)?.rc.propioCents : infoPorId.get(r.id)?.actual.propioCents) ?? 0,
     color: r.color,
   }));
   // En modo acotado (página de ministerio) este donut de TODAS las raíces
@@ -453,9 +455,27 @@ export function Bloque({
     <div>
       {hayDatosRaices && (
         <div className="mb-4 rounded-boton border border-linea bg-white p-4">
-          <p className="mb-2 text-[11.5px] font-bold uppercase tracking-wide text-gris">
-            Reparto por área — propuesta RC
-          </p>
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[11.5px] font-bold uppercase tracking-wide text-gris">
+              Reparto por área — {vistaDonut === 'rc' ? 'propuesta RC' : 'actual (oficial)'}
+            </p>
+            <div className="flex items-center gap-1 rounded-full border border-linea bg-fondo p-0.5 text-[11px] font-bold">
+              {(['actual', 'rc'] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setVistaDonut(v)}
+                  aria-pressed={vistaDonut === v}
+                  className={cn(
+                    'rounded-full px-2.5 py-1 transition-colors',
+                    vistaDonut === v ? 'bg-white text-titular shadow-nav' : 'text-gris hover:text-titular',
+                  )}
+                >
+                  {v === 'actual' ? 'Actual' : 'Razón Común'}
+                </button>
+              ))}
+            </div>
+          </div>
           <DonutChart segmentos={segmentosRaices} titulo={tipo === 'gasto' ? 'Gastos' : 'Ingresos'} />
         </div>
       )}
@@ -482,31 +502,6 @@ export function Bloque({
         ))}
       </nav>
 
-      {filas.length > 0 && (
-        <div className="mb-3 flex items-center gap-1 rounded-full border border-linea bg-fondo p-1 text-[12px] font-bold">
-          {(
-            [
-              ['ambos', 'Ambos'],
-              ['actual', 'Solo actual'],
-              ['rc', 'Solo RC'],
-            ] as const
-          ).map(([valor, etiqueta]) => (
-            <button
-              key={valor}
-              type="button"
-              onClick={() => setVista(valor)}
-              aria-pressed={vista === valor}
-              className={cn(
-                'rounded-full px-3 py-1.5 transition-colors',
-                vista === valor ? 'bg-white text-titular shadow-nav' : 'text-gris hover:text-titular',
-              )}
-            >
-              {etiqueta}
-            </button>
-          ))}
-        </div>
-      )}
-
       <div key={nivelActualId ?? '__raiz__'} className="fade space-y-2.5">
         {filas.length === 0 && (
           <p className="rounded-boton border border-linea bg-white p-4 text-[13.5px] text-cuerpo">
@@ -529,7 +524,8 @@ export function Bloque({
               const h = partidaPorId.get(id);
               const infoH = infoPorId.get(id);
               if (!h || !infoH) return null;
-              return { nombre: h.nombre, valor: infoH.rc.propioCents ?? 0, color: h.color };
+              const valor = (vistaDonut === 'rc' ? infoH.rc.propioCents : infoH.actual.propioCents) ?? 0;
+              return { nombre: h.nombre, valor, color: h.color };
             })
             .filter((s): s is { nombre: string; valor: number; color: string | null } => s !== null);
 
@@ -547,7 +543,7 @@ export function Bloque({
               fila={fila}
               info={info}
               maxCents={maxCents}
-              vista={vista}
+              vistaDonut={vistaDonut}
               tieneHijos={tieneHijos}
               pulsando={pulsando}
               deltaPct={deltaPct}
@@ -572,7 +568,7 @@ function FilaPartida({
   fila,
   info,
   maxCents,
-  vista,
+  vistaDonut,
   tieneHijos,
   pulsando,
   deltaPct,
@@ -589,10 +585,11 @@ function FilaPartida({
   fila: PartidaRow;
   info: PartidaResueltaInfo;
   maxCents: number;
-  /** Toggle de `Bloque` ("Ambos" | "Solo actual" | "Solo RC") — Sergio: "un
-   * toggle que alterne ambas gráficas". Compartido por todas las filas del
-   * bloque, no un estado por fila. */
-  vista: 'ambos' | 'actual' | 'rc';
+  /** Solo etiqueta el donut de "Ver detalle" (reparto de los hijos de esta
+   * fila) — el toggle vive en `Bloque` y afecta a TODOS los donuts a la vez.
+   * Las barras Actual/RC de la propia fila SIEMPRE se muestran las dos
+   * (Sergio: "en las tarjetas individuales se veía bien", sin toggle ahí). */
+  vistaDonut: 'actual' | 'rc';
   tieneHijos: boolean;
   pulsando: boolean;
   deltaPct: number | null;
@@ -652,37 +649,36 @@ function FilaPartida({
         </div>
       </div>
 
+      {/* Siempre las dos barras (Sergio: "en las tarjetas individuales se
+          veía bien" sin toggle) — el toggle Actual/RC vive solo en los
+          donuts de reparto (Bloque), no aquí. */}
       <div className="mt-3 space-y-1.5">
-        {vista !== 'rc' && (
-          <div className="flex items-center gap-2">
-            <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-gris">Actual</span>
-            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-fondo">
-              <div
-                className="h-full rounded-full bg-[#9aa4b2] transition-[width] duration-500 ease-out"
-                style={{ width: `${pctActual}%` }}
-              />
-            </div>
-            <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-cuerpo tabular-nums">
-              {formatoCorto(info.actual.propioCents)}
-            </span>
+        <div className="flex items-center gap-2">
+          <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-gris">Actual</span>
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-fondo">
+            <div
+              className="h-full rounded-full bg-[#9aa4b2] transition-[width] duration-500 ease-out"
+              style={{ width: `${pctActual}%` }}
+            />
           </div>
-        )}
-        {vista !== 'actual' && (
-          // Fondo suave (Sergio): distingue de un vistazo la fila de Razón
-          // Común, mismo bg-teal/5 que ya usa la tarjeta de balance RC.
-          <div className="flex items-center gap-2 rounded-boton bg-teal/5 px-2 py-1">
-            <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-teal-texto">RC</span>
-            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white">
-              <div
-                className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
-                style={{ width: `${pctRC}%` }}
-              />
-            </div>
-            <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-titular tabular-nums">
-              {formatoCorto(info.rc.propioCents)}
-            </span>
+          <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-cuerpo tabular-nums">
+            {formatoCorto(info.actual.propioCents)}
+          </span>
+        </div>
+        {/* Fondo suave (Sergio): distingue de un vistazo la fila de Razón
+            Común, mismo bg-teal/5 que ya usa la tarjeta de balance RC. */}
+        <div className="flex items-center gap-2 rounded-boton bg-teal/5 px-2 py-1">
+          <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-teal-texto">RC</span>
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white">
+            <div
+              className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
+              style={{ width: `${pctRC}%` }}
+            />
           </div>
-        )}
+          <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-titular tabular-nums">
+            {formatoCorto(info.rc.propioCents)}
+          </span>
+        </div>
       </div>
 
       {ajustarAbierto && (
@@ -733,7 +729,7 @@ function FilaPartida({
               {tieneHijos && segmentosHijos.some((s) => s.valor > 0) && (
                 <div>
                   <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-gris">
-                    Reparto de {fila.nombre} — propuesta RC
+                    Reparto de {fila.nombre} — {vistaDonut === 'rc' ? 'propuesta RC' : 'actual (oficial)'}
                   </p>
                   <DonutChart segmentos={segmentosHijos} tamano={112} titulo={fila.nombre} />
                 </div>

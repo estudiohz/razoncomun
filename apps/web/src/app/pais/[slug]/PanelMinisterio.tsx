@@ -173,6 +173,9 @@ export function PanelMinisterio({ raizId, parametros, partidas, demografia }: Pr
   }, [partidaIdPorParametro, parametros]);
 
   const [ruta, setRuta] = useState<string[]>([]);
+  // Toggle Actual/RC del donut de esta página (independiente del de `Bloque`,
+  // que no se usa aquí — ver comentario del render más abajo).
+  const [vistaDonut, setVistaDonut] = useState<'actual' | 'rc'>('rc');
 
   const infoRaiz = infoPorId.get(raizId)!;
   const hijosIdsRaiz = hijosDe.get(raizId) ?? [];
@@ -181,7 +184,8 @@ export function PanelMinisterio({ raizId, parametros, partidas, demografia }: Pr
       const h = partidaPorId.get(id);
       const infoH = infoPorId.get(id);
       if (!h || !infoH) return null;
-      return { nombre: h.nombre, valor: infoH.rc.propioCents ?? 0, color: h.color };
+      const valor = (vistaDonut === 'rc' ? infoH.rc.propioCents : infoH.actual.propioCents) ?? 0;
+      return { nombre: h.nombre, valor, color: h.color };
     })
     .filter((s): s is { nombre: string; valor: number; color: string | null } => s !== null);
 
@@ -250,9 +254,26 @@ export function PanelMinisterio({ raizId, parametros, partidas, demografia }: Pr
 
       {segmentosHijosRaiz.some((s) => s.valor > 0) && (
         <div className="mx-auto mt-8 max-w-[720px] rounded-tarjeta border border-linea bg-white p-5">
-          <p className="mb-2 text-[11.5px] font-bold uppercase tracking-wide text-gris">
-            Reparto de {raiz.nombre} — propuesta RC
-          </p>
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[11.5px] font-bold uppercase tracking-wide text-gris">
+              Reparto de {raiz.nombre} — {vistaDonut === 'rc' ? 'propuesta RC' : 'actual (oficial)'}
+            </p>
+            <div className="flex items-center gap-1 rounded-full border border-linea bg-fondo p-0.5 text-[11px] font-bold">
+              {(['actual', 'rc'] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setVistaDonut(v)}
+                  aria-pressed={vistaDonut === v}
+                  className={`rounded-full px-2.5 py-1 transition-colors ${
+                    vistaDonut === v ? 'bg-white text-titular shadow-nav' : 'text-gris hover:text-titular'
+                  }`}
+                >
+                  {v === 'actual' ? 'Actual' : 'Razón Común'}
+                </button>
+              ))}
+            </div>
+          </div>
           <DonutChart segmentos={segmentosHijosRaiz} titulo={raiz.nombre} />
         </div>
       )}
