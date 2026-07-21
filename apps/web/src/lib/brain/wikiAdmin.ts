@@ -271,6 +271,62 @@ export async function eliminarCategoria(id: string): Promise<ResultadoAccion> {
   return { ok: true };
 }
 
+/**
+ * Resuelve una contribución de la cola (pieza C): la marca aceptada / rechazada
+ * / fusionada, con el revisor y una nota opcional. NO edita el corpus: si la
+ * contribución era una corrección válida, el editor abre la entrada aparte y la
+ * corrige a mano (la IA solo prioriza, el humano decide — D-CP-5).
+ */
+export async function resolverContribucion(
+  id: string,
+  accion: 'aceptada' | 'rechazada' | 'fusionada',
+  nota?: string,
+): Promise<ResultadoAccion> {
+  const { supabase, userId } = await requireEditorCerebro('/admin/cerebro/contribuciones');
+  if (!id) return { ok: false, error: 'Contribución inválida.' };
+  if (!['aceptada', 'rechazada', 'fusionada'].includes(accion)) {
+    return { ok: false, error: 'Acción inválida.' };
+  }
+
+  const { error } = await supabase
+    .from('brain_contributions')
+    .update({
+      status: accion,
+      reviewer_id: userId,
+      reviewed_at: new Date().toISOString(),
+      resolution_note: nota?.trim() ? nota.trim().slice(0, 1000) : null,
+    })
+    .eq('id', id);
+  if (error) return { ok: false, error: `No se ha podido guardar: ${error.message}` };
+
+  revalidatePath('/admin/cerebro/contribuciones');
+  return { ok: true };
+}
+
+/**
+ * Re-dispara el triaje IA de una contribución (rc-brain-service
+ * /classify-contribution). Útil cuando entró como 'nueva' porque el clasificador
+ * no estaba disponible en el momento del alta.
+ */
+export async function reclasificarContribucion(id: string): Promise<ResultadoAccion> {
+  await requireEditorCerebro('/admin/cerebro/contribuciones');
+  if (!id) return { ok: false, error: 'Contribución inválida.' };
+
+  try {
+    const { status, body } = await callBrainAdmin('/classify-contribution', { contributionId: id });
+    const b = body as { ok?: boolean; error?: string } | null;
+    if (!b || b.ok !== true) {
+      return { ok: false, error: b?.error || `El cerebro respondió con un error (status ${status}).` };
+    }
+  } catch (e) {
+    if (e instanceof BrainAdminNotConfiguredError) return { ok: false, error: e.message };
+    return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido contactar con el cerebro.' };
+  }
+
+  revalidatePath('/admin/cerebro/contribuciones');
+  return { ok: true };
+}
+
 export interface ResultadoIndexado extends ResultadoAccion {
   entries_indexed?: number;
   chunks_inserted?: number;

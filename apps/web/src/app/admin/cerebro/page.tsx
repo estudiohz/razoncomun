@@ -58,15 +58,24 @@ export default async function CerebroAdminPage({
   const per = POR_PAGINA.includes(perPedido as (typeof POR_PAGINA)[number]) ? perPedido : POR_DEFECTO;
   const page = entero(sp.page, 1, 1);
 
-  const [{ data: categorias, error: errorCategorias }, { data: areas }, { count: pendientesCount }] =
-    await Promise.all([
-      supabase.from('brain_categories').select('id, slug, name, position, created_at').order('position'),
-      supabase.from('categories').select('id, slug, name, color').order('name'),
-      // Contador global de pendientes de indexar -- deliberadamente SIN filtros:
-      // el botón "Indexar al cerebro" procesa TODAS las pendientes, no solo las
-      // que se ven en el listado filtrado.
-      supabase.from('brain_entries').select('id', { count: 'exact', head: true }).is('indexed_at', null),
-    ]);
+  const [
+    { data: categorias, error: errorCategorias },
+    { data: areas },
+    { count: pendientesCount },
+    { count: contribPendientes },
+  ] = await Promise.all([
+    supabase.from('brain_categories').select('id, slug, name, position, created_at').order('position'),
+    supabase.from('categories').select('id, slug, name, color').order('name'),
+    // Contador global de pendientes de indexar -- deliberadamente SIN filtros:
+    // el botón "Indexar al cerebro" procesa TODAS las pendientes, no solo las
+    // que se ven en el listado filtrado.
+    supabase.from('brain_entries').select('id', { count: 'exact', head: true }).is('indexed_at', null),
+    // Contribuciones ciudadanas pendientes de revisión (nueva + triaged).
+    supabase
+      .from('brain_contributions')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['nueva', 'triaged']),
+  ]);
 
   const listaCategorias = categorias ?? [];
   const categoriaFiltro = categoriaSlug ? listaCategorias.find((c) => c.slug === categoriaSlug) : null;
@@ -123,6 +132,17 @@ export default async function CerebroAdminPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/admin/cerebro/contribuciones"
+            className="relative rounded-boton border border-linea bg-white px-4 py-2.5 text-[14px] font-bold text-titular hover:border-titular"
+          >
+            Contribuciones
+            {(contribPendientes ?? 0) > 0 && (
+              <span className="ml-1.5 inline-flex min-w-[20px] items-center justify-center rounded-full bg-naranja px-1.5 py-0.5 text-[11px] font-bold text-white">
+                {contribPendientes}
+              </span>
+            )}
+          </Link>
           <Link
             href="/admin/cerebro/categorias"
             className="rounded-boton border border-linea bg-white px-4 py-2.5 text-[14px] font-bold text-titular hover:border-titular"

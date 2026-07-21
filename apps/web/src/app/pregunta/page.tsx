@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { PreguntaChat } from '@/components/chat/PreguntaChat';
+import { getUsuarioYPerfil } from '@/lib/auth/niveles';
 import { metadatosPagina } from '@/lib/seo';
 
 export const metadata: Metadata = metadatosPagina({
@@ -15,7 +16,13 @@ export const metadata: Metadata = metadatosPagina({
  * Página de transparencia + el chat: explica qué es, qué corpus usa y sus
  * límites (salvaguarda explícita de rc-brain.md) antes del propio widget.
  */
-export default function PreguntaPage() {
+export default async function PreguntaPage() {
+  // Leemos la sesión para saber si ofrecer el formulario de "Complementa la
+  // información" (registrados) o el CTA de registro (anónimos). Esto vuelve la
+  // página dinámica, aceptable para un chat interactivo.
+  const { user } = await getUsuarioYPerfil();
+  const autenticado = Boolean(user);
+
   return (
     <section className="pb-[70px] pt-10">
       <Contenedor>
@@ -42,7 +49,7 @@ export default function PreguntaPage() {
           </div>
 
           <div className="relative z-[2]">
-            <PreguntaChat />
+            <PreguntaChat autenticado={autenticado} />
           </div>
         </div>
       </Contenedor>

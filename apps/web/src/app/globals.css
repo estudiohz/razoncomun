@@ -156,6 +156,18 @@
     }
   }
 
+  /* Panel lateral del simulador (PreguntaChat): entra deslizando desde la derecha. */
+  @keyframes entra {
+    from {
+      transform: translateX(24px);
+      opacity: 0.4;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+
   .glow-flota-1 {
     animation: flota 9s ease-in-out infinite alternate;
   }
