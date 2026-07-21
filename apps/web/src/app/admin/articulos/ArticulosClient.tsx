@@ -150,17 +150,25 @@ export function ArticulosClient({ filas, total, page, per, q, totalPaginas, tama
     setError(null);
     const ids = Array.from(seleccion);
     iniciar(async () => {
-      const r = await eliminarArticulos(ids);
-      if (!r.ok) {
-        setError(r.error ?? 'No se han podido eliminar.');
+      try {
+        const r = await eliminarArticulos(ids);
+        if (!r.ok) {
+          setError(r.error ?? 'No se han podido eliminar.');
+          setConfirmando(false);
+          return;
+        }
         setConfirmando(false);
-        return;
+        const quedan = filas.filter((f) => !seleccion.has(f.id)).length;
+        setSeleccion(new Set());
+        if (quedan <= 0 && page > 1) navegar({ page: page - 1 });
+        else router.refresh();
+      } catch {
+        // Red de seguridad: aunque el server action ya devuelve el error en el
+        // objeto en vez de lanzar, un fallo de red del propio RPC podría rechazar
+        // la promesa. Se muestra inline en vez de dejar caer la página entera.
+        setError('No se han podido eliminar (error de red o servidor). Inténtalo de nuevo.');
+        setConfirmando(false);
       }
-      setConfirmando(false);
-      const quedan = filas.filter((f) => !seleccion.has(f.id)).length;
-      setSeleccion(new Set());
-      if (quedan <= 0 && page > 1) navegar({ page: page - 1 });
-      else router.refresh();
     });
   }
 

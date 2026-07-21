@@ -1,9 +1,10 @@
 import { requireAdmin } from '@/lib/admin/guard';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
-import { listarCredencialesIA, PROVEEDOR_LABEL, PROVEEDORES_IA } from '@/lib/admin/ia';
+import { listarCredencialesIA, PROVEEDOR_LABEL } from '@/lib/admin/ia';
 import { nombresPorId } from '@/lib/admin/perfiles';
-import { activarProveedorIA, revertirProveedorIA, actualizarAntiguedadMinima } from './actions';
+import { actualizarAntiguedadMinima } from './actions';
+import { ProveedorIAPanel, type ActivaView } from './ProveedorIAPanel';
 
 const DIAS_OPCIONES = [0, 1, 3, 5, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365];
 
@@ -40,6 +41,18 @@ export default async function AjustesPage() {
 
   const activa = credenciales.find((c) => c.active) ?? null;
   const historico = credenciales.filter((c) => c.id !== activa?.id);
+
+  // Vista serializable para el Client Component (la clave completa nunca sale de la BD).
+  const activaView: ActivaView = activa
+    ? {
+        provider: activa.provider,
+        model: activa.model,
+        keySuffix: activa.key_suffix,
+        changedByName: activa.changed_by ? nombres.get(activa.changed_by) ?? activa.changed_by : 'sistema',
+        changedAtISO: activa.changed_at,
+        hasPrevious: activa.previous_credential_id !== null,
+      }
+    : null;
 
   const { data: evalsRaw } = await supabase
     .from('ai_evals')
@@ -78,108 +91,7 @@ export default async function AjustesPage() {
         </p>
       </Tarjeta>
 
-      <Tarjeta className="p-5">
-        <h3 className="text-[13px] font-bold uppercase tracking-wide text-titular">Proveedor activo</h3>
-        {activa ? (
-          <div className="mt-3 space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-accion px-3 py-1 text-[12px] font-bold text-white">
-                Activo
-              </span>
-              <span className="text-[15px] font-bold text-titular">{PROVEEDOR_LABEL[activa.provider]}</span>
-              <span className="text-[13.5px] text-cuerpo">· {activa.model}</span>
-              <span className="rounded bg-fondo px-2 py-0.5 text-[12px] font-mono text-gris">
-                •••• {activa.key_suffix}
-              </span>
-            </div>
-            <p className="text-[12.5px] text-gris">
-              Cambiado por {activa.changed_by ? nombres.get(activa.changed_by) ?? activa.changed_by : 'sistema'}{' '}
-              el {new Date(activa.changed_at).toLocaleString('es-ES')}
-            </p>
-
-            {activa.previous_credential_id ? (
-              <form action={revertirProveedorIA} className="flex flex-wrap items-end gap-2 border-t border-linea pt-3">
-                <div className="min-w-[260px] flex-1">
-                  <label className="mb-1 block text-[12px] font-bold text-gris">
-                    Motivo de la reversión (obligatorio, queda en auditoría)
-                  </label>
-                  <Input name="motivo" required placeholder="Ej. resultado de la suite por debajo del umbral" />
-                </div>
-                <button
-                  type="submit"
-                  className="rounded-boton border border-red-300 px-4 py-3 text-[13px] font-bold text-red-600"
-                >
-                  Revertir al proveedor anterior
-                </button>
-              </form>
-            ) : (
-              <p className="border-t border-linea pt-3 text-[12.5px] text-gris">
-                Este proveedor no tiene uno anterior registrado — no hay nada a lo que revertir.
-              </p>
-            )}
-          </div>
-        ) : (
-          <p className="mt-3 text-[13px] text-gris">
-            No hay ningún proveedor activo todavía. Activa uno con el formulario de abajo.
-          </p>
-        )}
-      </Tarjeta>
-
-      <Tarjeta className="p-5">
-        <h3 className="text-[13px] font-bold uppercase tracking-wide text-titular">Activar proveedor</h3>
-        <form action={activarProveedorIA} className="mt-3 space-y-3" autoComplete="off">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-[12px] font-bold text-gris">Proveedor</label>
-              <select
-                name="provider"
-                required
-                defaultValue=""
-                className="w-full rounded-boton border border-linea px-3 py-3 text-[14px]"
-              >
-                <option value="" disabled>
-                  Elige un proveedor
-                </option>
-                {PROVEEDORES_IA.map((p) => (
-                  <option key={p} value={p}>
-                    {PROVEEDOR_LABEL[p]}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-[12px] font-bold text-gris">Modelo</label>
-              <Input name="model" required placeholder="ej. claude-opus-4-6, gpt-5, gemini-2.5-pro" />
-            </div>
-          </div>
-          <div>
-            <label className="mb-1 block text-[12px] font-bold text-gris">Clave de API</label>
-            <Input
-              name="apiKey"
-              type="password"
-              required
-              autoComplete="new-password"
-              placeholder="La clave completa no se vuelve a mostrar tras guardarla"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-[12px] font-bold text-gris">
-              Motivo del cambio (obligatorio, queda en auditoría)
-            </label>
-            <Input name="motivo" required placeholder="Ej. mejor rendimiento en la suite de neutralidad" />
-          </div>
-          <label className="flex items-start gap-2 text-[12.5px] text-cuerpo">
-            <input name="avisoLeido" type="checkbox" required className="mt-0.5" />
-            <span>
-              He leído el aviso: sé que se ejecutará la suite de neutralidad y que se revertirá
-              automáticamente si el resultado cae por debajo del 95%.
-            </span>
-          </label>
-          <button type="submit" className="w-full rounded-boton bg-accion px-4 py-3 text-[14px] font-bold text-white">
-            Activar proveedor
-          </button>
-        </form>
-      </Tarjeta>
+      <ProveedorIAPanel activa={activaView} />
 
       <Tarjeta className="p-5">
         <h3 className="text-[13px] font-bold uppercase tracking-wide text-titular">

@@ -159,6 +159,9 @@ export async function guardarArticulo(
  * puede estar compartida y su limpieza no es crítica.
  */
 export async function eliminarArticulos(ids: string[]): Promise<ResultadoAccion> {
+  // `requireEditor()` puede llamar a `redirect()`, que funciona LANZANDO
+  // `NEXT_REDIRECT`. Va FUERA del try de abajo a propósito: si lo envolviéramos,
+  // el catch se tragaría ese control de flujo y el redirect no ocurriría.
   const { supabase } = await requireEditor();
 
   const limpios = Array.from(new Set((ids ?? []).map((s) => String(s).trim()).filter(Boolean)));
@@ -166,9 +169,26 @@ export async function eliminarArticulos(ids: string[]): Promise<ResultadoAccion>
     return { ok: false, error: 'No hay artículos seleccionados.' };
   }
 
-  const { error } = await supabase.from('articles').delete().in('id', limpios);
-  if (error) {
-    return { ok: false, error: `No se han podido eliminar: ${error.message}` };
+  // El borrado en masa puede FALLAR de dos formas distintas y hay que tratar
+  // las dos: (1) error de base devuelto en `{ error }` (RLS, constraint…), y
+  // (2) una EXCEPCIÓN lanzada por supabase-js si la capa REST/pg no responde
+  // JSON válido (p. ej. timeout al borrar muchas filas, un 5xx con HTML). Sin
+  // este try/catch, esa excepción sube sin capturar hasta el `useTransition`
+  // del cliente y revienta la página entera con "client-side exception" en vez
+  // de mostrar un error legible. Un mutador disparado por el usuario NUNCA debe
+  // rechazar la promesa hacia el cliente: siempre devuelve un ResultadoAccion.
+  try {
+    const { error } = await supabase.from('articles').delete().in('id', limpios);
+    if (error) {
+      return { ok: false, error: `No se han podido eliminar: ${error.message}` };
+    }
+  } catch (e) {
+    return {
+      ok: false,
+      error: `No se han podido eliminar (error de red o servidor): ${
+        e instanceof Error ? e.message : 'error inesperado'
+      }`,
+    };
   }
 
   revalidatePath('/blog');

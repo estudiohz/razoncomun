@@ -1,13 +1,20 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export const PROVEEDORES_IA = ['anthropic', 'openai', 'google'] as const;
-export type ProveedorIA = (typeof PROVEEDORES_IA)[number];
+// Proveedores/modelos viven en modelos-ia.ts (client-safe, sin cliente admin)
+// para poder compartirse con el Client Component del formulario. Se re-exportan
+// aquí para no romper los imports de servidor ya existentes (`@/lib/admin/ia`).
+export {
+  PROVEEDORES_IA,
+  PROVEEDOR_LABEL,
+  MODELOS_POR_PROVEEDOR,
+  MODELO_OTRO,
+  modeloRecomendado,
+  esModeloConocido,
+  etiquetaModelo,
+} from './modelos-ia';
+export type { ProveedorIA, ModeloIA } from './modelos-ia';
 
-export const PROVEEDOR_LABEL: Record<ProveedorIA, string> = {
-  anthropic: 'Anthropic (Claude)',
-  openai: 'OpenAI (GPT)',
-  google: 'Google (Gemini)',
-};
+import type { ProveedorIA } from './modelos-ia';
 
 export type CredencialIA = {
   id: string;

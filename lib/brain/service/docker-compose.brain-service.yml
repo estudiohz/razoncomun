@@ -29,6 +29,16 @@ services:
       EMBEDDINGS_PROVIDER: ollama
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-haiku-4-5-20251001}
+      # Clave maestra para descifrar la credencial del proveedor de IA activo
+      # (D-016) que gestiona el panel /admin/ajustes. SIN ESTA VARIABLE el
+      # servicio NO puede leer la fila de ai_provider_credentials y cae al
+      # fallback ANTHROPIC_API_KEY (vacío) -> el chat muestra "pendiente de
+      # configuración". DEBE tener EXACTAMENTE EL MISMO VALOR que en el env de
+      # rc-webapp (que fue quien cifró la credencial): si difiere, pgp_sym_decrypt
+      # falla y el servicio degrada al mismo fallback. Compose solo inyecta al
+      # contenedor las variables listadas aquí, así que tenerla en Dokploy no
+      # basta si no aparece en esta línea.
+      AI_CREDENTIALS_MASTER_KEY: ${AI_CREDENTIALS_MASTER_KEY:-}
       OUT_OF_CORPUS_THRESHOLD: ${OUT_OF_CORPUS_THRESHOLD:-0.55}
       RETRIEVAL_LIMIT: ${RETRIEVAL_LIMIT:-5}
       BRAIN_INTERNAL_TOKEN: ${BRAIN_INTERNAL_TOKEN}
@@ -83,7 +93,11 @@ networks:
 #   1. Nuevo servicio -> Docker Compose, repo github.com/estudiohz/razoncomun,
 #      rama main, ruta: lib/brain/service/docker-compose.brain-service.yml
 #   2. Variables de entorno: SUPABASE_PUBLIC_URL, SERVICE_ROLE_KEY (copiar de
-#      "rc-supabase"), ANTHROPIC_API_KEY (PENDIENTE DE SERGIO),
+#      "rc-supabase"), AI_CREDENTIALS_MASTER_KEY (OBLIGATORIA para el proveedor
+#      de IA del panel -- MISMO VALOR EXACTO que en el env de rc-webapp; sin ella
+#      el chat queda "pendiente de configuración" aunque el panel muestre un
+#      proveedor activo), ANTHROPIC_API_KEY (opcional, solo como fallback si no
+#      hay proveedor activo en el panel),
 #      BRAIN_INTERNAL_TOKEN (generar un secreto largo, ej. `openssl rand -hex 32`,
 #      pegarlo aquí Y en la config del bot de Discord / n8n),
 #      BRAIN_IP_HASH_SALT (otro secreto aleatorio), CORS_ALLOW_ORIGIN.
