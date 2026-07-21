@@ -35,10 +35,9 @@ export default function PreguntaPage() {
             </h1>
             <p className="mx-auto mb-8 max-w-[60ch] text-[15px] text-white/[.72]">
               Soy una inteligencia artificial, no una persona del partido. Solo respondo con lo que
-              hay publicado en el programa, el ideario y el observatorio de Razón Común — nunca con
-              opinión propia ni con conocimiento externo. Si no está en ese corpus, te lo digo en
-              vez de inventar, y cito siempre la fuente. Las decisiones del partido las toman
-              personas, no yo.
+              hay publicado en el programa de Razón Común — nunca con opinión propia. Si no está en
+              mi base de datos, te lo digo en vez de inventar. Las decisiones del partido las toman
+              personas, no yo. Por favor, haz preguntas sencillas y cortas.
             </p>
           </div>
 

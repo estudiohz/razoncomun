@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
 import {
@@ -88,6 +88,23 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
   // Editor de modelo in situ (solo modelo, conserva la clave):
   const [modelEditSel, setModelEditSel] = useState<string>('');
   const [modelEditCustom, setModelEditCustom] = useState<string>('');
+  const [guardandoModelo, iniciarGuardarModelo] = useTransition();
+
+  // Guarda el modelo y CIERRA el editor de forma fiable. No se puede depender
+  // solo del reset por `activaKey`: si el modelo no cambia, la acción sale por
+  // su rama "sin cambios" y `changed_at` no se toca, así que `activaKey` no
+  // cambia y el editor se quedaría abierto. Aquí lo cerramos explícitamente al
+  // terminar la acción (haya cambiado el modelo o no).
+  function guardarModelo(formData: FormData) {
+    iniciarGuardarModelo(async () => {
+      try {
+        await actualizarModeloProveedorIA(formData);
+        setEditandoModelo(false);
+      } catch {
+        // Si la acción falla (validación/red), se deja el editor abierto.
+      }
+    });
+  }
 
   // Identidad estable de la credencial activa. Cuando cambia (activar, borrar,
   // editar modelo -> revalidatePath re-renderiza con otra `activa`, o null),
@@ -174,7 +191,7 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
             {/* Editor de MODELO in situ — conserva la clave (solo cambia el modelo). */}
             {editandoModelo && (
               <form
-                action={actualizarModeloProveedorIA}
+                action={guardarModelo}
                 className="space-y-2 rounded-boton border border-linea bg-fondo p-3"
               >
                 <p className="text-[13px] font-bold text-titular">
@@ -219,14 +236,16 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
                 <div className="flex flex-wrap gap-2 pt-1">
                   <button
                     type="submit"
-                    className="rounded-boton bg-accion px-4 py-2 text-[13px] font-bold text-white"
+                    disabled={guardandoModelo}
+                    className="rounded-boton bg-accion px-4 py-2 text-[13px] font-bold text-white disabled:opacity-60"
                   >
-                    Guardar modelo
+                    {guardandoModelo ? 'Guardando…' : 'Guardar modelo'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditandoModelo(false)}
-                    className="rounded-boton border border-linea px-4 py-2 text-[13px] font-bold text-titular hover:border-titular"
+                    disabled={guardandoModelo}
+                    className="rounded-boton border border-linea px-4 py-2 text-[13px] font-bold text-titular hover:border-titular disabled:opacity-60"
                   >
                     Cancelar
                   </button>
