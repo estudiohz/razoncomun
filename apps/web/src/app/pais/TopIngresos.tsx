@@ -23,9 +23,12 @@ import type { PartidaResueltaInfo } from '@/lib/simulador/tipos';
  */
 
 const ANIO_PRINCIPAL = 2026;
-/** Sergio: "mostrar solo 5 y poner el típico botón de expandir" — un único
- * umbral fijo, sin distinción móvil/escritorio (antes había dos). */
-const LIMITE_INICIAL = 5;
+/** Sergio: "muestra al menos 4 elementos primeros de cada columna" — con el
+ * reparto intercalado de abajo (par→col1, impar→col2), un umbral de 8
+ * garantiza 4+4 exactos al colapsar. (Antes: 5, que con 2 columnas dejaba la
+ * derecha vacía — ver comentario sobre el reparto más abajo.) */
+const POR_COLUMNA_INICIAL = 4;
+const LIMITE_INICIAL = POR_COLUMNA_INICIAL * 2;
 const LIMITE_MAXIMO = 20;
 
 interface Props {
@@ -106,13 +109,16 @@ export function TopIngresos({ partidas, infoPorId }: Props) {
   const aniosDistintos = new Set(hojasIngreso.map((x) => x.partida.anio));
   const mostrarBoton = hojasIngreso.length > LIMITE_INICIAL;
 
-  // Dos columnas (Sergio): reparto por rango, NO intercalado — columna 1 se
-  // lleva la primera mitad del ranking (1..N/2), columna 2 la segunda
-  // (N/2+1..20). En móvil (grid-cols-1) las dos <ul> se apilan y la lectura
-  // sigue siendo de mayor a menor de arriba abajo, sin reordenar nada.
-  const mitad = Math.ceil(hojasIngreso.length / 2);
-  const columna1 = hojasIngreso.slice(0, mitad);
-  const columna2 = hojasIngreso.slice(mitad);
+  // Dos columnas (Sergio): reparto INTERCALADO por rango — rango par a la
+  // columna izquierda, impar a la derecha (rango0→col1, rango1→col2,
+  // rango2→col1...). Así la lectura por FILA visual es "de mayor a menor,
+  // de izquierda a derecha" (rango N a la izquierda, rango N+1 a la
+  // derecha, en la misma fila) y — a diferencia del reparto por mitades que
+  // había antes (col1=1..10, col2=11..20) — la columna derecha SÍ tiene
+  // contenido nada más colapsar: con LIMITE_INICIAL=8, quedan 4 en cada
+  // columna en vez de 5+0.
+  const columna1 = hojasIngreso.filter((_, i) => i % 2 === 0);
+  const columna2 = hojasIngreso.filter((_, i) => i % 2 === 1);
 
   return (
     <section className="mx-auto mt-8 max-w-[1080px] rounded-tarjeta border border-linea bg-white p-5 min-[720px]:p-6">
