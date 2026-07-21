@@ -203,14 +203,16 @@ export function PanelMinisterio({ raizId, parametros, partidas, demografia }: Pr
         </span>
         <h1 className="mt-3 text-[clamp(26px,4vw,40px)] font-extrabold leading-[1.12]">{raiz.nombre}</h1>
 
-        <div className="mx-auto mt-7 grid max-w-[560px] grid-cols-1 gap-4 min-[520px]:grid-cols-2">
-          <div className="rounded-tarjeta border border-linea bg-white p-5">
+        {/* Sin max-w propio (Sergio: tarjetas al 50% de anchura) — usa el
+            ancho completo del <header> (max-w-900) que ya las envuelve. */}
+        <div className="mx-auto mt-7 grid w-full grid-cols-1 gap-4 min-[520px]:grid-cols-2">
+          <div className="rounded-tarjeta border border-linea bg-white p-5 text-center">
             <p className="text-[12px] font-bold uppercase tracking-wide text-gris">Actual (oficial)</p>
             <p className="mt-1 text-[26px] font-extrabold tabular-nums text-titular">
               <CountUp value={infoRaiz.actual.propioCents ?? 0} formatear={(n) => formatoCorto(Math.round(n))} />
             </p>
           </div>
-          <div className="rounded-tarjeta border border-teal/30 bg-teal/5 p-5">
+          <div className="rounded-tarjeta border border-teal/30 bg-teal/5 p-5 text-center">
             <p className="text-[12px] font-bold uppercase tracking-wide text-teal-texto">Razón Común</p>
             <p className="mt-1 text-[26px] font-extrabold tabular-nums text-teal-texto">
               <CountUp value={infoRaiz.rc.propioCents ?? 0} formatear={(n) => formatoCorto(Math.round(n))} />

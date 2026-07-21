@@ -19,8 +19,11 @@
 import type { DemografiaRow } from '@/lib/simulador/adminData';
 import { formatoEurosConUnidad, formatoPersonas } from '@/lib/simulador/formato';
 import { DonutChart } from './DonutChart';
+import { PiramidePoblacional } from './PiramidePoblacional';
 
 const NOMBRE_ANCLA = 'Población total de España';
+const NOMBRE_ACTIVA = 'Población activa';
+const NOMBRE_JUBILADOS = 'Jubilados';
 
 function TarjetaPersona({ fila }: { fila: DemografiaRow }) {
   return (
@@ -38,7 +41,15 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
   if (filas.length === 0) return null;
 
   const ancla = filas.find((f) => f.nombre.trim() === NOMBRE_ANCLA);
-  const otras = filas.filter((f) => f.id !== ancla?.id);
+  const activa = filas.find((f) => f.nombre.trim() === NOMBRE_ACTIVA);
+  const jubilados = filas.find((f) => f.nombre.trim() === NOMBRE_JUBILADOS);
+  // "Población activa" se EXCLUYE del donut de composición (no de las
+  // tarjetas): es un agregado que SOLAPA con otras categorías ya listadas
+  // (Funcionarios, Autónomos son subconjuntos de la población activa) — si
+  // entrara como porción independiente, contaría a esas personas dos veces
+  // y el "Resto" saldría mal. Su sitio es la pirámide (activos vs jubilados),
+  // no una porción del pastel de composición.
+  const otras = filas.filter((f) => f.id !== ancla?.id && f.nombre.trim() !== NOMBRE_ACTIVA);
 
   // Segmentos del donut relativos al ANCLA (única forma de un % honesto,
   // ver comentario de arriba) — se añade un "Resto" para que el donut sume
@@ -75,6 +86,8 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
           <DonutChart segmentos={segmentosDonut} titulo="Población" />
         </div>
       )}
+
+      <PiramidePoblacional activa={activa} jubilados={jubilados} />
     </section>
   );
 }

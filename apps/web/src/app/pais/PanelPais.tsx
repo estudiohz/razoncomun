@@ -300,6 +300,7 @@ export function PanelPais({ parametros, partidas, beta, demografiaPais }: Props)
 
 function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
   return (
+    <>
     <header className="mx-auto max-w-[900px] text-center">
       <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">
         Base de datos del país
@@ -317,9 +318,16 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
           🚧 Beta — en construcción: cada semana publicamos más áreas
         </p>
       )}
+    </header>
 
-      <div className="mx-auto mt-8 grid max-w-[560px] grid-cols-1 gap-4 min-[520px]:grid-cols-2">
-        <div className="rounded-tarjeta border border-linea bg-white p-5">
+      {/* Tarjetas de balance FUERA del <header> (max-w-900, pensado para texto
+          legible) — Sergio pidió que ocupen el 50% de anchura cada una; con el
+          header de texto ya son casi tan anchas como el titular. Ancho a
+          max-w-[1080px], igual que Bloques/TopIngresos/SeccionPoblacion, para
+          que en desktop cada tarjeta sea realmente la mitad del contenido de
+          la página, no de un sub-contenedor artificialmente estrecho. */}
+      <div className="mx-auto mt-8 grid max-w-[1080px] grid-cols-1 gap-4 min-[520px]:grid-cols-2">
+        <div className="rounded-tarjeta border border-linea bg-white p-5 text-center">
           <p className="text-[12px] font-bold uppercase tracking-wide text-gris">Balance actual (oficial)</p>
           <p
             className={cn(
@@ -330,7 +338,7 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
             <CountUp value={modelo.balance.actualCents} formatear={(n) => formatoCorto(Math.round(n))} />
           </p>
         </div>
-        <div className="rounded-tarjeta border border-teal/30 bg-teal/5 p-5">
+        <div className="rounded-tarjeta border border-teal/30 bg-teal/5 p-5 text-center">
           <p className="text-[12px] font-bold uppercase tracking-wide text-teal-texto">Balance Razón Común</p>
           <p
             className={cn(
@@ -344,13 +352,13 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
       </div>
 
       {modelo.sinResolver.length > 0 && (
-        <p className="mx-auto mt-3 max-w-[62ch] text-[12.5px] text-gris">
+        <p className="mx-auto mt-3 max-w-[62ch] text-center text-[12.5px] text-gris">
           ⚠ {modelo.sinResolver.length} elemento{modelo.sinResolver.length === 1 ? '' : 's'} publicado
           {modelo.sinResolver.length === 1 ? '' : 's'} sin resolver — no cuenta
           {modelo.sinResolver.length === 1 ? '' : 'n'} en el balance.
         </p>
       )}
-    </header>
+    </>
   );
 }
 
