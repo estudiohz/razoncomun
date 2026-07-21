@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
 import { AdminSidebar, AdminMobileMenu } from '@/components/admin/AdminSidebar';
 import { AdminBreadcrumbs } from '@/components/admin/AdminBreadcrumbs';
+import { cerrarSesion } from '@/app/perfil/actions';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Panel de administración',
@@ -25,27 +27,48 @@ export const metadata: Metadata = metadatosPagina({
  *
  * La RLS de cada tabla sigue siendo la autoridad real (C3) por si alguien
  * se salta esto con una petición directa a la API.
+ *
+ * Shell a pantalla completa, estilo WordPress (feedback Sergio: el admin
+ * anterior iba embebido en la web pública — nav/footer + `max-w-wrap` —, y
+ * desperdiciaba pantalla en escritorio). `ChromePublico`
+ * (components/layout/ChromePublico.tsx) ya se encarga de NO pintar la nav
+ * ni el footer públicos en ninguna ruta bajo `/admin`; este layout es el
+ * único chrome que ve el panel: sidebar fijo full-height a la izquierda +
+ * barra superior propia + contenido al 100% del ancho restante.
  */
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const { perfil, esAdmin, esEditor } = await requireAdminOrEditor();
 
   return (
-    <div className="min-h-screen bg-fondo">
-      <div className="mx-auto w-full max-w-wrap px-4 py-6 min-[960px]:flex min-[960px]:gap-8 min-[960px]:px-8 min-[960px]:py-10">
-        <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} />
-        <div className="min-w-0 flex-1 space-y-5">
-          <header className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} />
-              <AdminBreadcrumbs />
-            </div>
-            <p className="text-[12.5px] text-gris">
+    <div className="min-h-screen w-full bg-fondo min-[960px]:flex">
+      <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} />
+
+      <div className="min-w-0 flex-1">
+        <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-linea bg-panel px-4 py-3 min-[960px]:px-8">
+          <div className="flex items-center gap-3">
+            <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} />
+            <AdminBreadcrumbs />
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="hidden text-[12.5px] text-gris min-[640px]:block">
               {perfil.display_name ?? perfil.email} ·{' '}
               <span className="font-bold text-titular">{esAdmin ? 'Administrador' : 'Editor'}</span>
             </p>
-          </header>
-          {children}
-        </div>
+            <Link href="/" className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular">
+              Ver la web
+            </Link>
+            <form action={cerrarSesion}>
+              <button
+                type="submit"
+                className="text-[13px] font-semibold text-cuerpo hover:text-titular"
+              >
+                Cerrar sesión
+              </button>
+            </form>
+          </div>
+        </header>
+
+        <main className="w-full px-4 py-6 min-[960px]:px-8 min-[960px]:py-8">{children}</main>
       </div>
     </div>
   );

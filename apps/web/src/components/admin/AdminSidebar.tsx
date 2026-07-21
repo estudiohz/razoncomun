@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -53,14 +54,23 @@ function AdminNavLinks({
 }
 
 /**
- * Sidebar de escritorio (≥960px). En móvil se oculta por completo: la
- * navegación pasa al burger de `AdminMobileMenu`, de modo que el contenido
- * del panel ocupa todo el ancho disponible.
+ * Sidebar de escritorio (≥960px), estilo WordPress: panel fijo a la
+ * izquierda que ocupa toda la altura de la ventana (`sticky top-0 h-screen`),
+ * con la cabecera de marca arriba y la navegación scrolleable debajo. En
+ * móvil se oculta por completo: la navegación pasa al burger de
+ * `AdminMobileMenu` (en la barra superior), de modo que el contenido del
+ * panel ocupa todo el ancho disponible.
  */
 export function AdminSidebar({ esAdmin }: { esAdmin: boolean; esEditor: boolean }) {
   return (
-    <aside className="hidden w-[240px] shrink-0 min-[960px]:block">
-      <div className="sticky top-6 rounded-tarjeta border border-linea bg-panel p-3 shadow-nav">
+    <aside className="hidden shrink-0 border-r border-linea bg-panel min-[960px]:sticky min-[960px]:top-0 min-[960px]:flex min-[960px]:h-screen min-[960px]:w-[270px] min-[960px]:flex-col">
+      <Link href="/admin" className="flex shrink-0 items-center gap-2.5 border-b border-linea px-5 py-5 no-underline">
+        <Image src="/logo-rc.png" alt="Razón Común" width={140} height={32} className="h-[26px] w-auto" />
+        <span className="rounded-full bg-fondo px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gris">
+          Panel
+        </span>
+      </Link>
+      <div className="flex-1 overflow-y-auto p-3">
         <AdminNavLinks esAdmin={esAdmin} />
       </div>
     </aside>
@@ -114,7 +124,12 @@ export function AdminMobileMenu({ esAdmin }: { esAdmin: boolean; esEditor: boole
           className="fixed inset-0 z-[60] flex flex-col bg-fondo motion-safe:animate-[sube_.3s_ease]"
         >
           <div className="flex items-center justify-between border-b border-linea px-6 py-4">
-            <span className="text-sm font-bold uppercase tracking-wide text-titular">Panel</span>
+            <span className="flex items-center gap-2.5">
+              <Image src="/logo-rc.png" alt="Razón Común" width={130} height={30} className="h-[24px] w-auto" />
+              <span className="rounded-full bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gris">
+                Panel
+              </span>
+            </span>
             <button
               type="button"
               onClick={() => setAbierto(false)}

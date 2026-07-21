@@ -3,6 +3,7 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { Nav } from '@/components/layout/Nav';
 import { Footer } from '@/components/layout/Footer';
+import { ChromePublico } from '@/components/layout/ChromePublico';
 import { jsonLdOrganizacion } from '@/lib/seo';
 import { site } from '@/lib/site';
 
@@ -42,9 +43,9 @@ export default function RootLayout({
           // JSON-LD de organización política (schema.org/PoliticalParty)
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganizacion()) }}
         />
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+        <ChromePublico nav={<Nav />} footer={<Footer />}>
+          {children}
+        </ChromePublico>
       </body>
     </html>
   );
