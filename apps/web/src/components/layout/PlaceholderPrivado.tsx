@@ -21,7 +21,7 @@ export function PlaceholderPrivado({
             Volver a la home
           </Boton>
         </div>
-        <p className="mt-8 text-[12.5px] text-gris">Área privada · a cargo de {dueño}.</p>
+        <p className="mt-8 text-[12.5px] text-gris">Área privada.</p>
       </div>
     </Contenedor>
   );

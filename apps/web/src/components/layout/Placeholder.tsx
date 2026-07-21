@@ -40,9 +40,7 @@ export function Placeholder({
           </Boton>
         </div>
         {dueño ? (
-          <p className="mt-10 text-[12.5px] text-gris">
-            Sección en construcción · módulo definitivo a cargo de {dueño}.
-          </p>
+          <p className="mt-10 text-[12.5px] text-gris">Sección en construcción.</p>
         ) : null}
       </div>
     </Contenedor>
