@@ -155,7 +155,7 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
                 <button
                   type="button"
                   onClick={() => setComplementando((c) => (c === i ? null : i))}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-white/40 hover:text-white"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-naranja px-4 py-2 text-[13px] font-bold text-white shadow-[0_4px_14px_rgba(232,121,47,.35)] transition-transform hover:-translate-y-0.5"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
