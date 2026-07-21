@@ -90,7 +90,7 @@ export function OpinaMiniChat() {
           disabled={done}
           placeholder={done ? 'Gracias por tu aportación.' : 'Pregúntale a nuestra IA…'}
           aria-label="Pregúntale a nuestra IA"
-          className="flex-1 overflow-hidden bg-transparent text-[15px] text-white placeholder:text-white/[.5] focus:outline-none"
+          className="min-w-0 flex-1 overflow-hidden bg-transparent text-[15px] text-white placeholder:text-white/[.5] focus:outline-none"
         />
         <button
           type="submit"
