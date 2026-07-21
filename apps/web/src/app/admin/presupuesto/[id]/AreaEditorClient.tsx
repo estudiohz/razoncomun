@@ -354,13 +354,17 @@ function FilaForm({
       )}
 
       <label className="block text-[12.5px] font-semibold text-gris">
-        Color (barra en /pais)
+        Color (barra y donut en /pais)
         <input
           type="color"
           value={campos.color || '#16B8A0'}
           onChange={(e) => set('color', e.target.value)}
           className="mt-1 h-9 w-16 rounded-boton border border-linea"
         />
+        <span className="mt-1 block text-[11px] font-normal normal-case text-gris">
+          Asignar un color propio a cada área mejora el donut de reparto en /pais — si no se asigna, se usa un color
+          de una paleta de reserva (no es obligatorio).
+        </span>
       </label>
     </div>
   );

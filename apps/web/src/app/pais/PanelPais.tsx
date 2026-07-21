@@ -3,10 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import type { ParametroRow, PartidaRow } from '@/lib/simulador/adminData';
-import { centsAEuros, formatoEuros } from '@/lib/simulador/formato';
+import { centsAEuros, formatoCorto } from '@/lib/simulador/formato';
 import { resolver } from '@/lib/simulador/resolver';
 import type { ModeloResuelto, Overrides, PartidaResueltaInfo, TipoPartida } from '@/lib/simulador/tipos';
 import { CountUp } from './CountUp';
+import { DonutChart } from './DonutChart';
+import { TopIngresos } from './TopIngresos';
 import { detectarCascada, type ResultadoCascada } from './cascada';
 
 interface Props {
@@ -37,6 +39,17 @@ function ancestros(id: string, partidaPorId: Map<string, PartidaRow>): string[] 
     actual = partidaPorId.get(actual)?.parent_id ?? undefined;
   }
   return cadena;
+}
+
+/**
+ * Referencia de palabra completa a `clave` dentro de un texto de fórmula
+ * (`num_autonomos` no debe casar con `num_autonomos_base`). `clave` sigue
+ * el patrón `^[a-z][a-z0-9_]*$` (validado al guardar en el admin), así que
+ * es segura de interpolar directamente en un `RegExp` sin escapar.
+ */
+function referenciaFormula(formula: string | null, clave: string): boolean {
+  if (!formula) return false;
+  return new RegExp(`\\b${clave}\\b`).test(formula);
 }
 
 export function PanelPais({ parametros, partidas, beta }: Props) {
@@ -131,6 +144,53 @@ export function PanelPais({ parametros, partidas, beta }: Props) {
     return mapa;
   }, [partidas]);
 
+  // Ubicación de las palancas-parámetro (S2.1): cada parámetro-palanca se
+  // monta DENTRO de la partida que lo usa en su fórmula (actual o RC), en
+  // vez de en un sandbox aparte — así se ve "en el ministerio que toca".
+  // Criterio cuando varias partidas referencian el mismo parámetro:
+  // se prioriza la más específica (con padre, es decir una hija) sobre una
+  // raíz, y entre varias hijas, la primera por `orden` — determinista y
+  // evita duplicar el mismo control (mismo `id` de DOM) en dos sitios.
+  // Si ninguna partida publicada lo referencia, el parámetro es "huérfano"
+  // y cae en la mini-sección compacta del final (no se pierde el control).
+  const partidaIdPorParametro = useMemo(() => {
+    const mapa = new Map<string, string>();
+    const palancas = parametros.filter((p) => p.es_palanca && p.palanca_min !== null && p.palanca_max !== null);
+    for (const p of palancas) {
+      const candidatas = partidas.filter(
+        (pt) => referenciaFormula(pt.actual_formula, p.clave) || referenciaFormula(pt.rc_formula, p.clave),
+      );
+      if (candidatas.length === 0) continue;
+      const elegida = [...candidatas].sort((a, b) => {
+        const aEspecifica = a.parent_id !== null ? 0 : 1;
+        const bEspecifica = b.parent_id !== null ? 0 : 1;
+        if (aEspecifica !== bEspecifica) return aEspecifica - bEspecifica;
+        return a.orden - b.orden;
+      })[0];
+      mapa.set(p.clave, elegida.id);
+    }
+    return mapa;
+  }, [parametros, partidas]);
+
+  const parametrosPorPartida = useMemo(() => {
+    const mapa = new Map<string, ParametroRow[]>();
+    for (const [clave, partidaId] of partidaIdPorParametro) {
+      const param = parametros.find((p) => p.clave === clave);
+      if (!param) continue;
+      if (!mapa.has(partidaId)) mapa.set(partidaId, []);
+      mapa.get(partidaId)!.push(param);
+    }
+    return mapa;
+  }, [partidaIdPorParametro, parametros]);
+
+  const parametrosHuerfanos = useMemo(
+    () =>
+      parametros.filter(
+        (p) => p.es_palanca && p.palanca_min !== null && p.palanca_max !== null && !partidaIdPorParametro.has(p.clave),
+      ),
+    [parametros, partidaIdPorParametro],
+  );
+
   const [rutaGasto, setRutaGasto] = useState<string[]>([]);
   const [rutaIngreso, setRutaIngreso] = useState<string[]>([]);
 
@@ -147,12 +207,28 @@ export function PanelPais({ parametros, partidas, beta }: Props) {
   }
 
   const primerAfectado = cascada ? [...cascada.idsPulso][0] : undefined;
+  const clavesPulso = cascada?.clavesPulso ?? new Set<string>();
+  const idsPulso = cascada?.idsPulso ?? new Set<string>();
 
   return (
     <div>
       <Cabecera modelo={modelo} beta={beta} />
 
-      <div className="mx-auto mt-12 grid max-w-[1080px] grid-cols-1 gap-8 min-[900px]:grid-cols-2">
+      {hayOverrides && (
+        <div className="mx-auto mt-4 max-w-[1080px] text-center">
+          <button
+            type="button"
+            onClick={restablecer}
+            className="rounded-boton border border-linea bg-white px-4 py-2 text-[13px] font-bold text-titular hover:border-titular"
+          >
+            Restablecer todas las palancas
+          </button>
+        </div>
+      )}
+
+      <TopIngresos partidas={partidas} infoPorId={infoPorId} />
+
+      <div className="mx-auto mt-8 grid max-w-[1080px] grid-cols-1 gap-8 min-[900px]:grid-cols-2">
         <section id="bloque-gastos">
           <h2 className="text-[15px] font-extrabold uppercase tracking-wide text-titular">Gastos</h2>
           <div className="mt-3">
@@ -164,7 +240,13 @@ export function PanelPais({ parametros, partidas, beta }: Props) {
               partidaPorId={partidaPorId}
               infoPorId={infoPorId}
               hijosDe={hijosDe}
-              idsPulso={cascada?.idsPulso ?? new Set()}
+              idsPulso={idsPulso}
+              clavesPulso={clavesPulso}
+              parametrosPorPartida={parametrosPorPartida}
+              overridesParametros={overridesParametros}
+              overridesPartidas={overridesPartidas}
+              onMoverParametro={moverParametro}
+              onMoverPartida={moverPartida}
             />
           </div>
         </section>
@@ -180,24 +262,23 @@ export function PanelPais({ parametros, partidas, beta }: Props) {
               partidaPorId={partidaPorId}
               infoPorId={infoPorId}
               hijosDe={hijosDe}
-              idsPulso={cascada?.idsPulso ?? new Set()}
+              idsPulso={idsPulso}
+              clavesPulso={clavesPulso}
+              parametrosPorPartida={parametrosPorPartida}
+              overridesParametros={overridesParametros}
+              overridesPartidas={overridesPartidas}
+              onMoverParametro={moverParametro}
+              onMoverPartida={moverPartida}
             />
           </div>
         </section>
       </div>
 
-      <Sandbox
-        parametros={parametros}
-        partidas={partidas}
-        infoPorId={infoPorId}
+      <PalancasHuerfanas
+        parametros={parametrosHuerfanos}
         overridesParametros={overridesParametros}
-        overridesPartidas={overridesPartidas}
-        clavesPulso={cascada?.clavesPulso ?? new Set()}
-        idsPulso={cascada?.idsPulso ?? new Set()}
-        hayOverrides={hayOverrides}
+        clavesPulso={clavesPulso}
         onMoverParametro={moverParametro}
-        onMoverPartida={moverPartida}
-        onRestablecer={restablecer}
       />
 
       {cascada?.huboCambio && cascada.cadenaTexto && (
@@ -222,7 +303,7 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
       </h1>
       <p className="mx-auto mt-3 max-w-[62ch] text-[15.5px] text-cuerpo">
         El presupuesto oficial de España, comparado con el de Razón Común — área a área, con fuente oficial y
-        justificación política. Mueve las palancas del sandbox y mira el efecto en cadena.
+        justificación política. Mueve las palancas y mira el efecto en cadena.
       </p>
 
       {beta && (
@@ -240,7 +321,7 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
               modelo.balance.actualCents >= 0 ? 'text-titular' : 'text-magenta',
             )}
           >
-            <CountUp value={modelo.balance.actualCents} formatear={(n) => formatoEuros(Math.round(n))} />
+            <CountUp value={modelo.balance.actualCents} formatear={(n) => formatoCorto(Math.round(n))} />
           </p>
         </div>
         <div className="rounded-tarjeta border border-teal/30 bg-teal/5 p-5">
@@ -251,7 +332,7 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
               modelo.balance.rcCents >= 0 ? 'text-teal-texto' : 'text-magenta',
             )}
           >
-            <CountUp value={modelo.balance.rcCents} formatear={(n) => formatoEuros(Math.round(n))} />
+            <CountUp value={modelo.balance.rcCents} formatear={(n) => formatoCorto(Math.round(n))} />
           </p>
         </div>
       </div>
@@ -276,6 +357,12 @@ function Bloque({
   infoPorId,
   hijosDe,
   idsPulso,
+  clavesPulso,
+  parametrosPorPartida,
+  overridesParametros,
+  overridesPartidas,
+  onMoverParametro,
+  onMoverPartida,
 }: {
   tipo: TipoPartida;
   ruta: string[];
@@ -285,6 +372,12 @@ function Bloque({
   infoPorId: Map<string, PartidaResueltaInfo>;
   hijosDe: Map<string, string[]>;
   idsPulso: Set<string>;
+  clavesPulso: Set<string>;
+  parametrosPorPartida: Map<string, ParametroRow[]>;
+  overridesParametros: Record<string, number>;
+  overridesPartidas: Record<string, number>;
+  onMoverParametro: (clave: string, nombre: string, valorNuevo: number) => void;
+  onMoverPartida: (id: string, nombre: string, centsNuevo: number) => void;
 }) {
   const nivelActualId = ruta.length > 0 ? ruta[ruta.length - 1] : null;
   const idsNivel =
@@ -305,8 +398,32 @@ function Bloque({
     }),
   );
 
+  // Donut de reparto (S2.1, item 2a): SIEMPRE el reparto de las ÁREAS RAÍZ
+  // de este bloque sobre el total del bloque, lado RC — independiente del
+  // nivel de drill-down en el que esté el visitante (las raíces no
+  // cambian). "Eso mismo se repite en los ministerios" vive dentro de cada
+  // `FilaPartida` con hijos (ver más abajo), con el dataset de sus hijos.
+  const raicesTipo = partidas
+    .filter((p) => p.tipo === tipo && p.parent_id === null)
+    .sort((a, b) => a.orden - b.orden);
+  const segmentosRaices = raicesTipo.map((r) => ({
+    nombre: r.nombre,
+    valor: infoPorId.get(r.id)?.rc.propioCents ?? 0,
+    color: r.color,
+  }));
+  const hayDatosRaices = segmentosRaices.some((s) => s.valor > 0);
+
   return (
     <div>
+      {hayDatosRaices && (
+        <div className="mb-4 rounded-boton border border-linea bg-white p-4">
+          <p className="mb-2 text-[11.5px] font-bold uppercase tracking-wide text-gris">
+            Reparto por área — propuesta RC
+          </p>
+          <DonutChart segmentos={segmentosRaices} titulo={tipo === 'gasto' ? 'Gastos' : 'Ingresos'} />
+        </div>
+      )}
+
       <nav aria-label="Ruta de navegación" className="mb-3 flex flex-wrap items-center gap-1 text-[12.5px] text-gris">
         <button
           type="button"
@@ -338,12 +455,24 @@ function Bloque({
         {filas.map((fila) => {
           const info = infoPorId.get(fila.id);
           if (!info) return null;
-          const tieneHijos = (hijosDe.get(fila.id) ?? []).length > 0;
+          const hijosIds = hijosDe.get(fila.id) ?? [];
+          const tieneHijos = hijosIds.length > 0;
           const pulsando = idsPulso.has(fila.id);
           const deltaPct =
             info.actual.propioCents !== null && info.actual.propioCents !== 0 && info.rc.propioCents !== null
               ? ((info.rc.propioCents - info.actual.propioCents) / Math.abs(info.actual.propioCents)) * 100
               : null;
+
+          const segmentosHijos = hijosIds
+            .map((id) => {
+              const h = partidaPorId.get(id);
+              const infoH = infoPorId.get(id);
+              if (!h || !infoH) return null;
+              return { nombre: h.nombre, valor: infoH.rc.propioCents ?? 0, color: h.color };
+            })
+            .filter((s): s is { nombre: string; valor: number; color: string | null } => s !== null);
+
+          const parametrosAsociados = parametrosPorPartida.get(fila.id) ?? [];
 
           return (
             <FilaPartida
@@ -355,6 +484,13 @@ function Bloque({
               pulsando={pulsando}
               deltaPct={deltaPct}
               onDrill={() => tieneHijos && setRuta([...ruta, fila.id])}
+              segmentosHijos={segmentosHijos}
+              parametrosAsociados={parametrosAsociados}
+              overridesParametros={overridesParametros}
+              overridesPartidas={overridesPartidas}
+              clavesPulso={clavesPulso}
+              onMoverParametro={onMoverParametro}
+              onMoverPartida={onMoverPartida}
             />
           );
         })}
@@ -371,6 +507,13 @@ function FilaPartida({
   pulsando,
   deltaPct,
   onDrill,
+  segmentosHijos,
+  parametrosAsociados,
+  overridesParametros,
+  overridesPartidas,
+  clavesPulso,
+  onMoverParametro,
+  onMoverPartida,
 }: {
   fila: PartidaRow;
   info: PartidaResueltaInfo;
@@ -379,11 +522,20 @@ function FilaPartida({
   pulsando: boolean;
   deltaPct: number | null;
   onDrill: () => void;
+  segmentosHijos: { nombre: string; valor: number; color: string | null }[];
+  parametrosAsociados: ParametroRow[];
+  overridesParametros: Record<string, number>;
+  overridesPartidas: Record<string, number>;
+  clavesPulso: Set<string>;
+  onMoverParametro: (clave: string, nombre: string, valorNuevo: number) => void;
+  onMoverPartida: (id: string, nombre: string, centsNuevo: number) => void;
 }) {
   const [abierta, setAbierta] = useState(false);
+  const [ajustarAbierto, setAjustarAbierto] = useState(false);
   const pctActual = maxCents > 0 ? Math.min(100, ((info.actual.propioCents ?? 0) / maxCents) * 100) : 0;
   const pctRC = maxCents > 0 ? Math.min(100, ((info.rc.propioCents ?? 0) / maxCents) * 100) : 0;
   const tieneDetalle = Boolean(fila.fuente_actual?.trim() || fila.justificacion_rc?.trim());
+  const tieneAjuste = fila.es_palanca || parametrosAsociados.length > 0;
 
   return (
     <div className={cn('rounded-boton border bg-white p-4', pulsando ? 'pais-pulso border-teal' : 'border-linea')}>
@@ -396,13 +548,14 @@ function FilaPartida({
           <span className="text-[14.5px] font-bold text-titular">{fila.nombre}</span>
         )}
         <div className="flex flex-wrap items-center gap-1.5">
-          {fila.es_palanca && (
-            <a
-              href={`#palanca-${fila.id}`}
-              className="rounded-full bg-accion/10 px-2.5 py-0.5 text-[11px] font-bold text-accion no-underline hover:bg-accion/20"
+          {tieneAjuste && (
+            <button
+              type="button"
+              onClick={() => setAjustarAbierto((v) => !v)}
+              className="rounded-full bg-accion/10 px-2.5 py-0.5 text-[11px] font-bold text-accion hover:bg-accion/20"
             >
-              🎚 Palanca
-            </a>
+              🎚 {ajustarAbierto ? 'Ocultar palanca' : 'Ajustar'}
+            </button>
           )}
           {(info.actual.descuadre || info.rc.descuadre) && (
             <span className="rounded-full bg-naranja/10 px-2.5 py-0.5 text-[11px] font-bold text-naranja">
@@ -428,7 +581,7 @@ function FilaPartida({
             />
           </div>
           <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-cuerpo tabular-nums">
-            {formatoEuros(info.actual.propioCents)}
+            {formatoCorto(info.actual.propioCents)}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -440,22 +593,45 @@ function FilaPartida({
             />
           </div>
           <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-titular tabular-nums">
-            {formatoEuros(info.rc.propioCents)}
+            {formatoCorto(info.rc.propioCents)}
           </span>
         </div>
       </div>
 
-      {tieneDetalle && (
+      {ajustarAbierto && (
+        <div className="mt-3 space-y-2.5 border-t border-linea pt-3">
+          {fila.es_palanca && (
+            <ControlPalancaPartida
+              fila={fila}
+              valorActualCents={info.actual.propioCents}
+              valorOverrideCents={overridesPartidas[fila.id]}
+              pulsando={pulsando}
+              onMover={onMoverPartida}
+            />
+          )}
+          {parametrosAsociados.map((p) => (
+            <ControlPalancaParametro
+              key={p.clave}
+              parametro={p}
+              valorOverride={overridesParametros[p.clave]}
+              pulsando={clavesPulso.has(p.clave)}
+              onMover={onMoverParametro}
+            />
+          ))}
+        </div>
+      )}
+
+      {(tieneDetalle || tieneHijos) && (
         <div className="mt-2.5">
           <button
             type="button"
             onClick={() => setAbierta((v) => !v)}
             className="text-[12px] font-semibold text-gris hover:text-titular"
           >
-            {abierta ? 'Ocultar fuente ▲' : 'Ver fuente y justificación ▼'}
+            {abierta ? 'Ocultar detalle ▲' : 'Ver detalle ▼'}
           </button>
           {abierta && (
-            <div className="mt-2 space-y-1.5 rounded-boton bg-fondo p-3 text-[12.5px] text-cuerpo">
+            <div className="mt-2 space-y-3 rounded-boton bg-fondo p-3 text-[12.5px] text-cuerpo">
               {fila.fuente_actual?.trim() && (
                 <p>
                   <strong className="text-titular">Fuente (actual):</strong> {fila.fuente_actual}
@@ -466,6 +642,14 @@ function FilaPartida({
                   <strong className="text-teal-texto">Justificación RC:</strong> {fila.justificacion_rc}
                 </p>
               )}
+              {tieneHijos && segmentosHijos.some((s) => s.valor > 0) && (
+                <div>
+                  <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-gris">
+                    Reparto de {fila.nombre} — propuesta RC
+                  </p>
+                  <DonutChart segmentos={segmentosHijos} tamano={112} titulo={fila.nombre} />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -474,138 +658,141 @@ function FilaPartida({
   );
 }
 
-function Sandbox({
+function ControlPalancaParametro({
+  parametro,
+  valorOverride,
+  pulsando,
+  onMover,
+}: {
+  parametro: ParametroRow;
+  valorOverride: number | undefined;
+  pulsando: boolean;
+  onMover: (clave: string, nombre: string, valorNuevo: number) => void;
+}) {
+  const min = parametro.palanca_min as number;
+  const max = parametro.palanca_max as number;
+  const valor = clamp(valorOverride ?? parametro.valor_actual ?? min, min, max);
+  return (
+    <div
+      id={`palanca-param-${parametro.clave}`}
+      className={cn('rounded-boton border p-3', pulsando ? 'pais-pulso border-teal' : 'border-linea bg-fondo')}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <label htmlFor={`slider-param-${parametro.clave}`} className="text-[13px] font-bold text-titular">
+          {parametro.nombre}
+        </label>
+        <span className="text-[13px] font-semibold text-cuerpo tabular-nums">
+          {Math.round(valor).toLocaleString('es-ES')} {parametro.unidad ?? ''}
+        </span>
+      </div>
+      <input
+        id={`slider-param-${parametro.clave}`}
+        type="range"
+        min={min}
+        max={max}
+        step={pasoRazonable(min, max)}
+        value={valor}
+        onChange={(e) => onMover(parametro.clave, parametro.nombre, clamp(Number(e.target.value), min, max))}
+        className="mt-2 w-full accent-accion"
+      />
+      <div className="mt-1 flex justify-between text-[11px] text-gris tabular-nums">
+        <span>{Math.round(min).toLocaleString('es-ES')}</span>
+        <span>{Math.round(max).toLocaleString('es-ES')}</span>
+      </div>
+    </div>
+  );
+}
+
+function ControlPalancaPartida({
+  fila,
+  valorActualCents,
+  valorOverrideCents,
+  pulsando,
+  onMover,
+}: {
+  fila: PartidaRow;
+  valorActualCents: number | null;
+  valorOverrideCents: number | undefined;
+  pulsando: boolean;
+  onMover: (id: string, nombre: string, centsNuevo: number) => void;
+}) {
+  const minEuros = centsAEuros(fila.palanca_min) as number;
+  const maxEuros = centsAEuros(fila.palanca_max) as number;
+  // Base = valor YA resuelto por el motor (cubre tanto 'fijo' como
+  // 'formula' — leer `fila.actual_cents` a pelo daría null en modo
+  // fórmula, aunque no ocurra en la semilla actual).
+  const valorCentsActual = valorOverrideCents ?? valorActualCents ?? 0;
+  const valorEuros = clamp(centsAEuros(valorCentsActual) as number, minEuros, maxEuros);
+  return (
+    <div
+      id={`palanca-${fila.id}`}
+      className={cn('rounded-boton border p-3', pulsando ? 'pais-pulso border-teal' : 'border-linea bg-fondo')}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <label htmlFor={`slider-partida-${fila.id}`} className="text-[13px] font-bold text-titular">
+          Ajustar {fila.nombre}
+        </label>
+        <span className="text-[13px] font-semibold text-cuerpo tabular-nums">
+          {formatoCorto(Math.round(valorEuros * 100))}
+        </span>
+      </div>
+      <input
+        id={`slider-partida-${fila.id}`}
+        type="range"
+        min={minEuros}
+        max={maxEuros}
+        step={pasoRazonable(minEuros, maxEuros)}
+        value={valorEuros}
+        onChange={(e) => {
+          const nuevoEuros = clamp(Number(e.target.value), minEuros, maxEuros);
+          onMover(fila.id, fila.nombre, Math.round(nuevoEuros * 100));
+        }}
+        className="mt-2 w-full accent-accion"
+      />
+      <div className="mt-1 flex justify-between text-[11px] text-gris tabular-nums">
+        <span>{formatoCorto(fila.palanca_min)}</span>
+        <span>{formatoCorto(fila.palanca_max)}</span>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Mini-sección compacta (S2.1) para las palancas-parámetro que ninguna
+ * partida publicada referencia en su fórmula (huérfanas) — así no se
+ * pierde ningún control, pero ya NO se reintroduce el bloque grande de
+ * "Sandbox de palancas" que había antes con TODO junto.
+ */
+function PalancasHuerfanas({
   parametros,
-  partidas,
-  infoPorId,
   overridesParametros,
-  overridesPartidas,
   clavesPulso,
-  idsPulso,
-  hayOverrides,
   onMoverParametro,
-  onMoverPartida,
-  onRestablecer,
 }: {
   parametros: ParametroRow[];
-  partidas: PartidaRow[];
-  infoPorId: Map<string, PartidaResueltaInfo>;
   overridesParametros: Record<string, number>;
-  overridesPartidas: Record<string, number>;
   clavesPulso: Set<string>;
-  idsPulso: Set<string>;
-  hayOverrides: boolean;
   onMoverParametro: (clave: string, nombre: string, valorNuevo: number) => void;
-  onMoverPartida: (id: string, nombre: string, centsNuevo: number) => void;
-  onRestablecer: () => void;
 }) {
-  const palancasParam = parametros.filter((p) => p.es_palanca && p.palanca_min !== null && p.palanca_max !== null);
-  const palancasPartida = partidas.filter((p) => p.es_palanca && p.palanca_min !== null && p.palanca_max !== null);
-
-  if (palancasParam.length === 0 && palancasPartida.length === 0) return null;
+  if (parametros.length === 0) return null;
 
   return (
-    <section id="sandbox-palancas" className="mx-auto mt-10 max-w-[1080px] rounded-tarjeta border border-linea bg-white p-5 min-[720px]:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-[18px] font-extrabold text-titular">Sandbox de palancas</h2>
-          <p className="mt-1 max-w-[56ch] text-[13px] text-cuerpo">
-            Mueve estos valores y mira cómo se recalcula todo al momento, en tu navegador — no se envía nada al
-            servidor ni se guarda en ningún sitio.
-          </p>
-        </div>
-        {hayOverrides && (
-          <button
-            type="button"
-            onClick={onRestablecer}
-            className="shrink-0 rounded-boton border border-linea bg-white px-4 py-2 text-[13px] font-bold text-titular hover:border-titular"
-          >
-            Restablecer
-          </button>
-        )}
-      </div>
-
-      <div className="mt-5 grid grid-cols-1 gap-5 min-[720px]:grid-cols-2">
-        {palancasParam.map((p) => {
-          const min = p.palanca_min as number;
-          const max = p.palanca_max as number;
-          const valor = clamp(overridesParametros[p.clave] ?? p.valor_actual ?? min, min, max);
-          const pulsando = clavesPulso.has(p.clave);
-          return (
-            <div
-              id={`palanca-${p.clave}`}
-              key={p.clave}
-              className={cn('rounded-boton border p-4', pulsando ? 'pais-pulso border-teal' : 'border-linea')}
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <label htmlFor={`slider-param-${p.clave}`} className="text-[13.5px] font-bold text-titular">
-                  {p.nombre}
-                </label>
-                <span className="text-[13.5px] font-semibold text-cuerpo tabular-nums">
-                  {Math.round(valor).toLocaleString('es-ES')} {p.unidad ?? ''}
-                </span>
-              </div>
-              <input
-                id={`slider-param-${p.clave}`}
-                type="range"
-                min={min}
-                max={max}
-                step={pasoRazonable(min, max)}
-                value={valor}
-                onChange={(e) => onMoverParametro(p.clave, p.nombre, clamp(Number(e.target.value), min, max))}
-                className="mt-2 w-full accent-accion"
-              />
-              <div className="mt-1 flex justify-between text-[11px] text-gris tabular-nums">
-                <span>{Math.round(min).toLocaleString('es-ES')}</span>
-                <span>{Math.round(max).toLocaleString('es-ES')}</span>
-              </div>
-            </div>
-          );
-        })}
-
-        {palancasPartida.map((p) => {
-          const minEuros = centsAEuros(p.palanca_min) as number;
-          const maxEuros = centsAEuros(p.palanca_max) as number;
-          // Base = valor YA resuelto por el motor (cubre tanto 'fijo' como
-          // 'formula' — leer `p.actual_cents` a pelo daría null en modo
-          // fórmula, aunque no ocurra en la semilla actual).
-          const valorCentsActual = overridesPartidas[p.id] ?? infoPorId.get(p.id)?.actual.propioCents ?? 0;
-          const valorEuros = clamp(centsAEuros(valorCentsActual) as number, minEuros, maxEuros);
-          const pulsando = idsPulso.has(p.id);
-          return (
-            <div
-              id={`palanca-${p.id}`}
-              key={p.id}
-              className={cn('rounded-boton border p-4', pulsando ? 'pais-pulso border-teal' : 'border-linea')}
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <label htmlFor={`slider-partida-${p.id}`} className="text-[13.5px] font-bold text-titular">
-                  {p.nombre}
-                </label>
-                <span className="text-[13.5px] font-semibold text-cuerpo tabular-nums">
-                  {formatoEuros(Math.round(valorEuros * 100))}
-                </span>
-              </div>
-              <input
-                id={`slider-partida-${p.id}`}
-                type="range"
-                min={minEuros}
-                max={maxEuros}
-                step={pasoRazonable(minEuros, maxEuros)}
-                value={valorEuros}
-                onChange={(e) => {
-                  const nuevoEuros = clamp(Number(e.target.value), minEuros, maxEuros);
-                  onMoverPartida(p.id, p.nombre, Math.round(nuevoEuros * 100));
-                }}
-                className="mt-2 w-full accent-accion"
-              />
-              <div className="mt-1 flex justify-between text-[11px] text-gris tabular-nums">
-                <span>{formatoEuros(p.palanca_min)}</span>
-                <span>{formatoEuros(p.palanca_max)}</span>
-              </div>
-            </div>
-          );
-        })}
+    <section className="mx-auto mt-10 max-w-[1080px] rounded-tarjeta border border-linea bg-white p-5">
+      <h2 className="text-[15px] font-extrabold text-titular">Otras palancas</h2>
+      <p className="mt-1 max-w-[56ch] text-[12.5px] text-cuerpo">
+        Estos parámetros son ajustables pero ninguna partida publicada los usa todavía en su fórmula — de momento
+        viven aquí para que no se pierda el control.
+      </p>
+      <div className="mt-4 grid grid-cols-1 gap-3 min-[720px]:grid-cols-2">
+        {parametros.map((p) => (
+          <ControlPalancaParametro
+            key={p.clave}
+            parametro={p}
+            valorOverride={overridesParametros[p.clave]}
+            pulsando={clavesPulso.has(p.clave)}
+            onMover={onMoverParametro}
+          />
+        ))}
       </div>
     </section>
   );
