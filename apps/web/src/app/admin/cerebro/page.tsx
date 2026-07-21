@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { requireEditorCerebro } from '@/lib/brain/guard';
 import { metadatosPagina } from '@/lib/seo';
-import { CerebroClient, IndexarBarra, type FilaEntrada, type GrupoCategoria } from './CerebroClient';
+import { CerebroClient, IndexarBarra, type FilaEntrada } from './CerebroClient';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Cerebro',
@@ -24,18 +24,29 @@ interface FilaCruda {
   area_id: number | null;
   visibility: 'internal' | 'public';
   indexed_at: string | null;
+  embed_html: string | null;
   updated_at: string;
   autor: Rel<{ display_name: string | null }>;
+  categoria: Rel<{ name: string }>;
   area: Rel<{ name: string; color: string }>;
 }
+
+/** Tamaños de página admitidos; el resto cae al por defecto. */
+const POR_PAGINA = [10, 25, 50, 100] as const;
+const POR_DEFECTO = 25;
 
 const fecha = (iso: string) =>
   new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
 
+function entero(valor: string | undefined, min: number, porDefecto: number): number {
+  const n = Number(valor);
+  return Number.isInteger(n) && n >= min ? n : porDefecto;
+}
+
 export default async function CerebroAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; categoria?: string; area?: string }>;
+  searchParams: Promise<{ q?: string; categoria?: string; area?: string; page?: string; per?: string }>;
 }) {
   const { supabase } = await requireEditorCerebro();
   const sp = await searchParams;
@@ -43,15 +54,17 @@ export default async function CerebroAdminPage({
   const q = (sp.q ?? '').trim();
   const categoriaSlug = (sp.categoria ?? '').trim();
   const areaId = (sp.area ?? '').trim();
+  const perPedido = entero(sp.per, 1, POR_DEFECTO);
+  const per = POR_PAGINA.includes(perPedido as (typeof POR_PAGINA)[number]) ? perPedido : POR_DEFECTO;
+  const page = entero(sp.page, 1, 1);
 
   const [{ data: categorias, error: errorCategorias }, { data: areas }, { count: pendientesCount }] =
     await Promise.all([
       supabase.from('brain_categories').select('id, slug, name, position, created_at').order('position'),
       supabase.from('categories').select('id, slug, name, color').order('name'),
-      // Contador global de pendientes de indexar -- deliberadamente SIN los
-      // filtros de q/categoria/area de abajo: el botón "Indexar al cerebro"
-      // dispara la ingesta de TODAS las entradas pendientes, no solo las que
-      // se ven en el listado filtrado.
+      // Contador global de pendientes de indexar -- deliberadamente SIN filtros:
+      // el botón "Indexar al cerebro" procesa TODAS las pendientes, no solo las
+      // que se ven en el listado filtrado.
       supabase.from('brain_entries').select('id', { count: 'exact', head: true }).is('indexed_at', null),
     ]);
 
@@ -61,7 +74,8 @@ export default async function CerebroAdminPage({
   let consulta = supabase
     .from('brain_entries')
     .select(
-      'id, title, category_id, area_id, visibility, indexed_at, updated_at, autor:profiles(display_name), area:categories(name, color)',
+      'id, title, category_id, area_id, visibility, indexed_at, embed_html, updated_at, autor:profiles(display_name), categoria:brain_categories(name), area:categories(name, color)',
+      { count: 'exact' },
     )
     .order('updated_at', { ascending: false });
 
@@ -72,33 +86,26 @@ export default async function CerebroAdminPage({
   if (categoriaFiltro) consulta = consulta.eq('category_id', categoriaFiltro.id);
   if (areaId) consulta = consulta.eq('area_id', Number(areaId));
 
-  const { data: entradas, error: errorEntradas } = await consulta;
+  const desde = (page - 1) * per;
+  const { data: entradas, error: errorEntradas, count } = await consulta.range(desde, desde + per - 1);
+
+  const total = count ?? 0;
+  const totalPaginas = Math.max(1, Math.ceil(total / per));
 
   const filas: FilaEntrada[] = (entradas ?? []).map((e) => {
     const f = e as unknown as FilaCruda;
     return {
       id: f.id,
       title: f.title,
-      category_id: f.category_id,
+      categoria: uno(f.categoria)?.name ?? '—',
       area: uno(f.area),
       visibility: f.visibility,
       indexado: f.indexed_at !== null,
+      tieneSimulador: Boolean(f.embed_html),
       autor: uno(f.autor)?.display_name ?? null,
       actualizado: fecha(f.updated_at),
     };
   });
-
-  // Agrupación por categoría (en el orden de `position`), incluyendo grupos
-  // vacíos: así se ve de un vistazo qué categorías aún no tienen contenido —
-  // justo lo que hace útil "estructurar bien" la sección para el cerebro.
-  const grupos: GrupoCategoria[] = listaCategorias
-    .filter((c) => !categoriaFiltro || c.id === categoriaFiltro.id)
-    .map((c) => ({
-      id: c.id,
-      slug: c.slug,
-      name: c.name,
-      entradas: filas.filter((f) => f.category_id === c.id),
-    }));
 
   const error = errorCategorias ?? errorEntradas;
 
@@ -139,13 +146,17 @@ export default async function CerebroAdminPage({
         </p>
       ) : (
         <CerebroClient
-          grupos={grupos}
+          filas={filas}
           categorias={listaCategorias.map((c) => ({ slug: c.slug, name: c.name }))}
           areas={(areas ?? []).map((a) => ({ id: a.id, name: a.name, color: a.color }))}
           q={q}
           categoriaSlug={categoriaSlug}
           areaId={areaId}
-          total={filas.length}
+          page={page}
+          per={per}
+          total={total}
+          totalPaginas={totalPaginas}
+          tamanos={[...POR_PAGINA]}
         />
       )}
     </div>

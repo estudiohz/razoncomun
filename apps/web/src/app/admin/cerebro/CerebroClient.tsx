@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { createPortal } from 'react-dom';
 import { eliminarEntradas, indexarCerebro, type ResultadoIndexado } from '@/lib/brain/wikiAdmin';
 import { cn } from '@/lib/cn';
@@ -10,29 +10,41 @@ import { cn } from '@/lib/cn';
 export interface FilaEntrada {
   id: string;
   title: string;
-  category_id: string;
+  categoria: string;
   area: { name: string; color: string } | null;
   visibility: 'internal' | 'public';
   indexado: boolean;
+  tieneSimulador: boolean;
   autor: string | null;
   actualizado: string;
 }
 
-export interface GrupoCategoria {
-  id: string;
-  slug: string;
-  name: string;
-  entradas: FilaEntrada[];
-}
-
 interface Props {
-  grupos: GrupoCategoria[];
+  filas: FilaEntrada[];
   categorias: { slug: string; name: string }[];
   areas: { id: number; name: string; color: string }[];
   q: string;
   categoriaSlug: string;
   areaId: string;
+  page: number;
+  per: number;
   total: number;
+  totalPaginas: number;
+  tamanos: number[];
+}
+
+/** Ventana compacta de páginas: 1 … 4 5 6 … 12 */
+function paginasVisibles(actual: number, total: number): (number | '…')[] {
+  const candidatos = [1, total, actual - 1, actual, actual + 1];
+  const ordenadas = [...new Set(candidatos)].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+  const salida: (number | '…')[] = [];
+  let previa = 0;
+  for (const n of ordenadas) {
+    if (n - previa > 1) salida.push('…');
+    salida.push(n);
+    previa = n;
+  }
+  return salida;
 }
 
 /** Chip de área temática (departamento del blog), con su color de marca. */
@@ -61,16 +73,46 @@ function VisibilidadChip({ visibility }: { visibility: 'internal' | 'public' }) 
   );
 }
 
-/** Estado de indexado en `brain_documents` (lo rellena la ingesta de rc-08). */
-function IndexadoChip({ indexado }: { indexado: boolean }) {
+/**
+ * Estado de indexado en `brain_documents` (lo rellena la ingesta de rc-08).
+ * Check verde = está en el cerebro; X roja = pendiente de indexar.
+ */
+function EstadoCerebro({ indexado }: { indexado: boolean }) {
+  const etiqueta = indexado ? 'En el cerebro' : 'Pendiente de indexar';
+  return (
+    <span className="inline-flex items-center" title={etiqueta} aria-label={etiqueta} role="img">
+      {indexado ? (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" className="fill-green-600" />
+          <path
+            d="M8.5 12.2l2.3 2.3 4.7-4.9"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ) : (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" className="fill-red-600" />
+          <path d="M9 9l6 6M15 9l-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
+/** Distintivo de "tiene simulador HTML adjunto" (0027). */
+function SimuladorChip() {
   return (
     <span
-      className={cn(
-        'rounded-full px-2.5 py-0.5 text-[11.5px] font-bold',
-        indexado ? 'bg-accion/10 text-accion' : 'bg-naranja/15 text-naranja',
-      )}
+      className="inline-flex items-center gap-1 rounded-full bg-morado/12 px-2 py-0.5 text-[11px] font-bold text-morado"
+      title="Esta entrada tiene un simulador interactivo"
     >
-      {indexado ? 'En el cerebro' : 'Pendiente de indexar'}
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 14l5-5 4 4 7-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      Simulador
     </span>
   );
 }
@@ -81,8 +123,8 @@ function IndexadoChip({ indexado }: { indexado: boolean }) {
  * `pendientes` cuenta TODAS las entradas sin `indexed_at` (no solo las del
  * filtro activo del listado) -- viene de una query aparte en la page, así el
  * contador no se mueve al buscar/filtrar. `router.refresh()` tras un éxito
- * revalida el server component: los chips "En el cerebro"/"Pendiente de
- * indexar" de cada fila y este mismo contador quedan al día.
+ * revalida el server component: el estado de cada fila y este contador quedan
+ * al día.
  */
 export function IndexarBarra({ pendientes }: { pendientes: number }) {
   const router = useRouter();
@@ -161,7 +203,19 @@ export function IndexarBarra({ pendientes }: { pendientes: number }) {
   );
 }
 
-export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, areaId, total }: Props) {
+export function CerebroClient({
+  filas,
+  categorias,
+  areas,
+  q,
+  categoriaSlug,
+  areaId,
+  page,
+  per,
+  total,
+  totalPaginas,
+  tamanos,
+}: Props) {
   const router = useRouter();
 
   const [montado, setMontado] = useState(false);
@@ -173,30 +227,45 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
 
   useEffect(() => setMontado(true), []);
 
-  const todasFilas = useMemo(() => grupos.flatMap((g) => g.entradas), [grupos]);
+  // Al cambiar de filtro/búsqueda/página/tamaño, la selección deja de ser válida.
+  useEffect(() => setSeleccion(new Set()), [q, categoriaSlug, areaId, per, page]);
 
-  // Al cambiar de filtro/búsqueda, la selección deja de ser válida.
-  useEffect(() => setSeleccion(new Set()), [q, categoriaSlug, areaId]);
-
-  function navegar(cambios: { q?: string; categoria?: string; area?: string }) {
+  function navegar(cambios: { q?: string; categoria?: string; area?: string; page?: number; per?: number }) {
     const params = new URLSearchParams();
     const nq = cambios.q !== undefined ? cambios.q : q;
     const ncat = cambios.categoria !== undefined ? cambios.categoria : categoriaSlug;
     const narea = cambios.area !== undefined ? cambios.area : areaId;
+    const nper = cambios.per !== undefined ? cambios.per : per;
+    // Cualquier cambio de filtro/tamaño vuelve a la página 1 salvo que se pida
+    // explícitamente otra página.
+    const npage = cambios.page !== undefined ? cambios.page : 1;
     if (nq) params.set('q', nq);
     if (ncat) params.set('categoria', ncat);
     if (narea) params.set('area', narea);
+    if (nper !== 25) params.set('per', String(nper));
+    if (npage > 1) params.set('page', String(npage));
     const qs = params.toString();
     router.push(qs ? `/admin/cerebro?${qs}` : '/admin/cerebro');
   }
 
-  // Búsqueda con debounce (400 ms).
+  // Búsqueda con debounce (400 ms). Solo navega si el texto cambió respecto a la URL.
   useEffect(() => {
     if (busqueda.trim() === q) return;
-    const t = setTimeout(() => navegar({ q: busqueda.trim() }), 400);
+    const t = setTimeout(() => navegar({ q: busqueda.trim(), page: 1 }), 400);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
+
+  const todosMarcados = filas.length > 0 && filas.every((f) => seleccion.has(f.id));
+
+  function alternarTodos() {
+    setSeleccion((prev) => {
+      const n = new Set(prev);
+      if (filas.every((f) => n.has(f.id))) filas.forEach((f) => n.delete(f.id));
+      else filas.forEach((f) => n.add(f.id));
+      return n;
+    });
+  }
 
   function alternar(id: string) {
     setSeleccion((prev) => {
@@ -207,39 +276,38 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
     });
   }
 
-  function alternarGrupo(g: GrupoCategoria) {
-    setSeleccion((prev) => {
-      const n = new Set(prev);
-      const todos = g.entradas.every((f) => n.has(f.id));
-      if (todos) g.entradas.forEach((f) => n.delete(f.id));
-      else g.entradas.forEach((f) => n.add(f.id));
-      return n;
-    });
-  }
-
   function confirmarEliminar() {
     setError(null);
     const ids = Array.from(seleccion);
     iniciar(async () => {
-      const r = await eliminarEntradas(ids);
-      if (!r.ok) {
-        setError(r.error ?? 'No se han podido eliminar.');
+      try {
+        const r = await eliminarEntradas(ids);
+        if (!r.ok) {
+          setError(r.error ?? 'No se han podido eliminar.');
+          setConfirmando(false);
+          return;
+        }
         setConfirmando(false);
-        return;
+        const quedan = filas.filter((f) => !seleccion.has(f.id)).length;
+        setSeleccion(new Set());
+        if (quedan <= 0 && page > 1) navegar({ page: page - 1 });
+        else router.refresh();
+      } catch {
+        setError('No se han podido eliminar (error de red o servidor). Inténtalo de nuevo.');
+        setConfirmando(false);
       }
-      setConfirmando(false);
-      setSeleccion(new Set());
-      router.refresh();
     });
   }
 
-  const filasSeleccionadas = todasFilas.filter((f) => seleccion.has(f.id));
+  const desde = total === 0 ? 0 : (page - 1) * per + 1;
+  const hasta = Math.min(page * per, total);
+  const hayFiltro = Boolean(q || categoriaSlug || areaId);
 
   return (
     <div>
-      {/* Barra de herramientas: buscador + filtros de categoría/área */}
-      <div className="mb-4 flex flex-col gap-3 min-[720px]:flex-row min-[720px]:flex-wrap min-[720px]:items-center">
-        <div className="relative min-[720px]:w-[300px]">
+      {/* Barra de herramientas: buscador + filtros de categoría/área + tamaño */}
+      <div className="mb-4 flex flex-col gap-3 min-[860px]:flex-row min-[860px]:flex-wrap min-[860px]:items-center">
+        <div className="relative min-[860px]:w-[280px]">
           <svg
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gris"
             width="17"
@@ -263,7 +331,7 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
 
         <select
           value={categoriaSlug}
-          onChange={(e) => navegar({ categoria: e.target.value })}
+          onChange={(e) => navegar({ categoria: e.target.value, page: 1 })}
           aria-label="Filtrar por categoría"
           className="rounded-boton border border-linea bg-white py-2.5 pl-3 pr-8 text-[13.5px] font-semibold text-titular outline-none focus:border-accion"
         >
@@ -277,7 +345,7 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
 
         <select
           value={areaId}
-          onChange={(e) => navegar({ area: e.target.value })}
+          onChange={(e) => navegar({ area: e.target.value, page: 1 })}
           aria-label="Filtrar por área temática"
           className="rounded-boton border border-linea bg-white py-2.5 pl-3 pr-8 text-[13.5px] font-semibold text-titular outline-none focus:border-accion"
         >
@@ -289,9 +357,20 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
           ))}
         </select>
 
-        <span className="text-[13px] text-gris">
-          {total} entrada{total === 1 ? '' : 's'}
-        </span>
+        <label className="flex items-center gap-2 text-[13px] text-gris min-[860px]:ml-auto">
+          Mostrar
+          <select
+            value={per}
+            onChange={(e) => navegar({ per: Number(e.target.value), page: 1 })}
+            className="rounded-boton border border-linea bg-white py-2 pl-3 pr-8 text-[13.5px] font-semibold text-titular outline-none focus:border-accion"
+          >
+            {tamanos.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       {error && (
@@ -300,7 +379,7 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
         </p>
       )}
 
-      {/* Barra de acción de selección (persiste entre grupos) */}
+      {/* Barra de acción de selección */}
       {seleccion.size > 0 && (
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-boton border border-magenta/30 bg-magenta/5 px-4 py-2.5">
           <span className="text-[13.5px] font-semibold text-titular">
@@ -326,147 +405,188 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
         </div>
       )}
 
-      {total === 0 ? (
+      {filas.length === 0 ? (
         <p className="rounded-tarjeta border border-linea bg-white p-6 text-cuerpo">
-          {q || categoriaSlug || areaId
+          {hayFiltro
             ? 'No hay entradas que coincidan con el filtro.'
             : 'Todavía no hay entradas en el cerebro. Crea la primera.'}
         </p>
       ) : (
-        <div className="space-y-6">
-          {grupos.map((g) => {
-            if (g.entradas.length === 0) {
+        <>
+          {/* Móvil: tarjetas apiladas con checkbox */}
+          <ul className="overflow-hidden rounded-tarjeta border border-linea bg-white min-[720px]:hidden">
+            {filas.map((f, i) => {
+              const marcado = seleccion.has(f.id);
               return (
-                <section key={g.id}>
-                  <h2 className="mb-2 text-[15px] font-bold text-titular">
-                    {g.name} <span className="font-normal text-gris">· 0</span>
-                  </h2>
-                  <p className="rounded-tarjeta border border-dashed border-linea bg-white/60 p-4 text-[13.5px] text-gris">
-                    Sin entradas en esta categoría todavía.
-                  </p>
-                </section>
-              );
-            }
-
-            const todosMarcados = g.entradas.every((f) => seleccion.has(f.id));
-
-            return (
-              <section key={g.id}>
-                <h2 className="mb-2 text-[15px] font-bold text-titular">
-                  {g.name} <span className="font-normal text-gris">· {g.entradas.length}</span>
-                </h2>
-
-                {/* Móvil: tarjetas apiladas con checkbox */}
-                <ul className="overflow-hidden rounded-tarjeta border border-linea bg-white min-[720px]:hidden">
-                  {g.entradas.map((f, i) => {
-                    const marcado = seleccion.has(f.id);
-                    return (
-                      <li
-                        key={f.id}
-                        className={cn(
-                          'flex items-start gap-3 border-b border-linea/60 p-4 last:border-0',
-                          marcado ? 'bg-accion/5' : i % 2 === 1 ? 'bg-fondo' : 'bg-white',
-                        )}
+                <li
+                  key={f.id}
+                  className={cn(
+                    'flex items-start gap-3 border-b border-linea/60 p-4 last:border-0',
+                    marcado ? 'bg-accion/5' : i % 2 === 1 ? 'bg-fondo' : 'bg-white',
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    checked={marcado}
+                    onChange={() => alternar(f.id)}
+                    aria-label={`Seleccionar ${f.title}`}
+                    className="mt-1 h-[18px] w-[18px] shrink-0 accent-accion"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <Link
+                        href={`/admin/cerebro/${f.id}`}
+                        className="block text-[15.5px] font-bold leading-snug text-titular no-underline hover:underline"
                       >
+                        {f.title}
+                      </Link>
+                      <EstadoCerebro indexado={f.indexado} />
+                    </div>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                      <span className="rounded-full bg-white px-2.5 py-0.5 text-[11.5px] font-semibold text-cuerpo ring-1 ring-linea">
+                        {f.categoria}
+                      </span>
+                      <VisibilidadChip visibility={f.visibility} />
+                      {f.area && <AreaChip area={f.area} />}
+                      {f.tieneSimulador && <SimuladorChip />}
+                    </div>
+                    <p className="mt-1.5 truncate text-[12.5px] text-gris">
+                      {[f.autor, f.actualizado].filter(Boolean).join(' · ')}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Escritorio: tabla completa con checkboxes */}
+          <div className="hidden overflow-x-auto rounded-tarjeta border border-linea bg-white min-[720px]:block">
+            <table className="w-full min-w-[860px] border-collapse text-left text-[15px]">
+              <thead>
+                <tr className="border-b border-linea text-[13px] uppercase tracking-[.08em] text-gris">
+                  <th className="w-[44px] px-4 py-4">
+                    <input
+                      type="checkbox"
+                      checked={todosMarcados}
+                      ref={(el) => {
+                        if (el) el.indeterminate = !todosMarcados && filas.some((f) => seleccion.has(f.id));
+                      }}
+                      onChange={alternarTodos}
+                      aria-label="Seleccionar todos"
+                      className="h-[18px] w-[18px] accent-accion align-middle"
+                    />
+                  </th>
+                  <th className="px-4 py-4 font-bold">Título</th>
+                  <th className="px-4 py-4 font-bold">Categoría</th>
+                  <th className="px-4 py-4 font-bold">Área</th>
+                  <th className="px-4 py-4 font-bold">Visibilidad</th>
+                  <th className="w-[90px] px-4 py-4 text-center font-bold">Cerebro</th>
+                  <th className="px-4 py-4 font-bold">Autor</th>
+                  <th className="px-4 py-4 font-bold">Actualizado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filas.map((f, i) => {
+                  const marcado = seleccion.has(f.id);
+                  return (
+                    <tr
+                      key={f.id}
+                      className={cn(
+                        'border-b border-linea/60 last:border-0',
+                        marcado ? 'bg-accion/5' : i % 2 === 1 ? 'bg-fondo' : 'bg-white',
+                      )}
+                    >
+                      <td className="px-4 py-4">
                         <input
                           type="checkbox"
                           checked={marcado}
                           onChange={() => alternar(f.id)}
                           aria-label={`Seleccionar ${f.title}`}
-                          className="mt-1 h-[18px] w-[18px] shrink-0 accent-accion"
+                          className="h-[18px] w-[18px] accent-accion align-middle"
                         />
-                        <div className="min-w-0 flex-1">
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex flex-wrap items-center gap-2">
                           <Link
                             href={`/admin/cerebro/${f.id}`}
-                            className="block text-[15.5px] font-bold leading-snug text-titular no-underline hover:underline"
+                            className="font-bold text-titular no-underline hover:underline"
                           >
                             {f.title}
                           </Link>
-                          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                            <VisibilidadChip visibility={f.visibility} />
-                            <IndexadoChip indexado={f.indexado} />
-                            {f.area && <AreaChip area={f.area} />}
-                          </div>
-                          <p className="mt-1.5 truncate text-[12.5px] text-gris">
-                            {[f.autor, f.actualizado].filter(Boolean).join(' · ')}
-                          </p>
+                          {f.tieneSimulador && <SimuladorChip />}
                         </div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                      </td>
+                      <td className="px-4 py-4 text-cuerpo">{f.categoria}</td>
+                      <td className="px-4 py-4">
+                        {f.area ? <AreaChip area={f.area} /> : <span className="text-gris">—</span>}
+                      </td>
+                      <td className="px-4 py-4">
+                        <VisibilidadChip visibility={f.visibility} />
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <EstadoCerebro indexado={f.indexado} />
+                      </td>
+                      <td className="px-4 py-4 text-cuerpo">{f.autor ?? '—'}</td>
+                      <td className="px-4 py-4 text-cuerpo">{f.actualizado}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
-                {/* Escritorio: tabla completa con checkboxes */}
-                <div className="hidden overflow-x-auto rounded-tarjeta border border-linea bg-white min-[720px]:block">
-                  <table className="w-full min-w-[760px] border-collapse text-left text-[15px]">
-                    <thead>
-                      <tr className="border-b border-linea text-[13px] uppercase tracking-[.08em] text-gris">
-                        <th className="w-[44px] px-4 py-4">
-                          <input
-                            type="checkbox"
-                            checked={todosMarcados}
-                            ref={(el) => {
-                              if (el) el.indeterminate = !todosMarcados && g.entradas.some((f) => seleccion.has(f.id));
-                            }}
-                            onChange={() => alternarGrupo(g)}
-                            aria-label={`Seleccionar todas en ${g.name}`}
-                            className="h-[18px] w-[18px] accent-accion align-middle"
-                          />
-                        </th>
-                        <th className="px-4 py-4 font-bold">Título</th>
-                        <th className="px-4 py-4 font-bold">Área</th>
-                        <th className="px-4 py-4 font-bold">Visibilidad</th>
-                        <th className="px-4 py-4 font-bold">Cerebro</th>
-                        <th className="px-4 py-4 font-bold">Autor</th>
-                        <th className="px-4 py-4 font-bold">Actualizado</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {g.entradas.map((f, i) => {
-                        const marcado = seleccion.has(f.id);
-                        return (
-                          <tr
-                            key={f.id}
-                            className={cn(
-                              'border-b border-linea/60 last:border-0',
-                              marcado ? 'bg-accion/5' : i % 2 === 1 ? 'bg-fondo' : 'bg-white',
-                            )}
-                          >
-                            <td className="px-4 py-4">
-                              <input
-                                type="checkbox"
-                                checked={marcado}
-                                onChange={() => alternar(f.id)}
-                                aria-label={`Seleccionar ${f.title}`}
-                                className="h-[18px] w-[18px] accent-accion align-middle"
-                              />
-                            </td>
-                            <td className="px-4 py-4">
-                              <Link
-                                href={`/admin/cerebro/${f.id}`}
-                                className="font-bold text-titular no-underline hover:underline"
-                              >
-                                {f.title}
-                              </Link>
-                            </td>
-                            <td className="px-4 py-4">{f.area ? <AreaChip area={f.area} /> : <span className="text-gris">—</span>}</td>
-                            <td className="px-4 py-4">
-                              <VisibilidadChip visibility={f.visibility} />
-                            </td>
-                            <td className="px-4 py-4">
-                              <IndexadoChip indexado={f.indexado} />
-                            </td>
-                            <td className="px-4 py-4 text-cuerpo">{f.autor ?? '—'}</td>
-                            <td className="px-4 py-4 text-cuerpo">{f.actualizado}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            );
-          })}
+      {/* Pie: recuento + paginador */}
+      {total > 0 && (
+        <div className="mt-4 flex flex-col items-center justify-between gap-3 min-[560px]:flex-row">
+          <p className="text-[13px] text-gris">
+            {desde}–{hasta} de {total}
+          </p>
+          {totalPaginas > 1 && (
+            <nav className="flex items-center gap-1" aria-label="Paginación">
+              <button
+                type="button"
+                onClick={() => navegar({ page: page - 1 })}
+                disabled={page <= 1}
+                aria-label="Página anterior"
+                className="grid h-9 w-9 place-items-center rounded-boton border border-linea bg-white text-titular disabled:opacity-40 enabled:hover:border-titular"
+              >
+                ‹
+              </button>
+              {paginasVisibles(page, totalPaginas).map((n, i) =>
+                n === '…' ? (
+                  <span key={`e${i}`} className="px-1.5 text-gris">
+                    …
+                  </span>
+                ) : (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => navegar({ page: n })}
+                    aria-current={n === page ? 'page' : undefined}
+                    className={cn(
+                      'grid h-9 min-w-9 place-items-center rounded-boton border px-2 text-[13.5px] font-semibold',
+                      n === page
+                        ? 'border-accion bg-accion text-white'
+                        : 'border-linea bg-white text-titular hover:border-titular',
+                    )}
+                  >
+                    {n}
+                  </button>
+                ),
+              )}
+              <button
+                type="button"
+                onClick={() => navegar({ page: page + 1 })}
+                disabled={page >= totalPaginas}
+                aria-label="Página siguiente"
+                className="grid h-9 w-9 place-items-center rounded-boton border border-linea bg-white text-titular disabled:opacity-40 enabled:hover:border-titular"
+              >
+                ›
+              </button>
+            </nav>
+          )}
         </div>
       )}
 
@@ -492,14 +612,15 @@ export function CerebroClient({ grupos, categorias, areas, q, categoriaSlug, are
                 Esta acción no se puede deshacer. Se eliminarán de forma permanente del cerebro.
               </p>
               <ul className="mt-3 max-h-40 space-y-1 overflow-y-auto text-[13px] text-gris">
-                {filasSeleccionadas.slice(0, 8).map((f) => (
-                  <li key={f.id} className="truncate">
-                    • {f.title}
-                  </li>
-                ))}
-                {filasSeleccionadas.length > 8 && (
-                  <li className="text-gris">…y {filasSeleccionadas.length - 8} más</li>
-                )}
+                {filas
+                  .filter((f) => seleccion.has(f.id))
+                  .slice(0, 8)
+                  .map((f) => (
+                    <li key={f.id} className="truncate">
+                      • {f.title}
+                    </li>
+                  ))}
+                {seleccion.size > 8 && <li className="text-gris">…y {seleccion.size - 8} más</li>}
               </ul>
               <div className="mt-5 flex justify-end gap-3">
                 <button
