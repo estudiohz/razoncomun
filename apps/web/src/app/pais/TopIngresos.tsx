@@ -23,13 +23,60 @@ import type { PartidaResueltaInfo } from '@/lib/simulador/tipos';
  */
 
 const ANIO_PRINCIPAL = 2026;
-const LIMITE_MOVIL = 5;
-const LIMITE_ESCRITORIO = 10;
+/** Sergio: "mostrar solo 5 y poner el típico botón de expandir" — un único
+ * umbral fijo, sin distinción móvil/escritorio (antes había dos). */
+const LIMITE_INICIAL = 5;
 const LIMITE_MAXIMO = 20;
 
 interface Props {
   partidas: PartidaRow[];
   infoPorId: Map<string, PartidaResueltaInfo>;
+}
+
+interface FilaIngreso {
+  partida: PartidaRow;
+  cents: number;
+  /** Rango GLOBAL (0-based) sobre el ranking completo — decide qué se oculta
+   * al colapsar, independientemente de en qué columna caiga la fila. */
+  rango: number;
+}
+
+function Fila({
+  fila,
+  maxCents,
+  aniosDistintos,
+  expandido,
+}: {
+  fila: FilaIngreso;
+  maxCents: number;
+  aniosDistintos: Set<number>;
+  expandido: boolean;
+}) {
+  const { partida, cents, rango } = fila;
+  const pct = maxCents > 0 ? Math.min(100, (cents / maxCents) * 100) : 0;
+  const mostrarAnio = partida.anio !== ANIO_PRINCIPAL || aniosDistintos.size > 1;
+
+  return (
+    <li className={cn('flex items-center gap-3', !expandido && rango >= LIMITE_INICIAL && 'hidden')}>
+      <span className="w-[40%] shrink-0 truncate text-[13px] font-semibold text-cuerpo">
+        {partida.nombre}
+        {mostrarAnio && (
+          <span className="ml-1.5 rounded-full bg-fondo px-1.5 py-0.5 text-[10px] font-bold text-gris">
+            {partida.anio}
+          </span>
+        )}
+      </span>
+      <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-fondo">
+        <div
+          className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="w-20 shrink-0 text-right text-[12.5px] font-semibold tabular-nums text-titular">
+        {formatoCorto(cents)}
+      </span>
+    </li>
+  );
 }
 
 export function TopIngresos({ partidas, infoPorId }: Props) {
@@ -45,18 +92,27 @@ export function TopIngresos({ partidas, infoPorId }: Props) {
     0,
   );
 
-  const hojasIngreso = partidas
+  const hojasIngreso: FilaIngreso[] = partidas
     .filter((p) => p.tipo === 'ingreso' && !idsConHijos.has(p.id))
     .map((p) => ({ partida: p, cents: infoPorId.get(p.id)?.actual.propioCents ?? null }))
     .filter((x): x is { partida: PartidaRow; cents: number } => x.cents !== null && x.cents > 0)
     .sort((a, b) => b.cents - a.cents)
-    .slice(0, LIMITE_MAXIMO);
+    .slice(0, LIMITE_MAXIMO)
+    .map((x, rango) => ({ ...x, rango }));
 
   if (hojasIngreso.length === 0) return null;
 
   const maxCents = hojasIngreso[0].cents;
   const aniosDistintos = new Set(hojasIngreso.map((x) => x.partida.anio));
-  const mostrarBoton = hojasIngreso.length > LIMITE_MOVIL;
+  const mostrarBoton = hojasIngreso.length > LIMITE_INICIAL;
+
+  // Dos columnas (Sergio): reparto por rango, NO intercalado — columna 1 se
+  // lleva la primera mitad del ranking (1..N/2), columna 2 la segunda
+  // (N/2+1..20). En móvil (grid-cols-1) las dos <ul> se apilan y la lectura
+  // sigue siendo de mayor a menor de arriba abajo, sin reordenar nada.
+  const mitad = Math.ceil(hojasIngreso.length / 2);
+  const columna1 = hojasIngreso.slice(0, mitad);
+  const columna2 = hojasIngreso.slice(mitad);
 
   return (
     <section className="mx-auto mt-8 max-w-[1080px] rounded-tarjeta border border-linea bg-white p-5 min-[720px]:p-6">
@@ -67,44 +123,21 @@ export function TopIngresos({ partidas, infoPorId }: Props) {
         <p className="text-[22px] font-extrabold tabular-nums text-titular">{formatoCorto(totalCents)}</p>
       </div>
       <p className="mt-1 text-[12.5px] text-cuerpo">
-        Las partidas de ingreso publicadas, de mayor a menor (valor oficial).
+        Las {hojasIngreso.length} mayores partidas de ingreso publicadas, de mayor a menor (valor oficial).
       </p>
 
-      <ul className="mt-4 space-y-2">
-        {hojasIngreso.map(({ partida, cents }, i) => {
-          const pct = maxCents > 0 ? Math.min(100, (cents / maxCents) * 100) : 0;
-          const mostrarAnio = partida.anio !== ANIO_PRINCIPAL || aniosDistintos.size > 1;
-
-          return (
-            <li
-              key={partida.id}
-              className={cn(
-                'flex items-center gap-3',
-                !expandido && i >= LIMITE_ESCRITORIO && 'hidden',
-                !expandido && i >= LIMITE_MOVIL && i < LIMITE_ESCRITORIO && 'hidden min-[720px]:flex',
-              )}
-            >
-              <span className="w-[38%] shrink-0 truncate text-[13px] font-semibold text-cuerpo min-[520px]:w-[30%]">
-                {partida.nombre}
-                {mostrarAnio && (
-                  <span className="ml-1.5 rounded-full bg-fondo px-1.5 py-0.5 text-[10px] font-bold text-gris">
-                    {partida.anio}
-                  </span>
-                )}
-              </span>
-              <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-fondo">
-                <div
-                  className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-              <span className="w-20 shrink-0 text-right text-[12.5px] font-semibold tabular-nums text-titular">
-                {formatoCorto(cents)}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2 min-[640px]:grid-cols-2">
+        <ul className="space-y-2">
+          {columna1.map((fila) => (
+            <Fila key={fila.partida.id} fila={fila} maxCents={maxCents} aniosDistintos={aniosDistintos} expandido={expandido} />
+          ))}
+        </ul>
+        <ul className="space-y-2">
+          {columna2.map((fila) => (
+            <Fila key={fila.partida.id} fila={fila} maxCents={maxCents} aniosDistintos={aniosDistintos} expandido={expandido} />
+          ))}
+        </ul>
+      </div>
 
       {mostrarBoton && (
         <div className="mt-4 text-center">
@@ -113,7 +146,7 @@ export function TopIngresos({ partidas, infoPorId }: Props) {
             onClick={() => setExpandido((v) => !v)}
             className="rounded-boton border border-linea bg-white px-4 py-2 text-[13px] font-bold text-titular hover:border-titular"
           >
-            {expandido ? 'Ver menos ▲' : 'Ver más ▼'}
+            {expandido ? 'Ver menos ▲' : `Ver más (${hojasIngreso.length - LIMITE_INICIAL}) ▼`}
           </button>
         </div>
       )}

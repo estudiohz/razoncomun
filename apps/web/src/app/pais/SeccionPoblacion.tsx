@@ -16,6 +16,7 @@
  * Sin esa fila ancla, se muestran las tarjetas sin donut.
  */
 
+import { cn } from '@/lib/cn';
 import type { DemografiaRow } from '@/lib/simulador/adminData';
 import { formatoEurosConUnidad, formatoPersonas } from '@/lib/simulador/formato';
 import { DonutChart } from './DonutChart';
@@ -25,14 +26,31 @@ const NOMBRE_ANCLA = 'Población total de España';
 const NOMBRE_ACTIVA = 'Población activa';
 const NOMBRE_JUBILADOS = 'Jubilados';
 
-function TarjetaPersona({ fila }: { fila: DemografiaRow }) {
+function TarjetaPersona({
+  nombre,
+  numPersonas,
+  valorMedioCents,
+  unidadValorMedio,
+  calculada,
+}: {
+  nombre: string;
+  numPersonas: number;
+  valorMedioCents?: number | null;
+  unidadValorMedio?: string | null;
+  /** "Otros (resto)" no es una fila de la BD: se calcula en vivo (ancla − suma
+   * de las demás categorías), así no queda un número fijo que se desactualice
+   * en cuanto se publique una categoría nueva. Se marca visualmente distinto
+   * (borde discontinuo) para que quede claro que es un cálculo, no un dato. */
+  calculada?: boolean;
+}) {
   return (
-    <div className="rounded-boton border border-linea bg-white p-4">
-      <p className="text-[13.5px] font-bold text-titular">{fila.nombre}</p>
-      <p className="mt-1 text-[15px] font-extrabold tabular-nums text-titular">{formatoPersonas(fila.num_personas)}</p>
-      {fila.valor_medio_cents !== null && (
-        <p className="mt-1 text-[12px] text-cuerpo">{formatoEurosConUnidad(fila.valor_medio_cents, fila.unidad_valor_medio)}</p>
+    <div className={cn('rounded-boton border p-4', calculada ? 'border-dashed border-linea bg-fondo' : 'border-linea bg-white')}>
+      <p className="text-[13.5px] font-bold text-titular">{nombre}</p>
+      <p className="mt-1 text-[15px] font-extrabold tabular-nums text-titular">{formatoPersonas(numPersonas)}</p>
+      {valorMedioCents !== null && valorMedioCents !== undefined && (
+        <p className="mt-1 text-[12px] text-cuerpo">{formatoEurosConUnidad(valorMedioCents, unidadValorMedio)}</p>
       )}
+      {calculada && <p className="mt-1 text-[10.5px] text-gris">Calculado: total − categorías conocidas</p>}
     </div>
   );
 }
@@ -56,9 +74,10 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
   // el total real de la fila ancla, no la suma (potencialmente solapada, p.
   // ej. niños/estudiantes) de las categorías conocidas.
   let segmentosDonut: { nombre: string; valor: number; color: string | null }[] = [];
+  let resto = 0;
   if (ancla) {
     const sumaOtras = otras.reduce((suma, o) => suma + o.num_personas, 0);
-    const resto = ancla.num_personas - sumaOtras;
+    resto = ancla.num_personas - sumaOtras;
     segmentosDonut = [
       ...otras.map((o) => ({ nombre: o.nombre, valor: o.num_personas, color: null })),
       ...(resto > 0 ? [{ nombre: 'Resto de la población', valor: resto, color: '#6F6F6F' }] : []),
@@ -74,8 +93,23 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
 
       <div className="mt-4 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 min-[900px]:grid-cols-3">
         {filas.map((f) => (
-          <TarjetaPersona key={f.id} fila={f} />
+          <TarjetaPersona
+            key={f.id}
+            nombre={f.nombre}
+            numPersonas={f.num_personas}
+            valorMedioCents={f.valor_medio_cents}
+            unidadValorMedio={f.unidad_valor_medio}
+          />
         ))}
+        {/* "Otros (resto)" pedido por Sergio: no es una fila propia — se
+            calcula en vivo (ancla − categorías conocidas, excluyendo el
+            agregado "Población activa" por el solape ya explicado arriba) —
+            así nunca queda un número fijo desactualizado. Solo se muestra si
+            hay ancla Y el resto es positivo (si las categorías ya suman el
+            total o más, no hay "resto" honesto que mostrar). */}
+        {ancla && resto > 0 && (
+          <TarjetaPersona nombre="Otros (resto)" numPersonas={resto} calculada />
+        )}
       </div>
 
       {ancla && segmentosDonut.length > 0 && (
