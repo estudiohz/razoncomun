@@ -612,7 +612,20 @@ function FilaPartida({
   const tieneAjuste = fila.es_palanca || parametrosAsociados.length > 0;
 
   return (
-    <div className={cn('rounded-boton border bg-white p-4', pulsando ? 'pais-pulso border-teal' : 'border-linea')}>
+    // min-h (Sergio: "igualalas en altura"): sin esto, un nombre largo
+    // (p. ej. "Transición Ecológica y Reto Demográfico") que empuja las
+    // etiquetas a su propia línea hace esa tarjeta más alta que una con
+    // nombre corto (p. ej. "Interior") — Gastos e Ingresos quedaban
+    // desparejados al estar en columnas lado a lado. El mínimo cubre el
+    // caso más alto (nombre a 2 líneas + etiquetas envueltas + las 2
+    // barras) para que todas las tarjetas midan lo mismo aunque su
+    // contenido sea más corto.
+    <div
+      className={cn(
+        'flex min-h-[168px] flex-col rounded-boton border bg-white p-4',
+        pulsando ? 'pais-pulso border-teal' : 'border-linea',
+      )}
+    >
       <div className="flex flex-wrap items-center justify-between gap-2">
         {hrefPropio ? (
           <Link href={hrefPropio} className="text-left text-[14.5px] font-bold text-titular hover:underline">
