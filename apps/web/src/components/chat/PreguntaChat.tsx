@@ -234,7 +234,7 @@ function PanelSimulador({ embed, onCerrar }: { embed: Embed; onCerrar: () => voi
       <div className="absolute inset-0 bg-noche/50" onClick={onCerrar} aria-hidden />
       <aside
         role="complementary"
-        className="relative flex h-full w-full max-w-[620px] flex-col border-l border-linea bg-white shadow-nav motion-safe:animate-[entra_.28s_cubic-bezier(.16,1,.3,1)]"
+        className="relative flex h-full w-full flex-col border-l border-linea bg-white shadow-nav motion-safe:animate-[entra_.28s_cubic-bezier(.16,1,.3,1)] min-[720px]:w-[60vw]"
       >
         <header className="flex items-center justify-between gap-3 border-b border-linea px-5 py-3.5">
           <h2 className="truncate text-[15px] font-bold text-titular">{embed.title}</h2>
