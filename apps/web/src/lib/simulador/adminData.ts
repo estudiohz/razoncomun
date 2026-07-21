@@ -20,6 +20,8 @@ export interface ParametroRow {
   formula: string | null;
   valor_actual: number | null;
   fuente_actual: string | null;
+  /** URL de la fuente oficial que respalda `fuente_actual` (0031). Opcional. */
+  fuente_actual_url: string | null;
   valor_rc: number | null;
   nota_rc: string | null;
   es_palanca: boolean;
@@ -40,6 +42,8 @@ export interface PartidaRow {
   actual_cents: number | null;
   actual_formula: string | null;
   fuente_actual: string | null;
+  /** URL de la fuente oficial que respalda `fuente_actual` (0031). Opcional. */
+  fuente_actual_url: string | null;
   rc_modo: ModoRC;
   rc_cents: number | null;
   rc_pct: number | null;
@@ -72,19 +76,21 @@ export interface DemografiaRow {
   valor_medio_cents: number | null;
   unidad_valor_medio: string | null;
   fuente: string | null;
+  /** URL de la fuente oficial que respalda `fuente` (0031). Opcional. */
+  fuente_url: string | null;
   anio: number;
   publicado: boolean;
   orden: number;
 }
 
 const SELECT_PARAMETROS =
-  'id, clave, nombre, unidad, anio, modo, formula, valor_actual, fuente_actual, valor_rc, nota_rc, es_palanca, palanca_min, palanca_max, publicado, orden';
+  'id, clave, nombre, unidad, anio, modo, formula, valor_actual, fuente_actual, fuente_actual_url, valor_rc, nota_rc, es_palanca, palanca_min, palanca_max, publicado, orden';
 
 const SELECT_PARTIDAS =
-  'id, parent_id, tipo, nombre, ambito, anio, actual_modo, actual_cents, actual_formula, fuente_actual, rc_modo, rc_cents, rc_pct, rc_formula, justificacion_rc, ministry_id, origen, ref_propuesta_id, es_palanca, palanca_min, palanca_max, publicado, orden, color, slug';
+  'id, parent_id, tipo, nombre, ambito, anio, actual_modo, actual_cents, actual_formula, fuente_actual, fuente_actual_url, rc_modo, rc_cents, rc_pct, rc_formula, justificacion_rc, ministry_id, origen, ref_propuesta_id, es_palanca, palanca_min, palanca_max, publicado, orden, color, slug';
 
 const SELECT_DEMOGRAFIA =
-  'id, area_id, nombre, num_personas, valor_medio_cents, unidad_valor_medio, fuente, anio, publicado, orden';
+  'id, area_id, nombre, num_personas, valor_medio_cents, unidad_valor_medio, fuente, fuente_url, anio, publicado, orden';
 
 export async function listarParametros(supabase: SupabaseClient): Promise<ParametroRow[]> {
   const { data, error } = await supabase.from('sim_parametros').select(SELECT_PARAMETROS).order('orden');

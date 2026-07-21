@@ -24,6 +24,7 @@ import type { ModeloResuelto, Overrides } from '@/lib/simulador/tipos';
 import { Bloque } from '../PanelPais';
 import { CountUp } from '../CountUp';
 import { DonutChart } from '../DonutChart';
+import { FuenteTexto } from '../FuenteTexto';
 import { detectarCascada, type ResultadoCascada } from '../cascada';
 import { BarraSueldos } from './BarraSueldos';
 
@@ -234,7 +235,8 @@ export function PanelMinisterio({ raizId, parametros, partidas, demografia }: Pr
           <div className="mx-auto mt-5 max-w-[62ch] space-y-1.5 text-left text-[12.5px] text-cuerpo">
             {raiz.fuente_actual?.trim() && (
               <p>
-                <strong className="text-titular">Fuente (actual):</strong> {raiz.fuente_actual}
+                <strong className="text-titular">Fuente (actual):</strong>{' '}
+                <FuenteTexto texto={raiz.fuente_actual} url={raiz.fuente_actual_url} />
               </p>
             )}
             {raiz.justificacion_rc?.trim() && (

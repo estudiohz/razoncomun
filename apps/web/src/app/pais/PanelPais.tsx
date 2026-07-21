@@ -9,6 +9,7 @@ import { resolver } from '@/lib/simulador/resolver';
 import type { ModeloResuelto, Overrides, PartidaResueltaInfo, TipoPartida } from '@/lib/simulador/tipos';
 import { CountUp } from './CountUp';
 import { DonutChart } from './DonutChart';
+import { FuenteTexto } from './FuenteTexto';
 import { SeccionPoblacion } from './SeccionPoblacion';
 import { TopIngresos } from './TopIngresos';
 import { detectarCascada, type ResultadoCascada } from './cascada';
@@ -720,7 +721,8 @@ function FilaPartida({
             <div className="mt-2 space-y-3 rounded-boton bg-fondo p-3 text-[12.5px] text-cuerpo">
               {fila.fuente_actual?.trim() && (
                 <p>
-                  <strong className="text-titular">Fuente (actual):</strong> {fila.fuente_actual}
+                  <strong className="text-titular">Fuente (actual):</strong>{' '}
+                  <FuenteTexto texto={fila.fuente_actual} url={fila.fuente_actual_url} />
                 </p>
               )}
               {fila.justificacion_rc?.trim() && (

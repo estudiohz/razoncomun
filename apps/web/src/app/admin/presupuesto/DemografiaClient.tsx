@@ -32,6 +32,8 @@ interface Campos {
   valor_medio_euros: string;
   unidad_valor_medio: string;
   fuente: string;
+  /** URL de la fuente oficial que respalda `fuente` (0031). Opcional. */
+  fuente_url: string;
   anio: string;
   orden: string;
 }
@@ -42,6 +44,7 @@ const VACIO: Campos = {
   valor_medio_euros: '',
   unidad_valor_medio: '',
   fuente: '',
+  fuente_url: '',
   anio: '2026',
   orden: '0',
 };
@@ -53,6 +56,7 @@ function camposDesde(f: DemografiaRow): Campos {
     valor_medio_euros: f.valor_medio_cents !== null ? String(f.valor_medio_cents / 100) : '',
     unidad_valor_medio: f.unidad_valor_medio ?? '',
     fuente: f.fuente ?? '',
+    fuente_url: f.fuente_url ?? '',
     anio: String(f.anio),
     orden: String(f.orden),
   };
@@ -67,6 +71,7 @@ function aFormData(id: string | null, areaId: string | null, c: Campos): FormDat
   fd.set('valor_medio_euros', c.valor_medio_euros);
   fd.set('unidad_valor_medio', c.unidad_valor_medio);
   fd.set('fuente', c.fuente);
+  fd.set('fuente_url', c.fuente_url);
   fd.set('anio', c.anio);
   fd.set('orden', c.orden);
   return fd;
@@ -118,12 +123,21 @@ function Formulario({ campos, onCambio }: { campos: Campos; onCambio: (c: Campos
       </label>
       <label className="block text-[12.5px] font-semibold text-gris min-[640px]:col-span-2">
         Fuente
-        <input
-          value={campos.fuente}
-          onChange={(e) => set('fuente', e.target.value)}
-          placeholder="INE, Seguridad Social, Ministerio de Defensa…"
-          className="mt-1 w-full rounded-boton border border-linea px-3 py-2 text-[13.5px]"
-        />
+        <div className="mt-1 flex flex-col gap-2 min-[720px]:flex-row">
+          <input
+            value={campos.fuente}
+            onChange={(e) => set('fuente', e.target.value)}
+            placeholder="INE, Seguridad Social, Ministerio de Defensa…"
+            className="flex-1 rounded-boton border border-linea px-3 py-2 text-[13.5px]"
+          />
+          <input
+            type="url"
+            placeholder="URL de la fuente (https://...)"
+            value={campos.fuente_url}
+            onChange={(e) => set('fuente_url', e.target.value)}
+            className="flex-1 rounded-boton border border-linea px-3 py-2 text-[13.5px]"
+          />
+        </div>
       </label>
       <label className="block text-[12.5px] font-semibold text-gris">
         Año

@@ -39,6 +39,8 @@ interface Campos {
   actual_valor_euros: string;
   actual_formula: string;
   fuente_actual: string;
+  /** URL de la fuente oficial que respalda `fuente_actual` (0031). Opcional. */
+  fuente_actual_url: string;
   rc_modo: ModoRC;
   rc_valor_euros: string;
   rc_pct: string;
@@ -62,6 +64,7 @@ function camposDesde(p: PartidaRow): Campos {
     actual_valor_euros: p.actual_cents !== null ? String(centsAEuros(p.actual_cents)) : '',
     actual_formula: p.actual_formula ?? '',
     fuente_actual: p.fuente_actual ?? '',
+    fuente_actual_url: p.fuente_actual_url ?? '',
     rc_modo: p.rc_modo,
     rc_valor_euros: p.rc_cents !== null ? String(centsAEuros(p.rc_cents)) : '',
     rc_pct: p.rc_pct !== null ? String(p.rc_pct) : '',
@@ -85,6 +88,7 @@ function campoVacio(parentId: string, tipo: 'ingreso' | 'gasto'): Campos {
     actual_valor_euros: '',
     actual_formula: '',
     fuente_actual: '',
+    fuente_actual_url: '',
     rc_modo: 'fijo',
     rc_valor_euros: '',
     rc_pct: '',
@@ -119,6 +123,7 @@ function previsualizar(base: PartidaRow, c: Campos): PartidaRow {
     actual_cents: c.actual_modo === 'fijo' ? (centsOrNull(c.actual_valor_euros) ?? base.actual_cents) : null,
     actual_formula: c.actual_modo === 'formula' ? c.actual_formula || null : null,
     fuente_actual: c.fuente_actual,
+    fuente_actual_url: c.fuente_actual_url || null,
     rc_modo: c.rc_modo,
     rc_cents: c.rc_modo === 'fijo' ? centsOrNull(c.rc_valor_euros) : null,
     rc_pct: c.rc_modo === 'pct_actual' ? numOrNull(c.rc_pct) : null,
@@ -144,6 +149,7 @@ function campoAFormData(id: string | null, tipo: 'ingreso' | 'gasto', c: Campos)
   fd.set('actual_valor_euros', c.actual_valor_euros);
   fd.set('actual_formula', c.actual_formula);
   fd.set('fuente_actual', c.fuente_actual);
+  fd.set('fuente_actual_url', c.fuente_actual_url);
   fd.set('rc_modo', c.rc_modo);
   fd.set('rc_valor_euros', c.rc_valor_euros);
   fd.set('rc_pct', c.rc_pct);
@@ -276,12 +282,21 @@ function FilaForm({
             />
           )}
         </div>
-        <input
-          placeholder="Fuente (BOE/PGE/IGAE con referencia concreta)"
-          value={campos.fuente_actual}
-          onChange={(e) => set('fuente_actual', e.target.value)}
-          className="mt-2 w-full rounded-boton border border-linea px-3 py-2 text-[13.5px]"
-        />
+        <div className="mt-2 flex flex-col gap-2 min-[720px]:flex-row">
+          <input
+            placeholder="Fuente (BOE/PGE/IGAE con referencia concreta)"
+            value={campos.fuente_actual}
+            onChange={(e) => set('fuente_actual', e.target.value)}
+            className="flex-1 rounded-boton border border-linea px-3 py-2 text-[13.5px]"
+          />
+          <input
+            type="url"
+            placeholder="URL de la fuente (https://...)"
+            value={campos.fuente_actual_url}
+            onChange={(e) => set('fuente_actual_url', e.target.value)}
+            className="flex-1 rounded-boton border border-linea px-3 py-2 text-[13.5px]"
+          />
+        </div>
       </fieldset>
 
       <fieldset className="rounded-boton border border-teal/30 bg-teal/5 p-3 min-[720px]:col-span-2">

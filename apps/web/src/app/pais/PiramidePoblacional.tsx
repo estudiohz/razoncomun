@@ -22,6 +22,7 @@
 import { cn } from '@/lib/cn';
 import type { DemografiaRow } from '@/lib/simulador/adminData';
 import { formatoPersonasCorto } from '@/lib/simulador/formato';
+import { FuenteTexto } from './FuenteTexto';
 
 interface Banda {
   fila: DemografiaRow;
@@ -36,6 +37,32 @@ interface Props {
    * composición (SeccionPoblacion, layout 50/50) — el borde/margen superior
    * ya lo pone el contenedor común, no hace falta duplicarlo. */
   sinBorde?: boolean;
+}
+
+/** Las 3 bandas suelen citar la MISMA fuente (p. ej. el mismo padrón INE) —
+ * deduplica por (texto, url) para no repetir "INE — Padrón continuo" tres
+ * veces seguidas. */
+function FuentesEdad({ bandas }: { bandas: DemografiaRow[] }) {
+  const vistas = new Set<string>();
+  const unicas: { texto: string; url: string | null }[] = [];
+  for (const b of bandas) {
+    const texto = b.fuente?.trim() || 'PENDIENTE DE FUENTE';
+    const url = b.fuente_url?.trim() || null;
+    const clave = `${texto}|${url ?? ''}`;
+    if (vistas.has(clave)) continue;
+    vistas.add(clave);
+    unicas.push({ texto, url });
+  }
+  return (
+    <>
+      {unicas.map((u, i) => (
+        <span key={u.texto + (u.url ?? '')}>
+          {i > 0 && ' · '}
+          <FuenteTexto texto={u.texto} url={u.url} />
+        </span>
+      ))}
+    </>
+  );
 }
 
 function BarraBanda({ banda, maxPersonas }: { banda: Banda; maxPersonas: number }) {
@@ -102,10 +129,7 @@ export function PiramidePoblacional({ edad0a14, edad15a64, edad65mas, sinBorde }
         ))}
       </div>
 
-      <p className="mt-3 text-[11px] text-gris">
-        Fuente: {edad0a14.fuente?.trim() || 'PENDIENTE DE FUENTE'} · {edad15a64.fuente?.trim() || 'PENDIENTE DE FUENTE'} ·{' '}
-        {edad65mas.fuente?.trim() || 'PENDIENTE DE FUENTE'}
-      </p>
+      <p className="mt-3 text-[11px] text-gris">Fuente: {<FuentesEdad bandas={[edad0a14, edad15a64, edad65mas]} />}</p>
     </div>
   );
 }

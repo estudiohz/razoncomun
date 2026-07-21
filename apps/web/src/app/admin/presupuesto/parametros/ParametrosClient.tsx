@@ -19,6 +19,8 @@ interface Campos {
   valor_actual: string;
   formula: string;
   fuente_actual: string;
+  /** URL de la fuente oficial que respalda `fuente_actual` (0031). Opcional. */
+  fuente_actual_url: string;
   valor_rc: string;
   nota_rc: string;
   es_palanca: boolean;
@@ -35,6 +37,7 @@ function camposDesde(p: ParametroRow): Campos {
     valor_actual: p.valor_actual !== null ? String(p.valor_actual) : '',
     formula: p.formula ?? '',
     fuente_actual: p.fuente_actual ?? '',
+    fuente_actual_url: p.fuente_actual_url ?? '',
     valor_rc: p.valor_rc !== null ? String(p.valor_rc) : '',
     nota_rc: p.nota_rc ?? '',
     es_palanca: p.es_palanca,
@@ -51,6 +54,7 @@ const VACIO: Campos = {
   valor_actual: '',
   formula: '',
   fuente_actual: '',
+  fuente_actual_url: '',
   valor_rc: '',
   nota_rc: '',
   es_palanca: false,
@@ -68,6 +72,7 @@ function aFormData(id: string | null, c: Campos): FormData {
   fd.set('valor_actual', c.valor_actual);
   fd.set('formula', c.formula);
   fd.set('fuente_actual', c.fuente_actual);
+  fd.set('fuente_actual_url', c.fuente_actual_url);
   fd.set('valor_rc', c.valor_rc);
   fd.set('nota_rc', c.nota_rc);
   if (c.es_palanca) fd.set('es_palanca', 'on');
@@ -153,11 +158,20 @@ function Formulario({
 
       <label className="block text-[12.5px] font-semibold text-gris min-[640px]:col-span-2">
         Fuente
-        <input
-          value={campos.fuente_actual}
-          onChange={(e) => set('fuente_actual', e.target.value)}
-          className="mt-1 w-full rounded-boton border border-linea px-3 py-2 text-[13.5px]"
-        />
+        <div className="mt-1 flex flex-col gap-2 min-[720px]:flex-row">
+          <input
+            value={campos.fuente_actual}
+            onChange={(e) => set('fuente_actual', e.target.value)}
+            className="flex-1 rounded-boton border border-linea px-3 py-2 text-[13.5px]"
+          />
+          <input
+            type="url"
+            placeholder="URL de la fuente (https://...)"
+            value={campos.fuente_actual_url}
+            onChange={(e) => set('fuente_actual_url', e.target.value)}
+            className="flex-1 rounded-boton border border-linea px-3 py-2 text-[13.5px]"
+          />
+        </div>
       </label>
 
       {campos.modo === 'fijo' && (

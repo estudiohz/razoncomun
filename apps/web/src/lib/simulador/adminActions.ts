@@ -116,6 +116,7 @@ export async function guardarPartidaAction(formData: FormData): Promise<Resultad
   }
 
   const fuenteActual = texto(formData, 'fuente_actual') || null;
+  const fuenteActualUrl = texto(formData, 'fuente_actual_url') || null;
 
   const parametros = await listarParametros(supabase);
 
@@ -182,6 +183,7 @@ export async function guardarPartidaAction(formData: FormData): Promise<Resultad
     actual_cents: actualCents,
     actual_formula: actualFormula,
     fuente_actual: fuenteActual,
+    fuente_actual_url: fuenteActualUrl,
     rc_modo: rcModo,
     rc_cents: rcCents,
     rc_pct: rcPct,
@@ -299,6 +301,7 @@ export async function guardarParametroAction(formData: FormData): Promise<Result
   }
 
   const fuenteActual = texto(formData, 'fuente_actual') || null;
+  const fuenteActualUrl = texto(formData, 'fuente_actual_url') || null;
   const valorRc = numeroOpcional(formData, 'valor_rc');
   const notaRc = texto(formData, 'nota_rc') || null;
 
@@ -323,6 +326,7 @@ export async function guardarParametroAction(formData: FormData): Promise<Result
     formula,
     valor_actual: valorActual,
     fuente_actual: fuenteActual,
+    fuente_actual_url: fuenteActualUrl,
     valor_rc: valorRc,
     nota_rc: notaRc,
     es_palanca: esPalanca,
@@ -422,6 +426,7 @@ export async function guardarDemografiaAction(formData: FormData): Promise<Resul
   }
 
   const fuente = texto(formData, 'fuente') || null;
+  const fuenteUrl = texto(formData, 'fuente_url') || null;
   const anioRaw = numeroOpcional(formData, 'anio');
   const anio = anioRaw ?? 2026;
   const orden = numeroOpcional(formData, 'orden') ?? 0;
@@ -433,6 +438,7 @@ export async function guardarDemografiaAction(formData: FormData): Promise<Resul
     valor_medio_cents: valorMedioCents,
     unidad_valor_medio: unidadValorMedio,
     fuente,
+    fuente_url: fuenteUrl,
     anio: Math.round(anio),
     orden: Math.round(orden),
   };
