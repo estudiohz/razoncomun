@@ -13,15 +13,20 @@
  * sin dato), no se renderiza nada — no se fabrica el ratio con datos a medias.
  */
 
+import { cn } from '@/lib/cn';
 import type { DemografiaRow } from '@/lib/simulador/adminData';
 import { formatoPersonasCorto } from '@/lib/simulador/formato';
 
 interface Props {
   activa: DemografiaRow | undefined;
   jubilados: DemografiaRow | undefined;
+  /** true cuando vive dentro de la columna compartida junto al donut de
+   * composición (SeccionPoblacion, layout 50/50) — el borde/margen superior
+   * ya lo pone el contenedor común, no hace falta duplicarlo. */
+  sinBorde?: boolean;
 }
 
-export function PiramidePoblacional({ activa, jubilados }: Props) {
+export function PiramidePoblacional({ activa, jubilados, sinBorde }: Props) {
   if (!activa || !jubilados || activa.num_personas <= 0 || jubilados.num_personas <= 0) return null;
 
   const max = Math.max(activa.num_personas, jubilados.num_personas);
@@ -30,7 +35,7 @@ export function PiramidePoblacional({ activa, jubilados }: Props) {
   const ratio = activa.num_personas / jubilados.num_personas;
 
   return (
-    <div className="mt-5 border-t border-linea pt-4">
+    <div className={cn(sinBorde ? '' : 'mt-5 border-t border-linea pt-4')}>
       <p className="mb-1 text-[11.5px] font-bold uppercase tracking-wide text-gris">
         ¿Quién sostiene las pensiones?
       </p>

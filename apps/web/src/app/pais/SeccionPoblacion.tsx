@@ -143,16 +143,24 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
         ))}
       </div>
 
-      {ancla && segmentosDonut.length > 0 && (
-        <div className="mt-5 border-t border-linea pt-4">
-          <p className="mb-2 text-[11.5px] font-bold uppercase tracking-wide text-gris">
-            Composición sobre {formatoPersonasCorto(ancla.num_personas)}
-          </p>
-          <DonutChart segmentos={segmentosDonut} titulo="Población" />
+      {/* Composición (donut) y pirámide (activos/jubilados) lado a lado —
+          50/50 en escritorio, apiladas en móvil (Sergio). Cada bloque se
+          renderiza solo si tiene datos; si falta uno, el otro ocupa toda la
+          fila (grid-cols-1 en ese caso concreto lo resolvería un contenedor
+          por bloque en vez de dos columnas fijas siempre). */}
+      {((ancla && segmentosDonut.length > 0) || (activa && jubilados)) && (
+        <div className="mt-5 grid grid-cols-1 gap-6 border-t border-linea pt-4 min-[720px]:grid-cols-2">
+          {ancla && segmentosDonut.length > 0 && (
+            <div>
+              <p className="mb-2 text-[11.5px] font-bold uppercase tracking-wide text-gris">
+                Composición sobre {formatoPersonasCorto(ancla.num_personas)}
+              </p>
+              <DonutChart segmentos={segmentosDonut} titulo="Población" />
+            </div>
+          )}
+          <PiramidePoblacional activa={activa} jubilados={jubilados} sinBorde />
         </div>
       )}
-
-      <PiramidePoblacional activa={activa} jubilados={jubilados} />
     </section>
   );
 }
