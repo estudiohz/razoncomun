@@ -12,12 +12,26 @@ export function eurosACents(euros: number | null | undefined): number | null {
 
 export function formatoEuros(cents: number | null | undefined): string {
   if (cents === null || cents === undefined) return '—';
-  return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+  // `useGrouping: 'always'`: el default de Intl.NumberFormat cambió a
+  // `useGrouping: 'auto'` (ECMA-402), y con la CLDR de es-ES esa opción NO
+  // agrupa números de 4 cifras («1100 €» en vez de «1.100 €») aunque sí
+  // agrupa desde 5 cifras — verificado en Node 24 / ICU 77. Forzar 'always'
+  // hace el agrupado consistente en cualquier magnitud.
+  return (cents / 100).toLocaleString('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+    useGrouping: 'always',
+  });
 }
 
 export function formatoEurosPreciso(cents: number | null | undefined): string {
   if (cents === null || cents === undefined) return '—';
-  return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+  return (cents / 100).toLocaleString('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    useGrouping: 'always',
+  });
 }
 
 /**
@@ -38,7 +52,7 @@ export function formatoCorto(cents: number | null | undefined): string {
     // 100.000.000 cents = 1.000.000 €. El signo lo pone `toLocaleString`
     // solo (número negativo → "-16.100"), no hace falta tratarlo aparte.
     const millones = cents / 100_000_000;
-    return `${millones.toLocaleString('es-ES', { maximumFractionDigits: 0 })} Mill. €`;
+    return `${millones.toLocaleString('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' })} Mill. €`;
   }
   return formatoEuros(cents);
 }
