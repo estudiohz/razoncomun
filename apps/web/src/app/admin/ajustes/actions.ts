@@ -123,6 +123,58 @@ export async function revertirProveedorIA(formData: FormData) {
 }
 
 /**
+ * Elimina por completo el proveedor de IA activo (borra la fila de
+ * `ai_provider_credentials`). Pensado para retirar un proveedor mal introducido
+ * cuando NO hay uno anterior al que revertir — el caso que `revertirProveedorIA`
+ * no cubre. Tras esto no queda ningún proveedor activo: el RC-Brain cae a su
+ * fallback de entorno (`ANTHROPIC_API_KEY`) o queda "sin configurar" hasta que
+ * se active otro desde el panel.
+ *
+ * La fila activa es SIEMPRE la más reciente, así que ninguna otra la referencia
+ * por `previous_credential_id` (FK auto-referente): borrar la activa es seguro,
+ * no rompe la cadena de histórico. Mismas puertas que las demás acciones
+ * sensibles: admin + 2FA + motivo + auditoría (I5/I6, revision-seguridad.md).
+ */
+export async function eliminarProveedorIA(formData: FormData) {
+  const motivo = String(formData.get('motivo') ?? '').trim();
+  const { user, supabase } = await requireAdmin('/admin/ajustes');
+  await exigirAal2(supabase);
+
+  if (!motivo) {
+    throw new Error('El motivo de la eliminación es obligatorio — queda en auditoría.');
+  }
+
+  const admin = createAdminClient();
+  const { data: activa, error: errLeer } = await admin
+    .from('ai_provider_credentials')
+    .select('id, provider, model')
+    .eq('active', true)
+    .maybeSingle();
+
+  if (errLeer) {
+    throw new Error(`No se pudo leer el proveedor activo: ${errLeer.message}`);
+  }
+  if (!activa) {
+    throw new Error('No hay ningún proveedor activo que eliminar.');
+  }
+
+  const { error } = await admin.from('ai_provider_credentials').delete().eq('id', activa.id);
+  if (error) {
+    throw new Error(`No se pudo eliminar el proveedor: ${error.message}`);
+  }
+
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'ai_provider_deleted',
+    entity: 'ai_provider_credentials',
+    entityId: activa.id,
+    meta: { provider: activa.provider, model: activa.model, motivo },
+  });
+
+  revalidatePath('/admin/ajustes');
+}
+
+/**
  * Antigüedad mínima de afiliación exigida para voto vinculante (D-017/D-018,
  * 0019_antiguedad_configurable.sql — migración de rc-02, no se toca aquí).
  * `settings.min_membership_days` es SOLO el valor por defecto para

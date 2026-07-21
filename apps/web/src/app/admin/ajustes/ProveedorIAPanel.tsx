@@ -13,7 +13,7 @@ import {
   etiquetaModelo,
   type ProveedorIA,
 } from '@/lib/admin/modelos-ia';
-import { activarProveedorIA, revertirProveedorIA } from './actions';
+import { activarProveedorIA, revertirProveedorIA, eliminarProveedorIA } from './actions';
 
 /** Vista serializable del proveedor activo (la clave completa NUNCA llega aquí). */
 export type ActivaView = {
@@ -48,6 +48,7 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
   const [modelCustom, setModelCustom] = useState<string>('');
   const [motivo, setMotivo] = useState<string>('');
   const [editando, setEditando] = useState<boolean>(false);
+  const [eliminando, setEliminando] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const modelos = provider ? MODELOS_POR_PROVEEDOR[provider] ?? [] : [];
@@ -89,17 +90,76 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
               <span className="rounded bg-fondo px-2 py-0.5 text-[12px] font-mono text-gris">
                 •••• {activa.keySuffix}
               </span>
-              <button
-                type="button"
-                onClick={editarActivo}
-                className="ml-auto rounded-boton border border-linea px-3 py-1.5 text-[12.5px] font-bold text-titular hover:border-titular"
-              >
-                Editar / corregir modelo
-              </button>
+              <div className="ml-auto flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={editarActivo}
+                  className="rounded-boton border border-linea px-3 py-1.5 text-[12.5px] font-bold text-titular hover:border-titular"
+                >
+                  Editar / corregir modelo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEliminando((v) => !v)}
+                  aria-label="Eliminar proveedor activo"
+                  title="Eliminar proveedor activo"
+                  className="grid h-9 w-9 place-items-center rounded-boton border border-red-300 text-red-600 hover:bg-red-50"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7m4 4v6m4-6v6"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
             <p className="text-[12.5px] text-gris">
               Cambiado por {activa.changedByName} el {new Date(activa.changedAtISO).toLocaleString('es-ES')}
             </p>
+
+            {eliminando && (
+              <form
+                action={eliminarProveedorIA}
+                className="space-y-2 rounded-boton border border-red-300 bg-red-50 p-3"
+              >
+                <p className="text-[13px] font-bold text-red-800">
+                  Eliminar {PROVEEDOR_LABEL[activa.provider]} · {activa.model}
+                </p>
+                <p className="text-[12.5px] text-red-900">
+                  Se borra por completo esta credencial. Tras esto no quedará ningún proveedor activo
+                  hasta que actives otro — el chat dejará de generar respuestas. Esta acción no se puede
+                  deshacer.
+                </p>
+                <label className="block text-[12px] font-bold text-red-800">
+                  Motivo de la eliminación (obligatorio, queda en auditoría)
+                </label>
+                <Input
+                  name="motivo"
+                  required
+                  placeholder="Ej. credencial introducida por error"
+                  className="border-red-300 bg-white"
+                />
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <button
+                    type="submit"
+                    className="rounded-boton bg-red-600 px-4 py-2 text-[13px] font-bold text-white hover:bg-red-700"
+                  >
+                    Sí, eliminar proveedor
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEliminando(false)}
+                    className="rounded-boton border border-red-300 px-4 py-2 text-[13px] font-bold text-red-700 hover:bg-red-100"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            )}
 
             {activa.hasPrevious ? (
               <form action={revertirProveedorIA} className="flex flex-wrap items-end gap-2 border-t border-linea pt-3">
