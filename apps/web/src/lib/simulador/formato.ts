@@ -71,6 +71,25 @@ export function formatoPersonas(n: number | null | undefined): string {
 }
 
 /**
+ * Notación abreviada ("8M" en vez de "8.000.000 personas") — pedida por
+ * Sergio para las tarjetas de "Población de España": con varias tarjetas por
+ * fila, el número completo con miles no cabe/lee bien. Mismo umbral y misma
+ * lección de `useGrouping: 'always'` que `formatoCorto` (euros).
+ */
+export function formatoPersonasCorto(n: number | null | undefined): string {
+  if (n === null || n === undefined) return '—';
+  if (Math.abs(n) >= 1_000_000) {
+    const millones = n / 1_000_000;
+    return `${millones.toLocaleString('es-ES', { maximumFractionDigits: 1, useGrouping: 'always' })}M`;
+  }
+  if (Math.abs(n) >= 1_000) {
+    const miles = n / 1_000;
+    return `${miles.toLocaleString('es-ES', { maximumFractionDigits: 1, useGrouping: 'always' })}K`;
+  }
+  return n.toLocaleString('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' });
+}
+
+/**
  * Combina un importe en céntimos con una unidad tipo "€/mes" sin duplicar
  * el símbolo € (`formatoEuros` ya añade uno). Si la unidad empieza por "€"
  * (caso normal en `sim_demografia.unidad_valor_medio`), se pega el resto de

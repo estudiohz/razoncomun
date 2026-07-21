@@ -14,7 +14,7 @@
  */
 
 import type { DemografiaRow } from '@/lib/simulador/adminData';
-import { formatoPersonas } from '@/lib/simulador/formato';
+import { formatoPersonasCorto } from '@/lib/simulador/formato';
 
 interface Props {
   activa: DemografiaRow | undefined;
@@ -51,7 +51,7 @@ export function PiramidePoblacional({ activa, jubilados }: Props) {
           <div className="h-6 flex-1 rounded-r-full bg-transparent" aria-hidden="true" />
         </div>
         <div className="flex items-center gap-3 text-[11px] text-gris">
-          <span className="flex-1 text-right tabular-nums">{formatoPersonas(activa.num_personas)}</span>
+          <span className="flex-1 text-right tabular-nums">{formatoPersonasCorto(activa.num_personas)}</span>
           <span className="w-[132px] shrink-0" aria-hidden="true" />
           <span className="flex-1" aria-hidden="true" />
         </div>
@@ -71,7 +71,7 @@ export function PiramidePoblacional({ activa, jubilados }: Props) {
           <span className="flex-1" aria-hidden="true" />
           <span className="w-[132px] shrink-0" aria-hidden="true" />
           <span className="flex-1 tabular-nums">
-            {formatoPersonas(jubilados.num_personas)}
+            {formatoPersonasCorto(jubilados.num_personas)}
             {jubilados.valor_medio_cents !== null && jubilados.unidad_valor_medio
               ? ` · pensión media ${(jubilados.valor_medio_cents / 100).toLocaleString('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' })}${jubilados.unidad_valor_medio.startsWith('€') ? jubilados.unidad_valor_medio.slice(1) : ` ${jubilados.unidad_valor_medio}`}`
               : ''}
