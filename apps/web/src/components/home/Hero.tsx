@@ -22,7 +22,7 @@ export function Hero() {
       <link
         rel="preload"
         as="image"
-        href="/personas-poster-teal.jpg"
+        href="/personas-poster.webp"
         fetchPriority="high"
       />
     <header className="relative -mt-[92px] flex min-h-[calc(72vh-150px)] items-center overflow-hidden bg-hero pb-16 pt-[118px] text-left max-[960px]:min-h-0 max-[960px]:pb-11">

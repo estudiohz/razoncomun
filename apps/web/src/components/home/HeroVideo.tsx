@@ -18,9 +18,16 @@ const CLASES =
  */
 export function HeroVideo() {
   const [cargar, setCargar] = useState(false);
+  // 'webm' = vídeo con canal alpha (fondo transparente: deja ver el degradado
+  // real del hero). Safari decodifica VP9 pero IGNORA el alpha y pintaría el
+  // fondo en negro, así que ahí servimos el mp4 opaco de respaldo (fondo
+  // morado horneado, disimulado por la máscara CSS de .hero-personas).
+  const [fmt, setFmt] = useState<'webm' | 'mp4'>('webm');
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    const esSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+    if (esSafari) setFmt('mp4');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return;
 
@@ -51,10 +58,15 @@ export function HeroVideo() {
       loop
       playsInline
       preload="none"
-      poster="/personas-poster-teal.jpg"
+      poster="/personas-poster.webp"
       aria-label="Personas de todas las edades y orígenes mirando a cámara"
     >
-      {cargar && <source src="/personas-loop-teal.mp4" type="video/mp4" />}
+      {cargar &&
+        (fmt === 'webm' ? (
+          <source src="/personas-loop.webm" type="video/webm" />
+        ) : (
+          <source src="/personas-loop-teal.mp4" type="video/mp4" />
+        ))}
     </video>
   );
 }
