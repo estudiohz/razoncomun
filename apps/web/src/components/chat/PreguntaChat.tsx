@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { GraficoRC } from '@/components/brain/GraficoRC';
+import type { GraficoSpec } from '@/lib/brain/tipos';
 
 /**
  * "Pregunta a Razón Común" (docs/tecnico/rc-brain.md, fase 3): chat público
@@ -11,7 +13,12 @@ import { useState } from 'react';
  * ya decidió.
  */
 
-type Msg = { role: 'user' | 'assistant'; text: string; sources?: { label: string }[] };
+type Msg = {
+  role: 'user' | 'assistant';
+  text: string;
+  sources?: { label: string }[];
+  charts?: GraficoSpec[];
+};
 
 function sessionId() {
   if (typeof window === 'undefined') return 'ssr';
@@ -49,7 +56,10 @@ export function PreguntaChat() {
         setError(data?.error || 'No se pudo contactar con el cerebro de Razón Común.');
         return;
       }
-      setMessages((m) => [...m, { role: 'assistant', text: data.answer, sources: data.sources }]);
+      setMessages((m) => [
+        ...m,
+        { role: 'assistant', text: data.answer, sources: data.sources, charts: data.charts },
+      ]);
     } catch {
       setError('No se pudo contactar con el cerebro de Razón Común. Inténtalo de nuevo.');
     } finally {
@@ -72,6 +82,13 @@ export function PreguntaChat() {
               <span className="mr-1.5 font-bold">{m.role === 'assistant' ? 'Razón Común IA:' : 'Tú:'}</span>
               {m.text}
             </p>
+            {m.role === 'assistant' && m.charts && m.charts.length > 0 && (
+              <div className="mt-3 space-y-3">
+                {m.charts.map((c, ci) => (
+                  <GraficoRC key={ci} spec={c} />
+                ))}
+              </div>
+            )}
           </div>
         ))}
         {loading && <p className="text-[13px] text-white/40">Consultando el corpus público…</p>}
