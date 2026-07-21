@@ -3,6 +3,7 @@
 import { useActionState, useMemo, useRef, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { EditorGraficos } from '@/components/brain/EditorGraficos';
+import { EditorSimulador } from '@/components/brain/EditorSimulador';
 import { guardarEntrada, type ResultadoAccion } from '@/lib/brain/wikiAdmin';
 import { renderizarMarkdown } from '@/lib/blog/markdown';
 import type { AreaTematica, BrainCategoria, BrainEntrada } from '@/lib/brain/tipos';
@@ -167,6 +168,11 @@ export function FormularioEntrada({
         </div>
 
         <EditorGraficos inicial={entrada?.charts ?? []} />
+
+        <EditorSimulador
+          htmlInicial={entrada?.embed_html ?? null}
+          tituloInicial={entrada?.embed_title ?? null}
+        />
 
         {estado?.error ? (
           <p className="mb-4 rounded-boton border border-magenta/40 bg-magenta/5 px-4 py-3 text-[15px] text-magenta">

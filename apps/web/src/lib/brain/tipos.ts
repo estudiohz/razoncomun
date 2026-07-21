@@ -64,6 +64,10 @@ export interface BrainEntrada {
   indexed_at: string | null;
   /** Gráficos/tablas adjuntos (0026). Vacío si la entrada no tiene ninguno. */
   charts: GraficoSpec[];
+  /** HTML del simulador adjunto (0027). NULL si la entrada no tiene simulador. */
+  embed_html: string | null;
+  /** Título del simulador que se muestra en el chat (0027). NULL si no hay. */
+  embed_title: string | null;
   created_at: string;
   updated_at: string;
 }

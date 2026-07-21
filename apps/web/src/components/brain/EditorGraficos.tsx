@@ -57,7 +57,7 @@ export function EditorGraficos({ inicial }: { inicial: GraficoSpec[] }) {
   const json = JSON.stringify(limpiar(graficos));
 
   return (
-    <div className="mb-6">
+    <section className="mb-6 rounded-tarjeta border border-linea bg-white p-5">
       <input type="hidden" name="charts" value={json} />
 
       <div className="mb-2 flex items-center justify-between">
@@ -87,7 +87,7 @@ export function EditorGraficos({ inicial }: { inicial: GraficoSpec[] }) {
           {graficos.map((g, gi) => {
             const previa: GraficoSpec = { ...g, data: g.data.filter((f) => f.label.trim() !== '') };
             return (
-              <div key={gi} className="rounded-tarjeta border border-linea bg-white p-4">
+              <div key={gi} className="rounded-tarjeta border border-linea bg-fondo p-4">
                 <div className="mb-3 flex flex-wrap items-end gap-3">
                   <div>
                     <label className={etiqueta}>Tipo</label>
@@ -184,6 +184,6 @@ export function EditorGraficos({ inicial }: { inicial: GraficoSpec[] }) {
           })}
         </div>
       )}
-    </div>
+    </section>
   );
 }

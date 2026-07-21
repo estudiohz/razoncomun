@@ -91,6 +91,22 @@ export async function guardarEntrada(
   if (!body) return { ok: false, error: 'El cuerpo es obligatorio.' };
   if (!categoryId) return { ok: false, error: 'La categoría es obligatoria.' };
 
+  // Simulador HTML adjunto (0027). El admin lo sube desde el editor; se guarda
+  // verbatim y se sirve aislado en un iframe sandbox. Aquí solo se valida el
+  // tamaño (256 KB de sobra: el simulador de ejemplo pesa ~25 KB) y se
+  // normaliza el vacío a NULL. El saneamiento contra XSS NO se hace aquí
+  // (sería inútil: cualquier filtro de HTML se puede evadir): la seguridad la
+  // da el sandbox + CSP del endpoint que lo sirve, nunca la confianza en el
+  // contenido. Ver docs/tecnico/cerebro-participativo.md (D-CP-2).
+  const embedHtmlBruto = texto(fd, 'embed_html');
+  if (embedHtmlBruto.length > 256 * 1024) {
+    return { ok: false, error: 'El simulador HTML supera el límite de 256 KB. Reduce su tamaño.' };
+  }
+  const embedHtml = embedHtmlBruto || null;
+  const embedTitleBruto = texto(fd, 'embed_title').slice(0, 120);
+  // Sin HTML no tiene sentido guardar un título de simulador.
+  const embedTitle = embedHtml ? embedTitleBruto || 'Simulador' : null;
+
   const fila = {
     title,
     body,
@@ -98,6 +114,8 @@ export async function guardarEntrada(
     area_id: areaIdTexto ? Number(areaIdTexto) : null,
     visibility,
     charts: parsearGraficos(texto(fd, 'charts')),
+    embed_html: embedHtml,
+    embed_title: embedTitle,
   };
 
   if (id) {
