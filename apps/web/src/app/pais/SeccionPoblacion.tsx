@@ -26,6 +26,12 @@ import { PiramidePoblacional } from './PiramidePoblacional';
 const NOMBRE_ANCLA = 'Población total de España';
 const NOMBRE_ACTIVA = 'Población activa';
 const NOMBRE_JUBILADOS = 'Jubilados';
+const NOMBRE_PARADOS = 'Parados';
+/** Parados fluctúa mes a mes (EPA/SEPE) — la cifra publicada es una MEDIA,
+ * no un dato fijo. Se avisa en la propia tarjeta para no dar una falsa
+ * sensación de precisión puntual (mismo principio de honestidad que el
+ * "Calculado" de Otros, D-S1). */
+const NOTA_PARADOS = 'Media aproximada — el dato real fluctúa mes a mes';
 
 interface TarjetaDatos {
   id: string;
@@ -33,14 +39,19 @@ interface TarjetaDatos {
   numPersonas: number;
   valorMedioCents?: number | null;
   unidadValorMedio?: string | null;
-  /** "Otros (resto)"/el propio ancla no son filas normales — se marcan para
-   * no aplicarles el mismo tratamiento (borde/​% ) que a un dato real. */
+  /** Texto pequeño bajo la cifra — para "Otros (resto)" explica que es un
+   * cálculo, no un dato; para "Parados" avisa de que es una media que
+   * fluctúa. Genérico para no tener que inventar un caso especial por cada
+   * matiz nuevo que aparezca. */
+  nota?: string;
+  /** "Otros (resto)"/el propio ancla no son filas normales — el borde
+   * discontinuo distingue un cálculo de un dato real. */
   calculada?: boolean;
   esAncla?: boolean;
 }
 
 function TarjetaPersona({ tarjeta, totalPoblacion }: { tarjeta: TarjetaDatos; totalPoblacion: number | null }) {
-  const { nombre, numPersonas, valorMedioCents, unidadValorMedio, calculada, esAncla } = tarjeta;
+  const { nombre, numPersonas, valorMedioCents, unidadValorMedio, nota, calculada, esAncla } = tarjeta;
   // % trivial (100%) en la propia ancla — no aporta, se omite.
   const pct = !esAncla && totalPoblacion ? (numPersonas / totalPoblacion) * 100 : null;
 
@@ -58,7 +69,7 @@ function TarjetaPersona({ tarjeta, totalPoblacion }: { tarjeta: TarjetaDatos; to
       {valorMedioCents !== null && valorMedioCents !== undefined && (
         <p className="mt-1 text-[12px] text-cuerpo">{formatoEurosConUnidad(valorMedioCents, unidadValorMedio)}</p>
       )}
-      {calculada && <p className="mt-1 text-[10.5px] text-gris">Calculado: total − categorías conocidas</p>}
+      {nota && <p className="mt-1 text-[10.5px] text-gris">{nota}</p>}
     </div>
   );
 }
@@ -104,9 +115,18 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
       valorMedioCents: f.valor_medio_cents,
       unidadValorMedio: f.unidad_valor_medio,
       esAncla: f.id === ancla?.id,
+      nota: f.nombre.trim() === NOMBRE_PARADOS ? NOTA_PARADOS : undefined,
     })),
     ...(ancla && resto > 0
-      ? [{ id: '__otros__', nombre: 'Otros (resto)', numPersonas: resto, calculada: true }]
+      ? [
+          {
+            id: '__otros__',
+            nombre: 'Otros (resto)',
+            numPersonas: resto,
+            calculada: true,
+            nota: 'Calculado: total − categorías conocidas',
+          },
+        ]
       : []),
   ].sort((a, b) => b.numPersonas - a.numPersonas);
 
