@@ -59,6 +59,7 @@ export type RedSocial = (typeof redesSociales)[number];
 export const navPrincipal = [
   { label: 'Manifiesto', href: '/manifiesto' },
   { label: 'Programa', href: '/programa' },
+  { label: 'El País', href: '/pais' },
   { label: 'Observatorio', href: '/observatorio' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pregunta a la IA', href: '/pregunta' },
@@ -77,6 +78,7 @@ export const rutasPublicas = [
   '/',
   '/manifiesto',
   '/programa',
+  '/pais',
   '/observatorio',
   '/blog',
   '/pregunta',

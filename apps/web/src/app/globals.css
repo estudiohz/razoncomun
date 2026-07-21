@@ -220,4 +220,31 @@
       opacity: 0;
     }
   }
+
+  /* /pais — resalte de "efecto en cadena" al mover una palanca (docs/tecnico/
+     simulador-pais.md §5). El anillo estático (fuera de esta media query, más
+     abajo) ya avisa sin animación; aquí solo se añade el pulso. */
+  .pais-pulso {
+    animation: pais-pulso-anim 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes pais-pulso-anim {
+    0% {
+      box-shadow: 0 0 0 0 rgba(22, 184, 160, 0.5);
+      background-color: rgba(22, 184, 160, 0.14);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgba(22, 184, 160, 0);
+      background-color: transparent;
+    }
+  }
+
+  .pais-cadena-in {
+    animation: entra 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+/* Resalte estático del pulso de cascada: siempre visible (incluso con
+   prefers-reduced-motion), la animación de arriba es solo el extra. */
+.pais-pulso {
+  box-shadow: 0 0 0 2px rgba(22, 184, 160, 0.55);
 }
