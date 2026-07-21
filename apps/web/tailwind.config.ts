@@ -77,8 +77,8 @@ const config: Config = {
           'linear-gradient(120deg,#24AF9A 0%,#8B30D9 28%,#C3369E 50%,#E8792F 72%,#16B8A0 100%)',
         // Degradado de acción (botones, celdas — no satura)
         grad: 'linear-gradient(120deg,#24AF9A 0%,#8B30D9 60%,#C3369E 100%)',
-        // Hero: teal → morado
-        hero: 'linear-gradient(120deg,rgb(36,175,154) 0%,rgb(163,69,205) 60%,rgb(163,69,205) 100%)',
+        // Hero: azul → teal → naranja → morado (espectro de marca completo)
+        hero: 'linear-gradient(120deg, #2466af, #229482 30%, #e8792fcf 50%, #a857d2 70%, #8b31b0)',
       },
       maxWidth: {
         wrap: '1240px',
