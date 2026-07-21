@@ -57,11 +57,19 @@ export default async function UsuariosPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-[24px] font-extrabold">Usuarios</h1>
-        <p className="mt-1 text-[13.5px] text-gris">
-          Los tres ejes: nivel de cuenta, cargo orgánico y afiliación (ver ficha de cada usuario).
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[24px] font-extrabold">Usuarios</h1>
+          <p className="mt-1 text-[13.5px] text-gris">
+            Los tres ejes: nivel de cuenta, cargo orgánico y afiliación (ver ficha de cada usuario).
+          </p>
+        </div>
+        <Link
+          href="/admin/usuarios/nuevo"
+          className="rounded-boton bg-accion px-5 py-2.5 text-[14px] font-bold text-white shadow-boton"
+        >
+          + Añadir usuario
+        </Link>
       </div>
 
       <Tarjeta className="p-4">

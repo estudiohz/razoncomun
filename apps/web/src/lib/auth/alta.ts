@@ -48,7 +48,9 @@ export async function aplicarMetadataAlta(supabase: SupabaseClient, user: User) 
 
 /**
  * A dónde mandar al usuario tras verificar un token (email/OAuth):
- * - recovery: siempre a poner contraseña nueva.
+ * - recovery / invite: siempre a poner contraseña nueva. En una invitación de
+ *   equipo (admin crea la cuenta desde el panel) el usuario aún NO tiene
+ *   contraseña, así que hay que llevarlo a establecerla igual que en recovery.
  * - si todavía no dio el consentimiento Art. 9 (caso OAuth, o cualquier
  *   hueco): pasarela de consentimiento obligatoria antes de seguir.
  * - si no: la ruta `next` pedida (por defecto /perfil).
@@ -59,7 +61,7 @@ export async function destinoTrasVerificar(
   tipo: string,
   next: string,
 ): Promise<string> {
-  if (tipo === 'recovery') {
+  if (tipo === 'recovery' || tipo === 'invite') {
     return `/recuperar/actualizar?next=${encodeURIComponent(next)}`;
   }
 
