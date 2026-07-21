@@ -24,6 +24,7 @@ type Msg = {
   charts?: GraficoSpec[];
   embeds?: Embed[];
   suggestions?: { label: string; query: string }[];
+  related?: { label: string; query: string }[];
 };
 
 function sessionId() {
@@ -73,6 +74,7 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
           charts: data.charts,
           embeds: data.embeds,
           suggestions: data.suggestions,
+          related: data.related,
         },
       ]);
     } catch {
@@ -162,6 +164,31 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
                   </svg>
                   Complementa esta información
                 </button>
+              </div>
+            )}
+
+            {/* Entradas relacionadas (p. ej. la parte secundaria de un artículo dividido) */}
+            {m.role === 'assistant' && !m.suggestions && m.related && m.related.length > 0 && (
+              <div className="mt-3">
+                <p className="mb-1.5 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+                  También te puede interesar
+                </p>
+                <div className="flex flex-col gap-2">
+                  {m.related.map((r, ri) => (
+                    <button
+                      key={ri}
+                      type="button"
+                      onClick={() => void enviar(r.query)}
+                      disabled={loading}
+                      className="flex items-center justify-between gap-2 rounded-[12px] border border-white/15 bg-white/[.04] px-4 py-2.5 text-left text-[13.5px] text-white/85 transition-colors hover:border-white/40 hover:bg-white/[.08] disabled:opacity-50"
+                    >
+                      <span>{r.label}</span>
+                      <span className="text-cian" aria-hidden>
+                        →
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
