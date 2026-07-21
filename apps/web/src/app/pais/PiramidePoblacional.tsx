@@ -1,135 +1,175 @@
 /**
  * app/pais/PiramidePoblacional.tsx
  *
- * Pirámide de edad (revisión pedida por Sergio: "quizás un gráfico piramidal
- * sea más correcto aquí"). Antes comparaba 2 categorías laborales (activa
- * vs jubilados) con barras espejadas — con solo 2 barras nunca sale la
- * silueta de una pirámide de verdad, eso requiere varias bandas de tamaño
- * decreciente. Ahora usa 3 bandas de EDAD (0-14 / 15-64 / 65+), la partición
- * demográfica estándar (ratio de dependencia por edad, INE/ONU) — bandas
- * mutuamente excluyentes que sí suman el 100% de la población.
+ * "¿Quién sostiene las pensiones?" (segunda revisión, Sergio: la versión de
+ * bandas de edad puras "está mal"). Ahora son 4 categorías de arriba a
+ * abajo, más directas para la pregunta de sostenibilidad:
+ *   1. Pensionistas (jubilación, viudedad, orfandad, incapacidad) + personas
+ *      con ayudas y dependientes — UNA barra apilada de 2 colores (el total
+ *      arriba, cada segmento con su % — pasa el ratón por encima de cada
+ *      color para el detalle exacto).
+ *   2. Cotizantes (quienes sostienen el sistema con sus cotizaciones) — 1 color.
+ *   3. Estudiantes.
+ *   4. Niños.
  *
- * Cada banda es una barra CENTRADA en un eje vertical (ancho ∝ su
- * población sobre el máximo de las 3) apilada de más joven (abajo) a más
- * mayor (arriba) — el efecto silueta de un vistazo, sin necesitar datos por
- * sexo/quinquenio (eso queda para una iteración aparte, si se quiere la
- * pirámide INE completa).
+ * "Cotizantes" y "Pensionistas"/"Personas con ayudas y dependientes" son
+ * filas de `sim_demografia` NUEVAS y EXCLUSIVAS de este gráfico (excluidas
+ * del donut de composición social/laboral y de la cuadrícula de tarjetas,
+ * mismo motivo que "Población activa": son una mirada distinta de la
+ * población, mezclarlas contaría gente dos veces). "Estudiantes"/"Niños" SÍ
+ * son las mismas filas que ya se muestran como tarjetas normales.
  *
- * D-S13: informativo, sin lado Razón Común. Si falta cualquiera de las 3
- * bandas, no se renderiza nada — no se fabrica el ratio con datos a medias.
+ * D-S13: informativo, sin lado Razón Común. Si falta cualquiera de las 4
+ * categorías, no se renderiza nada — no se fabrica el ratio con datos a medias.
  */
 
-import { cn } from '@/lib/cn';
 import type { DemografiaRow } from '@/lib/simulador/adminData';
 import { formatoPersonasCorto } from '@/lib/simulador/formato';
 import { FuenteTexto } from './FuenteTexto';
 
-interface Banda {
-  fila: DemografiaRow;
-  etiqueta: string;
-}
-
 interface Props {
-  edad0a14: DemografiaRow | undefined;
-  edad15a64: DemografiaRow | undefined;
-  edad65mas: DemografiaRow | undefined;
+  pensionistas: DemografiaRow | undefined;
+  ayudasDependientes: DemografiaRow | undefined;
+  cotizantes: DemografiaRow | undefined;
+  estudiantes: DemografiaRow | undefined;
+  ninos: DemografiaRow | undefined;
   /** true cuando vive dentro de la columna compartida junto al donut de
    * composición (SeccionPoblacion, layout 50/50) — el borde/margen superior
    * ya lo pone el contenedor común, no hace falta duplicarlo. */
   sinBorde?: boolean;
 }
 
-/** Las 3 bandas suelen citar la MISMA fuente (p. ej. el mismo padrón INE) —
- * deduplica por (texto, url) para no repetir "INE — Padrón continuo" tres
- * veces seguidas. */
-function FuentesEdad({ bandas }: { bandas: DemografiaRow[] }) {
-  const vistas = new Set<string>();
-  const unicas: { texto: string; url: string | null }[] = [];
-  for (const b of bandas) {
-    const texto = b.fuente?.trim() || 'PENDIENTE DE FUENTE';
-    const url = b.fuente_url?.trim() || null;
-    const clave = `${texto}|${url ?? ''}`;
-    if (vistas.has(clave)) continue;
-    vistas.add(clave);
-    unicas.push({ texto, url });
-  }
-  return (
-    <>
-      {unicas.map((u, i) => (
-        <span key={u.texto + (u.url ?? '')}>
-          {i > 0 && ' · '}
-          <FuenteTexto texto={u.texto} url={u.url} />
-        </span>
-      ))}
-    </>
-  );
+function pct(parte: number, total: number): string {
+  return total > 0 ? `${((parte / total) * 100).toLocaleString('es-ES', { maximumFractionDigits: 1 })}%` : '—';
 }
 
-function BarraBanda({ banda, maxPersonas }: { banda: Banda; maxPersonas: number }) {
-  const pct = maxPersonas > 0 ? (banda.fila.num_personas / maxPersonas) * 100 : 0;
+/** Barra de un único color, con su etiqueta y cifra. */
+function BarraSimple({ etiqueta, personas, maxPersonas, color }: { etiqueta: string; personas: number; maxPersonas: number; color: string }) {
+  const anchoPct = maxPersonas > 0 ? (personas / maxPersonas) * 100 : 0;
   return (
-    <div className="flex flex-col items-center">
-      <div className="flex h-7 w-full items-center justify-center">
+    <div>
+      <div className="flex items-baseline justify-between text-[11.5px] font-bold text-cuerpo">
+        <span>{etiqueta}</span>
+        <span className="tabular-nums text-titular">{formatoPersonasCorto(personas)}</span>
+      </div>
+      <div className="mt-1 h-6 overflow-hidden rounded-full bg-fondo">
         <div
-          className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full transition-[width] duration-500 ease-out"
+          style={{ width: `${anchoPct}%`, backgroundColor: color }}
         />
       </div>
-      <p className="mt-1 text-[11px] font-bold text-cuerpo">
-        {banda.etiqueta} · {formatoPersonasCorto(banda.fila.num_personas)}
-      </p>
     </div>
   );
 }
 
-export function PiramidePoblacional({ edad0a14, edad15a64, edad65mas, sinBorde }: Props) {
+/** Barra apilada de 2 colores (Pensionistas + Ayudas/dependientes) — el total
+ * fija el ancho relativo al máximo del gráfico; dentro, cada segmento ocupa
+ * su % real. Interactiva: pasar el ratón por un segmento muestra su cifra y
+ * % exactos (title = tooltip nativo, sin JS extra). */
+function BarraApilada({
+  pensionistas,
+  ayudas,
+  maxPersonas,
+}: {
+  pensionistas: DemografiaRow;
+  ayudas: DemografiaRow;
+  maxPersonas: number;
+}) {
+  const total = pensionistas.num_personas + ayudas.num_personas;
+  const anchoTotalPct = maxPersonas > 0 ? (total / maxPersonas) * 100 : 0;
+  const pctPensionistas = pct(pensionistas.num_personas, total);
+  const pctAyudas = pct(ayudas.num_personas, total);
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between text-[11.5px] font-bold text-cuerpo">
+        <span>Pensionistas y dependientes</span>
+        <span className="tabular-nums text-titular">{formatoPersonasCorto(total)}</span>
+      </div>
+      <div className="mt-1 flex h-6 overflow-hidden rounded-full bg-fondo" style={{ width: `${anchoTotalPct}%` }}>
+        <div
+          title={`Pensionistas (jubilación, viudedad, orfandad, incapacidad): ${formatoPersonasCorto(pensionistas.num_personas)} · ${pctPensionistas}`}
+          className="h-full bg-magenta transition-opacity hover:opacity-80"
+          style={{ width: `${(pensionistas.num_personas / total) * 100}%` }}
+        />
+        <div
+          title={`Personas con ayudas y dependientes: ${formatoPersonasCorto(ayudas.num_personas)} · ${pctAyudas}`}
+          className="h-full bg-naranja transition-opacity hover:opacity-80"
+          style={{ width: `${(ayudas.num_personas / total) * 100}%` }}
+        />
+      </div>
+      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10.5px] text-gris">
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-magenta" aria-hidden="true" />
+          Pensionistas {pctPensionistas} ({formatoPersonasCorto(pensionistas.num_personas)})
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-naranja" aria-hidden="true" />
+          Ayudas y dependientes {pctAyudas} ({formatoPersonasCorto(ayudas.num_personas)})
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function PiramidePoblacional({ pensionistas, ayudasDependientes, cotizantes, estudiantes, ninos, sinBorde }: Props) {
   if (
-    !edad0a14 ||
-    !edad15a64 ||
-    !edad65mas ||
-    edad0a14.num_personas <= 0 ||
-    edad15a64.num_personas <= 0 ||
-    edad65mas.num_personas <= 0
+    !pensionistas ||
+    !ayudasDependientes ||
+    !cotizantes ||
+    !estudiantes ||
+    !ninos ||
+    pensionistas.num_personas <= 0 ||
+    ayudasDependientes.num_personas <= 0 ||
+    cotizantes.num_personas <= 0 ||
+    estudiantes.num_personas <= 0 ||
+    ninos.num_personas <= 0
   ) {
     return null;
   }
 
-  const maxPersonas = Math.max(edad0a14.num_personas, edad15a64.num_personas, edad65mas.num_personas);
-  // Ratio de dependencia por edad (INE/ONU): personas en edad de trabajar
-  // (15-64) por cada persona mayor (65+) — el dato accionable de "quién
-  // sostiene las pensiones", ahora con bandas de edad puras en vez de
-  // categorías laborales.
-  const ratio = edad15a64.num_personas / edad65mas.num_personas;
+  const totalPensionistasYAyudas = pensionistas.num_personas + ayudasDependientes.num_personas;
+  const maxPersonas = Math.max(totalPensionistasYAyudas, cotizantes.num_personas, estudiantes.num_personas, ninos.num_personas);
+  // El dato accionable: cuántos cotizantes sostienen a cada persona
+  // pensionista o dependiente.
+  const ratio = cotizantes.num_personas / totalPensionistasYAyudas;
 
-  // De más joven (abajo) a más mayor (arriba) — la silueta de una pirámide
-  // se lee de base ancha/joven hacia la punta/mayor.
-  const bandas: Banda[] = [
-    { fila: edad65mas, etiqueta: '65 años o más' },
-    { fila: edad15a64, etiqueta: '15-64 años' },
-    { fila: edad0a14, etiqueta: '0-14 años' },
-  ];
+  const fuentesUnicas = Array.from(
+    new Map(
+      [pensionistas, ayudasDependientes, cotizantes, estudiantes, ninos].map((f) => {
+        const texto = f.fuente?.trim() || 'PENDIENTE DE FUENTE';
+        const url = f.fuente_url?.trim() || null;
+        return [`${texto}|${url ?? ''}`, { texto, url }] as const;
+      }),
+    ).values(),
+  );
 
   return (
-    <div className={cn(sinBorde ? '' : 'mt-5 border-t border-linea pt-4')}>
-      <p className="mb-1 text-[11.5px] font-bold uppercase tracking-wide text-gris">
-        ¿Quién sostiene las pensiones? — pirámide de edad
-      </p>
+    <div className={sinBorde ? '' : 'mt-5 border-t border-linea pt-4'}>
+      <p className="mb-1 text-[11.5px] font-bold uppercase tracking-wide text-gris">¿Quién sostiene las pensiones?</p>
       <p className="text-[15px] font-extrabold text-titular">
-        {ratio.toLocaleString('es-ES', { maximumFractionDigits: 1, useGrouping: 'always' })} personas en edad de
-        trabajar (15-64) por cada mayor de 65 años
+        {ratio.toLocaleString('es-ES', { maximumFractionDigits: 1, useGrouping: 'always' })} cotizantes por cada
+        persona pensionista o dependiente
       </p>
 
-      {/* `bandas` va de más mayor a más joven (65+, 15-64, 0-14); con flex-col
-          normal el primer elemento del array queda arriba y el último abajo
-          — así 0-14 (la base ancha) queda abajo y 65+ (el vértice) arriba,
-          la silueta correcta de una pirámide. */}
-      <div className="mt-4 flex flex-col gap-1.5">
-        {bandas.map((b) => (
-          <BarraBanda key={b.etiqueta} banda={b} maxPersonas={maxPersonas} />
-        ))}
+      {/* De arriba a abajo: pensionistas+ayudas (apilada) → cotizantes →
+          estudiantes → niños — el orden literal pedido por Sergio. */}
+      <div className="mt-4 flex flex-col gap-3">
+        <BarraApilada pensionistas={pensionistas} ayudas={ayudasDependientes} maxPersonas={maxPersonas} />
+        <BarraSimple etiqueta="Cotizantes" personas={cotizantes.num_personas} maxPersonas={maxPersonas} color="#16B8A0" />
+        <BarraSimple etiqueta="Estudiantes" personas={estudiantes.num_personas} maxPersonas={maxPersonas} color="#2BC7E8" />
+        <BarraSimple etiqueta="Niños" personas={ninos.num_personas} maxPersonas={maxPersonas} color="#8B30D9" />
       </div>
 
-      <p className="mt-3 text-[11px] text-gris">Fuente: {<FuentesEdad bandas={[edad0a14, edad15a64, edad65mas]} />}</p>
+      <p className="mt-3 text-[11px] text-gris">
+        Fuente:{' '}
+        {fuentesUnicas.map((f, i) => (
+          <span key={f.texto + (f.url ?? '')}>
+            {i > 0 && ' · '}
+            <FuenteTexto texto={f.texto} url={f.url} />
+          </span>
+        ))}
+      </p>
     </div>
   );
 }
