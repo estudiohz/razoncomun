@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
 import {
@@ -13,7 +13,12 @@ import {
   etiquetaModelo,
   type ProveedorIA,
 } from '@/lib/admin/modelos-ia';
-import { activarProveedorIA, revertirProveedorIA, eliminarProveedorIA } from './actions';
+import {
+  activarProveedorIA,
+  revertirProveedorIA,
+  eliminarProveedorIA,
+  actualizarModeloProveedorIA,
+} from './actions';
 
 /** Vista serializable del proveedor activo (la clave completa NUNCA llega aquí). */
 export type ActivaView = {
@@ -25,31 +30,64 @@ export type ActivaView = {
   hasPrevious: boolean;
 } | null;
 
+/** Icono lápiz (editar) — sin texto, para el botón compacto del proveedor activo. */
+function IconoLapiz() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 20h4l10.5-10.5a2.12 2.12 0 0 0-3-3L5 17v3zM13.5 6.5l3 3"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Icono papelera (eliminar). */
+function IconoPapelera() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7m4 4v6m4-6v6"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /**
- * Panel cliente de gestión del proveedor de IA activo (D-016). Sustituye a las
- * dos tarjetas server "Proveedor activo" + "Activar proveedor" para que el
- * botón "Editar" de la primera pueda precargar el formulario de la segunda
- * (comparten estado de cliente). Mejoras sobre el formulario original:
+ * Panel cliente de gestión del proveedor de IA activo (D-016). Une "Proveedor
+ * activo" + "Activar proveedor" en un solo componente cliente. Acciones sobre
+ * el proveedor activo, todas con auditoría en el servidor:
  *
- *  1. El modelo es un DESPLEGABLE dependiente del proveedor (con opción "Otro…"),
- *     no un texto libre — así no se puede volver a escribir un id inexistente
- *     como "gemini-2.5".
- *  2. "Editar / corregir modelo" sobre el proveedor activo precarga proveedor y
- *     modelo; solo hay que reelegir el modelo y repegar la clave (la anterior no
- *     se puede recuperar por diseño de seguridad, migración 0016).
+ *  - ✏️ Editar modelo (in situ): cambia SOLO el modelo reutilizando la clave ya
+ *    cifrada — NO obliga a repegar la API key. Es un editor de un único campo
+ *    (desplegable de modelos del proveedor + "Otro…").
+ *  - 🗑 Eliminar: borra la credencial activa (para el caso sin anterior al que
+ *    revertir).
+ *  - Revertir al proveedor anterior (si lo hay).
  *
- * Las acciones de servidor (activar/revertir) mantienen TODAS sus puertas
- * (admin + aal2 + motivo + auditoría) intactas: esto es solo la capa de UI.
+ * "Activar proveedor" (abajo) es solo para dar de alta uno NUEVO (con su clave),
+ * con el modelo también como desplegable dependiente del proveedor.
  */
 export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
+  // --- Estado del formulario "Activar proveedor NUEVO" ---
   const [provider, setProvider] = useState<ProveedorIA | ''>('');
-  // Valor del <select> de modelo: un id del catálogo o el sentinela "Otro…".
   const [modelSel, setModelSel] = useState<string>('');
   const [modelCustom, setModelCustom] = useState<string>('');
   const [motivo, setMotivo] = useState<string>('');
-  const [editando, setEditando] = useState<boolean>(false);
+
+  // --- Estado de las acciones sobre el proveedor ACTIVO ---
+  const [editandoModelo, setEditandoModelo] = useState<boolean>(false);
   const [eliminando, setEliminando] = useState<boolean>(false);
-  const formRef = useRef<HTMLFormElement>(null);
+  // Editor de modelo in situ (solo modelo, conserva la clave):
+  const [modelEditSel, setModelEditSel] = useState<string>('');
+  const [modelEditCustom, setModelEditCustom] = useState<string>('');
 
   const modelos = provider ? MODELOS_POR_PROVEEDOR[provider] ?? [] : [];
   const usandoOtro = modelSel === MODELO_OTRO;
@@ -57,24 +95,26 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
 
   function elegirProveedor(p: ProveedorIA | '') {
     setProvider(p);
-    // Autoselecciona el modelo recomendado del proveedor recién elegido.
     setModelSel(p ? modeloRecomendado(p) : '');
     setModelCustom('');
   }
 
-  function editarActivo() {
+  // Modelos y valor final del editor in situ (usa el proveedor de la fila activa).
+  const modelosEdit = activa ? MODELOS_POR_PROVEEDOR[activa.provider] ?? [] : [];
+  const editUsandoOtro = modelEditSel === MODELO_OTRO;
+  const modeloEditFinal = (editUsandoOtro ? modelEditCustom : modelEditSel).trim();
+
+  function abrirEditorModelo() {
     if (!activa) return;
-    setProvider(activa.provider);
+    setEliminando(false);
     if (esModeloConocido(activa.provider, activa.model)) {
-      setModelSel(activa.model);
-      setModelCustom('');
+      setModelEditSel(activa.model);
+      setModelEditCustom('');
     } else {
-      setModelSel(MODELO_OTRO);
-      setModelCustom(activa.model);
+      setModelEditSel(MODELO_OTRO);
+      setModelEditCustom(activa.model);
     }
-    setMotivo('Corrección del modelo del proveedor activo');
-    setEditando(true);
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setEditandoModelo(true);
   }
 
   return (
@@ -93,27 +133,24 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
               <div className="ml-auto flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={editarActivo}
-                  className="rounded-boton border border-linea px-3 py-1.5 text-[12.5px] font-bold text-titular hover:border-titular"
+                  onClick={() => (editandoModelo ? setEditandoModelo(false) : abrirEditorModelo())}
+                  aria-label="Editar modelo"
+                  title="Editar modelo"
+                  className="grid h-9 w-9 place-items-center rounded-boton border border-linea text-titular hover:border-titular"
                 >
-                  Editar / corregir modelo
+                  <IconoLapiz />
                 </button>
                 <button
                   type="button"
-                  onClick={() => setEliminando((v) => !v)}
+                  onClick={() => {
+                    setEliminando((v) => !v);
+                    setEditandoModelo(false);
+                  }}
                   aria-label="Eliminar proveedor activo"
                   title="Eliminar proveedor activo"
                   className="grid h-9 w-9 place-items-center rounded-boton border border-red-300 text-red-600 hover:bg-red-50"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7m4 4v6m4-6v6"
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <IconoPapelera />
                 </button>
               </div>
             </div>
@@ -121,6 +158,70 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
               Cambiado por {activa.changedByName} el {new Date(activa.changedAtISO).toLocaleString('es-ES')}
             </p>
 
+            {/* Editor de MODELO in situ — conserva la clave (solo cambia el modelo). */}
+            {editandoModelo && (
+              <form
+                action={actualizarModeloProveedorIA}
+                className="space-y-2 rounded-boton border border-linea bg-fondo p-3"
+              >
+                <p className="text-[13px] font-bold text-titular">
+                  Cambiar el modelo de {PROVEEDOR_LABEL[activa.provider]}
+                </p>
+                <p className="text-[12.5px] text-gris">
+                  La clave de API se mantiene (no hace falta volver a introducirla). Solo cambias el modelo.
+                </p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-[12px] font-bold text-gris">Modelo</label>
+                    <select
+                      value={modelEditSel}
+                      onChange={(e) => setModelEditSel(e.target.value)}
+                      className="w-full rounded-boton border border-linea px-3 py-3 text-[14px]"
+                    >
+                      {modelosEdit.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {etiquetaModelo(m)}
+                        </option>
+                      ))}
+                      <option value={MODELO_OTRO}>Otro (escribir a mano)…</option>
+                    </select>
+                    {editUsandoOtro && (
+                      <Input
+                        className="mt-2"
+                        value={modelEditCustom}
+                        onChange={(e) => setModelEditCustom(e.target.value)}
+                        placeholder="id exacto, ej. gemini-2.5-flash"
+                        aria-label="Id del modelo (escrito a mano)"
+                      />
+                    )}
+                    <input type="hidden" name="model" value={modeloEditFinal} />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[12px] font-bold text-gris">
+                      Motivo (obligatorio, queda en auditoría)
+                    </label>
+                    <Input name="motivo" required placeholder="Ej. corrección del id de modelo" />
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <button
+                    type="submit"
+                    className="rounded-boton bg-accion px-4 py-2 text-[13px] font-bold text-white"
+                  >
+                    Guardar modelo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditandoModelo(false)}
+                    className="rounded-boton border border-linea px-4 py-2 text-[13px] font-bold text-titular hover:border-titular"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Confirmación de ELIMINAR. */}
             {eliminando && (
               <form
                 action={eliminarProveedorIA}
@@ -190,19 +291,9 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
       </Tarjeta>
 
       <Tarjeta className="p-5">
-        <h3 className="text-[13px] font-bold uppercase tracking-wide text-titular">
-          {editando ? 'Corregir proveedor activo' : 'Activar proveedor'}
-        </h3>
+        <h3 className="text-[13px] font-bold uppercase tracking-wide text-titular">Activar proveedor</h3>
 
-        {editando && (
-          <p className="mt-2 rounded-boton border border-amber-300 bg-amber-50 px-3 py-2 text-[12.5px] text-amber-900">
-            Estás corrigiendo el proveedor activo. Reelige el modelo correcto y{' '}
-            <strong>vuelve a pegar la clave de API</strong>: la anterior no se puede recuperar (se guarda
-            cifrada y solo se descifra al llamar al modelo).
-          </p>
-        )}
-
-        <form ref={formRef} action={activarProveedorIA} className="mt-3 space-y-3" autoComplete="off">
+        <form action={activarProveedorIA} className="mt-3 space-y-3" autoComplete="off">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-[12px] font-bold text-gris">Proveedor</label>
@@ -286,7 +377,7 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
             </span>
           </label>
           <button type="submit" className="w-full rounded-boton bg-accion px-4 py-3 text-[14px] font-bold text-white">
-            {editando ? 'Guardar corrección' : 'Activar proveedor'}
+            Activar proveedor
           </button>
         </form>
       </Tarjeta>

@@ -123,6 +123,70 @@ export async function revertirProveedorIA(formData: FormData) {
 }
 
 /**
+ * Cambia SOLO el modelo del proveedor de IA activo, reutilizando la clave ya
+ * cifrada (no la toca ni la descifra). Es un simple UPDATE de la columna
+ * `model` de la fila activa: por eso NO hace falta ni la clave maestra ni
+ * volver a introducir la API key — corregir un id de modelo mal escrito
+ * (p. ej. `gemini-2.5` -> `gemini-2.5-flash`) no debe obligar a repegar nada.
+ *
+ * A diferencia de `activarProveedorIA`, esto NO crea una fila nueva ni dispara
+ * la suite de neutralidad (el `providerWatcher` del servicio detecta cambios por
+ * id de credencial, y aquí el id no cambia): es una corrección en caliente, no
+ * un cambio de proveedor. Mismas puertas de seguridad que el resto (admin + 2FA
+ * + motivo + auditoría).
+ */
+export async function actualizarModeloProveedorIA(formData: FormData) {
+  const model = String(formData.get('model') ?? '').trim();
+  const motivo = String(formData.get('motivo') ?? '').trim();
+  const { user, supabase } = await requireAdmin('/admin/ajustes');
+  await exigirAal2(supabase);
+
+  if (!model) {
+    throw new Error('El modelo es obligatorio (ej. gemini-2.5-flash).');
+  }
+  if (!motivo) {
+    throw new Error('El motivo del cambio es obligatorio — queda en auditoría.');
+  }
+
+  const admin = createAdminClient();
+  const { data: activa, error: errLeer } = await admin
+    .from('ai_provider_credentials')
+    .select('id, provider, model')
+    .eq('active', true)
+    .maybeSingle();
+
+  if (errLeer) {
+    throw new Error(`No se pudo leer el proveedor activo: ${errLeer.message}`);
+  }
+  if (!activa) {
+    throw new Error('No hay ningún proveedor activo que editar.');
+  }
+  if (activa.model === model) {
+    // Sin cambios: no reescribimos ni registramos auditoría por nada.
+    revalidatePath('/admin/ajustes');
+    return;
+  }
+
+  const { error } = await admin
+    .from('ai_provider_credentials')
+    .update({ model, changed_by: user.id, changed_at: new Date().toISOString() })
+    .eq('id', activa.id);
+  if (error) {
+    throw new Error(`No se pudo actualizar el modelo: ${error.message}`);
+  }
+
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'ai_provider_model_updated',
+    entity: 'ai_provider_credentials',
+    entityId: activa.id,
+    meta: { provider: activa.provider, from: activa.model, to: model, motivo },
+  });
+
+  revalidatePath('/admin/ajustes');
+}
+
+/**
  * Elimina por completo el proveedor de IA activo (borra la fila de
  * `ai_provider_credentials`). Pensado para retirar un proveedor mal introducido
  * cuando NO hay uno anterior al que revertir — el caso que `revertirProveedorIA`
