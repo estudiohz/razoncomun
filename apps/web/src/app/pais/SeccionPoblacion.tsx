@@ -25,8 +25,16 @@ import { PiramidePoblacional } from './PiramidePoblacional';
 
 const NOMBRE_ANCLA = 'Población total de España';
 const NOMBRE_ACTIVA = 'Población activa';
-const NOMBRE_JUBILADOS = 'Jubilados';
 const NOMBRE_PARADOS = 'Parados';
+// Bandas de edad para la pirámide (D-S11, revisión): "0-14 años" se
+// REUTILIZA de "Niños" (misma magnitud, ya sembrada con esa definición) —
+// "15-64 años" y "65 años o más" son filas nuevas, exclusivas de esta
+// pirámide, EXCLUIDAS del donut de composición por categoría social/laboral
+// (mismo motivo que "Población activa": son una partición DISTINTA de la
+// población, mezclarlas contaría gente dos veces).
+const NOMBRE_EDAD_0_14 = 'Niños';
+const NOMBRE_EDAD_15_64 = '15-64 años';
+const NOMBRE_EDAD_65_MAS = '65 años o más';
 /** Parados fluctúa mes a mes (EPA/SEPE) — la cifra publicada es una MEDIA,
  * no un dato fijo. Se avisa en la propia tarjeta para no dar una falsa
  * sensación de precisión puntual (mismo principio de honestidad que el
@@ -78,15 +86,22 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
   if (filas.length === 0) return null;
 
   const ancla = filas.find((f) => f.nombre.trim() === NOMBRE_ANCLA);
-  const activa = filas.find((f) => f.nombre.trim() === NOMBRE_ACTIVA);
-  const jubilados = filas.find((f) => f.nombre.trim() === NOMBRE_JUBILADOS);
-  // "Población activa" se EXCLUYE del donut de composición (no de las
-  // tarjetas): es un agregado que SOLAPA con otras categorías ya listadas
-  // (Asalariados, Funcionarios, Autónomos son subconjuntos de la población
-  // activa) — si entrara como porción independiente, contaría a esas
-  // personas dos veces y el "Resto" saldría mal. Su sitio es la pirámide
-  // (activos vs jubilados), no una porción del pastel de composición.
-  const otras = filas.filter((f) => f.id !== ancla?.id && f.nombre.trim() !== NOMBRE_ACTIVA);
+  const edad0a14 = filas.find((f) => f.nombre.trim() === NOMBRE_EDAD_0_14);
+  const edad15a64 = filas.find((f) => f.nombre.trim() === NOMBRE_EDAD_15_64);
+  const edad65mas = filas.find((f) => f.nombre.trim() === NOMBRE_EDAD_65_MAS);
+  // "Población activa" y las bandas de edad NUEVAS (15-64/65+) se EXCLUYEN
+  // del donut de composición por categoría social/laboral (no de las
+  // tarjetas donde aplique — "Niños"/0-14 sigue siendo una tarjeta normal,
+  // ya lo era): son particiones DISTINTAS de la misma población (por edad,
+  // no por categoría laboral) — mezclarlas con Asalariados/Funcionarios/
+  // Autónomos/Jubilados contaría gente dos veces y el "Resto" saldría mal.
+  const otras = filas.filter(
+    (f) =>
+      f.id !== ancla?.id &&
+      f.nombre.trim() !== NOMBRE_ACTIVA &&
+      f.nombre.trim() !== NOMBRE_EDAD_15_64 &&
+      f.nombre.trim() !== NOMBRE_EDAD_65_MAS,
+  );
 
   // Segmentos del donut relativos al ANCLA (única forma de un % honesto,
   // ver comentario de arriba) — se añade un "Resto" para que el donut sume
@@ -108,15 +123,17 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
   // "de mayor a menor" (Sergio) incluya también a Otros en su sitio real,
   // no siempre al final.
   const tarjetas: TarjetaDatos[] = [
-    ...filas.map((f) => ({
-      id: f.id,
-      nombre: f.nombre,
-      numPersonas: f.num_personas,
-      valorMedioCents: f.valor_medio_cents,
-      unidadValorMedio: f.unidad_valor_medio,
-      esAncla: f.id === ancla?.id,
-      nota: f.nombre.trim() === NOMBRE_PARADOS ? NOTA_PARADOS : undefined,
-    })),
+    ...filas
+      .filter((f) => f.nombre.trim() !== NOMBRE_EDAD_15_64 && f.nombre.trim() !== NOMBRE_EDAD_65_MAS)
+      .map((f) => ({
+        id: f.id,
+        nombre: f.nombre,
+        numPersonas: f.num_personas,
+        valorMedioCents: f.valor_medio_cents,
+        unidadValorMedio: f.unidad_valor_medio,
+        esAncla: f.id === ancla?.id,
+        nota: f.nombre.trim() === NOMBRE_PARADOS ? NOTA_PARADOS : undefined,
+      })),
     ...(ancla && resto > 0
       ? [
           {
@@ -148,7 +165,7 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
           renderiza solo si tiene datos; si falta uno, el otro ocupa toda la
           fila (grid-cols-1 en ese caso concreto lo resolvería un contenedor
           por bloque en vez de dos columnas fijas siempre). */}
-      {((ancla && segmentosDonut.length > 0) || (activa && jubilados)) && (
+      {((ancla && segmentosDonut.length > 0) || (edad0a14 && edad15a64 && edad65mas)) && (
         <div className="mt-5 grid grid-cols-1 gap-6 border-t border-linea pt-4 min-[720px]:grid-cols-2">
           {ancla && segmentosDonut.length > 0 && (
             <div>
@@ -158,7 +175,7 @@ export function SeccionPoblacion({ filas }: { filas: DemografiaRow[] }) {
               <DonutChart segmentos={segmentosDonut} titulo="Población" />
             </div>
           )}
-          <PiramidePoblacional activa={activa} jubilados={jubilados} sinBorde />
+          <PiramidePoblacional edad0a14={edad0a14} edad15a64={edad15a64} edad65mas={edad65mas} sinBorde />
         </div>
       )}
     </section>
