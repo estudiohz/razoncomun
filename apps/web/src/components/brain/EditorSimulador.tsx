@@ -66,6 +66,27 @@ export function EditorSimulador({
     if (inputRef.current) inputRef.current.value = '';
   }
 
+  // Descarga el HTML actual como fichero, para poder editarlo fuera y volver a
+  // subirlo (Quitar + Examinar). Todo en cliente: el `html` ya está cargado.
+  function descargar() {
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const nombre =
+      (titulo.trim() || 'simulador')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'simulador';
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${nombre}.html`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
   const hayHtml = html.trim().length > 0;
 
   return (
@@ -135,8 +156,26 @@ export function EditorSimulador({
             <span className="text-gris">{tamanoLegible(html)}</span>
             <button
               type="button"
+              onClick={descargar}
+              title="Descargar el HTML"
+              aria-label="Descargar el HTML"
+              className="ml-auto inline-flex items-center gap-1.5 rounded-boton border border-linea px-3 py-1 text-[12.5px] font-bold text-titular hover:border-titular"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 3v11m0 0l-4-4m4 4l4-4M5 20h14"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Descargar
+            </button>
+            <button
+              type="button"
               onClick={quitar}
-              className="ml-auto rounded-boton border border-red-300 px-3 py-1 text-[12.5px] font-bold text-red-600 hover:bg-red-50"
+              className="rounded-boton border border-red-300 px-3 py-1 text-[12.5px] font-bold text-red-600 hover:bg-red-50"
             >
               Quitar
             </button>
