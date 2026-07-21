@@ -23,6 +23,7 @@ export const adminNav: AdminNavItem[] = [
   { href: '/admin/ajustes', label: 'Ajustes', disponible: true, soloAdmin: true },
   { href: '/admin/articulos', label: 'Artículos', disponible: true, dueño: 'rc-05-blog' },
   { href: '/admin/participacion', label: 'Participación', disponible: true, dueño: 'rc-06-participacion' },
+  { href: '/admin/presupuesto', label: 'Presupuesto del país', disponible: true, dueño: 'rc-06-participacion' },
   { href: '/admin/afiliados', label: 'Afiliados', disponible: true, dueño: 'rc-07-afiliacion' },
   { href: '/admin/actividad', label: 'Actividad', disponible: true, soloAdmin: true },
 ];
