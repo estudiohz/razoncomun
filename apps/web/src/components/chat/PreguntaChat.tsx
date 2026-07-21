@@ -18,6 +18,7 @@ type Msg = {
   text: string;
   sources?: { label: string }[];
   charts?: GraficoSpec[];
+  suggestions?: { label: string; query: string }[];
 };
 
 function sessionId() {
@@ -37,9 +38,10 @@ export function PreguntaChat() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
+  // Envía una pregunta al cerebro. Se usa tanto desde el formulario como al
+  // pinchar una opción de desambiguación (que reenvía el título de esa entrada).
+  const enviar = async (texto: string) => {
+    const text = texto.trim();
     if (!text || loading) return;
     setInput('');
     setError(null);
@@ -58,13 +60,24 @@ export function PreguntaChat() {
       }
       setMessages((m) => [
         ...m,
-        { role: 'assistant', text: data.answer, sources: data.sources, charts: data.charts },
+        {
+          role: 'assistant',
+          text: data.answer,
+          sources: data.sources,
+          charts: data.charts,
+          suggestions: data.suggestions,
+        },
       ]);
     } catch {
       setError('No se pudo contactar con el cerebro de Razón Común. Inténtalo de nuevo.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    void enviar(input);
   };
 
   return (
@@ -86,6 +99,24 @@ export function PreguntaChat() {
               <div className="mt-3 space-y-3">
                 {m.charts.map((c, ci) => (
                   <GraficoRC key={ci} spec={c} />
+                ))}
+              </div>
+            )}
+            {m.role === 'assistant' && m.suggestions && m.suggestions.length > 0 && (
+              <div className="mt-3 flex flex-col gap-2">
+                {m.suggestions.map((s, si) => (
+                  <button
+                    key={si}
+                    type="button"
+                    onClick={() => void enviar(s.query)}
+                    disabled={loading}
+                    className="flex items-center justify-between gap-2 rounded-[12px] border border-cian/30 bg-white/[.06] px-4 py-2.5 text-left text-[14px] text-white transition-colors hover:border-cian/60 hover:bg-white/[.1] disabled:opacity-50"
+                  >
+                    <span>{s.label}</span>
+                    <span className="text-cian" aria-hidden>
+                      →
+                    </span>
+                  </button>
                 ))}
               </div>
             )}
