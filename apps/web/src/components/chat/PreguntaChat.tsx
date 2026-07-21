@@ -43,6 +43,8 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Aviso "blando" (no error): p. ej. la IA con muchas peticiones (rate limit).
+  const [aviso, setAviso] = useState<string | null>(null);
   const [simulador, setSimulador] = useState<Embed | null>(null);
   // Índice del mensaje cuyo formulario "Complementar" está abierto (o null).
   const [complementando, setComplementando] = useState<number | null>(null);
@@ -52,6 +54,7 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
     if (!text || loading) return;
     setInput('');
     setError(null);
+    setAviso(null);
     setMessages((m) => [...m, { role: 'user', text }]);
     setLoading(true);
     try {
@@ -62,7 +65,14 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || 'No se pudo contactar con el cerebro de Razón Común.');
+        if (data?.rateLimited) {
+          setAviso(
+            data?.error ||
+              'La IA está recibiendo muchas peticiones ahora mismo. Reinténtalo en unos segundos.',
+          );
+        } else {
+          setError(data?.error || 'No se pudo contactar con el cerebro de Razón Común.');
+        }
         return;
       }
       setMessages((m) => [
@@ -206,6 +216,14 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
           </div>
         ))}
         {loading && <p className="text-[13px] text-white/40">Consultando el corpus público…</p>}
+        {aviso && (
+          <p className="flex items-center gap-2 rounded-[10px] border border-[#F5C97B]/40 bg-[#F5C97B]/10 px-3 py-2 text-[13px] text-[#F5C97B]">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 8v5m0 3h.01M12 3l9 16H3l9-16z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {aviso}
+          </p>
+        )}
         {error && <p className="text-[13px] text-[#F2A0A0]">{error}</p>}
       </div>
 
