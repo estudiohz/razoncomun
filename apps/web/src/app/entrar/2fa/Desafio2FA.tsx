@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
 
@@ -62,10 +63,18 @@ export function Desafio2FA({ next }: { next: string }) {
 
   if (estado.tipo === 'sin_factor') {
     return (
-      <p className="text-center text-[14px] text-cuerpo">
-        Esta cuenta necesita 2FA para esta acción pero no tiene ningún factor activo. Contacta con
-        administración.
-      </p>
+      <div className="space-y-4 text-center">
+        <p className="text-[14px] text-cuerpo">
+          Tu cuenta tiene un rol que exige 2FA, pero todavía no lo has activado. Actívalo desde tu
+          perfil y vuelve a intentarlo.
+        </p>
+        <Link
+          href="/perfil"
+          className="inline-block rounded-boton bg-accion px-6 py-3 text-[15px] font-bold text-white shadow-boton transition-transform hover:-translate-y-0.5"
+        >
+          Ir a mi perfil para activarlo
+        </Link>
+      </div>
     );
   }
 
