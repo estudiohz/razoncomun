@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { slugificar } from '@/lib/blog/markdown';
 import { requireEditorCerebro } from './guard';
 import { callBrainAdmin, BrainAdminNotConfiguredError } from './serviceClient';
+import type { GraficoSpec } from './tipos';
 
 // `requireEditorCerebro` vive en `./guard` porque este módulo es `'use server'`:
 // solo puede exportar funciones async serializables, y aquella devuelve un
@@ -17,6 +18,47 @@ export interface ResultadoAccion {
 
 function texto(fd: FormData, campo: string): string {
   return String(fd.get(campo) ?? '').trim();
+}
+
+/**
+ * Parsea y SANEA el campo `charts` (JSON del editor de gráficos). Nunca confía
+ * en el cliente: descarta cualquier cosa que no cumpla la forma esperada, para
+ * no guardar basura en la columna jsonb (0026). Cada gráfico debe tener al menos
+ * una fila con etiqueta; cada valor se fuerza a número finito (0 si no lo es).
+ */
+function parsearGraficos(raw: string): GraficoSpec[] {
+  let bruto: unknown;
+  try {
+    bruto = JSON.parse(raw || '[]');
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(bruto)) return [];
+
+  const salida: GraficoSpec[] = [];
+  for (const item of bruto) {
+    if (!item || typeof item !== 'object') continue;
+    const o = item as Record<string, unknown>;
+
+    const type = o.type === 'table' ? 'table' : 'bar';
+    const title = typeof o.title === 'string' ? o.title.trim() : '';
+    const unit = typeof o.unit === 'string' && o.unit.trim() ? o.unit.trim() : undefined;
+    const note = typeof o.note === 'string' && o.note.trim() ? o.note.trim() : undefined;
+
+    const filasBrutas = Array.isArray(o.data) ? o.data : [];
+    const data = filasBrutas
+      .map((f) => {
+        const r = (f ?? {}) as Record<string, unknown>;
+        const label = typeof r.label === 'string' ? r.label.trim() : '';
+        const num = typeof r.value === 'number' ? r.value : Number(r.value);
+        return { label, value: Number.isFinite(num) ? num : 0 };
+      })
+      .filter((f) => f.label !== '');
+
+    if (data.length === 0) continue;
+    salida.push({ type, title, ...(unit ? { unit } : {}), ...(note ? { note } : {}), data });
+  }
+  return salida;
 }
 
 /**
@@ -55,6 +97,7 @@ export async function guardarEntrada(
     category_id: categoryId,
     area_id: areaIdTexto ? Number(areaIdTexto) : null,
     visibility,
+    charts: parsearGraficos(texto(fd, 'charts')),
   };
 
   if (id) {

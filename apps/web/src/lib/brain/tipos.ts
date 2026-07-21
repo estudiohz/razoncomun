@@ -10,6 +10,31 @@
 export type VisibilidadEntrada = 'internal' | 'public';
 export type OrigenEntrada = 'manual' | 'proposal';
 
+/** Tipo de visualización adjunta a una entrada del cerebro (0026_brain_entries_charts). */
+export type TipoGrafico = 'bar' | 'table';
+
+export interface FilaGrafico {
+  /** Etiqueta de la barra/fila (p. ej. un tramo de ingresos). */
+  label: string;
+  /** Valor numérico. Lo introduce el editor a mano — nunca la IA. */
+  value: number;
+}
+
+/**
+ * Gráfico o tabla adjunto a una entrada de la wiki. Autoría 100% humana: el
+ * editor rellena los datos en /admin/cerebro y el chat los muestra al recuperar
+ * la entrada. La IA jamás inventa estas cifras (datos contrastados).
+ */
+export interface GraficoSpec {
+  type: TipoGrafico;
+  title: string;
+  /** Unidad opcional que se muestra junto a cada valor (p. ej. "€/mes"). */
+  unit?: string;
+  /** Aclaración opcional bajo el título. */
+  note?: string;
+  data: FilaGrafico[];
+}
+
 export interface BrainCategoria {
   id: string;
   slug: string;
@@ -37,6 +62,8 @@ export interface BrainEntrada {
   ref_id: string | null;
   author_id: string | null;
   indexed_at: string | null;
+  /** Gráficos/tablas adjuntos (0026). Vacío si la entrada no tiene ninguno. */
+  charts: GraficoSpec[];
   created_at: string;
   updated_at: string;
 }

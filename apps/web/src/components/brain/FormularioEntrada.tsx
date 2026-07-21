@@ -1,10 +1,14 @@
 'use client';
 
-import { useActionState, useMemo, useState } from 'react';
+import { useActionState, useMemo, useRef, useState } from 'react';
 import { Input } from '@/components/ui/Input';
+import { EditorGraficos } from '@/components/brain/EditorGraficos';
 import { guardarEntrada, type ResultadoAccion } from '@/lib/brain/wikiAdmin';
 import { renderizarMarkdown } from '@/lib/blog/markdown';
 import type { AreaTematica, BrainCategoria, BrainEntrada } from '@/lib/brain/tipos';
+
+const botonFmt =
+  'rounded-boton border border-linea px-2.5 py-1 text-[12.5px] font-bold text-titular hover:border-titular';
 
 const etiqueta = 'mb-2 block text-[13px] font-bold uppercase tracking-[.08em] text-gris';
 const campo = 'mb-6';
@@ -39,6 +43,35 @@ export function FormularioEntrada({
 
   const pendienteDeIndexar = entrada !== null && entrada.indexed_at === null;
 
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+
+  // Barra de formato "visual": el admin no escribe Markdown, pulsa botones y la
+  // plataforma inserta la sintaxis por él (determinista, nunca cambia el texto).
+  function envolver(pre: string, post: string, porDefecto: string) {
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const ini = ta.selectionStart;
+    const fin = ta.selectionEnd;
+    const sel = body.slice(ini, fin) || porDefecto;
+    setBody(body.slice(0, ini) + pre + sel + post + body.slice(fin));
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.selectionStart = ini + pre.length;
+      ta.selectionEnd = ini + pre.length + sel.length;
+    });
+  }
+  function prefijoLinea(pre: string) {
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const pos = ta.selectionStart;
+    const inicioLinea = body.lastIndexOf('\n', pos - 1) + 1;
+    setBody(body.slice(0, inicioLinea) + pre + body.slice(inicioLinea));
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = pos + pre.length;
+    });
+  }
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
       <form id="entrada" action={accion} className="min-w-0">
@@ -72,7 +105,7 @@ export function FormularioEntrada({
         <div className={campo}>
           <div className="mb-2 flex items-center justify-between">
             <label className={`${etiqueta} mb-0`} htmlFor="body">
-              Cuerpo (markdown)
+              Cuerpo
             </label>
             <button
               type="button"
@@ -82,6 +115,33 @@ export function FormularioEntrada({
               {previsualizar ? 'Editar' : 'Previsualizar'}
             </button>
           </div>
+          {!previsualizar && (
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              <button type="button" title="Título de sección" className={botonFmt} onClick={() => prefijoLinea('## ')}>
+                Título
+              </button>
+              <button type="button" title="Subtítulo" className={botonFmt} onClick={() => prefijoLinea('### ')}>
+                Subtítulo
+              </button>
+              <button type="button" title="Negrita" className={botonFmt} onClick={() => envolver('**', '**', 'negrita')}>
+                <strong>N</strong>
+              </button>
+              <button type="button" title="Cursiva" className={botonFmt} onClick={() => envolver('*', '*', 'cursiva')}>
+                <em>C</em>
+              </button>
+              <button type="button" title="Lista" className={botonFmt} onClick={() => prefijoLinea('- ')}>
+                • Lista
+              </button>
+              <button
+                type="button"
+                title="Enlace"
+                className={botonFmt}
+                onClick={() => envolver('[', '](https://)', 'texto del enlace')}
+              >
+                Enlace
+              </button>
+            </div>
+          )}
           {previsualizar ? (
             <div
               className="prose-rc min-h-[420px] rounded-boton border border-linea bg-white px-5 py-4"
@@ -89,17 +149,24 @@ export function FormularioEntrada({
             />
           ) : (
             <textarea
+              ref={bodyRef}
               id="body"
               name="body"
               rows={18}
               required
-              className={`${areaTexto} font-mono text-[14px]`}
+              className={`${areaTexto} text-[15px]`}
               value={body}
               onChange={(e) => setBody(e.target.value)}
             />
           )}
           {previsualizar ? <input type="hidden" name="body" value={body} /> : null}
+          <p className="mt-2 text-[12.5px] text-gris">
+            Escribe con normalidad. Usa los botones para dar formato (títulos, negrita, listas) —
+            no necesitas saber Markdown. «Previsualizar» muestra cómo se verá.
+          </p>
         </div>
+
+        <EditorGraficos inicial={entrada?.charts ?? []} />
 
         {estado?.error ? (
           <p className="mb-4 rounded-boton border border-magenta/40 bg-magenta/5 px-4 py-3 text-[15px] text-magenta">
