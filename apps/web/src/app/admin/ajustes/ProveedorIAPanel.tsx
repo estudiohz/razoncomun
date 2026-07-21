@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
 import {
@@ -88,6 +88,19 @@ export function ProveedorIAPanel({ activa }: { activa: ActivaView }) {
   // Editor de modelo in situ (solo modelo, conserva la clave):
   const [modelEditSel, setModelEditSel] = useState<string>('');
   const [modelEditCustom, setModelEditCustom] = useState<string>('');
+
+  // Identidad estable de la credencial activa. Cuando cambia (activar, borrar,
+  // editar modelo -> revalidatePath re-renderiza con otra `activa`, o null),
+  // reseteamos los toggles transitorios: si no, `eliminando`/`editandoModelo`
+  // sobreviven al cambio y, p. ej., tras ACTIVAR un proveedor reaparecería la
+  // confirmación de borrado que quedó abierta de una interacción anterior.
+  const activaKey = activa
+    ? `${activa.provider}|${activa.model}|${activa.keySuffix}|${activa.changedAtISO}`
+    : 'none';
+  useEffect(() => {
+    setEliminando(false);
+    setEditandoModelo(false);
+  }, [activaKey]);
 
   const modelos = provider ? MODELOS_POR_PROVEEDOR[provider] ?? [] : [];
   const usandoOtro = modelSel === MODELO_OTRO;
