@@ -3,10 +3,10 @@ import { Contenedor } from '@/components/layout/Contenedor';
 import { HeroVideo } from '@/components/home/HeroVideo';
 
 const slogans = [
-  'se basa en datos.',
-  'no tiene ideología.',
-  'es para todas las personas.',
-  'se basa en datos.',
+  'es rigor y transparencia.',
+  'es participación real.',
+  'es lógica aplicada.',
+  'es rigor y transparencia.',
 ];
 
 /**
@@ -40,7 +40,7 @@ export function Hero() {
                   rotatorio visual queda marcado como decorativo. */}
               <span className="sr-only">
                 {' '}
-                se basa en datos, no tiene ideología, es para todas las personas.
+                es rigor y transparencia, es participación real, es lógica aplicada.
               </span>
               <span className="rota" aria-hidden>
                 <span className="track">

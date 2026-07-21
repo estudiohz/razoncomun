@@ -57,7 +57,7 @@ export async function Nav() {
               <Image
                 src="/logo-rc.png"
                 alt={site.nombre}
-                width={145}
+                width={159}
                 height={37}
                 priority
                 className="h-[37px] w-auto"
