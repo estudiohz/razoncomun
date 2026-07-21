@@ -65,7 +65,7 @@ export function AdminSidebar({ esAdmin }: { esAdmin: boolean; esEditor: boolean 
   return (
     <aside className="hidden shrink-0 border-r border-linea bg-panel min-[960px]:sticky min-[960px]:top-0 min-[960px]:flex min-[960px]:h-screen min-[960px]:w-[270px] min-[960px]:flex-col">
       <Link href="/admin" className="flex shrink-0 items-center gap-2.5 border-b border-linea px-5 py-5 no-underline">
-        <Image src="/logo-rc.png" alt="Razón Común" width={112} height={26} className="h-[26px] w-auto" />
+        <Image src="/logo-rc.png" alt="Razón Común" width={166} height={26} className="h-[26px] w-auto" />
         <span className="rounded-full bg-fondo px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gris">
           Panel
         </span>
@@ -125,7 +125,7 @@ export function AdminMobileMenu({ esAdmin }: { esAdmin: boolean; esEditor: boole
         >
           <div className="flex items-center justify-between border-b border-linea px-6 py-4">
             <span className="flex items-center gap-2.5">
-              <Image src="/logo-rc.png" alt="Razón Común" width={103} height={24} className="h-[24px] w-auto" />
+              <Image src="/logo-rc.png" alt="Razón Común" width={153} height={24} className="h-[24px] w-auto" />
               <span className="rounded-full bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gris">
                 Panel
               </span>
