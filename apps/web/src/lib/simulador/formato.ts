@@ -56,3 +56,32 @@ export function formatoCorto(cents: number | null | undefined): string {
   }
   return formatoEuros(cents);
 }
+
+/**
+ * Formato de personas para `sim_demografia` (ola S3.1,
+ * docs/tecnico/simulador-pais.md §9). Misma lección de `formatoEuros`: el
+ * default `useGrouping: 'auto'` de `Intl.NumberFormat` NO agrupa números de
+ * 4 cifras en `es-ES` en el Node/ICU de este entorno (commit `21dc4f7`) —
+ * `'always'` explícito es obligatorio en CUALQUIER formateador de número
+ * nuevo, no solo en el de euros.
+ */
+export function formatoPersonas(n: number | null | undefined): string {
+  if (n === null || n === undefined) return '—';
+  return `${n.toLocaleString('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' })} personas`;
+}
+
+/**
+ * Combina un importe en céntimos con una unidad tipo "€/mes" sin duplicar
+ * el símbolo € (`formatoEuros` ya añade uno). Si la unidad empieza por "€"
+ * (caso normal en `sim_demografia.unidad_valor_medio`), se pega el resto de
+ * la unidad justo tras el símbolo que ya puso `formatoEuros`
+ * (`formatoEurosConUnidad(140000, '€/mes')` → "1.400 €/mes", nunca
+ * "1.400 € €/mes"). Con una unidad que no empieza por "€", se separa con un
+ * espacio normal.
+ */
+export function formatoEurosConUnidad(cents: number | null | undefined, unidad: string | null | undefined): string {
+  const base = formatoEuros(cents);
+  if (base === '—' || !unidad?.trim()) return base;
+  const u = unidad.trim();
+  return u.startsWith('€') ? `${base}${u.slice(1)}` : `${base} ${u}`;
+}

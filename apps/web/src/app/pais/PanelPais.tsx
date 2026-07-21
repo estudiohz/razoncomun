@@ -1,13 +1,15 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
-import type { ParametroRow, PartidaRow } from '@/lib/simulador/adminData';
+import type { DemografiaRow, ParametroRow, PartidaRow } from '@/lib/simulador/adminData';
 import { centsAEuros, formatoCorto } from '@/lib/simulador/formato';
 import { resolver } from '@/lib/simulador/resolver';
 import type { ModeloResuelto, Overrides, PartidaResueltaInfo, TipoPartida } from '@/lib/simulador/tipos';
 import { CountUp } from './CountUp';
 import { DonutChart } from './DonutChart';
+import { SeccionPoblacion } from './SeccionPoblacion';
 import { TopIngresos } from './TopIngresos';
 import { detectarCascada, type ResultadoCascada } from './cascada';
 
@@ -15,6 +17,8 @@ interface Props {
   parametros: ParametroRow[];
   partidas: PartidaRow[];
   beta: boolean;
+  /** D-S12/D-S11: sección "Población de España", justo tras la Cabecera. */
+  demografiaPais: DemografiaRow[];
 }
 
 function clamp(v: number, min: number, max: number): number {
@@ -52,7 +56,7 @@ function referenciaFormula(formula: string | null, clave: string): boolean {
   return new RegExp(`\\b${clave}\\b`).test(formula);
 }
 
-export function PanelPais({ parametros, partidas, beta }: Props) {
+export function PanelPais({ parametros, partidas, beta, demografiaPais }: Props) {
   const [overridesParametros, setOverridesParametros] = useState<Record<string, number>>({});
   const [overridesPartidas, setOverridesPartidas] = useState<Record<string, number>>({});
 
@@ -214,6 +218,8 @@ export function PanelPais({ parametros, partidas, beta }: Props) {
     <div>
       <Cabecera modelo={modelo} beta={beta} />
 
+      <SeccionPoblacion filas={demografiaPais} />
+
       {hayOverrides && (
         <div className="mx-auto mt-4 max-w-[1080px] text-center">
           <button
@@ -348,7 +354,15 @@ function Cabecera({ modelo, beta }: { modelo: ModeloResuelto; beta: boolean }) {
   );
 }
 
-function Bloque({
+/**
+ * Exportado (S3.1, D-S11) para que `PanelMinisterio` (`/pais/[slug]`)
+ * reutilice EXACTAMENTE el mismo drill-down in-place que `/pais`, solo
+ * acotado a una raíz vía `raizFija`: en vez de listar TODAS las raíces del
+ * bloque en `ruta.length === 0`, lista directamente los hijos de
+ * `raizFija` — la página de ministerio "ya empieza dentro" de su área, tal
+ * como pide el doc de arquitectura §9.
+ */
+export function Bloque({
   tipo,
   ruta,
   setRuta,
@@ -363,6 +377,7 @@ function Bloque({
   overridesPartidas,
   onMoverParametro,
   onMoverPartida,
+  raizFija,
 }: {
   tipo: TipoPartida;
   ruta: string[];
@@ -378,8 +393,10 @@ function Bloque({
   overridesPartidas: Record<string, number>;
   onMoverParametro: (clave: string, nombre: string, valorNuevo: number) => void;
   onMoverPartida: (id: string, nombre: string, centsNuevo: number) => void;
+  /** Id de la partida raíz a la que esta instancia de `Bloque` queda acotada (página de ministerio). */
+  raizFija?: string;
 }) {
-  const nivelActualId = ruta.length > 0 ? ruta[ruta.length - 1] : null;
+  const nivelActualId = ruta.length > 0 ? ruta[ruta.length - 1] : (raizFija ?? null);
   const idsNivel =
     nivelActualId === null
       ? partidas.filter((p) => p.tipo === tipo && p.parent_id === null).map((p) => p.id)
@@ -411,7 +428,10 @@ function Bloque({
     valor: infoPorId.get(r.id)?.rc.propioCents ?? 0,
     color: r.color,
   }));
-  const hayDatosRaices = segmentosRaices.some((s) => s.valor > 0);
+  // En modo acotado (página de ministerio) este donut de TODAS las raíces
+  // del bloque no pinta nada — esa página tiene su propio donut de SUS
+  // hijos (D-S11), montado aparte en `PanelMinisterio`.
+  const hayDatosRaices = !raizFija && segmentosRaices.some((s) => s.valor > 0);
 
   return (
     <div>
@@ -430,7 +450,7 @@ function Bloque({
           onClick={() => setRuta([])}
           className={cn('font-bold', ruta.length === 0 ? 'text-titular' : 'hover:text-titular')}
         >
-          {tipo === 'gasto' ? 'Gastos' : 'Ingresos'}
+          {raizFija ? (partidaPorId.get(raizFija)?.nombre ?? (tipo === 'gasto' ? 'Gastos' : 'Ingresos')) : tipo === 'gasto' ? 'Gastos' : 'Ingresos'}
         </button>
         {ruta.map((id, i) => (
           <span key={id} className="flex items-center gap-1">
@@ -474,6 +494,12 @@ function Bloque({
 
           const parametrosAsociados = parametrosPorPartida.get(fila.id) ?? [];
 
+          // D-S11: al clicar una fila RAÍZ del nivel superior (nunca en modo
+          // acotado — ahí "el nivel superior" ya son los hijos de la
+          // raízFija, no otras raíces), navega a su página propia SI tiene
+          // slug. Sin slug, fallback intacto: expandir in-place (onDrill).
+          const hrefPropio = nivelActualId === null && fila.slug ? `/pais/${fila.slug}` : undefined;
+
           return (
             <FilaPartida
               key={`${fila.id}-${pulsando ? 'pulso' : 'quieto'}`}
@@ -484,6 +510,7 @@ function Bloque({
               pulsando={pulsando}
               deltaPct={deltaPct}
               onDrill={() => tieneHijos && setRuta([...ruta, fila.id])}
+              hrefPropio={hrefPropio}
               segmentosHijos={segmentosHijos}
               parametrosAsociados={parametrosAsociados}
               overridesParametros={overridesParametros}
@@ -507,6 +534,7 @@ function FilaPartida({
   pulsando,
   deltaPct,
   onDrill,
+  hrefPropio,
   segmentosHijos,
   parametrosAsociados,
   overridesParametros,
@@ -522,6 +550,8 @@ function FilaPartida({
   pulsando: boolean;
   deltaPct: number | null;
   onDrill: () => void;
+  /** D-S11: si la fila es una raíz con página propia, el nombre enlaza ahí en vez de expandir in-place. */
+  hrefPropio?: string;
   segmentosHijos: { nombre: string; valor: number; color: string | null }[];
   parametrosAsociados: ParametroRow[];
   overridesParametros: Record<string, number>;
@@ -540,7 +570,11 @@ function FilaPartida({
   return (
     <div className={cn('rounded-boton border bg-white p-4', pulsando ? 'pais-pulso border-teal' : 'border-linea')}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        {tieneHijos ? (
+        {hrefPropio ? (
+          <Link href={hrefPropio} className="text-left text-[14.5px] font-bold text-titular hover:underline">
+            {fila.nombre} <span aria-hidden className="text-gris">→</span>
+          </Link>
+        ) : tieneHijos ? (
           <button type="button" onClick={onDrill} className="text-left text-[14.5px] font-bold text-titular hover:underline">
             {fila.nombre} <span aria-hidden className="text-gris">→</span>
           </button>

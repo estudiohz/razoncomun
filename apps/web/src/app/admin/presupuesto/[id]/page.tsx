@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
-import { listarParametros, listarPartidas, subarbol } from '@/lib/simulador/adminData';
+import { listarDemografia, listarParametros, listarPartidas, subarbol } from '@/lib/simulador/adminData';
 import { listarMinisterios } from '@/lib/participacion/budget';
 import { AreaEditorClient } from './AreaEditorClient';
 
@@ -38,6 +38,7 @@ export default async function EditorAreaPage({ params }: { params: Promise<{ id:
   if (!raiz || raiz.parent_id !== null) notFound();
 
   const subarbolRaiz = subarbol(partidas, id);
+  const demografia = await listarDemografia(supabase, id);
 
   return (
     <div className="space-y-6">
@@ -51,6 +52,7 @@ export default async function EditorAreaPage({ params }: { params: Promise<{ id:
         todasPartidas={partidas}
         subarbolIds={subarbolRaiz.map((p) => p.id)}
         ministerios={ministerios.map((m) => ({ id: m.id, name: m.name }))}
+        demografia={demografia}
       />
     </div>
   );

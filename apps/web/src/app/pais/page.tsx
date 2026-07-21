@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
-import { listarParametros, listarPartidas } from '@/lib/simulador/adminData';
+import { listarDemografia, listarParametros, listarPartidas } from '@/lib/simulador/adminData';
 import { normalizarRaicesPublicas } from './normalizar';
 import { PanelPais } from './PanelPais';
 
@@ -38,7 +38,11 @@ const UMBRAL_BETA = 3;
  */
 export default async function PaisPage() {
   const supabase = await createClient();
-  const [parametros, partidasCrudas] = await Promise.all([listarParametros(supabase), listarPartidas(supabase)]);
+  const [parametros, partidasCrudas, demografiaPais] = await Promise.all([
+    listarParametros(supabase),
+    listarPartidas(supabase),
+    listarDemografia(supabase, null),
+  ]);
   const partidas = normalizarRaicesPublicas(partidasCrudas);
 
   if (partidas.length === 0) {
@@ -50,7 +54,7 @@ export default async function PaisPage() {
 
   return (
     <Contenedor as="section" className="py-14">
-      <PanelPais parametros={parametros} partidas={partidas} beta={beta} />
+      <PanelPais parametros={parametros} partidas={partidas} beta={beta} demografiaPais={demografiaPais} />
     </Contenedor>
   );
 }

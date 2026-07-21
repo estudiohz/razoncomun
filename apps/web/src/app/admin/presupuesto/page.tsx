@@ -68,6 +68,12 @@ export default async function AdminPresupuestoPage() {
             Parámetros →
           </Link>
           <Link
+            href="/admin/presupuesto/poblacion"
+            className="rounded-boton border border-linea bg-white px-4 py-2.5 text-[13px] font-bold text-titular hover:border-titular"
+          >
+            Población →
+          </Link>
+          <Link
             href="/admin/presupuesto/nueva"
             className="rounded-boton bg-accion px-4 py-2.5 text-[13px] font-bold text-white shadow-boton hover:-translate-y-0.5"
           >

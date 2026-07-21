@@ -54,13 +54,37 @@ export interface PartidaRow {
   publicado: boolean;
   orden: number;
   color: string | null;
+  /** D-S14: solo relevante en raíces (parent_id null); null = sin página propia en /pais/[slug]. */
+  slug: string | null;
+}
+
+/**
+ * Fila de `sim_demografia` (D-S12, docs/tecnico/simulador-pais.md §9): una
+ * fila = un segmento de población (`area_id` null → sección "Población de
+ * España" del panel general) o un tipo de profesional de un sector
+ * (`area_id` = una partida RAÍZ). Sin lado RC (D-S13): es informativo.
+ */
+export interface DemografiaRow {
+  id: string;
+  area_id: string | null;
+  nombre: string;
+  num_personas: number;
+  valor_medio_cents: number | null;
+  unidad_valor_medio: string | null;
+  fuente: string | null;
+  anio: number;
+  publicado: boolean;
+  orden: number;
 }
 
 const SELECT_PARAMETROS =
   'id, clave, nombre, unidad, anio, modo, formula, valor_actual, fuente_actual, valor_rc, nota_rc, es_palanca, palanca_min, palanca_max, publicado, orden';
 
 const SELECT_PARTIDAS =
-  'id, parent_id, tipo, nombre, ambito, anio, actual_modo, actual_cents, actual_formula, fuente_actual, rc_modo, rc_cents, rc_pct, rc_formula, justificacion_rc, ministry_id, origen, ref_propuesta_id, es_palanca, palanca_min, palanca_max, publicado, orden, color';
+  'id, parent_id, tipo, nombre, ambito, anio, actual_modo, actual_cents, actual_formula, fuente_actual, rc_modo, rc_cents, rc_pct, rc_formula, justificacion_rc, ministry_id, origen, ref_propuesta_id, es_palanca, palanca_min, palanca_max, publicado, orden, color, slug';
+
+const SELECT_DEMOGRAFIA =
+  'id, area_id, nombre, num_personas, valor_medio_cents, unidad_valor_medio, fuente, anio, publicado, orden';
 
 export async function listarParametros(supabase: SupabaseClient): Promise<ParametroRow[]> {
   const { data, error } = await supabase.from('sim_parametros').select(SELECT_PARAMETROS).order('orden');
@@ -78,6 +102,19 @@ export async function obtenerPartida(supabase: SupabaseClient, id: string): Prom
   const { data, error } = await supabase.from('sim_partidas').select(SELECT_PARTIDAS).eq('id', id).maybeSingle();
   if (error) throw error;
   return (data as PartidaRow) ?? null;
+}
+
+/**
+ * Lee `sim_demografia` para un área (RLS filtra a `publicado=true` para
+ * `anon`/`authenticated`; `is_editor()` ve todo, igual que partidas). D-S12:
+ * `areaId === null` trae la sección "Población de España" (panel general);
+ * `areaId` no-null trae los profesionales de esa partida raíz.
+ */
+export async function listarDemografia(supabase: SupabaseClient, areaId: string | null): Promise<DemografiaRow[]> {
+  const query = supabase.from('sim_demografia').select(SELECT_DEMOGRAFIA).order('orden');
+  const { data, error } = await (areaId === null ? query.is('area_id', null) : query.eq('area_id', areaId));
+  if (error) throw error;
+  return (data ?? []) as DemografiaRow[];
 }
 
 /** Descendientes (a cualquier profundidad) de una partida, incluyendo la propia. */

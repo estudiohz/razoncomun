@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/cn';
-import { subarbol, type ParametroRow, type PartidaRow } from '@/lib/simulador/adminData';
+import { slugificar } from '@/lib/blog/markdown';
+import { subarbol, type DemografiaRow, type ParametroRow, type PartidaRow } from '@/lib/simulador/adminData';
 import {
   eliminarPartidaAction,
   guardarPartidaAction,
@@ -12,6 +13,7 @@ import {
 import { centsAEuros, formatoEuros, formatoEurosPreciso } from '@/lib/simulador/formato';
 import { resolver } from '@/lib/simulador/resolver';
 import type { Ambito, ModoRC, ModoValor } from '@/lib/simulador/tipos';
+import { DemografiaClient } from '../DemografiaClient';
 
 interface Ministerio {
   id: number;
@@ -24,6 +26,8 @@ interface Props {
   todasPartidas: PartidaRow[];
   subarbolIds: string[];
   ministerios: Ministerio[];
+  /** Filas de `sim_demografia` de ESTA área (D-S12) — profesionales del sector. */
+  demografia: DemografiaRow[];
 }
 
 /** Estado editable de una fila — todo como string para inputs controlados. */
@@ -45,6 +49,8 @@ interface Campos {
   palanca_min_euros: string;
   palanca_max_euros: string;
   color: string;
+  /** D-S14: solo se lee/escribe cuando esta fila es una RAÍZ. */
+  slug: string;
 }
 
 function camposDesde(p: PartidaRow): Campos {
@@ -66,6 +72,7 @@ function camposDesde(p: PartidaRow): Campos {
     palanca_min_euros: p.palanca_min !== null ? String(centsAEuros(p.palanca_min)) : '',
     palanca_max_euros: p.palanca_max !== null ? String(centsAEuros(p.palanca_max)) : '',
     color: p.color ?? '',
+    slug: p.slug ?? '',
   };
 }
 
@@ -88,6 +95,7 @@ function campoVacio(parentId: string, tipo: 'ingreso' | 'gasto'): Campos {
     palanca_min_euros: '',
     palanca_max_euros: '',
     color: '',
+    slug: '',
   };
 }
 
@@ -121,6 +129,7 @@ function previsualizar(base: PartidaRow, c: Campos): PartidaRow {
     palanca_min: c.es_palanca ? centsOrNull(c.palanca_min_euros) : null,
     palanca_max: c.es_palanca ? centsOrNull(c.palanca_max_euros) : null,
     color: c.color || null,
+    slug: c.parent_id === null && c.slug.trim() ? c.slug.trim() : null,
   };
 }
 
@@ -145,6 +154,7 @@ function campoAFormData(id: string | null, tipo: 'ingreso' | 'gasto', c: Campos)
   fd.set('palanca_min_euros', c.palanca_min_euros);
   fd.set('palanca_max_euros', c.palanca_max_euros);
   fd.set('color', c.color);
+  fd.set('slug', c.slug);
   return fd;
 }
 
@@ -163,6 +173,7 @@ function FilaForm({
   padresPosibles,
   mostrarPadre,
   mostrarMinisterio,
+  mostrarSlug = false,
 }: {
   campos: Campos;
   onCambio: (c: Campos) => void;
@@ -170,6 +181,8 @@ function FilaForm({
   padresPosibles: { id: string; nombre: string }[];
   mostrarPadre: boolean;
   mostrarMinisterio: boolean;
+  /** D-S11/D-S14: solo true en el formulario de la propia RAÍZ. */
+  mostrarSlug?: boolean;
 }) {
   const set = <K extends keyof Campos>(k: K, v: Campos[K]) => onCambio({ ...campos, [k]: v });
 
@@ -366,6 +379,32 @@ function FilaForm({
           de una paleta de reserva (no es obligatorio).
         </span>
       </label>
+
+      {mostrarSlug && (
+        <label className="block text-[12.5px] font-semibold text-gris min-[720px]:col-span-2">
+          Slug (URL de su página propia en /pais)
+          <div className="mt-1 flex items-center gap-2">
+            <span className="shrink-0 text-[13px] text-gris">/pais/</span>
+            <input
+              value={campos.slug}
+              onChange={(e) => set('slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+              placeholder="defensa"
+              className="min-w-0 flex-1 rounded-boton border border-linea px-3 py-2 font-mono text-[13.5px]"
+            />
+            <button
+              type="button"
+              onClick={() => set('slug', slugificar(campos.nombre))}
+              className="shrink-0 rounded-boton border border-linea bg-white px-3 py-2 text-[12.5px] font-bold text-titular hover:border-titular"
+            >
+              Generar del nombre
+            </button>
+          </div>
+          <span className="mt-1 block text-[11px] font-normal normal-case text-gris">
+            Vacío = sin página propia (el área sigue viéndose expandible dentro de /pais, como hasta ahora). Con
+            slug, esta área tiene su propia página compartible/indexable.
+          </span>
+        </label>
+      )}
     </div>
   );
 }
@@ -502,7 +541,7 @@ function FilaExistente({
   );
 }
 
-export function AreaEditorClient({ raizId, parametros, todasPartidas, subarbolIds, ministerios }: Props) {
+export function AreaEditorClient({ raizId, parametros, todasPartidas, subarbolIds, ministerios, demografia }: Props) {
   const router = useRouter();
   const raiz = todasPartidas.find((p) => p.id === raizId)!;
   const hijas = todasPartidas.filter((p) => subarbolIds.includes(p.id) && p.id !== raizId);
@@ -612,6 +651,7 @@ export function AreaEditorClient({ raizId, parametros, todasPartidas, subarbolId
             padresPosibles={[]}
             mostrarPadre={false}
             mostrarMinisterio
+            mostrarSlug
           />
           {errorRaiz && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorRaiz}</p>}
           <div className="mt-3 flex justify-end">
@@ -682,6 +722,17 @@ export function AreaEditorClient({ raizId, parametros, todasPartidas, subarbolId
             />
           ))}
         </div>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-[16px] font-bold text-titular">Profesionales de este sector</h2>
+          <p className="mt-1 max-w-[65ch] text-[12.5px] text-cuerpo">
+            Datos informativos (D-S13: sin lado Razón Común) que alimentan los dos gráficos obligatorios de la
+            página propia de esta área en <code>/pais</code> — reparto de profesionales por tipo y sueldo medio.
+          </p>
+        </div>
+        <DemografiaClient areaId={raizId} filas={demografia} />
       </div>
     </div>
   );

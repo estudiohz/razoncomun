@@ -42,6 +42,22 @@ function revalidarPresupuesto() {
   revalidatePath('/admin/presupuesto');
   revalidatePath('/admin/presupuesto/parametros');
   revalidatePath('/pais');
+  // D-S11: /pais/[slug] es una ruta dinámica — 'page' revalida TODAS las
+  // páginas de ministerio ya generadas, sin necesitar saber cuál slug tocó
+  // el cambio (una partida puede afectar el balance de otra vía rollup).
+  revalidatePath('/pais/[slug]', 'page');
+}
+
+/** Revalida tras un cambio en `sim_demografia` (D-S12) — mismo patrón que arriba. */
+function revalidarDemografia(areaId: string | null) {
+  revalidatePath('/admin/presupuesto');
+  if (areaId) {
+    revalidatePath(`/admin/presupuesto/${areaId}`);
+  } else {
+    revalidatePath('/admin/presupuesto/poblacion');
+  }
+  revalidatePath('/pais');
+  revalidatePath('/pais/[slug]', 'page');
 }
 
 // ============================================================================
@@ -146,6 +162,17 @@ export async function guardarPartidaAction(formData: FormData): Promise<Resultad
 
   const color = texto(formData, 'color') || null;
 
+  // D-S14: el slug solo tiene sentido en una RAÍZ (página propia /pais/[slug]);
+  // una hija nunca lo lleva, sea lo que sea lo que venga en el formulario.
+  const slugRaw = texto(formData, 'slug').toLowerCase().replace(/[^a-z0-9-]/g, '');
+  const slug = parentId === null && slugRaw ? slugRaw : null;
+  if (slug) {
+    const choqueSlug = partidas.find((p) => p.slug === slug && p.id !== id);
+    if (choqueSlug) {
+      return { ok: false, error: `Ya existe otra área con el slug "${slug}" (${choqueSlug.nombre}).` };
+    }
+  }
+
   const fila = {
     parent_id: parentId,
     tipo,
@@ -165,6 +192,7 @@ export async function guardarPartidaAction(formData: FormData): Promise<Resultad
     palanca_min: palancaMin,
     palanca_max: palancaMax,
     color,
+    slug,
   };
 
   try {
@@ -361,6 +389,96 @@ export async function publicarParametroAction(id: string, publicar: boolean): Pr
   const { error } = await supabase.from('sim_parametros').update({ publicado: publicar }).eq('id', id);
   if (error) return { ok: false, error: error.message };
   revalidarPresupuesto();
+  return { ok: true };
+}
+
+// ============================================================================
+// Demografía (D-S12, ola S3.1) — segmentos de población o profesionales de
+// un sector. Guard, validación y patrón de acción idénticos al resto: la
+// RLS de `sim_demografia` (`is_editor()`, migración 0030) es la última
+// autoridad; esto es solo UX antes de intentar escribir.
+// ============================================================================
+
+export async function guardarDemografiaAction(formData: FormData): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
+
+  const id = texto(formData, 'id') || null;
+  const areaIdRaw = texto(formData, 'area_id');
+  const areaId = areaIdRaw || null;
+
+  const nombre = texto(formData, 'nombre');
+  if (!nombre) return { ok: false, error: 'El nombre es obligatorio.' };
+
+  const numPersonas = numeroOpcional(formData, 'num_personas');
+  if (numPersonas === null || numPersonas < 0) {
+    return { ok: false, error: 'El número de personas es obligatorio y no puede ser negativo.' };
+  }
+
+  const valorMedioEuros = numeroOpcional(formData, 'valor_medio_euros');
+  const valorMedioCents = eurosACents(valorMedioEuros);
+  const unidadValorMedio = texto(formData, 'unidad_valor_medio') || null;
+  if (valorMedioCents !== null && !unidadValorMedio) {
+    return { ok: false, error: 'Si indicas un valor medio, indica también su unidad (p. ej. "€/mes").' };
+  }
+
+  const fuente = texto(formData, 'fuente') || null;
+  const anioRaw = numeroOpcional(formData, 'anio');
+  const anio = anioRaw ?? 2026;
+  const orden = numeroOpcional(formData, 'orden') ?? 0;
+
+  const fila = {
+    area_id: areaId,
+    nombre,
+    num_personas: Math.round(numPersonas),
+    valor_medio_cents: valorMedioCents,
+    unidad_valor_medio: unidadValorMedio,
+    fuente,
+    anio: Math.round(anio),
+    orden: Math.round(orden),
+  };
+
+  try {
+    if (id) {
+      const { error } = await supabase.from('sim_demografia').update(fila).eq('id', id);
+      if (error) return { ok: false, error: error.message };
+      revalidarDemografia(areaId);
+      return { ok: true, id };
+    }
+    const nuevoId = globalThis.crypto.randomUUID();
+    const { error } = await supabase.from('sim_demografia').insert({ id: nuevoId, ...fila });
+    if (error) return { ok: false, error: error.message };
+    revalidarDemografia(areaId);
+    return { ok: true, id: nuevoId };
+  } catch {
+    return { ok: false, error: 'No se ha podido guardar (error de red o servidor). Inténtalo de nuevo.' };
+  }
+}
+
+export async function eliminarDemografiaAction(id: string, areaId: string | null): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
+
+  try {
+    const { error } = await supabase.from('sim_demografia').delete().eq('id', id);
+    if (error) return { ok: false, error: error.message };
+    revalidarDemografia(areaId);
+    return { ok: true };
+  } catch {
+    return { ok: false, error: 'No se ha podido borrar (error de red o servidor).' };
+  }
+}
+
+export async function publicarDemografiaAction(id: string, areaId: string | null, publicar: boolean): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
+
+  if (publicar) {
+    const { data } = await supabase.from('sim_demografia').select('fuente').eq('id', id).maybeSingle();
+    const v = puedePublicar(data?.fuente);
+    if (!v.ok) return v;
+  }
+
+  const { error } = await supabase.from('sim_demografia').update({ publicado: publicar }).eq('id', id);
+  if (error) return { ok: false, error: error.message };
+  revalidarDemografia(areaId);
   return { ok: true };
 }
 
