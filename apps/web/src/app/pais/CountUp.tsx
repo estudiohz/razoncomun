@@ -4,10 +4,16 @@ import { useEffect, useRef, useState } from 'react';
 
 /**
  * Número animado (count-up) — cabecera de `/pais` (docs/tecnico/
- * simulador-pais.md §5). Arranca en 0 en el primer render (efecto de
- * entrada) y, en cada cambio posterior de `value` (palanca movida en el
- * sandbox), interpola desde el valor mostrado anteriormente — nunca desde
- * cero — para que se perciba como una actualización en vivo, no un reinicio.
+ * simulador-pais.md §5). El primer render (SSR incluido) muestra SIEMPRE el
+ * valor real de inmediato — nunca "0" — porque esta cifra (el balance) va en
+ * el HTML servido, en la vista previa social (OG) y puede leerse antes de que
+ * corra ningún `requestAnimationFrame` (pestaña en segundo plano, crawler,
+ * cliente sin JS). Un "0 €" pintado en color de déficit es peor que no animar
+ * nada: la verdad nunca puede depender de una animación (hallazgo QA F-1).
+ *
+ * En cada cambio POSTERIOR de `value` (palanca movida en el sandbox) sí
+ * interpola desde el valor mostrado anteriormente — nunca desde cero — para
+ * que se perciba como una actualización en vivo, no un reinicio.
  *
  * Respeta `prefers-reduced-motion`: si el usuario lo pide, salta directo al
  * valor final sin interpolar.
@@ -21,8 +27,8 @@ export function CountUp({
   formatear: (n: number) => string;
   duracionMs?: number;
 }) {
-  const [mostrado, setMostrado] = useState(0);
-  const previoRef = useRef(0);
+  const [mostrado, setMostrado] = useState(() => value);
+  const previoRef = useRef(value);
   const frameRef = useRef<number | null>(null);
 
   useEffect(() => {
