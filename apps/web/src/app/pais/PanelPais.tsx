@@ -404,6 +404,13 @@ export function Bloque({
   /** Id de la partida raíz a la que esta instancia de `Bloque` queda acotada (página de ministerio). */
   raizFija?: string;
 }) {
+  // Toggle "que alterne ambas gráficas" (Sergio): comparte estado para TODAS
+  // las filas de este Bloque, no una por fila — flip de "ver todo el bloque
+  // en Actual" a "verlo todo en RC" es más útil para comparar de un vistazo
+  // que un interruptor individual por partida. "Ambos" (por defecto) es el
+  // comportamiento de siempre.
+  const [vista, setVista] = useState<'ambos' | 'actual' | 'rc'>('ambos');
+
   const nivelActualId = ruta.length > 0 ? ruta[ruta.length - 1] : (raizFija ?? null);
   const idsNivel =
     nivelActualId === null
@@ -474,6 +481,31 @@ export function Bloque({
         ))}
       </nav>
 
+      {filas.length > 0 && (
+        <div className="mb-3 flex items-center gap-1 rounded-full border border-linea bg-fondo p-1 text-[12px] font-bold">
+          {(
+            [
+              ['ambos', 'Ambos'],
+              ['actual', 'Solo actual'],
+              ['rc', 'Solo RC'],
+            ] as const
+          ).map(([valor, etiqueta]) => (
+            <button
+              key={valor}
+              type="button"
+              onClick={() => setVista(valor)}
+              aria-pressed={vista === valor}
+              className={cn(
+                'rounded-full px-3 py-1.5 transition-colors',
+                vista === valor ? 'bg-white text-titular shadow-nav' : 'text-gris hover:text-titular',
+              )}
+            >
+              {etiqueta}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div key={nivelActualId ?? '__raiz__'} className="fade space-y-2.5">
         {filas.length === 0 && (
           <p className="rounded-boton border border-linea bg-white p-4 text-[13.5px] text-cuerpo">
@@ -514,6 +546,7 @@ export function Bloque({
               fila={fila}
               info={info}
               maxCents={maxCents}
+              vista={vista}
               tieneHijos={tieneHijos}
               pulsando={pulsando}
               deltaPct={deltaPct}
@@ -538,6 +571,7 @@ function FilaPartida({
   fila,
   info,
   maxCents,
+  vista,
   tieneHijos,
   pulsando,
   deltaPct,
@@ -554,6 +588,10 @@ function FilaPartida({
   fila: PartidaRow;
   info: PartidaResueltaInfo;
   maxCents: number;
+  /** Toggle de `Bloque` ("Ambos" | "Solo actual" | "Solo RC") — Sergio: "un
+   * toggle que alterne ambas gráficas". Compartido por todas las filas del
+   * bloque, no un estado por fila. */
+  vista: 'ambos' | 'actual' | 'rc';
   tieneHijos: boolean;
   pulsando: boolean;
   deltaPct: number | null;
@@ -614,30 +652,36 @@ function FilaPartida({
       </div>
 
       <div className="mt-3 space-y-1.5">
-        <div className="flex items-center gap-2">
-          <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-gris">Actual</span>
-          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-fondo">
-            <div
-              className="h-full rounded-full bg-[#9aa4b2] transition-[width] duration-500 ease-out"
-              style={{ width: `${pctActual}%` }}
-            />
+        {vista !== 'rc' && (
+          <div className="flex items-center gap-2">
+            <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-gris">Actual</span>
+            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-fondo">
+              <div
+                className="h-full rounded-full bg-[#9aa4b2] transition-[width] duration-500 ease-out"
+                style={{ width: `${pctActual}%` }}
+              />
+            </div>
+            <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-cuerpo tabular-nums">
+              {formatoCorto(info.actual.propioCents)}
+            </span>
           </div>
-          <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-cuerpo tabular-nums">
-            {formatoCorto(info.actual.propioCents)}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-teal-texto">RC</span>
-          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-fondo">
-            <div
-              className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
-              style={{ width: `${pctRC}%` }}
-            />
+        )}
+        {vista !== 'actual' && (
+          // Fondo suave (Sergio): distingue de un vistazo la fila de Razón
+          // Común, mismo bg-teal/5 que ya usa la tarjeta de balance RC.
+          <div className="flex items-center gap-2 rounded-boton bg-teal/5 px-2 py-1">
+            <span className="w-11 shrink-0 text-[11px] font-bold uppercase text-teal-texto">RC</span>
+            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white">
+              <div
+                className="h-full rounded-full bg-teal transition-[width] duration-500 ease-out"
+                style={{ width: `${pctRC}%` }}
+              />
+            </div>
+            <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-titular tabular-nums">
+              {formatoCorto(info.rc.propioCents)}
+            </span>
           </div>
-          <span className="w-24 shrink-0 text-right text-[12.5px] font-semibold text-titular tabular-nums">
-            {formatoCorto(info.rc.propioCents)}
-          </span>
-        </div>
+        )}
       </div>
 
       {ajustarAbierto && (
