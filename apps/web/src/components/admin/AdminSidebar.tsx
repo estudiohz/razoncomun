@@ -42,11 +42,9 @@ function AdminNavLinks({
                 solo admin
               </span>
             )}
-            {item.dueño && (
-              <span className="rounded-full bg-fondo px-2 py-0.5 text-[10px] font-bold text-gris">
-                {item.dueño}
-              </span>
-            )}
+            {/* El label `item.dueño` (rc-05-blog, rc-06-participacion…) es una
+                etiqueta interna de los agentes de construcción; se mantiene en
+                el dato (nav.ts) pero NO se pinta en el submenú: no aporta al usuario. */}
           </Link>
         );
       })}
