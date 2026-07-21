@@ -52,15 +52,15 @@ export async function Nav() {
     <>
       <nav className="sticky top-3.5 z-50 my-3.5">
         <div className="mx-auto w-full max-w-wrap px-4 min-[720px]:px-8">
-          <div className="flex h-16 items-center justify-between rounded-[18px] border border-linea bg-white/85 px-4 shadow-nav backdrop-blur-[14px] min-[720px]:px-[22px]">
+          <div className="flex h-16 items-center justify-between rounded-[18px] border border-linea bg-white px-4 shadow-nav min-[720px]:px-[22px]">
             <Link href="/" className="flex items-center gap-3 no-underline" aria-label={site.nombre}>
               <Image
                 src="/logo-rc.png"
                 alt={site.nombre}
-                width={133}
-                height={34}
+                width={145}
+                height={37}
                 priority
-                className="h-[34px] w-auto"
+                className="h-[37px] w-auto"
               />
             </Link>
             <div className="flex items-center gap-[26px]">
