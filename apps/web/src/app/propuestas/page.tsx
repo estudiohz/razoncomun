@@ -75,17 +75,19 @@ export default async function PropuestasPage({
 
   return (
     <Contenedor as="section" className="py-14">
-      <header className="mx-auto max-w-[820px] text-center">
-        <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">Programa vivo</span>
-        <h1 className="mt-3 text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.12]">
-          Propuestas ciudadanas
-        </h1>
-        <p className="mx-auto mt-3 max-w-[62ch] text-[16px] text-cuerpo">
-          De la idea a la votación, con trazabilidad total: apoya, delibera y sigue cada propuesta hasta que
-          entra en el programa. La evidencia decide qué es viable; la votación, qué se prioriza.
-        </p>
-        <div className="mt-6">
-          <Boton href="/propuestas/nueva" variante="grad">
+      <header className="flex flex-col gap-6 sm:flex-row sm:items-center">
+        <div className="sm:w-3/4">
+          <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">Programa vivo</span>
+          <h1 className="mt-3 text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.12]">
+            Propuestas ciudadanas
+          </h1>
+          <p className="mt-3 text-[16px] text-cuerpo">
+            De la idea a la votación, con trazabilidad total: apoya, delibera y sigue cada propuesta hasta que
+            entra en el programa. La evidencia decide qué es viable; la votación, qué se prioriza.
+          </p>
+        </div>
+        <div className="sm:w-1/4">
+          <Boton href="/propuestas/nueva" variante="grad" className="w-full">
             Proponer algo nuevo
           </Boton>
         </div>
