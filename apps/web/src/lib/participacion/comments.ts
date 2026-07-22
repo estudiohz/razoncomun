@@ -16,7 +16,7 @@ export async function listarComentarios(
 ): Promise<ComentarioConAutor[]> {
   const { data, error } = await supabase
     .from('proposal_comments')
-    .select('*, autor:profiles(display_name)')
+    .select('*, autor:profiles!proposal_comments_author_id_fkey(display_name)')
     .eq('proposal_id', proposalId)
     .order('created_at', { ascending: true });
   if (error) throw error;

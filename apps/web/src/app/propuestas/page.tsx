@@ -66,6 +66,13 @@ export default async function PropuestasPage({
     return qs ? `/propuestas?${qs}` : '/propuestas';
   }
 
+  // Hrefs de categoría precomputados en el servidor: no se pueden pasar
+  // funciones a <SidebarCategorias> (Client Component). '' limpia el filtro.
+  const hrefTodasCategorias = hrefFiltro({ categoryId: '' });
+  const hrefPorCategoria: Record<string, string> = Object.fromEntries(
+    categorias.map((c) => [c.id, hrefFiltro({ categoryId: c.id })]),
+  );
+
   return (
     <Contenedor as="section" className="py-14">
       <header className="mx-auto max-w-[820px] text-center">
@@ -113,7 +120,8 @@ export default async function PropuestasPage({
             categorias={categorias}
             conteos={conteos}
             categoryId={categoryId}
-            hrefFiltro={hrefFiltro}
+            hrefTodas={hrefTodasCategorias}
+            hrefPorCategoria={hrefPorCategoria}
           />
         </aside>
 

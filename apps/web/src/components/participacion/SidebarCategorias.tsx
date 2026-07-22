@@ -8,12 +8,16 @@ export function SidebarCategorias({
   categorias,
   conteos,
   categoryId,
-  hrefFiltro,
+  hrefTodas,
+  hrefPorCategoria,
 }: {
   categorias: ProposalCategory[];
   conteos: Record<string, number>;
   categoryId?: string;
-  hrefFiltro: (next: { categoryId?: string }) => string;
+  // Hrefs precomputados en el servidor: no se pueden pasar funciones a un
+  // Client Component (regla de serialización RSC).
+  hrefTodas: string;
+  hrefPorCategoria: Record<string, string>;
 }) {
   return (
     <>
@@ -26,7 +30,7 @@ export function SidebarCategorias({
           id="categoria-movil"
           defaultValue={categoryId ?? ''}
           onChange={(e) => {
-            window.location.href = hrefFiltro({ categoryId: e.target.value || undefined });
+            window.location.href = e.target.value ? hrefPorCategoria[e.target.value] : hrefTodas;
           }}
           className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[14px]"
         >
@@ -44,7 +48,7 @@ export function SidebarCategorias({
         <ul className="space-y-1">
           <li>
             <Link
-              href={hrefFiltro({ categoryId: undefined })}
+              href={hrefTodas}
               className={
                 'flex items-center justify-between rounded-boton px-3 py-2 text-[14px] font-semibold no-underline ' +
                 (!categoryId ? 'bg-accion/10 text-titular' : 'text-cuerpo hover:bg-fondo')
@@ -56,7 +60,7 @@ export function SidebarCategorias({
           {categorias.map((c) => (
             <li key={c.id}>
               <Link
-                href={hrefFiltro({ categoryId: c.id })}
+                href={hrefPorCategoria[c.id]}
                 className={
                   'flex items-center justify-between rounded-boton px-3 py-2 text-[14px] font-semibold no-underline ' +
                   (categoryId === c.id ? 'bg-accion/10 text-titular' : 'text-cuerpo hover:bg-fondo')
