@@ -104,7 +104,7 @@ export default async function PropuestasPage({
       </div>
 
       <div className="mt-3 flex flex-wrap justify-center gap-2.5">
-        <Chip href={hrefFiltro({ status: undefined })} activo={!status}>
+        <Chip href={hrefFiltro({ status: '' })} activo={!status}>
           Todos los estados
         </Chip>
         {ORDEN_ESTADOS.map((s) => (
