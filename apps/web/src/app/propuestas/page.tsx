@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { Boton } from '@/components/ui/Boton';
 import { Chip } from '@/components/ui/Chip';
+import { BarraOrdenarBuscar } from '@/components/participacion/BarraOrdenarBuscar';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
 import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
 import { metadatosPagina } from '@/lib/seo';
@@ -32,9 +33,9 @@ function euros(cents: number | null): string {
 export default async function PropuestasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; categoryId?: string; tab?: string }>;
+  searchParams: Promise<{ status?: string; categoryId?: string; tab?: string; q?: string }>;
 }) {
-  const { status, categoryId, tab } = await searchParams;
+  const { status, categoryId, tab, q } = await searchParams;
   const pestana: Pestana = tab === 'top' || tab === 'nuevos' ? tab : 'trending';
   const supabase = await createClient();
 
@@ -42,6 +43,7 @@ export default async function PropuestasPage({
     listarPropuestas(supabase, {
       status: status as EstadoPropuesta | undefined,
       categoryId,
+      q,
     }),
     listarCategorias(supabase),
     contarPropuestasPorCategoria(supabase),
@@ -62,6 +64,7 @@ export default async function PropuestasPage({
     if (s) params.set('status', s);
     if (c) params.set('categoryId', c);
     if (t && t !== 'trending') params.set('tab', t);
+    if (q?.trim()) params.set('q', q.trim());
     const qs = params.toString();
     return qs ? `/propuestas?${qs}` : '/propuestas';
   }
@@ -93,19 +96,10 @@ export default async function PropuestasPage({
         </div>
       </header>
 
+      {/* El orden (Trending/Top/Nuevos) ya no va en chips: vive en la barra
+          "Ordenar por + buscar" encima de la lista (petición de Sergio). Los
+          chips de estado se mantienen tal cual. */}
       <div className="mt-10 flex flex-wrap justify-center gap-2.5">
-        <Chip href={hrefFiltro({ tab: 'trending' })} activo={pestana === 'trending'}>
-          🔥 Trending
-        </Chip>
-        <Chip href={hrefFiltro({ tab: 'top' })} activo={pestana === 'top'}>
-          🏆 Top
-        </Chip>
-        <Chip href={hrefFiltro({ tab: 'nuevos' })} activo={pestana === 'nuevos'}>
-          🆕 Nuevos
-        </Chip>
-      </div>
-
-      <div className="mt-3 flex flex-wrap justify-center gap-2.5">
         <Chip href={hrefFiltro({ status: '' })} activo={!status}>
           Todos los estados
         </Chip>
@@ -128,13 +122,18 @@ export default async function PropuestasPage({
         </aside>
 
         <div className="grid gap-5">
+          <BarraOrdenarBuscar tab={pestana} q={q ?? ''} status={status ?? ''} categoryId={categoryId ?? ''} />
           {pestana === 'trending' && (
             <p className="text-center text-[12.5px] text-gris">
               Trending solo muestra hilos con votación abierta.
             </p>
           )}
           {ordenadas.length === 0 && (
-            <p className="text-center text-[15px] text-gris">No hay propuestas con estos filtros todavía.</p>
+            <p className="text-center text-[15px] text-gris">
+              {q?.trim()
+                ? `Ninguna propuesta coincide con «${q.trim()}».`
+                : 'No hay propuestas con estos filtros todavía.'}
+            </p>
           )}
           {ordenadas.map((p) => (
             <Link

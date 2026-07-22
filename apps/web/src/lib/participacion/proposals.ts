@@ -12,6 +12,8 @@ export interface FiltrosPropuestas {
   status?: EstadoPropuesta;
   department?: string;
   categoryId?: string;
+  /** Búsqueda en título y cuerpo (barra del directorio público). */
+  q?: string;
 }
 
 /** Tablero público tipo GHL Ideas. RLS: lectura pública, `archived` filtrado en RLS. */
@@ -28,6 +30,12 @@ export async function listarPropuestas(
   if (filtros.status) query = query.eq('status', filtros.status);
   if (filtros.department) query = query.eq('department', filtros.department);
   if (filtros.categoryId) query = query.eq('category_id', filtros.categoryId);
+  if (filtros.q?.trim()) {
+    // Escapamos comas y paréntesis: romperían la sintaxis del filtro `or`
+    // de PostgREST (mismo patrón que el buscador de /admin/articulos).
+    const patron = `%${filtros.q.trim().replace(/[,()]/g, ' ')}%`;
+    query = query.or(`title.ilike.${patron},body.ilike.${patron}`);
+  }
 
   const { data, error } = await query;
   if (error) throw error;
