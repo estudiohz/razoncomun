@@ -70,6 +70,7 @@ export const navPrincipal = [
 // Enlaces fijos del footer que NO son páginas del CMS (los legales/estatutos
 // salen de la tabla `pages` según sus checkboxes). Aquí solo lo externo/fijo.
 export const navFooter = [
+  { label: 'Propuestas', href: '/propuestas' },
   { label: 'Contacto', href: '/contacto' },
   { label: 'Discord', href: site.discord },
 ] as const;
