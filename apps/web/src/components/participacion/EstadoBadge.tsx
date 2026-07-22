@@ -6,8 +6,10 @@ const COLOR: Record<EstadoPropuesta, string> = {
   deliberation: 'bg-cat-transparencia text-white',
   stress_test: 'bg-cat-educacion text-white',
   voting: 'bg-accion text-white',
+  planned: 'bg-cat-transparencia text-white',
   adopted: 'bg-cat-agricultura text-white',
   discarded: 'bg-gris text-white',
+  archived: 'bg-gris text-white',
 };
 
 const ICONO: Record<EstadoPropuesta, string> = {
@@ -15,8 +17,10 @@ const ICONO: Record<EstadoPropuesta, string> = {
   deliberation: '🔎',
   stress_test: '🧪',
   voting: '🗳️',
+  planned: '📋',
   adopted: '✅',
   discarded: '❌',
+  archived: '🗄️',
 };
 
 export function EstadoBadge({ status, className }: { status: EstadoPropuesta; className?: string }) {

@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { buscarSimilaresAction, crearPropuestaAction } from '@/app/propuestas/actions';
+import { CaptchaCampo } from '@/components/participacion/CaptchaCampo';
 import type { Propuesta } from '@/lib/participacion/types';
 
 const DEPARTAMENTOS = [
@@ -25,7 +26,7 @@ const DEPARTAMENTOS = [
  * mientras se escribe el título (fallback ILIKE/trgm — ver hook para rc-08
  * en lib/participacion/proposals.ts::buscarPropuestasSimilares).
  */
-export function FormularioPropuesta() {
+export function FormularioPropuesta({ captcha }: { captcha: { pregunta: string; token: string } }) {
   const [titulo, setTitulo] = useState('');
   const [similares, setSimilares] = useState<Propuesta[]>([]);
   const [buscando, iniciarBusqueda] = useTransition();
@@ -135,6 +136,8 @@ export function FormularioPropuesta() {
           className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
         />
       </div>
+
+      <CaptchaCampo pregunta={captcha.pregunta} token={captcha.token} />
 
       <button
         type="submit"

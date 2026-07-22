@@ -9,14 +9,18 @@ export type EstadoPropuesta =
   | 'deliberation'
   | 'stress_test'
   | 'voting'
+  | 'planned'
   | 'adopted'
-  | 'discarded';
+  | 'discarded'
+  | 'archived';
 
+/** Estados visibles en el front (D-P3: archived no tiene etiqueta ni aparece). */
 export const ORDEN_ESTADOS: EstadoPropuesta[] = [
   'seed',
   'deliberation',
   'stress_test',
   'voting',
+  'planned',
   'adopted',
   'discarded',
 ];
@@ -26,8 +30,10 @@ export const ETIQUETA_ESTADO: Record<EstadoPropuesta, string> = {
   deliberation: 'En deliberación',
   stress_test: 'Test de estrés',
   voting: 'En votación',
-  adopted: 'Adoptada',
-  discarded: 'Descartada',
+  planned: 'Planeado',
+  adopted: 'Aprobado',
+  discarded: 'Rechazado',
+  archived: 'Archivado',
 };
 
 export interface Propuesta {
@@ -35,6 +41,13 @@ export interface Propuesta {
   title: string;
   body: string;
   department: string;
+  category_id: string | null;
+  slug: string | null;
+  deadline_at: string | null;
+  official_response: string | null;
+  official_response_at: string | null;
+  official_responder_id: string | null;
+  merged_into_id: string | null;
   status: EstadoPropuesta;
   support_count: number;
   estimated_cost_cents: number | null;
@@ -43,6 +56,40 @@ export interface Propuesta {
   adopted_point_id: number | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProposalCategory {
+  id: string;
+  nombre: string;
+  color: string;
+  orden: number;
+}
+
+export interface ProposalComment {
+  id: string;
+  proposal_id: string;
+  parent_id: string | null;
+  author_id: string | null;
+  body: string | null;
+  deleted_at: string | null;
+  like_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Votación abierta (D-P6): condición de lectura reutilizada en todos lados
+ * para decidir si apoyar/deliberar/Trending aplica. Debe reflejar
+ * EXACTAMENTE la misma regla que el trigger de congelación en BD (D-P7) —
+ * si se desincroniza, el trigger manda (es la autoridad real).
+ */
+export function votacionAbierta(
+  p: Pick<Propuesta, 'status' | 'deadline_at'>,
+  ahoraMs: number = Date.now(),
+): boolean {
+  if (p.status === 'adopted' || p.status === 'discarded' || p.status === 'archived') return false;
+  if (p.deadline_at && new Date(p.deadline_at).getTime() <= ahoraMs) return false;
+  return true;
 }
 
 export interface Statement {

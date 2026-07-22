@@ -1,12 +1,20 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { slugificar } from '@/lib/blog/markdown';
 import type { EstadoPropuesta, Propuesta } from './types';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function pareceUuid(valor: string): boolean {
+  return UUID_RE.test(valor);
+}
 
 export interface FiltrosPropuestas {
   status?: EstadoPropuesta;
   department?: string;
+  categoryId?: string;
 }
 
-/** Tablero público tipo GHL Ideas. RLS: lectura pública (0005_program.sql). */
+/** Tablero público tipo GHL Ideas. RLS: lectura pública, `archived` filtrado en RLS. */
 export async function listarPropuestas(
   supabase: SupabaseClient,
   filtros: FiltrosPropuestas = {},
@@ -19,6 +27,7 @@ export async function listarPropuestas(
 
   if (filtros.status) query = query.eq('status', filtros.status);
   if (filtros.department) query = query.eq('department', filtros.department);
+  if (filtros.categoryId) query = query.eq('category_id', filtros.categoryId);
 
   const { data, error } = await query;
   if (error) throw error;
@@ -35,6 +44,29 @@ export async function obtenerPropuesta(
     throw error;
   }
   return data as Propuesta;
+}
+
+/** Resuelve por slug SEO (ruta canónica D-P12). */
+export async function obtenerPropuestaPorSlug(
+  supabase: SupabaseClient,
+  slug: string,
+): Promise<Propuesta | null> {
+  const { data, error } = await supabase.from('proposals').select('*').eq('slug', slug).maybeSingle();
+  if (error) throw error;
+  return (data as Propuesta) ?? null;
+}
+
+/** Genera un slug único a partir del título, con sufijo corto si colisiona (D-P12). */
+export async function generarSlugUnico(supabase: SupabaseClient, titulo: string): Promise<string> {
+  const base = slugificar(titulo) || 'propuesta';
+  let candidato = base;
+  for (let intento = 0; intento < 6; intento++) {
+    const { data, error } = await supabase.from('proposals').select('id').eq('slug', candidato).maybeSingle();
+    if (error) throw error;
+    if (!data) return candidato;
+    candidato = `${base}-${Math.random().toString(36).slice(2, 7)}`;
+  }
+  return `${base}-${Date.now().toString(36)}`;
 }
 
 /** Departamentos con propuestas (para el filtro), derivado de datos reales. */
@@ -91,12 +123,13 @@ export interface NuevaPropuestaInput {
   estimated_cost_cents?: number | null;
 }
 
-/** Crea una propuesta como el usuario autenticado (RLS: author_id = auth.uid()). */
+/** Crea una propuesta como el usuario autenticado (RLS: author_id = auth.uid()). Genera slug (D-P12). */
 export async function crearPropuesta(
   supabase: SupabaseClient,
   authorId: string,
   input: NuevaPropuestaInput,
 ): Promise<Propuesta> {
+  const slug = await generarSlugUnico(supabase, input.title);
   const { data, error } = await supabase
     .from('proposals')
     .insert({
@@ -105,12 +138,28 @@ export async function crearPropuesta(
       department: input.department,
       estimated_cost_cents: input.estimated_cost_cents ?? null,
       author_id: authorId,
+      slug,
     })
     .select('*')
     .single();
 
   if (error) throw error;
   return data as Propuesta;
+}
+
+/** Cuántos hilos ha creado el usuario en las últimas 24h (rate-limit D-P8: 3/día). */
+export async function contarPropuestasRecientes(
+  supabase: SupabaseClient,
+  authorId: string,
+): Promise<number> {
+  const desde = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { count, error } = await supabase
+    .from('proposals')
+    .select('id', { count: 'exact', head: true })
+    .eq('author_id', authorId)
+    .gte('created_at', desde);
+  if (error) throw error;
+  return count ?? 0;
 }
 
 /** ¿El usuario actual ya apoya esta propuesta? */

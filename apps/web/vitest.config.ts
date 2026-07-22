@@ -9,7 +9,12 @@ import path from 'node:path';
  */
 export default defineConfig({
   test: {
-    include: ['src/lib/simulador/**/*.test.ts', 'src/app/pais/**/*.test.ts'],
+    include: [
+      'src/lib/simulador/**/*.test.ts',
+      'src/app/pais/**/*.test.ts',
+      'src/lib/participacion/**/*.test.ts',
+      'src/lib/antibot/**/*.test.ts',
+    ],
     environment: 'node',
   },
   resolve: {

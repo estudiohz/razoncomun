@@ -104,6 +104,11 @@ export function MenuUsuario({ nombre, inicial, mostrarAdmin }: MenuUsuarioProps)
             Perfil
           </Link>
 
+          <Link href="/propuestas/mias" role="menuitem" className={itemClase} onClick={() => setAbierto(false)}>
+            <IconoPerfil />
+            Mis hilos
+          </Link>
+
           {mostrarAdmin && (
             <Link href="/admin" role="menuitem" className={itemClase} onClick={() => setAbierto(false)}>
               <IconoAdmin />

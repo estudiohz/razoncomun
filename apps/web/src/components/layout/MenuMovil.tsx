@@ -146,6 +146,13 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
                 >
                   Perfil
                 </Link>
+                <Link
+                  href="/propuestas/mias"
+                  onClick={cerrar}
+                  className="py-2 text-lg font-semibold text-cuerpo no-underline hover:text-titular"
+                >
+                  Mis hilos
+                </Link>
                 {sesion.mostrarAdmin && (
                   <Link
                     href="/admin"

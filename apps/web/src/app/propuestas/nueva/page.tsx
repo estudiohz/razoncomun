@@ -3,6 +3,7 @@ import { Contenedor } from '@/components/layout/Contenedor';
 import { FormularioPropuesta } from '@/components/participacion/FormularioPropuesta';
 import { metadatosPagina } from '@/lib/seo';
 import { requireUsuario } from '@/lib/auth/niveles';
+import { generarCaptcha } from '@/lib/antibot/captcha';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Proponer algo nuevo',
@@ -14,6 +15,7 @@ export const metadata: Metadata = metadatosPagina({
 /** Requiere sesión (registered+): cualquier autenticado puede proponer (proposals_insert_registered). */
 export default async function NuevaPropuestaPage() {
   await requireUsuario('/propuestas/nueva');
+  const captcha = generarCaptcha();
 
   return (
     <Contenedor as="section" className="py-14">
@@ -30,7 +32,7 @@ export default async function NuevaPropuestaPage() {
       </header>
 
       <div className="mx-auto mt-10 max-w-[640px]">
-        <FormularioPropuesta />
+        <FormularioPropuesta captcha={captcha} />
       </div>
     </Contenedor>
   );
