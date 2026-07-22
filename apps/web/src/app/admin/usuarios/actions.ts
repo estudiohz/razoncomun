@@ -279,6 +279,58 @@ export async function revocarRolApp(formData: FormData) {
   revalidatePath(`/admin/usuarios/${targetUserId}`);
 }
 
+export interface ResultadoEliminacion {
+  ok: boolean;
+  error?: string;
+}
+
+/**
+ * Elimina una cuenta por completo (auth.users + profiles en cascada). SOLO
+ * admin (no basta editor) y con doble confirmación en la UI. Límites:
+ * - Un admin no puede eliminarse a sí mismo (se quedaría fuera a mitad de
+ *   sesión y el partido podría quedarse sin admins).
+ * - Si el usuario tiene contenido con FK sin `on delete` (votos en ballots,
+ *   propuestas/artículos como autor, rastro en audit_log…), Postgres rechaza
+ *   el borrado: se devuelve un mensaje claro en vez de un 500. Ese caso es
+ *   una DECISIÓN pendiente (RGPD: anonimizar vs. borrar) — no se fuerza aquí.
+ */
+export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEliminacion> {
+  const { user, supabase } = await requireAdmin('/admin/usuarios');
+
+  if (!targetUserId) return { ok: false, error: 'Usuario no indicado.' };
+  if (targetUserId === user.id) {
+    return { ok: false, error: 'No puedes eliminar tu propia cuenta desde el panel.' };
+  }
+
+  const admin = createAdminClient();
+  const { data: cuenta } = await admin.auth.admin.getUserById(targetUserId);
+  if (!cuenta?.user) return { ok: false, error: 'Usuario no encontrado.' };
+  const email = cuenta.user.email ?? null;
+
+  const { error } = await admin.auth.admin.deleteUser(targetUserId);
+  if (error) {
+    const esFk = /foreign key|violates|constraint/i.test(error.message);
+    return {
+      ok: false,
+      error: esFk
+        ? 'No se puede eliminar: el usuario tiene actividad vinculada (votos, propuestas o artículos). ' +
+          'Borrarla rompería la trazabilidad — de momento, revoca sus roles y accesos en su lugar.'
+        : `No se pudo eliminar: ${error.message}`,
+    };
+  }
+
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'user_deleted',
+    entity: 'auth.users',
+    entityId: targetUserId,
+    meta: { email },
+  });
+
+  revalidatePath('/admin/usuarios');
+  return { ok: true };
+}
+
 /**
  * Cambio de nivel MANUAL desde el panel (excepcional: lo normal es que el
  * nivel cambie por webhook de Stripe/rc-07). `profiles.level` está protegido

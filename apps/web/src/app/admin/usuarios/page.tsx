@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
+import { EliminarUsuarioBoton } from './EliminarUsuarioBoton';
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
@@ -26,9 +27,16 @@ export default async function UsuariosPage({
   const { nivel, provincia, cargo, q } = await searchParams;
   const supabase = await createClient();
 
-  const [{ data: provincias }, { data: cargosVigentes }] = await Promise.all([
+  // El layout ya exige admin O editor; eliminar usuarios es solo de admin —
+  // el botón se oculta a editores (y la server action lo vuelve a exigir).
+  const {
+    data: { user: usuarioActual },
+  } = await supabase.auth.getUser();
+
+  const [{ data: provincias }, { data: cargosVigentes }, { data: esAdmin }] = await Promise.all([
     supabase.from('territories').select('id, name').eq('type', 'province').order('name'),
     supabase.from('positions').select('user_id, role, scope, territory_id').is('ended_at', null),
+    supabase.rpc('is_admin', { p_user: usuarioActual?.id }),
   ]);
 
   let query = supabase
@@ -155,9 +163,18 @@ export default async function UsuariosPage({
                   {(cargosPorUsuario.get(p.id) ?? []).join(', ') || '—'}
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <Link href={`/admin/usuarios/${p.id}`} className="font-semibold text-titular no-underline hover:underline">
-                    Ver ficha →
-                  </Link>
+                  <div className="flex items-center justify-end gap-3">
+                    <Link href={`/admin/usuarios/${p.id}`} className="font-semibold text-titular no-underline hover:underline">
+                      Ver ficha →
+                    </Link>
+                    {Boolean(esAdmin) && p.id !== usuarioActual?.id && (
+                      <EliminarUsuarioBoton
+                        userId={p.id}
+                        nombre={p.display_name ?? '—'}
+                        email={p.email ?? '—'}
+                      />
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
