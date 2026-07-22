@@ -1,0 +1,42 @@
+name: Generar vídeo HEVC con alpha (Safari/iOS)
+
+# El hero usa un WebM VP9 con canal alpha, pero WebKit (Safari y todos los
+# navegadores de iOS) ignora el alpha de VP9. Su formato de vídeo transparente
+# es HEVC con capa alpha (hvc1), que SOLO codifica VideoToolbox de Apple.
+# Este workflow corre en un runner macOS, transcodifica el webm del repo y
+# commitea el .mov resultante. Lanzar a mano (workflow_dispatch) cuando cambie
+# el vídeo del hero.
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  hevc-alpha:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ffmpeg
+        run: brew install ffmpeg
+
+      - name: Transcodificar WebM alpha → HEVC alpha (VideoToolbox)
+        run: |
+          # -c:v libvpx-vp9 ANTES del input: el decodificador nativo ignora el alpha
+          ffmpeg -y -c:v libvpx-vp9 -i apps/web/public/personas-loop.webm \
+            -pix_fmt bgra -c:v hevc_videotoolbox -allow_sw 1 -alpha_quality 0.75 \
+            -b:v 3000k -vtag hvc1 -movflags +faststart \
+            apps/web/public/personas-loop-hevc.mov
+          ls -la apps/web/public/personas-loop-hevc.mov
+          # Verificación: el stream debe declarar la capa alpha
+          ffprobe -v error -show_entries stream=codec_name,pix_fmt -of default=noprint_wrappers=1 \
+            apps/web/public/personas-loop-hevc.mov
+
+      - name: Commit del artefacto
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/web/public/personas-loop-hevc.mov
+          git commit -m "build(hero): personas-loop-hevc.mov — HEVC alpha para Safari/iOS [skip ci]"
+          git push
