@@ -20,6 +20,7 @@ import {
   usuarioDioLike,
 } from '@/lib/participacion/comments';
 import { alternarSuscripcion, usuarioSigue } from '@/lib/participacion/follows';
+import { notificarComentarioNuevo } from '@/lib/participacion/notifications-admin';
 import { verificarCaptcha } from '@/lib/antibot/captcha';
 import type { ValorVotoAfirmacion } from '@/lib/participacion/types';
 
@@ -145,6 +146,12 @@ export async function anadirComentarioAction(
 
   // D-P9: auto-suscripción de quien comenta (idempotente por PK compuesto).
   await alternarSuscripcion(supabase, proposalId, user.id, false);
+
+  // D-P9 evento 1 (rc-06): notifica a los seguidores del hilo, excepto a quien comenta.
+  const propuesta = await obtenerPropuesta(supabase, proposalId);
+  if (propuesta) {
+    await notificarComentarioNuevo(supabase, proposalId, propuesta.title, user.id, propuesta.slug);
+  }
 
   revalidatePath(`/propuestas/${proposalId}`);
 }

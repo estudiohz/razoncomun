@@ -4,7 +4,10 @@ import { Boton } from '@/components/ui/Boton';
 import { MenuUsuario } from '@/components/layout/MenuUsuario';
 import { MenuMovil } from '@/components/layout/MenuMovil';
 import { AvisoContrasena } from '@/components/layout/AvisoContrasena';
+import { Campanita } from '@/components/layout/Campanita';
 import { getUsuarioYPerfil } from '@/lib/auth/niveles';
+import { contarNoLeidas, listarNotificaciones } from '@/lib/participacion/notifications';
+import type { Notificacion } from '@/lib/participacion/notifications';
 import { navPrincipal, redesSociales, site } from '@/lib/site';
 
 /** Deriva la inicial del avatar del nombre, o del email como fallback. */
@@ -34,15 +37,28 @@ export async function Nav() {
   // fallara por lo que sea, se prefiere no mostrar el aviso antes que
   // arriesgarse a mostrarlo a quien sí tiene contraseña.
   let avisoSinContrasena = false;
+  // Campanita de notificaciones in-app (D-P9, rc-06): datos resueltos aquí en
+  // servidor y pasados como props serializables al client component.
+  let notificaciones: Notificacion[] = [];
+  let noLeidas = 0;
   if (user) {
-    const [{ data: esAdmin }, { data: esEditor }, { data: tieneContrasena, error: errorContrasena }] =
-      await Promise.all([
-        supabase.rpc('is_admin', { p_user: user.id }),
-        supabase.rpc('is_editor', { p_user: user.id }),
-        supabase.rpc('has_password'),
-      ]);
+    const [
+      { data: esAdmin },
+      { data: esEditor },
+      { data: tieneContrasena, error: errorContrasena },
+      listaNotifs,
+      contadorNotifs,
+    ] = await Promise.all([
+      supabase.rpc('is_admin', { p_user: user.id }),
+      supabase.rpc('is_editor', { p_user: user.id }),
+      supabase.rpc('has_password'),
+      listarNotificaciones(supabase, user.id),
+      contarNoLeidas(supabase, user.id),
+    ]);
     mostrarAdmin = Boolean(esAdmin) || Boolean(esEditor);
     avisoSinContrasena = !errorContrasena && tieneContrasena === false;
+    notificaciones = listaNotifs;
+    noLeidas = contadorNotifs;
   }
 
   const nombre = perfil?.display_name?.trim() || user?.email?.split('@')[0] || 'Mi cuenta';
@@ -73,6 +89,8 @@ export async function Nav() {
                   {item.label}
                 </Link>
               ))}
+              {/* Campanita: visible en cualquier ancho con sesión (no depende del burger). */}
+              {user && <Campanita notificaciones={notificaciones} noLeidas={noLeidas} />}
               {/* Cluster de escritorio: sesión o CTAs. Oculto en móvil (lo cubre el burger). */}
               <div className="hidden items-center gap-[26px] min-[960px]:flex">
                 {user ? (

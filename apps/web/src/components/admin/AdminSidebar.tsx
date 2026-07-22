@@ -15,9 +15,11 @@ import { adminNav } from '@/lib/admin/nav';
 function AdminNavLinks({
   esAdmin,
   onNavegar,
+  badges,
 }: {
   esAdmin: boolean;
   onNavegar?: () => void;
+  badges?: Record<string, number>;
 }) {
   const pathname = usePathname();
 
@@ -26,6 +28,7 @@ function AdminNavLinks({
       {adminNav.map((item) => {
         const activo = item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href);
         const bloqueado = item.soloAdmin && !esAdmin;
+        const contador = badges?.[item.href] ?? 0;
 
         return (
           <Link
@@ -38,11 +41,18 @@ function AdminNavLinks({
             )}
           >
             <span>{item.label}</span>
-            {bloqueado && (
-              <span className="rounded-full bg-fondo px-2 py-0.5 text-[10px] font-bold text-gris">
-                solo admin
-              </span>
-            )}
+            <span className="flex items-center gap-1.5">
+              {contador > 0 && (
+                <span className="rounded-full bg-magenta px-2 py-0.5 text-[10px] font-bold text-white">
+                  {contador}
+                </span>
+              )}
+              {bloqueado && (
+                <span className="rounded-full bg-fondo px-2 py-0.5 text-[10px] font-bold text-gris">
+                  solo admin
+                </span>
+              )}
+            </span>
             {/* El label `item.dueño` (rc-05-blog, rc-06-participacion…) es una
                 etiqueta interna de los agentes de construcción; se mantiene en
                 el dato (nav.ts) pero NO se pinta en el submenú: no aporta al usuario. */}
@@ -61,7 +71,14 @@ function AdminNavLinks({
  * `AdminMobileMenu` (en la barra superior), de modo que el contenido del
  * panel ocupa todo el ancho disponible.
  */
-export function AdminSidebar({ esAdmin }: { esAdmin: boolean; esEditor: boolean }) {
+export function AdminSidebar({
+  esAdmin,
+  badges,
+}: {
+  esAdmin: boolean;
+  esEditor: boolean;
+  badges?: Record<string, number>;
+}) {
   return (
     <aside className="hidden shrink-0 border-r border-linea bg-panel min-[960px]:sticky min-[960px]:top-0 min-[960px]:flex min-[960px]:h-screen min-[960px]:w-[270px] min-[960px]:flex-col">
       <Link href="/admin" className="flex shrink-0 items-center gap-2.5 border-b border-linea px-5 py-5 no-underline">
@@ -71,7 +88,7 @@ export function AdminSidebar({ esAdmin }: { esAdmin: boolean; esEditor: boolean 
         </span>
       </Link>
       <div className="flex-1 overflow-y-auto p-3">
-        <AdminNavLinks esAdmin={esAdmin} />
+        <AdminNavLinks esAdmin={esAdmin} badges={badges} />
       </div>
     </aside>
   );
@@ -81,7 +98,14 @@ export function AdminSidebar({ esAdmin }: { esAdmin: boolean; esEditor: boolean 
  * Burger + drawer de la navegación del panel, solo en móvil (<960px).
  * Va en la cabecera del panel; en escritorio no pinta nada.
  */
-export function AdminMobileMenu({ esAdmin }: { esAdmin: boolean; esEditor: boolean }) {
+export function AdminMobileMenu({
+  esAdmin,
+  badges,
+}: {
+  esAdmin: boolean;
+  esEditor: boolean;
+  badges?: Record<string, number>;
+}) {
   const [abierto, setAbierto] = useState(false);
 
   useEffect(() => {
@@ -142,7 +166,7 @@ export function AdminMobileMenu({ esAdmin }: { esAdmin: boolean; esEditor: boole
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
-            <AdminNavLinks esAdmin={esAdmin} onNavegar={() => setAbierto(false)} />
+            <AdminNavLinks esAdmin={esAdmin} onNavegar={() => setAbierto(false)} badges={badges} />
           </div>
         </div>
       )}

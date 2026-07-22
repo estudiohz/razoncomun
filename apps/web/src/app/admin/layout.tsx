@@ -6,6 +6,7 @@ import { metadatosPagina } from '@/lib/seo';
 import { AdminSidebar, AdminMobileMenu } from '@/components/admin/AdminSidebar';
 import { AdminBreadcrumbs } from '@/components/admin/AdminBreadcrumbs';
 import { cerrarSesion } from '@/app/perfil/actions';
+import { contarReportesAbiertos } from '@/lib/participacion/reports';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Panel de administración',
@@ -37,16 +38,23 @@ export const metadata: Metadata = metadatosPagina({
  * barra superior propia + contenido al 100% del ancho restante.
  */
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const { perfil, esAdmin, esEditor } = await requireAdminOrEditor();
+  const { perfil, esAdmin, esEditor, supabase } = await requireAdminOrEditor();
+
+  // Badge de reportes pendientes del tablero de propuestas (D-P15) en el nav.
+  // Solo editor/admin ven este apartado; el conteo se deriva sin tocar SQL
+  // (ver lib/participacion/reports.ts).
+  const reportesAbiertos = esEditor ? await contarReportesAbiertos(supabase).catch(() => 0) : 0;
+  const badges: Record<string, number> =
+    reportesAbiertos > 0 ? { '/admin/participacion': reportesAbiertos } : {};
 
   return (
     <div className="min-h-screen w-full bg-fondo min-[960px]:flex">
-      <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} />
+      <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} badges={badges} />
 
       <div className="min-w-0 flex-1">
         <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-linea bg-panel px-4 py-3 min-[960px]:px-8">
           <div className="flex items-center gap-3">
-            <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} />
+            <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} badges={badges} />
             <AdminBreadcrumbs />
           </div>
           <div className="flex items-center gap-4">
