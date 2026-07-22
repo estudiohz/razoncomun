@@ -130,7 +130,23 @@ export async function invitarUsuario(
   return { ok: true, emailEnviado: envio.enviado, enlace, email };
 }
 
-/** Asigna un rol funcional de app (admin|editor) a un usuario. Solo admin. */
+/**
+ * Asigna un rol funcional de app (admin|editor) a un usuario. Solo admin.
+ *
+ * Además de asignar el rol, AVISA por correo al usuario (petición de Sergio:
+ * al revocar un acceso y volver a dárselo, "que se reenvíe la invitación").
+ * Dos casos, porque GoTrue no permite `generateLink({type:'invite'})` sobre
+ * una cuenta que ya existe:
+ * - Cuenta sin activar (nunca inició sesión): se genera un enlace `recovery`
+ *   nuevo — aterriza en /recuperar/actualizar para elegir contraseña, el
+ *   MISMO destino que la invitación original (destinoTrasVerificar trata
+ *   invite y recovery igual), así que para el usuario es la invitación otra
+ *   vez, con enlace fresco (el de la invitación anterior pudo caducar).
+ * - Cuenta ya activa: solo el aviso de acceso concedido con enlace a /admin
+ *   (no necesita token — ya sabe entrar).
+ * Si el correo no puede salir, la asignación del rol NO se revierte: el
+ * resultado del envío queda en `audit_log` (mismo criterio que invitarUsuario).
+ */
 export async function asignarRolApp(formData: FormData) {
   const targetUserId = String(formData.get('userId') ?? '');
   const roleKey = String(formData.get('roleKey') ?? '');
@@ -138,7 +154,7 @@ export async function asignarRolApp(formData: FormData) {
 
   const { data: rol, error: rolError } = await supabase
     .from('app_roles')
-    .select('id')
+    .select('id, label')
     .eq('key', roleKey)
     .single();
   if (rolError || !rol) throw new Error(`Rol de app desconocido: ${roleKey}`);
@@ -146,15 +162,94 @@ export async function asignarRolApp(formData: FormData) {
   const { error } = await supabase.from('user_app_roles').insert({ user_id: targetUserId, role_id: rol.id });
   if (error) throw new Error(`No se pudo asignar el rol: ${error.message}`);
 
+  const envio = await enviarAvisoRolConcedido(targetUserId, rol.label);
+
   await registrarAuditoria(supabase, {
     actorId: user.id,
     action: 'app_role_assigned',
     entity: 'user_app_roles',
     entityId: targetUserId,
-    meta: { role: roleKey },
+    meta: { role: roleKey, email_enviado: envio.enviado, email_tipo: envio.tipo },
   });
 
   revalidatePath(`/admin/usuarios/${targetUserId}`);
+}
+
+async function enviarAvisoRolConcedido(
+  targetUserId: string,
+  etiquetaRol: string,
+): Promise<{ enviado: boolean; tipo: 'activacion' | 'aviso' | 'omitido' }> {
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '');
+  if (!siteUrl) return { enviado: false, tipo: 'omitido' };
+
+  const admin = createAdminClient();
+  const { data: cuenta, error } = await admin.auth.admin.getUserById(targetUserId);
+  const email = cuenta?.user?.email;
+  if (error || !email) return { enviado: false, tipo: 'omitido' };
+
+  const { data: perfil } = await admin
+    .from('profiles')
+    .select('display_name')
+    .eq('id', targetUserId)
+    .single();
+  const nombreCorto = perfil?.display_name || email;
+
+  const cuentaSinActivar = !cuenta.user.last_sign_in_at;
+
+  if (cuentaSinActivar) {
+    const { data: link, error: linkError } = await admin.auth.admin.generateLink({
+      type: 'recovery',
+      email,
+      options: { redirectTo: `${siteUrl}/auth/confirm` },
+    });
+    if (linkError || !link?.properties?.hashed_token) return { enviado: false, tipo: 'omitido' };
+
+    const enlace = `${siteUrl}/auth/confirm?token_hash=${encodeURIComponent(
+      link.properties.hashed_token,
+    )}&type=recovery&next=${encodeURIComponent('/perfil')}`;
+
+    const envio = await enviarCorreo({
+      para: email,
+      asunto: 'Te han invitado a Razón Común',
+      texto:
+        `Hola ${nombreCorto}:\n\n` +
+        `Te han dado acceso de ${etiquetaRol} en la plataforma de Razón Común. Para activar tu ` +
+        `cuenta y elegir tu contraseña, entra aquí:\n\n${enlace}\n\n` +
+        `Si no esperabas este correo, puedes ignorarlo.`,
+      html:
+        `<div style="font-family:Arial,sans-serif;font-size:15px;color:#222;line-height:1.5">` +
+        `<p>Hola ${nombreCorto}:</p>` +
+        `<p>Te han dado acceso de <strong>${etiquetaRol}</strong> en la plataforma de ` +
+        `<strong>Razón Común</strong>. Para activar tu cuenta y elegir tu contraseña, pulsa el botón:</p>` +
+        `<p><a href="${enlace}" style="display:inline-block;background:#16B8A0;color:#fff;` +
+        `text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:10px">Activar mi cuenta</a></p>` +
+        `<p style="font-size:12px;color:#777">Si el botón no funciona, copia y pega esta dirección:<br>${enlace}</p>` +
+        `<p style="font-size:12px;color:#777">Si no esperabas este correo, puedes ignorarlo.</p>` +
+        `</div>`,
+    });
+    return { enviado: envio.enviado, tipo: 'activacion' };
+  }
+
+  const enlaceAdmin = `${siteUrl}/admin`;
+  const envio = await enviarCorreo({
+    para: email,
+    asunto: `Te han dado acceso de ${etiquetaRol} en Razón Común`,
+    texto:
+      `Hola ${nombreCorto}:\n\n` +
+      `Tu cuenta de Razón Común ahora tiene acceso de ${etiquetaRol}. Puedes entrar al panel ` +
+      `aquí:\n\n${enlaceAdmin}\n\n` +
+      `Si no esperabas este correo, avisa al equipo.`,
+    html:
+      `<div style="font-family:Arial,sans-serif;font-size:15px;color:#222;line-height:1.5">` +
+      `<p>Hola ${nombreCorto}:</p>` +
+      `<p>Tu cuenta de <strong>Razón Común</strong> ahora tiene acceso de ` +
+      `<strong>${etiquetaRol}</strong>.</p>` +
+      `<p><a href="${enlaceAdmin}" style="display:inline-block;background:#16B8A0;color:#fff;` +
+      `text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:10px">Entrar al panel</a></p>` +
+      `<p style="font-size:12px;color:#777">Si no esperabas este correo, avisa al equipo.</p>` +
+      `</div>`,
+  });
+  return { enviado: envio.enviado, tipo: 'aviso' };
 }
 
 /** Revoca un rol funcional de app ya asignado. Solo admin. */
