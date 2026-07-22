@@ -8,6 +8,7 @@ import { Deliberacion } from '@/components/participacion/Deliberacion';
 import { ApoyoBoton } from '@/components/participacion/ApoyoBoton';
 import { ComentariosHilo } from '@/components/participacion/ComentariosHilo';
 import { SuscripcionBoton } from '@/components/participacion/SuscripcionBoton';
+import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
 import { metadatosPagina } from '@/lib/seo';
 import { site } from '@/lib/site';
 import { createClient } from '@/lib/supabase/server';
@@ -19,6 +20,7 @@ import {
 } from '@/lib/participacion/proposals';
 import { listarAfirmaciones, misVotosAfirmaciones } from '@/lib/participacion/statements';
 import { listarComentarios, usuarioDioLike } from '@/lib/participacion/comments';
+import { listarCategorias, contarPropuestasPorCategoria } from '@/lib/participacion/categories';
 import { usuarioSigue } from '@/lib/participacion/follows';
 import { votacionAbierta, type Vote } from '@/lib/participacion/types';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -80,17 +82,26 @@ export default async function PropuestaDetallePage({
 
   const abierta = votacionAbierta(propuesta);
 
-  const [filas, apoya, siguiendo, comentarios, { data: votaciones }] = await Promise.all([
-    propuesta.status === 'deliberation' ? listarAfirmaciones(supabase, propuesta.id) : Promise.resolve([]),
-    user ? usuarioApoya(supabase, propuesta.id, user.id) : Promise.resolve(false),
-    user ? usuarioSigue(supabase, propuesta.id, user.id) : Promise.resolve(false),
-    listarComentarios(supabase, propuesta.id),
-    supabase
-      .from('votes')
-      .select('*')
-      .eq('proposal_id', propuesta.id)
-      .order('opens_at', { ascending: false }) as unknown as Promise<{ data: Vote[] | null }>,
-  ]);
+  const [filas, apoya, siguiendo, comentarios, { data: votaciones }, categorias, conteos] =
+    await Promise.all([
+      propuesta.status === 'deliberation' ? listarAfirmaciones(supabase, propuesta.id) : Promise.resolve([]),
+      user ? usuarioApoya(supabase, propuesta.id, user.id) : Promise.resolve(false),
+      user ? usuarioSigue(supabase, propuesta.id, user.id) : Promise.resolve(false),
+      listarComentarios(supabase, propuesta.id),
+      supabase
+        .from('votes')
+        .select('*')
+        .eq('proposal_id', propuesta.id)
+        .order('opens_at', { ascending: false }) as unknown as Promise<{ data: Vote[] | null }>,
+      listarCategorias(supabase),
+      contarPropuestasPorCategoria(supabase),
+    ]);
+
+  // Hrefs del sidebar de categorías: desde el detalle enlazan al directorio filtrado.
+  const hrefTodasCategorias = '/propuestas';
+  const hrefPorCategoria: Record<string, string> = Object.fromEntries(
+    categorias.map((c) => [c.id, `/propuestas?categoryId=${c.id}`]),
+  );
 
   const misVotos = user
     ? await misVotosAfirmaciones(
@@ -142,12 +153,24 @@ export default async function PropuestaDetallePage({
   return (
     <Contenedor as="section" className="py-14">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="mx-auto max-w-[820px]">
+      <div className="mx-auto max-w-[1080px]">
         <Link href="/propuestas" className="text-[13.5px] font-semibold text-cuerpo underline">
           ← Volver al tablero de propuestas
         </Link>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2.5">
+        <div className="mt-5 grid gap-8 min-[860px]:grid-cols-[220px_1fr]">
+          <aside>
+            <SidebarCategorias
+              categorias={categorias}
+              conteos={conteos}
+              categoryId={propuesta.category_id ?? undefined}
+              hrefTodas={hrefTodasCategorias}
+              hrefPorCategoria={hrefPorCategoria}
+            />
+          </aside>
+
+          <article className="rounded-tarjeta border border-linea bg-panel p-6 sm:p-8">
+        <div className="flex flex-wrap items-center gap-2.5">
           <EstadoBadge status={propuesta.status} />
           <span className="rounded-lg bg-fondo px-2.5 py-1 text-[11.5px] font-bold uppercase tracking-[.05em] text-cuerpo">
             {propuesta.department.replace(/-/g, ' ')}
@@ -263,6 +286,8 @@ export default async function PropuestaDetallePage({
             </Boton>
           </div>
         )}
+          </article>
+        </div>
       </div>
     </Contenedor>
   );
