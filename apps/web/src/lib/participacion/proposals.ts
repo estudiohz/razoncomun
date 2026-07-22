@@ -31,9 +31,15 @@ export async function listarPropuestas(
   if (filtros.department) query = query.eq('department', filtros.department);
   if (filtros.categoryId) query = query.eq('category_id', filtros.categoryId);
   if (filtros.q?.trim()) {
-    // Escapamos comas y paréntesis: romperían la sintaxis del filtro `or`
-    // de PostgREST (mismo patrón que el buscador de /admin/articulos).
-    const patron = `%${filtros.q.trim().replace(/[,()]/g, ' ')}%`;
+    // Escapamos comas y paréntesis (romperían la sintaxis del filtro `or`
+    // de PostgREST, mismo patrón que /admin/articulos) y los comodines de
+    // LIKE que pudiera teclear el usuario. Después, cada vocal (y n/ñ) se
+    // sustituye por `_` (comodín de UN carácter): así "autonomos" sin tilde
+    // encuentra "autónomos" — ilike distingue acentos y la gente no los
+    // escribe. El pequeño coste (algún falso positivo tipo "c__t_" casando
+    // "cesta" además de "cuota") es aceptable en un buscador de propuestas.
+    const limpio = filtros.q.trim().replace(/[,()%_]/g, ' ');
+    const patron = `%${limpio.replace(/[aeiouáéíóúünñAEIOUÁÉÍÓÚÜÑN]/g, '_')}%`;
     query = query.or(`title.ilike.${patron},body.ilike.${patron}`);
   }
 
