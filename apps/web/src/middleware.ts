@@ -52,6 +52,6 @@ export const config = {
      * Todas las rutas menos assets estáticos, imágenes, favicon y los
      * archivos públicos de la carpeta /public.
      */
-    '/((?!_next/static|_next/image|favicon.ico|logo-rc.*|personas-loop-teal.mp4|personas-loop.webm|fotos/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|logo-rc.*|personas-loop-teal.mp4|personas-loop.webm|personas-loop-hevc.mov|fotos/).*)',
   ],
 };
