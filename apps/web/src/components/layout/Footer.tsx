@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Contenedor } from './Contenedor';
-import { navFooter, site } from '@/lib/site';
+import { IconoRed } from './iconos-redes';
+import { navFooter, redesSociales, site } from '@/lib/site';
 import { createClient } from '@/lib/supabase/server';
 
 type EnlaceCms = { slug: string; title: string; show_footer: boolean; show_legal: boolean };
@@ -24,16 +25,34 @@ export async function Footer() {
   const enFooter = paginas.filter((p) => p.show_footer);
   const enLegal = paginas.filter((p) => p.show_legal);
 
-  const claseEnlace = 'text-[13px] font-medium text-cuerpo no-underline hover:text-titular';
+  const claseEnlace = 'text-[13.5px] font-semibold text-white/85 no-underline hover:text-white';
 
   return (
     <footer className="pb-[50px] pt-4">
       <Contenedor>
-        <div className="flex flex-wrap items-center justify-between gap-5">
-          <p className="text-[13px] text-gris">
-            © {new Date().getFullYear()} {site.nombre}. {site.registro}
-          </p>
-          <div className="flex flex-wrap items-center gap-[26px]">
+        {/* Tarjeta corporativa: mismo degradado de marca que el CTA de afiliación
+            (bg-grad, aprobado en el boceto), estructura inspirada en el footer
+            de bbva.es (logo+redes arriba, filas de enlaces, copyright abajo). */}
+        <div className="rounded-[24px] bg-grad px-6 py-7 text-white sm:px-10 sm:py-9">
+          <div className="flex flex-wrap items-center justify-between gap-5">
+            <span className="text-lg font-extrabold tracking-tight text-white">{site.nombre}</span>
+            <div className="flex flex-wrap items-center gap-3">
+              {redesSociales.map((red) => (
+                <a
+                  key={red.nombre}
+                  href={red.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={red.aria}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/30 bg-white/10 text-white transition-colors hover:border-white hover:bg-white/20"
+                >
+                  <IconoRed nombre={red.icono} className="h-[17px] w-[17px]" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-7 flex flex-wrap items-center gap-x-[26px] gap-y-2 border-t border-white/20 pt-6">
             {enFooter.map((p) => (
               <Link key={p.slug} href={`/${p.slug}`} className={claseEnlace}>
                 {p.title}
@@ -48,21 +67,25 @@ export async function Footer() {
               Entrar
             </Link>
           </div>
-        </div>
 
-        {enLegal.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-linea pt-4">
-            {enLegal.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/${p.slug}`}
-                className="text-[12.5px] text-gris no-underline hover:text-titular"
-              >
-                {p.title}
-              </Link>
-            ))}
-          </div>
-        )}
+          {enLegal.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5">
+              {enLegal.map((p) => (
+                <Link
+                  key={p.slug}
+                  href={`/${p.slug}`}
+                  className="text-[12.5px] text-white/65 no-underline hover:text-white/90"
+                >
+                  {p.title}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <p className="mt-7 text-[12.5px] text-white/60">
+            © {new Date().getFullYear()} {site.nombre}. {site.registro} NIF: G26753582.
+          </p>
+        </div>
       </Contenedor>
     </footer>
   );

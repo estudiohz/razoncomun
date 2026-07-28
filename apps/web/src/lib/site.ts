@@ -21,6 +21,13 @@ export const site = {
 export const redesSociales = [
   { nombre: 'X', href: 'https://x.com/RazonComunES', icono: 'x', aria: 'Síguenos en X' },
   {
+    nombre: 'Bluesky',
+    href: 'https://bsky.app/profile/razoncomun.bsky.social',
+    icono: 'bluesky',
+    aria: 'Síguenos en Bluesky',
+  },
+  { nombre: 'Discord', href: site.discord, icono: 'discord', aria: 'Únete a nuestro Discord' },
+  {
     nombre: 'Instagram',
     href: 'https://www.instagram.com/razoncomun/',
     icono: 'instagram',
@@ -50,7 +57,6 @@ export const redesSociales = [
     icono: 'tiktok',
     aria: 'Síguenos en TikTok',
   },
-  { nombre: 'Discord', href: site.discord, icono: 'discord', aria: 'Únete a nuestro Discord' },
 ] as const;
 
 export type RedSocial = (typeof redesSociales)[number];
@@ -60,7 +66,7 @@ export const navPrincipal = [
   { label: 'Manifiesto', href: '/manifiesto' },
   { label: 'Programa', href: '/programa' },
   { label: 'El País', href: '/pais' },
-  { label: 'Observatorio', href: '/observatorio' },
+  { label: 'Propuestas', href: '/propuestas' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pregunta a la IA', href: '/pregunta' },
   { label: 'Cuentas', href: '/cuentas' },
@@ -70,7 +76,7 @@ export const navPrincipal = [
 // Enlaces fijos del footer que NO son páginas del CMS (los legales/estatutos
 // salen de la tabla `pages` según sus checkboxes). Aquí solo lo externo/fijo.
 export const navFooter = [
-  { label: 'Propuestas', href: '/propuestas' },
+  { label: 'Observatorio', href: '/observatorio' },
   { label: 'Contacto', href: '/contacto' },
   { label: 'Discord', href: site.discord },
 ] as const;
