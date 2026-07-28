@@ -29,17 +29,19 @@ export default async function ModeracionPropuestasPage({
 
   let query = supabase
     .from('proposals')
-    .select('id, title, slug, status, category_id, support_count, deadline_at, created_at')
+    .select(
+      'id, title, slug, status, category_id, support_count, deadline_at, created_at, autor:profiles!proposals_author_id_fkey(display_name)',
+    )
     .order('created_at', { ascending: false });
 
   if (params.status) query = query.eq('status', params.status);
   if (params.categoria) query = query.eq('category_id', params.categoria);
 
   const { data, error } = await query;
-  const propuestas = (data ?? []) as Pick<
+  const propuestas = (data ?? []) as (Pick<
     Propuesta,
     'id' | 'title' | 'slug' | 'status' | 'category_id' | 'support_count' | 'deadline_at' | 'created_at'
-  >[];
+  > & { autor: { display_name: string | null } | null })[];
 
   return (
     <div className="py-2">
@@ -84,6 +86,7 @@ export default async function ModeracionPropuestasPage({
               <thead className="bg-fondo text-[12px] font-bold uppercase tracking-wide text-gris">
                 <tr>
                   <th className="px-4 py-3">Título</th>
+                  <th className="px-4 py-3">Autor</th>
                   <th className="px-4 py-3">Categoría</th>
                   <th className="px-4 py-3">Estado</th>
                   <th className="px-4 py-3">Apoyos</th>
@@ -97,6 +100,7 @@ export default async function ModeracionPropuestasPage({
                   return (
                     <tr key={p.id} className="border-t border-linea/60">
                       <td className="max-w-[320px] truncate px-4 py-3 font-semibold text-titular">{p.title}</td>
+                      <td className="px-4 py-3 text-[12.5px] text-gris">{p.autor?.display_name ?? '—'}</td>
                       <td className="px-4 py-3">
                         {cat ? (
                           <span className="inline-flex items-center gap-1.5 text-[12.5px]">
@@ -129,7 +133,7 @@ export default async function ModeracionPropuestasPage({
                 })}
                 {propuestas.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-gris">
+                    <td colSpan={7} className="px-4 py-8 text-center text-gris">
                       No hay propuestas con ese filtro.
                     </td>
                   </tr>
