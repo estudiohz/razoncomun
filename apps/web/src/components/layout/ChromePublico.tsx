@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { ChatWidgetFlotante } from '@/components/chat/ChatWidgetFlotante';
 
 /**
  * Decide si se pinta el chrome público (nav + `<main>` centrado + footer) o
@@ -29,6 +30,8 @@ export function ChromePublico({
 }) {
   const pathname = usePathname();
   const esAdmin = pathname?.startsWith('/admin') ?? false;
+  // /pregunta ya tiene el chat completo (PreguntaChat.tsx) — evitar duplicar la UI.
+  const esPregunta = pathname?.startsWith('/pregunta') ?? false;
 
   if (esAdmin) {
     return <>{children}</>;
@@ -39,6 +42,7 @@ export function ChromePublico({
       {nav}
       <main>{children}</main>
       {footer}
+      {!esPregunta && <ChatWidgetFlotante />}
     </>
   );
 }

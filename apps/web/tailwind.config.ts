@@ -81,7 +81,7 @@ const config: Config = {
         hero: 'linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8ebf 50%, #ed1156b5 60%, #f05726bd 85%, #ed7547)',
       },
       maxWidth: {
-        wrap: '1240px',
+        wrap: '1400px',
       },
       keyframes: {
         sube: {

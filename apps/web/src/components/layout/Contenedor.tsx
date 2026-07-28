@@ -1,7 +1,7 @@
 import type { ElementType, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
-/** Contenedor central (.wrap del boceto: max 1240px, padding lateral 32px). */
+/** Contenedor central (.wrap del boceto: max 1400px, padding lateral 32px). */
 export function Contenedor({
   children,
   className,
