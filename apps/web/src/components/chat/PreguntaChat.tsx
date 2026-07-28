@@ -215,7 +215,7 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
             )}
           </div>
         ))}
-        {loading && <p className="text-[13px] text-white/40">Consultando el corpus público…</p>}
+        {loading && <p className="text-[13px] text-white/40">Consultando el programa de Razón Común…</p>}
         {aviso && (
           <p className="flex items-center gap-2 rounded-[10px] border border-[#F5C97B]/40 bg-[#F5C97B]/10 px-3 py-2 text-[13px] text-[#F5C97B]">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
