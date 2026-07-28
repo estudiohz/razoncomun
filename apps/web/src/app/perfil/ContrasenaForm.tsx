@@ -45,10 +45,15 @@ export function ContrasenaForm({ tieneContrasenaInicial }: { tieneContrasenaInic
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
-      setEstado({
-        tipo: 'error',
-        mensaje: 'No hemos podido guardar la contraseña. Inténtalo de nuevo.',
-      });
+      const mensaje =
+        error.code === 'same_password'
+          ? 'La nueva contraseña no puede ser igual a la anterior.'
+          : error.code === 'weak_password'
+            ? 'La contraseña es demasiado débil. Prueba con una más larga o con más variedad de caracteres.'
+            : error.status === 401 || error.status === 403
+              ? 'Tu sesión ha caducado. Vuelve a entrar e inténtalo de nuevo.'
+              : 'No hemos podido guardar la contraseña. Inténtalo de nuevo.';
+      setEstado({ tipo: 'error', mensaje });
       return;
     }
     setEstado({
