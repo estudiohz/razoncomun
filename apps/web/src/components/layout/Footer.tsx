@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Contenedor } from './Contenedor';
 import { IconoRed } from './iconos-redes';
@@ -33,7 +34,13 @@ export async function Footer() {
     <footer className="bg-grad py-8 text-white">
       <Contenedor>
         <div className="flex flex-wrap items-center justify-between gap-5">
-          <span className="text-lg font-extrabold tracking-tight text-white">{site.nombre}</span>
+          <Image
+            src="/logo-rc-blanco.png"
+            alt={site.nombre}
+            width={1400}
+            height={225}
+            className="h-8 w-auto"
+          />
           <div className="flex flex-wrap items-center gap-3">
             {redesSociales.map((red) => (
               <a
