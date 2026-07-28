@@ -23,23 +23,30 @@ export function Desafio2FA({ next }: { next: string }) {
 
   useEffect(() => {
     (async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.mfa.listFactors();
-      const factor = data?.totp.find((f) => f.status === 'verified');
-      if (error || !factor) {
-        setEstado({ tipo: 'sin_factor' });
-        return;
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase.auth.mfa.listFactors();
+        const factor = data?.totp.find((f) => f.status === 'verified');
+        if (error || !factor) {
+          setEstado({ tipo: 'sin_factor' });
+          return;
+        }
+        setFactorId(factor.id);
+        const { data: reto, error: errorReto } = await supabase.auth.mfa.challenge({
+          factorId: factor.id,
+        });
+        if (errorReto || !reto) {
+          setEstado({ tipo: 'error', mensaje: 'No hemos podido iniciar el reto de verificación.' });
+          return;
+        }
+        setChallengeId(reto.id);
+        setEstado({ tipo: 'listo' });
+      } catch {
+        setEstado({
+          tipo: 'error',
+          mensaje: 'No hemos podido iniciar el reto de verificación. Comprueba tu conexión e inténtalo de nuevo.',
+        });
       }
-      setFactorId(factor.id);
-      const { data: reto, error: errorReto } = await supabase.auth.mfa.challenge({
-        factorId: factor.id,
-      });
-      if (errorReto || !reto) {
-        setEstado({ tipo: 'error', mensaje: 'No hemos podido iniciar el reto de verificación.' });
-        return;
-      }
-      setChallengeId(reto.id);
-      setEstado({ tipo: 'listo' });
     })();
   }, []);
 
@@ -47,14 +54,21 @@ export function Desafio2FA({ next }: { next: string }) {
     e.preventDefault();
     if (!factorId || !challengeId) return;
     setEstado({ tipo: 'verificando' });
-    const supabase = createClient();
-    const { error } = await supabase.auth.mfa.verify({ factorId, challengeId, code: codigo });
-    if (error) {
-      setEstado({ tipo: 'error', mensaje: 'Código incorrecto o caducado. Prueba con el código actual.' });
-      return;
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.mfa.verify({ factorId, challengeId, code: codigo });
+      if (error) {
+        setEstado({ tipo: 'error', mensaje: 'Código incorrecto o caducado. Prueba con el código actual.' });
+        return;
+      }
+      router.push(next);
+      router.refresh();
+    } catch {
+      setEstado({
+        tipo: 'error',
+        mensaje: 'No hemos podido verificar el código. Comprueba tu conexión e inténtalo de nuevo.',
+      });
     }
-    router.push(next);
-    router.refresh();
   }
 
   if (estado.tipo === 'cargando') {
