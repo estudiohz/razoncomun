@@ -38,7 +38,7 @@ export default async function ModeracionPropuestasPage({
   if (params.categoria) query = query.eq('category_id', params.categoria);
 
   const { data, error } = await query;
-  const propuestas = (data ?? []) as (Pick<
+  const propuestas = (data ?? []) as unknown as (Pick<
     Propuesta,
     'id' | 'title' | 'slug' | 'status' | 'category_id' | 'support_count' | 'deadline_at' | 'created_at'
   > & { autor: { display_name: string | null } | null })[];
