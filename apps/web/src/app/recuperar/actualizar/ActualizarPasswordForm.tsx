@@ -27,7 +27,15 @@ export function ActualizarPasswordForm({ next }: { next: string }) {
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
-      setEstado({ tipo: 'error', mensaje: 'No hemos podido actualizar la contraseña. Inténtalo de nuevo.' });
+      const mensaje =
+        error.code === 'same_password'
+          ? 'La nueva contraseña no puede ser igual a la anterior.'
+          : error.code === 'weak_password'
+            ? 'La contraseña es demasiado débil. Prueba con una más larga o con más variedad de caracteres.'
+            : error.status === 401 || error.status === 403
+              ? 'El enlace de recuperación ha caducado. Solicita uno nuevo.'
+              : 'No hemos podido actualizar la contraseña. Inténtalo de nuevo.';
+      setEstado({ tipo: 'error', mensaje });
       return;
     }
     router.push(next);
