@@ -20,7 +20,7 @@ type Embed = { entryId: string; title: string };
 type Msg = {
   role: 'user' | 'assistant';
   text: string;
-  sources?: { label: string }[];
+  sources?: { label: string; url?: string | null }[];
   charts?: GraficoSpec[];
   embeds?: Embed[];
   suggestions?: { label: string; query: string }[];
@@ -120,6 +120,30 @@ export function PreguntaChat({ autenticado }: { autenticado: boolean }) {
               <span className="mr-1.5 font-bold">{m.role === 'assistant' ? 'Razón Común IA:' : 'Tú:'}</span>
               {m.text}
             </p>
+
+            {m.role === 'assistant' && m.sources && m.sources.length > 0 && (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {m.sources.map((s, si) =>
+                  s.url ? (
+                    <Link
+                      key={si}
+                      href={s.url}
+                      target="_blank"
+                      className="rounded-full border border-cian/30 bg-cian/[.08] px-2.5 py-1 text-[12px] font-semibold text-cian hover:bg-cian/[.16] hover:underline"
+                    >
+                      [{si + 1}] {s.label}
+                    </Link>
+                  ) : (
+                    <span
+                      key={si}
+                      className="rounded-full border border-white/15 bg-white/[.04] px-2.5 py-1 text-[12px] text-white/60"
+                    >
+                      [{si + 1}] {s.label}
+                    </span>
+                  ),
+                )}
+              </div>
+            )}
 
             {m.role === 'assistant' && m.charts && m.charts.length > 0 && (
               <div className="mt-3 space-y-3">

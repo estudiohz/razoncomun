@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 type Msg = {
   role: 'user' | 'assistant';
   text: string;
-  sources?: { label: string }[];
+  sources?: { label: string; url?: string | null }[];
   suggestions?: { label: string; query: string }[];
   related?: { label: string; query: string }[];
   tieneContenidoRico?: boolean;
@@ -132,6 +132,30 @@ export function ChatWidgetFlotante() {
                   </span>
                   {m.text}
                 </p>
+
+                {m.role === 'assistant' && m.sources && m.sources.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {m.sources.map((s, si) =>
+                      s.url ? (
+                        <Link
+                          key={si}
+                          href={s.url}
+                          target="_blank"
+                          className="rounded-full border border-cian/30 bg-cian/[.08] px-2 py-1 text-[11.5px] font-semibold text-cian hover:bg-cian/[.16] hover:underline"
+                        >
+                          [{si + 1}] {s.label}
+                        </Link>
+                      ) : (
+                        <span
+                          key={si}
+                          className="rounded-full border border-white/15 bg-white/[.04] px-2 py-1 text-[11.5px] text-white/60"
+                        >
+                          [{si + 1}] {s.label}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                )}
 
                 {m.role === 'assistant' && m.tieneContenidoRico && (
                   <Link
