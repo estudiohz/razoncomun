@@ -17,7 +17,7 @@
  *   {{ .SiteURL }} {{ .Token }} {{ .TokenHash }} {{ .Email }} {{ .RedirectTo }}
  * El enlace de acción NO usa {{ .ConfirmationURL }} (eso apunta al propio
  * GoTrue, /auth/v1/verify) — apunta directo a nuestra app:
- *   {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=X&next=%2Fperfil
+ *   {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=X&next=%2Fpanel
  * (ver apps/web/src/app/auth/confirm/route.ts).
  */
 import nodemailer from 'nodemailer';
@@ -218,7 +218,7 @@ const TIPO_VERIFY_OTP = {
 
 function renderGoTemplate(tipo) {
   const t = TIPOS[tipo];
-  const ctaUrl = `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=${TIPO_VERIFY_OTP[tipo]}&next=%2Fperfil`;
+  const ctaUrl = `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=${TIPO_VERIFY_OTP[tipo]}&next=%2Fpanel`;
   const preheader = t.intro.slice(0, 90);
   return {
     asunto: t.asunto,
@@ -230,7 +230,7 @@ function renderGoTemplate(tipo) {
 function renderPrueba(tipo, { tokenHash, otp, email }) {
   const t = TIPOS[tipo];
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const ctaUrl = `${siteUrl}/auth/confirm?token_hash=${tokenHash}&type=${TIPO_VERIFY_OTP[tipo]}&next=%2Fperfil`;
+  const ctaUrl = `${siteUrl}/auth/confirm?token_hash=${tokenHash}&type=${TIPO_VERIFY_OTP[tipo]}&next=%2Fpanel`;
   const preheader = t.intro.slice(0, 90);
   return {
     asunto: `[PRUEBA PLANTILLA] ${t.asunto}`,
