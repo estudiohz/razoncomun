@@ -18,7 +18,7 @@ export async function requireAdminOCoordinador(rutaVuelta?: string) {
   ]);
 
   if (!esAdmin && !esCoordinador) {
-    redirect('/perfil');
+    redirect('/panel/perfil');
   }
 
   return { user, perfil: perfil!, supabase, esAdmin: Boolean(esAdmin) };

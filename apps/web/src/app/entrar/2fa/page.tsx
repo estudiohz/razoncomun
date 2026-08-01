@@ -15,7 +15,7 @@ export default async function Entrar2FAPage({
 }: {
   searchParams: Promise<{ next?: string; motivo?: string }>;
 }) {
-  const { next = '/perfil', motivo } = await searchParams;
+  const { next = '/panel', motivo } = await searchParams;
 
   return (
     <Contenedor as="section" className="py-16">

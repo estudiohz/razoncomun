@@ -99,14 +99,29 @@ export function MenuUsuario({ nombre, inicial, mostrarAdmin }: MenuUsuarioProps)
             <p className="truncate text-sm font-semibold text-titular">{nombre}</p>
           </div>
 
-          <Link href="/perfil" role="menuitem" className={itemClase} onClick={() => setAbierto(false)}>
-            <IconoPerfil />
-            Perfil
+          <Link href="/panel" role="menuitem" className={itemClase} onClick={() => setAbierto(false)}>
+            <IconoPanel />
+            Mi panel
           </Link>
 
-          <Link href="/propuestas/mias" role="menuitem" className={itemClase} onClick={() => setAbierto(false)}>
+          <Link
+            href="/panel/perfil"
+            role="menuitem"
+            className={itemClase}
+            onClick={() => setAbierto(false)}
+          >
             <IconoPerfil />
-            Mis hilos
+            Mi perfil
+          </Link>
+
+          <Link
+            href="/panel/propuestas"
+            role="menuitem"
+            className={itemClase}
+            onClick={() => setAbierto(false)}
+          >
+            <IconoPropuestas />
+            Mis propuestas
           </Link>
 
           {mostrarAdmin && (
@@ -141,6 +156,30 @@ function IconoPerfil() {
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function IconoPanel() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function IconoPropuestas() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M5 4.5h14v12H8.5L5 20V4.5z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
       />
     </svg>
   );

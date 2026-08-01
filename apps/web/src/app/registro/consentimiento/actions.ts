@@ -10,7 +10,7 @@ import { createClient } from '@/lib/supabase/server';
  * cualquier otro camino de alta que no sea el formulario propio.
  */
 export async function aceptarConsentimiento(formData: FormData) {
-  const next = (formData.get('next') as string) || '/perfil';
+  const next = (formData.get('next') as string) || '/panel';
   const supabase = await createClient();
   const {
     data: { user },

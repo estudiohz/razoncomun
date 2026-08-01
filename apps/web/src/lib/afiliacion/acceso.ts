@@ -21,7 +21,7 @@ export async function requireFinanzas(rutaVuelta = '/admin/afiliados') {
   ]);
 
   if (!esAdmin && !esTesorero) {
-    redirect('/perfil');
+    redirect('/panel');
   }
 
   return { user, supabase, esAdmin: Boolean(esAdmin), esTesorero: Boolean(esTesorero) };

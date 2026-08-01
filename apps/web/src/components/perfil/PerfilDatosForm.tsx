@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
-import { actualizarPerfil, type EstadoActualizarPerfil } from './actions';
+import { actualizarPerfil, type EstadoActualizarPerfil } from '@/app/perfil/actions';
 
 type Provincia = { id: number; name: string };
 

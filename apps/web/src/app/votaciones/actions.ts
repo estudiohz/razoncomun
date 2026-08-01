@@ -56,7 +56,7 @@ export async function emitirVotoAction(
   });
 
   revalidatePath(`/votaciones/${voteId}`);
-  revalidatePath('/perfil');
+  revalidatePath('/panel/propuestas');
 
   if (!resultado.ok) {
     if (resultado.status === 409) {

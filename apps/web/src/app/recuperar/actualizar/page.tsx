@@ -17,7 +17,7 @@ export default async function ActualizarPasswordPage({
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const { next = '/perfil' } = await searchParams;
+  const { next = '/panel' } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },

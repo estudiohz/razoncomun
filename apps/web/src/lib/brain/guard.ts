@@ -27,7 +27,7 @@ export async function requireEditorCerebro(rutaVuelta = '/admin/cerebro'): Promi
   if (!user) redirect(`/entrar?next=${encodeURIComponent(rutaVuelta)}`);
 
   const { data: esEditor } = await supabase.rpc('is_editor', { p_user: user.id });
-  if (!esEditor) redirect('/perfil?error=sin-permiso-editor');
+  if (!esEditor) redirect('/panel?error=sin-permiso-editor');
 
   return { supabase, userId: user.id };
 }

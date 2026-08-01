@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const origin = origenPublico(request);
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/perfil';
+  const next = searchParams.get('next') ?? '/panel';
 
   if (code) {
     const supabase = await createClient();

@@ -67,7 +67,7 @@ export function AvisoContrasena({ userId }: { userId: string }) {
         </span>
         <p className="min-w-0 flex-1 text-[13px] text-cuerpo">
           Entras con enlace mágico y aún no tienes contraseña.{' '}
-          <Link href="/perfil#contrasena" className="font-semibold text-titular underline">
+          <Link href="/panel/perfil#contrasena" className="font-semibold text-titular underline">
             Créate una
           </Link>{' '}
           para entrar sin depender del correo.

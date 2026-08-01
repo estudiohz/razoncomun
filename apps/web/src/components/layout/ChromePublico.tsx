@@ -29,11 +29,15 @@ export function ChromePublico({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const esAdmin = pathname?.startsWith('/admin') ?? false;
+  // Los dos paneles con shell propio: /admin (editor/admin) y /panel
+  // (cualquier usuario logueado, ola U1). Ambos traen su propio sidebar y
+  // cabecera a pantalla completa, así que aquí no se pinta nav ni footer.
+  const esPanel =
+    (pathname?.startsWith('/admin') ?? false) || (pathname?.startsWith('/panel') ?? false);
   // /pregunta ya tiene el chat completo (PreguntaChat.tsx) — evitar duplicar la UI.
   const esPregunta = pathname?.startsWith('/pregunta') ?? false;
 
-  if (esAdmin) {
+  if (esPanel) {
     return <>{children}</>;
   }
 

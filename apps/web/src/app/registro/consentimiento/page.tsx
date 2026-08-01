@@ -18,7 +18,7 @@ export default async function ConsentimientoPage({
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const { next = '/perfil' } = await searchParams;
+  const { next = '/panel' } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },

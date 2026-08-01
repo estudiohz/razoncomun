@@ -140,18 +140,25 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
                   </span>
                 </div>
                 <Link
-                  href="/perfil"
+                  href="/panel"
                   onClick={cerrar}
                   className="py-2 text-lg font-semibold text-cuerpo no-underline hover:text-titular"
                 >
-                  Perfil
+                  Mi panel
                 </Link>
                 <Link
-                  href="/propuestas/mias"
+                  href="/panel/perfil"
                   onClick={cerrar}
                   className="py-2 text-lg font-semibold text-cuerpo no-underline hover:text-titular"
                 >
-                  Mis hilos
+                  Mi perfil
+                </Link>
+                <Link
+                  href="/panel/propuestas"
+                  onClick={cerrar}
+                  className="py-2 text-lg font-semibold text-cuerpo no-underline hover:text-titular"
+                >
+                  Mis propuestas
                 </Link>
                 {sesion.mostrarAdmin && (
                   <Link

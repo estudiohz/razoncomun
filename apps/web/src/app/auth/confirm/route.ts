@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   const origin = origenPublico(request);
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
-  const next = searchParams.get('next') ?? '/perfil';
+  const next = searchParams.get('next') ?? '/panel';
 
   if (token_hash && type) {
     const supabase = await createClient();

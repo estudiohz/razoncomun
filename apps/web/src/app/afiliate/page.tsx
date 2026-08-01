@@ -90,10 +90,10 @@ export default async function AfiliatePage() {
           <section className="rounded-tarjeta border border-linea bg-panel p-8 text-center shadow-nav">
             <h2 className="text-[20px] font-extrabold text-titular">Ya eres afiliado/a</h2>
             <p className="mt-2 text-[14px] text-cuerpo">
-              Gestiona tu cuota, cambia de periodicidad o descarga tu certificado fiscal desde tu perfil.
+              Gestiona tu cuota, cambia de periodicidad o descarga tu certificado fiscal desde tu panel.
             </p>
             <Link
-              href="/perfil"
+              href="/panel/afiliacion"
               className="mt-4 inline-block rounded-boton bg-accion px-5 py-2.5 text-[13.5px] font-bold text-white shadow-boton hover:-translate-y-0.5"
             >
               Ir a mi perfil

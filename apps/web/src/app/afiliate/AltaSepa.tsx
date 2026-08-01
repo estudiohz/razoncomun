@@ -240,7 +240,7 @@ function PasoIban({
       return;
     }
 
-    router.push('/perfil?afiliacion=ok');
+    router.push('/panel/afiliacion?alta=ok');
     router.refresh();
   }
 

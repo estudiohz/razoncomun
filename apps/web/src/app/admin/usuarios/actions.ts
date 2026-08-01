@@ -95,7 +95,7 @@ export async function invitarUsuario(
 
   const enlace = `${siteUrl}/auth/confirm?token_hash=${encodeURIComponent(
     tokenHash,
-  )}&type=invite&next=${encodeURIComponent('/perfil')}`;
+  )}&type=invite&next=${encodeURIComponent('/panel/perfil')}`;
 
   const nombreCorto = displayName || email;
   const envio = await enviarCorreo({
@@ -206,7 +206,7 @@ async function enviarAvisoRolConcedido(
 
     const enlace = `${siteUrl}/auth/confirm?token_hash=${encodeURIComponent(
       link.properties.hashed_token,
-    )}&type=recovery&next=${encodeURIComponent('/perfil')}`;
+    )}&type=recovery&next=${encodeURIComponent('/panel/perfil')}`;
 
     const envio = await enviarCorreo({
       para: email,

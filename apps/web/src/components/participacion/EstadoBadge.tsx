@@ -2,6 +2,7 @@ import { cn } from '@/lib/cn';
 import { ETIQUETA_ESTADO, type EstadoPropuesta } from '@/lib/participacion/types';
 
 const COLOR: Record<EstadoPropuesta, string> = {
+  draft: 'bg-fondo text-gris',
   seed: 'bg-linea text-cuerpo',
   deliberation: 'bg-cat-transparencia text-white',
   stress_test: 'bg-cat-educacion text-white',
@@ -13,6 +14,7 @@ const COLOR: Record<EstadoPropuesta, string> = {
 };
 
 const ICONO: Record<EstadoPropuesta, string> = {
+  draft: '📝',
   seed: '💡',
   deliberation: '🔎',
   stress_test: '🧪',

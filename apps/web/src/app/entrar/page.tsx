@@ -32,7 +32,7 @@ export default async function EntrarPage({
               {mensajeError(error)}
             </p>
           ) : null}
-          <LoginForm next={next ?? '/perfil'} />
+          <LoginForm next={next ?? '/panel'} />
         </div>
       </div>
     </Contenedor>

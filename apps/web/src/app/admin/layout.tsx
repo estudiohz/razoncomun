@@ -62,6 +62,22 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               {perfil.display_name ?? perfil.email} ·{' '}
               <span className="font-bold text-titular">{esAdmin ? 'Administrador' : 'Editor'}</span>
             </p>
+            {/* D-U2: antes, desde /admin no había forma de llegar a los datos
+                propios — el menú de usuario de la web pública no se pinta aquí
+                (ChromePublico oculta la nav en /admin). Estos dos enlaces son
+                la salida a la cuenta personal. */}
+            <Link
+              href="/panel"
+              className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular"
+            >
+              Mi panel
+            </Link>
+            <Link
+              href="/panel/perfil"
+              className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular"
+            >
+              Mi perfil
+            </Link>
             <Link href="/" className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular">
               Ver la web
             </Link>

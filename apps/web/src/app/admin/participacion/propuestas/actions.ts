@@ -19,6 +19,9 @@ export interface ResultadoAccion {
 }
 
 const ESTADOS_VALIDOS: EstadoPropuesta[] = [
+  // 'draft' (0034): permite despublicar algo devolviéndolo a borrador, además
+  // del camino normal borrador → seed al aprobar lo que manda el RC-bot.
+  'draft',
   'seed',
   'deliberation',
   'stress_test',

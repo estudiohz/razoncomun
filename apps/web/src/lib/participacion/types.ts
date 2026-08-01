@@ -5,6 +5,10 @@
  */
 
 export type EstadoPropuesta =
+  // 'draft' (0034 / D-U5): borrador sin publicar. Hoy solo lo generan las
+  // propuestas que entran por el RC-bot; lo ven su autor y los editores.
+  // No está en ORDEN_ESTADOS a propósito: no es un filtro del tablero público.
+  | 'draft'
   | 'seed'
   | 'deliberation'
   | 'stress_test'
@@ -26,6 +30,7 @@ export const ORDEN_ESTADOS: EstadoPropuesta[] = [
 ];
 
 export const ETIQUETA_ESTADO: Record<EstadoPropuesta, string> = {
+  draft: 'Borrador',
   seed: 'Propuesta',
   deliberation: 'En deliberación',
   stress_test: 'Test de estrés',

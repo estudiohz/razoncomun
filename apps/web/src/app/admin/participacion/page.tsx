@@ -4,6 +4,7 @@ import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
 import { contarReportesAbiertos } from '@/lib/participacion/reports';
+import { contarBorradores } from '@/lib/participacion/drafts';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Admin — Participación',
@@ -16,7 +17,10 @@ export const metadata: Metadata = metadatosPagina({
  * marco general del panel, que construye rc-09 en paralelo). */
 export default async function AdminParticipacionPage() {
   const { supabase } = await requireAdminOCoordinador('/admin/participacion');
-  const reportesAbiertos = await contarReportesAbiertos(supabase);
+  const [reportesAbiertos, borradores] = await Promise.all([
+    contarReportesAbiertos(supabase),
+    contarBorradores(supabase).catch(() => 0),
+  ]);
 
   return (
     <Contenedor as="section" className="py-14">
@@ -36,6 +40,17 @@ export default async function AdminParticipacionPage() {
           className="inline-block rounded-boton border border-linea bg-white px-5 py-2.5 text-[14px] font-bold text-titular no-underline hover:border-titular"
         >
           Moderar propuestas →
+        </Link>
+        <Link
+          href="/admin/participacion/borradores"
+          className="relative inline-block rounded-boton border border-linea bg-white px-5 py-2.5 text-[14px] font-bold text-titular no-underline hover:border-titular"
+        >
+          Borradores →
+          {borradores > 0 && (
+            <span className="ml-2 rounded-full bg-magenta px-2 py-0.5 text-[11px] font-bold text-white">
+              {borradores}
+            </span>
+          )}
         </Link>
         <Link
           href="/admin/participacion/categorias"

@@ -5,7 +5,10 @@ import { requiereMfa } from '@/lib/auth/niveles';
 /**
  * Middleware global:
  * 1. Refresca la sesión de Supabase en cada petición (patrón oficial @supabase/ssr).
- * 2. Protege /perfil: exige sesión.
+ * 2. Protege /panel (y /perfil, que ya solo redirige allí): exige sesión.
+ *    OJO: /panel NO exige 2FA. El panel del usuario es donde un afiliado ve su
+ *    cuota y sus datos; obligarle a 2FA para eso sería una barrera que nadie
+ *    ha decidido. La 2FA sigue siendo obligatoria solo para /admin (abajo).
  * 3. Protege /admin: exige sesión Y, si el usuario tiene cargo vigente o rol
  *    admin/editor (I5, revision-seguridad.md), exige además aal2 (2FA activo
  *    y verificado en esta sesión) — sin 2FA, ni admins ni cargos entran.
@@ -19,10 +22,10 @@ export async function middleware(request: NextRequest) {
   const { response, supabase, user } = await updateSession(request);
   const { pathname } = request.nextUrl;
 
-  const esRutaPerfil = pathname.startsWith('/perfil');
+  const esRutaPanel = pathname.startsWith('/panel') || pathname.startsWith('/perfil');
   const esRutaAdmin = pathname.startsWith('/admin');
 
-  if ((esRutaPerfil || esRutaAdmin) && !user) {
+  if ((esRutaPanel || esRutaAdmin) && !user) {
     const url = request.nextUrl.clone();
     url.pathname = '/entrar';
     url.searchParams.set('next', pathname);
