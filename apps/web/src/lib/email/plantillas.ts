@@ -11,6 +11,28 @@
  */
 import { formatearCents } from '@/lib/afiliacion/consentimiento';
 
+/**
+ * Cabecera de marca — DEBE coincidir con la de las plantillas de GoTrue
+ * (`apps/web/scripts/email-templates.mjs`), que es donde se documenta el
+ * porqué de cada valor. Están duplicadas porque unas las genera un script a
+ * ficheros .html que descarga GoTrue y otras las compone este código en
+ * caliente; si tocas una, toca la otra.
+ *
+ * Degradado: el mismo `.bg-hero` de la web, con las tres paradas que allí
+ * llevan canal alfa ya compuestas sobre blanco — el hexadecimal de 8 dígitos
+ * no es fiable en clientes de correo.
+ *
+ * Logo: el MISMO fichero que el footer de la web (1400x225). Se pinta a
+ * 240x39 respetando su proporción de 6.22; antes iba a 220x66, que lo
+ * aplastaba a la mitad de altura.
+ */
+const LOGO_BLANCO_URL =
+  'https://dev-api.razoncomun.com/storage/v1/object/public/marca/logo-rc-blanco.png';
+const DEGRADADO_CABECERA =
+  'linear-gradient(123deg,#0E57A5 0%,#5158A7 30%,#BC60AA 50%,#F25687 60%,#F4825E 85%,#ED7547 100%)';
+/** Plano para Outlook de escritorio, que descarta los degradados. */
+const BANDA_FALLBACK = '#5158A7';
+
 function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): string {
   return `<!doctype html>
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml">
@@ -31,8 +53,8 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
     <tr><td align="center" style="padding:32px 16px;">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="rc-container" style="width:600px;max-width:600px;">
         <tr>
-          <td align="center" bgcolor="#8B30D9" style="background:#8B30D9;background-image:linear-gradient(120deg,#1B3D9C 0%,#8B30D9 28%,#C3369E 50%,#E8792F 72%,#16B8A0 100%);padding:26px 0;border-radius:14px 14px 0 0;">
-            <img src="https://dev-api.razoncomun.com/storage/v1/object/public/marca/logo-rc-blanco.png" width="220" height="66" alt="Razón Común" style="display:block;border:0;outline:none;">
+          <td align="center" bgcolor="${BANDA_FALLBACK}" style="background:${BANDA_FALLBACK};background-image:${DEGRADADO_CABECERA};padding:26px 0;border-radius:14px 14px 0 0;">
+            <img src="${LOGO_BLANCO_URL}" width="240" height="39" alt="Razón Común" style="display:block;border:0;outline:none;">
           </td>
         </tr>
         <tr>

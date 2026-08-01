@@ -42,8 +42,12 @@ cargarEnvLocal();
 // DESARROLLO (dev-api.razoncomun.com). En el corte de la Ola 5 hay que subir
 // el logo también al bucket de producción y cambiar SOLO esta constante.
 const LOGO_BLANCO_URL = 'https://dev-api.razoncomun.com/storage/v1/object/public/marca/logo-rc-blanco.png';
-const LOGO_ANCHO = 240; // px mostrados (imagen real 613x183, mitad aprox. para nitidez retina)
-const LOGO_ALTO = 72;
+// El fichero del bucket `marca` es el MISMO que usa el footer de la web
+// (public/logo-rc-blanco.png, 1400x225). Ojo con estas dos constantes: la
+// proporción real es 6.22, y hasta el 01/08/2026 aquí ponía 240x72 (3.33), que
+// aplastaba el logo a la mitad de su altura en todos los correos.
+const LOGO_ANCHO = 240;
+const LOGO_ALTO = 39; // 240 / (1400/225)
 
 // Paleta (docs/marca/identidad-visual.md). Texto SIEMPRE en tinta/gris oscuro
 // -- el teal incumple AA para texto (2.73:1) y aquí solo se usa como banda
@@ -55,8 +59,34 @@ const COLOR = {
   linea: '#E2E9F5',
   fondoNube: '#F4F8FD',
   blanco: '#FFFFFF',
-  bandaFallback: '#8B30D9', // morado — deliberado (ver identidad-visual.md), nunca "todo azul"
+  // Color plano de la banda para los clientes que NO pintan degradados
+  // (Outlook de escritorio usa el motor de Word y descarta linear-gradient).
+  // Es una parada real del propio degradado, la del 30%, elegida porque el
+  // logo blanco encima contrasta 6.2:1 — las paradas centrales, más claras,
+  // se quedaban en 3.9:1.
+  bandaFallback: '#5158A7',
 };
+
+/**
+ * Degradado de cabecera. Es el mismo `.bg-hero` de la web:
+ *
+ *   linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8ebf 50%,
+ *                   #ed1156b5 60%, #f05726bd 85%, #ed7547)
+ *
+ * con una diferencia deliberada: en la web tres paradas llevan canal alfa
+ * (#a52b8e**bf**, #ed1156**b5**, #f05726**bd**) y el hexadecimal de 8 dígitos
+ * no es fiable en clientes de correo — varios lo descartan entero y dejarían
+ * la banda sin degradado. Aquí van esas paradas ya compuestas sobre blanco,
+ * que es el fondo sobre el que se ven en la web: el color resultante es el
+ * mismo a la vista, pero en hexadecimal de 6 dígitos que entiende todo el
+ * mundo.
+ *
+ *   #a52b8ebf (α .75) sobre blanco → #BC60AA
+ *   #ed1156b5 (α .71) sobre blanco → #F25687
+ *   #f05726bd (α .74) sobre blanco → #F4825E
+ */
+const DEGRADADO_CABECERA =
+  'linear-gradient(123deg,#0E57A5 0%,#5158A7 30%,#BC60AA 50%,#F25687 60%,#F4825E 85%,#ED7547 100%)';
 
 const TIPOS = {
   confirmation: {
@@ -146,7 +176,7 @@ function html({ eyebrow, titulo, intro, ctaTexto, ctaUrl, notaOtp, otp, pie, pre
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="rc-container" style="width:600px;max-width:600px;">
           <!-- banda de marca con el logo blanco (fallback sólido morado; degradado del aro para clientes que lo soporten). El logo SOLO va sobre esta banda de color, nunca sobre blanco (es blanco con transparencia). -->
           <tr>
-            <td align="center" bgcolor="${COLOR.bandaFallback}" style="background:${COLOR.bandaFallback};background-image:linear-gradient(120deg,#1B3D9C 0%,#8B30D9 28%,#C3369E 50%,#E8792F 72%,#16B8A0 100%);padding:26px 0;border-radius:14px 14px 0 0;">
+            <td align="center" bgcolor="${COLOR.bandaFallback}" style="background:${COLOR.bandaFallback};background-image:${DEGRADADO_CABECERA};padding:26px 0;border-radius:14px 14px 0 0;">
               <img src="${LOGO_BLANCO_URL}" width="${LOGO_ANCHO}" height="${LOGO_ALTO}" alt="Razón Común" style="display:block;border:0;outline:none;color:#ffffff;font-family:Montserrat,'Segoe UI',Arial,Helvetica,sans-serif;font-size:20px;font-weight:700;">
             </td>
           </tr>
