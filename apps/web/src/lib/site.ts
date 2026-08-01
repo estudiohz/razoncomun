@@ -67,6 +67,7 @@ export const navPrincipal = [
   { label: 'Programa', href: '/programa' },
   { label: 'El País', href: '/pais' },
   { label: 'Propuestas', href: '/propuestas' },
+  { label: 'Qué cambió', href: '/cambios' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pregunta a la IA', href: '/pregunta' },
   { label: 'Cuentas', href: '/cuentas' },

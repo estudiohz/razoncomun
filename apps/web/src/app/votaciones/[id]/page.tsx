@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { VotoForm } from '@/components/participacion/VotoForm';
 import { ResultadoVotacion } from '@/components/participacion/ResultadoVotacion';
+import { ActaVerificable } from '@/components/participacion/ActaVerificable';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
 import {
@@ -136,6 +137,15 @@ export default async function VotacionDetallePage({
             <ResultadoVotacion vote={votacion} resultado={resultado} ballots={ballots} />
           </div>
         </section>
+
+        {/* Acta verificable: SOLO con la votación cerrada — un hash sobre un
+            recuento aún abierto cambiaría con cada voto y no certifica nada. */}
+        {ventana === 'cerrada' && (
+          <section className="mt-10">
+            <h2 className="text-[20px] font-extrabold text-titular">Acta verificable</h2>
+            <ActaVerificable vote={votacion} ballots={ballots} />
+          </section>
+        )}
       </div>
     </Contenedor>
   );

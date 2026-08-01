@@ -1,0 +1,34 @@
+{
+  "name": "Razón Común",
+  "short_name": "Razón Común",
+  "description": "Participa en la democracia semidirecta: propuestas, votaciones y las cuentas del partido, al alcance de la mano.",
+  "id": "/",
+  "start_url": "/panel",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F8FD",
+  "theme_color": "#FFFFFF",
+  "lang": "es",
+  "icons": [
+    { "src": "/icono-rc-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icono-rc.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mi panel",
+      "url": "/panel",
+      "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Propuestas",
+      "url": "/propuestas",
+      "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Votaciones",
+      "url": "/votaciones",
+      "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import './globals.css';
 import { Nav } from '@/components/layout/Nav';
 import { Footer } from '@/components/layout/Footer';
 import { ChromePublico } from '@/components/layout/ChromePublico';
+import { RegistroPWA } from '@/components/layout/RegistroPWA';
 import { jsonLdOrganizacion } from '@/lib/seo';
 import { site } from '@/lib/site';
 
@@ -25,6 +26,10 @@ export const metadata: Metadata = {
   applicationName: site.nombre,
   authors: [{ name: site.nombre }],
   icons: { icon: '/icono-rc.png' },
+  // PWA: hace la web instalable en el móvil (icono + pantalla completa).
+  // El service worker lo registra <RegistroPWA /> más abajo.
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, title: site.nombre, statusBarStyle: 'default' },
   openGraph: {
     type: 'website',
     locale: 'es_ES',
@@ -46,6 +51,7 @@ export default function RootLayout({
         <ChromePublico nav={<Nav />} footer={<Footer />}>
           {children}
         </ChromePublico>
+        <RegistroPWA />
       </body>
     </html>
   );
