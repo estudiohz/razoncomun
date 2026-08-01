@@ -20,6 +20,7 @@ export type AdminNavItem = {
  * que el editor no supiera que existen.
  */
 export const adminNav: AdminNavItem[] = [
+  { href: '/admin', label: 'Panel de inicio', disponible: true },
   { href: '/admin/articulos', label: 'Artículos', disponible: true, dueño: 'rc-05-blog' },
   { href: '/admin/participacion', label: 'Participación', disponible: true, dueño: 'rc-06-participacion' },
   { href: '/admin/cerebro', label: 'Cerebro IA', disponible: true },
@@ -31,7 +32,6 @@ export const adminNav: AdminNavItem[] = [
   { href: '/admin/actividad', label: 'Actividad', disponible: true, soloAdmin: true },
   // No estaban en la lista de Sergio; se conservan al final para no esconder
   // funcionalidad (decisión suya al preguntárselo).
-  { href: '/admin', label: 'Panel de inicio', disponible: true },
   { href: '/admin/usuarios', label: 'Usuarios', disponible: true },
   { href: '/admin/organizacion', label: 'Cargos y territorio', disponible: true, soloAdmin: true },
 ];
