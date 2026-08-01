@@ -51,6 +51,8 @@ export interface Propuesta {
   deadline_at: string | null;
   official_response: string | null;
   official_response_at: string | null;
+  /** 0040: mes de "la encuesta del mes" (siempre día 1, YYYY-MM-01) o null. */
+  featured_month: string | null;
   official_responder_id: string | null;
   merged_into_id: string | null;
   status: EstadoPropuesta;

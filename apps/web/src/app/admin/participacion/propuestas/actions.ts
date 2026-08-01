@@ -61,6 +61,30 @@ export async function cambiarEstadoAction(id: string, fd: FormData): Promise<Res
   return { ok: true };
 }
 
+/**
+ * Fija o quita la propuesta de "la encuesta del mes" (0040). Input type=month
+ * vacío = quitarla. El trigger proposals_protect_featured exige
+ * coordinator/admin — aquí solo se da la mejor experiencia al error.
+ */
+export async function fijarMesAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+
+  const raw = String(fd.get('featured_month') ?? '').trim(); // "2026-08" o ""
+  if (raw && !/^\d{4}-\d{2}$/.test(raw)) {
+    return { ok: false, error: 'El mes debe tener formato AAAA-MM.' };
+  }
+
+  const { error } = await supabase
+    .from('proposals')
+    .update({ featured_month: raw ? `${raw}-01` : null })
+    .eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/admin/participacion/propuestas/${id}`);
+  revalidatePath('/mes');
+  return { ok: true };
+}
+
 /** Fija o quita la fecha límite (D-P6). Input datetime-local vacío = sin límite. */
 export async function fijarDeadlineAction(id: string, fd: FormData): Promise<ResultadoAccion> {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);

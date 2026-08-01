@@ -5,6 +5,7 @@ import { Nav } from '@/components/layout/Nav';
 import { Footer } from '@/components/layout/Footer';
 import { ChromePublico } from '@/components/layout/ChromePublico';
 import { RegistroPWA } from '@/components/layout/RegistroPWA';
+import { MenuInferior } from '@/components/layout/MenuInferior';
 import { jsonLdOrganizacion } from '@/lib/seo';
 import { site } from '@/lib/site';
 
@@ -51,6 +52,9 @@ export default function RootLayout({
         <ChromePublico nav={<Nav />} footer={<Footer />}>
           {children}
         </ChromePublico>
+        {/* Menú inferior de la app (móvil). Fuera de ChromePublico a propósito:
+            debe verse también en /panel; él mismo se oculta en /admin. */}
+        <MenuInferior />
         <RegistroPWA />
       </body>
     </html>

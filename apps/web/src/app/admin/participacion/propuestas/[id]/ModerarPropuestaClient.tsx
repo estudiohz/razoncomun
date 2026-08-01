@@ -7,6 +7,7 @@ import {
   cambiarEstadoAction,
   eliminarAction,
   fijarDeadlineAction,
+  fijarMesAction,
   fusionarAction,
   publicarRespuestaOficialAction,
 } from '../actions';
@@ -28,6 +29,7 @@ export function ModerarPropuestaClient({ propuesta }: { propuesta: Propuesta }) 
   const [errorDeadline, setErrorDeadline] = useState<string | null>(null);
   const [errorRespuesta, setErrorRespuesta] = useState<string | null>(null);
   const [errorFusion, setErrorFusion] = useState<string | null>(null);
+  const [errorMes, setErrorMes] = useState<string | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [motivoEliminar, setMotivoEliminar] = useState('');
@@ -46,6 +48,15 @@ export function ModerarPropuestaClient({ propuesta }: { propuesta: Propuesta }) 
     iniciar(async () => {
       const r = await fijarDeadlineAction(propuesta.id, fd);
       if (!r.ok) setErrorDeadline(r.error ?? 'Error desconocido.');
+      else router.refresh();
+    });
+  }
+
+  function onFijarMes(fd: FormData) {
+    setErrorMes(null);
+    iniciar(async () => {
+      const r = await fijarMesAction(propuesta.id, fd);
+      if (!r.ok) setErrorMes(r.error ?? 'Error desconocido.');
       else router.refresh();
     });
   }
@@ -138,6 +149,34 @@ export function ModerarPropuestaClient({ propuesta }: { propuesta: Propuesta }) 
         </form>
         {errorDeadline && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorDeadline}</p>}
         <p className="mt-3 text-[12.5px] text-gris">Deja vacío para quitar la fecha límite (sin límite).</p>
+      </section>
+
+      {/* Encuesta del mes (0040) */}
+      <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
+        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">
+          Encuesta del mes
+        </h2>
+        <form action={onFijarMes} className="flex flex-wrap items-center gap-3">
+          <input
+            type="month"
+            name="featured_month"
+            defaultValue={propuesta.featured_month ? propuesta.featured_month.slice(0, 7) : ''}
+            className="rounded-boton border border-linea bg-white px-3 py-2 text-[14px] text-titular"
+          />
+          <button
+            type="submit"
+            disabled={pendiente}
+            className="rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white disabled:opacity-60"
+          >
+            {propuesta.featured_month ? 'Cambiar mes' : 'Fijar en el mes'}
+          </button>
+        </form>
+        {errorMes && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorMes}</p>}
+        <p className="mt-3 text-[12.5px] text-gris">
+          La propuesta aparecerá destacada en la página pública del mes elegido (el centro de la
+          app móvil) y en el histórico anual. Deja el mes vacío y guarda para quitarla. Protegido
+          en BD: solo coordinator/admin.
+        </p>
       </section>
 
       {/* Respuesta oficial */}

@@ -13,7 +13,8 @@
  * Si algún día se quiere offline de verdad (p. ej. leer el programa sin
  * cobertura), se amplía con una estrategia por ruta — no con un cache-all.
  */
-const CACHE = 'rc-offline-v1';
+// Subir la versión invalida la caché anterior en el 'activate' de más abajo.
+const CACHE = 'rc-offline-v2';
 const OFFLINE_URL = '/offline.html';
 
 self.addEventListener('install', (event) => {

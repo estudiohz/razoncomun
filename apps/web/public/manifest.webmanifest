@@ -26,8 +26,8 @@
       "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Votaciones",
-      "url": "/votaciones",
+      "name": "La encuesta del mes",
+      "url": "/mes",
       "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
     }
   ]
