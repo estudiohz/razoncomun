@@ -26,7 +26,7 @@ export const adminNav: AdminNavItem[] = [
   { href: '/admin/cerebro', label: 'Cerebro IA', disponible: true },
   { href: '/admin/presupuesto', label: 'Presupuestos', disponible: true, dueño: 'rc-06-participacion' },
   { href: '/admin/paginas', label: 'Páginas', disponible: true },
-  { href: '/admin/afiliados', label: 'Afiliados', disponible: true, dueño: 'rc-07-afiliacion' },
+  { href: '/admin/tesoreria', label: 'Tesorería', disponible: true, dueño: 'rc-07-afiliacion' },
   { href: '/admin/manifiesto', label: 'Manifiesto', disponible: true, soloAdmin: true },
   { href: '/admin/ajustes', label: 'Ajustes', disponible: true, soloAdmin: true },
   { href: '/admin/actividad', label: 'Actividad', disponible: true, soloAdmin: true },

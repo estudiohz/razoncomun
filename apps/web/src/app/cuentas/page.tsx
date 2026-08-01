@@ -38,6 +38,16 @@ export default async function CuentasPage() {
     supabase.from('finance_expenses').select('dated, concept, amount_cents, category').order('dated', { ascending: false }),
   ]);
 
+  // Libro bancario publicado (T4). Vista `finance_movements_public` (0035): sin
+  // contraparte, solo las filas que tesorería ha aprobado una a una. `edited_at`
+  // permite marcar las líneas corregidas — si se anonimiza a un particular, el
+  // ciudadano ve que esa línea se tocó en vez de que desaparezca sin más.
+  const { data: movimientos } = await supabase
+    .from('finance_movements_public')
+    .select('id, dated, description, amount_cents, direction, category, edited_at')
+    .order('dated', { ascending: false })
+    .limit(200);
+
   const totalGastosMes = (gastos ?? []).reduce((acc, g) => acc + g.amount_cents, 0);
   const proximoHito = snapshot ? Math.ceil(((snapshot.members_count ?? 0) + 1) / 100) * 100 : 100;
 
@@ -143,6 +153,59 @@ export default async function CuentasPage() {
                 </table>
               </Tarjeta>
             </section>
+
+            {(movimientos ?? []).length > 0 && (
+              <section>
+                <h2 className="mb-1 text-[20px] font-extrabold text-titular">Movimientos bancarios</h2>
+                <p className="mb-4 max-w-[640px] text-[13.5px] text-cuerpo">
+                  Apuntes de la cuenta del partido, tal y como los da el banco. Un movimiento nunca
+                  se elimina: si hace falta corregirlo o quitar el nombre de un particular, la línea
+                  se marca como corregida y el importe y la fecha se conservan.
+                </p>
+                <Tarjeta className="overflow-x-auto">
+                  <table className="w-full min-w-[560px] text-left text-[13.5px]">
+                    <thead>
+                      <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
+                        <th className="px-4 py-3">Fecha</th>
+                        <th className="px-4 py-3">Concepto</th>
+                        <th className="px-4 py-3">Categoría</th>
+                        <th className="px-4 py-3 text-right">Importe</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(movimientos ?? []).map((m) => (
+                        <tr key={m.id} className="border-b border-linea last:border-0">
+                          <td className="whitespace-nowrap px-4 py-3 text-cuerpo">
+                            {new Date(m.dated).toLocaleDateString('es-ES', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: '2-digit',
+                            })}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="font-semibold text-titular">{m.description}</span>
+                            {m.edited_at && (
+                              <span className="ml-2 rounded-full bg-fondo px-2 py-0.5 text-[11px] font-bold text-gris">
+                                corregido
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-cuerpo">
+                            {m.category ? CATEGORIA_LABEL[m.category] ?? m.category : '—'}
+                          </td>
+                          <td
+                            className={`whitespace-nowrap px-4 py-3 text-right font-semibold ${m.direction === 'in' ? 'text-titular' : 'text-cuerpo'}`}
+                          >
+                            {m.direction === 'in' ? '+' : '−'}
+                            {euros(m.amount_cents)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </Tarjeta>
+              </section>
+            )}
 
             <p className="text-center text-[12px] text-gris">
               Los ingresos se muestran agregados (número de cuotas), nunca con nombres de afiliados.

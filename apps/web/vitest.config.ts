@@ -14,6 +14,7 @@ export default defineConfig({
       'src/app/pais/**/*.test.ts',
       'src/lib/participacion/**/*.test.ts',
       'src/lib/antibot/**/*.test.ts',
+      'src/lib/tesoreria/**/*.test.ts',
     ],
     environment: 'node',
   },

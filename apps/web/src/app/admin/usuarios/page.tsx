@@ -19,12 +19,39 @@ const CARGOS = [
   { value: 'moderator', label: 'Moderador' },
 ];
 
+const ESTADO_AFILIACION: Record<string, { label: string; clase: string }> = {
+  active: { label: 'Al corriente', clase: 'bg-teal/15 text-titular' },
+  past_due: { label: 'Impagada', clase: 'bg-magenta/15 text-magenta' },
+  canceled: { label: 'Baja', clase: 'bg-fondo text-gris' },
+};
+
+function euros(cents: number | null): string {
+  if (cents == null) return '—';
+  return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+}
+
+/**
+ * Lista única de personas (T1). Antes había dos secciones —"Usuarios" leyendo
+ * `profiles` y "Afiliados" leyendo `members`— y parecían dos poblaciones
+ * distintas. No lo son: un afiliado es un usuario que además tiene una fila de
+ * afiliación. La separación era por tabla, no por concepto, y confundía.
+ *
+ * Aquí se ven TODOS, con la afiliación como una columna y un filtro más. La
+ * gestión del dinero (cuotas cobradas, importaciones del banco, cuentas
+ * públicas) NO está aquí: vive en /admin/tesoreria.
+ */
 export default async function UsuariosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ nivel?: string; provincia?: string; cargo?: string; q?: string }>;
+  searchParams: Promise<{
+    nivel?: string;
+    provincia?: string;
+    cargo?: string;
+    q?: string;
+    afiliacion?: string;
+  }>;
 }) {
-  const { nivel, provincia, cargo, q } = await searchParams;
+  const { nivel, provincia, cargo, q, afiliacion } = await searchParams;
   const supabase = await createClient();
 
   // El layout ya exige admin O editor; eliminar usuarios es solo de admin —
@@ -33,11 +60,26 @@ export default async function UsuariosPage({
     data: { user: usuarioActual },
   } = await supabase.auth.getUser();
 
-  const [{ data: provincias }, { data: cargosVigentes }, { data: esAdmin }] = await Promise.all([
-    supabase.from('territories').select('id, name').eq('type', 'province').order('name'),
-    supabase.from('positions').select('user_id, role, scope, territory_id').is('ended_at', null),
-    supabase.rpc('is_admin', { p_user: usuarioActual?.id }),
-  ]);
+  const [{ data: provincias }, { data: cargosVigentes }, { data: esAdmin }, { data: afiliaciones }] =
+    await Promise.all([
+      supabase.from('territories').select('id, name').eq('type', 'province').order('name'),
+      supabase.from('positions').select('user_id, role, scope, territory_id').is('ended_at', null),
+      supabase.rpc('is_admin', { p_user: usuarioActual?.id }),
+      supabase
+        .from('members')
+        .select('user_id, status, billing_period, amount_cents, started_at')
+        .order('started_at', { ascending: false }),
+    ]);
+
+  // Un usuario puede tener histórico (alta, baja, alta): nos quedamos con la
+  // más reciente, que es su situación actual.
+  const afiliacionPorUsuario = new Map<
+    string,
+    { status: string; billing_period: string | null; amount_cents: number | null }
+  >();
+  for (const m of afiliaciones ?? []) {
+    if (!afiliacionPorUsuario.has(m.user_id)) afiliacionPorUsuario.set(m.user_id, m);
+  }
 
   let query = supabase
     .from('profiles')
@@ -59,9 +101,20 @@ export default async function UsuariosPage({
     cargosPorUsuario.set(c.user_id, lista);
   }
 
-  const perfilesFiltrados = cargo
+  let perfilesFiltrados = cargo
     ? (perfiles ?? []).filter((p) => cargosPorUsuario.get(p.id)?.includes(cargo))
     : perfiles ?? [];
+
+  // El filtro de afiliación se aplica aquí y no en la consulta porque la
+  // situación de cada usuario es "su fila de members más reciente", y eso no
+  // se expresa con un .eq() sobre el join.
+  if (afiliacion) {
+    perfilesFiltrados = perfilesFiltrados.filter((p) => {
+      const a = afiliacionPorUsuario.get(p.id);
+      if (afiliacion === 'ninguna') return !a;
+      return a?.status === afiliacion;
+    });
+  }
 
   return (
     <div className="space-y-6">
@@ -69,7 +122,7 @@ export default async function UsuariosPage({
         <div>
           <h1 className="text-[24px] font-extrabold">Usuarios</h1>
           <p className="mt-1 text-[13.5px] text-gris">
-            Los tres ejes: nivel de cuenta, cargo orgánico y afiliación (ver ficha de cada usuario).
+            Todas las personas registradas. Un afiliado es un usuario con cuota activa: se filtra aquí, no es una lista aparte. El dinero está en Tesorería.
           </p>
         </div>
         <Link
@@ -107,6 +160,20 @@ export default async function UsuariosPage({
             </select>
           </div>
           <div>
+            <label className="mb-1 block text-[12px] font-bold text-gris">Afiliación</label>
+            <select
+              name="afiliacion"
+              defaultValue={afiliacion ?? ''}
+              className="rounded-boton border border-linea px-3 py-3 text-[14px]"
+            >
+              <option value="">Todas</option>
+              <option value="active">Al corriente</option>
+              <option value="past_due">Impagada</option>
+              <option value="canceled">De baja</option>
+              <option value="ninguna">Sin afiliación</option>
+            </select>
+          </div>
+          <div>
             <label className="mb-1 block text-[12px] font-bold text-gris">Cargo</label>
             <select name="cargo" defaultValue={cargo ?? ''} className="rounded-boton border border-linea px-3 py-3 text-[14px]">
               <option value="">Todos</option>
@@ -123,7 +190,7 @@ export default async function UsuariosPage({
           >
             Filtrar
           </button>
-          {(nivel || provincia || cargo || q) && (
+          {(nivel || provincia || cargo || q || afiliacion) && (
             <Link href="/admin/usuarios" className="text-[13px] text-gris underline">
               Limpiar
             </Link>
@@ -139,6 +206,7 @@ export default async function UsuariosPage({
             <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
               <th className="px-4 py-3">Usuario</th>
               <th className="px-4 py-3">Nivel</th>
+              <th className="px-4 py-3">Afiliación</th>
               <th className="px-4 py-3">Provincia</th>
               <th className="px-4 py-3">Cargo vigente</th>
               <th className="px-4 py-3" />
@@ -155,6 +223,33 @@ export default async function UsuariosPage({
                   <span className="rounded-full bg-fondo px-2.5 py-1 text-[12px] font-bold text-titular">
                     {NOMBRE_NIVEL[p.level] ?? p.level}
                   </span>
+                </td>
+                <td className="px-4 py-3">
+                  {(() => {
+                    const a = afiliacionPorUsuario.get(p.id);
+                    if (!a) return <span className="text-[12.5px] text-gris">Sin afiliación</span>;
+                    const e = ESTADO_AFILIACION[a.status] ?? {
+                      label: a.status,
+                      clase: 'bg-fondo text-gris',
+                    };
+                    return (
+                      <div>
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-[12px] font-bold ${e.clase}`}
+                        >
+                          {e.label}
+                        </span>
+                        <p className="mt-1 text-[11.5px] text-gris">
+                          {euros(a.amount_cents)}
+                          {a.billing_period === 'annual'
+                            ? '/año'
+                            : a.billing_period === 'monthly'
+                              ? '/mes'
+                              : ''}
+                        </p>
+                      </div>
+                    );
+                  })()}
                 </td>
                 <td className="px-4 py-3 text-cuerpo">
                   {p.origin_province_id ? provinciaPorId.get(p.origin_province_id) ?? '—' : '—'}
@@ -180,7 +275,7 @@ export default async function UsuariosPage({
             ))}
             {perfilesFiltrados.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gris">
+                <td colSpan={6} className="px-4 py-8 text-center text-gris">
                   Sin resultados para este filtro.
                 </td>
               </tr>
