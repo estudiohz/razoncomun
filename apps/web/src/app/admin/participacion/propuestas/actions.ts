@@ -57,7 +57,7 @@ export async function cambiarEstadoAction(id: string, fd: FormData): Promise<Res
   }
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);
-  revalidatePath('/admin/participacion/propuestas');
+  revalidatePath('/admin/participacion');
   return { ok: true };
 }
 
@@ -105,7 +105,7 @@ export async function archivarAction(id: string): Promise<ResultadoAccion> {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido archivar.' };
   }
   revalidatePath(`/admin/participacion/propuestas/${id}`);
-  revalidatePath('/admin/participacion/propuestas');
+  revalidatePath('/admin/participacion');
   return { ok: true };
 }
 
@@ -121,8 +121,8 @@ export async function eliminarAction(id: string, motivo: string): Promise<Result
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido eliminar.' };
   }
 
-  revalidatePath('/admin/participacion/propuestas');
-  redirect('/admin/participacion/propuestas?eliminada=1');
+  revalidatePath('/admin/participacion');
+  redirect('/admin/participacion?eliminada=1');
 }
 
 /** Fusiona `id` (origen, "B") en `destinoId` (A). Rechaza si A tiene la votación cerrada (D-P11). */
@@ -147,6 +147,6 @@ export async function fusionarAction(id: string, fd: FormData): Promise<Resultad
   }
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);
-  revalidatePath('/admin/participacion/propuestas');
+  revalidatePath('/admin/participacion');
   redirect(`/admin/participacion/propuestas/${destinoId}?fusionada=1`);
 }

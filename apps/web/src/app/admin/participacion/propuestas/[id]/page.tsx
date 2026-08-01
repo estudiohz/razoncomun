@@ -37,7 +37,7 @@ export default async function ModerarPropuestaPage({
 
   return (
     <div className="py-2">
-      <Link href="/admin/participacion/propuestas" className="text-[14px] text-gris no-underline hover:underline">
+      <Link href="/admin/participacion" className="text-[14px] text-gris no-underline hover:underline">
         ← Volver al listado
       </Link>
 
