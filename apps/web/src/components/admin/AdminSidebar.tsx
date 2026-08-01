@@ -35,7 +35,7 @@ function gruposDeAdmin(esAdmin: boolean, badges?: Record<string, number>): Grupo
     {
       titulo: 'Mi cuenta',
       items: [
-        { href: '/panel', label: 'Mi panel', exacto: true },
+        { href: '/panel', label: 'Panel de usuario', exacto: true },
         { href: '/panel/perfil', label: 'Mi perfil' },
       ],
     },
