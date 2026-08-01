@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/cn';
 
-type Estado = { tipo: 'idle' | 'enviando' | 'ok' | 'error'; mensaje?: string };
+type Estado = { tipo: 'idle' | 'enviando' | 'ok' | 'error' | 'aal2'; mensaje?: string };
 
 /**
  * Alta/cambio de contraseña desde /perfil. Mismo patrón que
@@ -45,6 +46,19 @@ export function ContrasenaForm({ tieneContrasenaInicial }: { tieneContrasenaInic
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
+      // insufficient_aal: con 2FA activa, GoTrue exige una sesión aal2 para
+      // tocar email o contraseña. Pasa al entrar por enlace mágico (que da
+      // aal1). Se detecta por código y, por si acaso, por el texto: antes esto
+      // caía en el 401 genérico y se anunciaba como "sesión caducada", que
+      // mandaba al usuario a volver a entrar una y otra vez sin arreglar nada.
+      const necesitaAal2 =
+        error.code === 'insufficient_aal' || /aal2/i.test(error.message ?? '');
+
+      if (necesitaAal2) {
+        setEstado({ tipo: 'aal2' });
+        return;
+      }
+
       const mensaje =
         error.code === 'same_password'
           ? 'La nueva contraseña no puede ser igual a la anterior.'
@@ -114,6 +128,21 @@ export function ContrasenaForm({ tieneContrasenaInicial }: { tieneContrasenaInic
           <p className="rounded-boton bg-magenta/10 px-3.5 py-2.5 text-[13px] font-medium text-magenta">
             {estado.mensaje}
           </p>
+        )}
+        {estado.tipo === 'aal2' && (
+          <div className="rounded-boton bg-magenta/10 px-3.5 py-3 text-[13px] text-magenta">
+            <p className="font-semibold">Necesitas completar la verificación en dos pasos.</p>
+            <p className="mt-1 font-medium">
+              Tienes 2FA activada, y para cambiar la contraseña hace falta introducir tu código.
+              Entraste con un enlace de correo, que no lo pide.
+            </p>
+            <Link
+              href={`/entrar/2fa?next=${encodeURIComponent('/panel/perfil#contrasena')}`}
+              className="mt-2.5 inline-block rounded-boton bg-accion px-4 py-2 text-[13px] font-bold text-white no-underline shadow-boton"
+            >
+              Introducir mi código 2FA
+            </Link>
+          </div>
         )}
         {estado.tipo === 'ok' && (
           <p className="rounded-boton bg-teal/10 px-3.5 py-2.5 text-[13px] font-medium text-titular">

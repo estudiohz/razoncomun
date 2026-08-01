@@ -27,6 +27,14 @@ export function ActualizarPasswordForm({ next }: { next: string }) {
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
     if (error) {
+      // Con 2FA activa GoTrue exige sesión aal2 para tocar la contraseña, y un
+      // enlace de recuperación solo da aal1. Sin este caso, el usuario leería
+      // "el enlace ha caducado" y pediría otro enlace en bucle, sin arreglarlo.
+      if (error.code === 'insufficient_aal' || /aal2/i.test(error.message ?? '')) {
+        router.push(`/entrar/2fa?next=${encodeURIComponent(`/recuperar/actualizar?next=${next}`)}`);
+        return;
+      }
+
       const mensaje =
         error.code === 'same_password'
           ? 'La nueva contraseña no puede ser igual a la anterior.'

@@ -47,15 +47,60 @@ export async function aplicarMetadataAlta(supabase: SupabaseClient, user: User) 
 }
 
 /**
+ * ¿Esta sesión se ha quedado a medias de 2FA? (aal1 teniendo un factor TOTP
+ * verificado). Entrar por enlace mágico, invitación o recuperación produce
+ * SIEMPRE una sesión aal1: GoTrue no encadena el desafío del segundo factor.
+ *
+ * Importa más de lo que parece: con MFA activo, GoTrue rechaza cambiar email o
+ * contraseña desde una sesión aal1 con
+ * `401 insufficient_aal` ("AAL2 session is required to update email or password
+ * when MFA is enabled"). Sin esta comprobación el usuario aterriza con una
+ * sesión que sirve para leer pero no para tocar sus credenciales, y el error
+ * que ve —traducido -- es un confuso "tu sesión ha caducado".
+ *
+ * (Bug real reportado por Sergio, 31/07/2026: entraba por enlace mágico, iba a
+ * crear su contraseña y siempre fallaba. Tenía TOTP verificado.)
+ */
+export async function faltaCompletar2FA(supabase: SupabaseClient): Promise<boolean> {
+  try {
+    const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    return data?.nextLevel === 'aal2' && data.currentLevel !== 'aal2';
+  } catch {
+    // Ante la duda, no bloquear el acceso: la puerta dura la ponen el
+    // middleware (para /admin) y el propio GoTrue (para credenciales).
+    return false;
+  }
+}
+
+/**
  * A dónde mandar al usuario tras verificar un token (email/OAuth):
  * - recovery / invite: siempre a poner contraseña nueva. En una invitación de
  *   equipo (admin crea la cuenta desde el panel) el usuario aún NO tiene
  *   contraseña, así que hay que llevarlo a establecerla igual que en recovery.
  * - si todavía no dio el consentimiento Art. 9 (caso OAuth, o cualquier
  *   hueco): pasarela de consentimiento obligatoria antes de seguir.
- * - si no: la ruta `next` pedida (por defecto /perfil).
+ * - si no: la ruta `next` pedida (por defecto /panel).
+ *
+ * Y por encima de todo lo anterior: si le falta completar el 2FA, primero el
+ * desafío. Se envuelve el destino ya calculado en `?next=`, así que el usuario
+ * acaba donde iba, solo que con una sesión aal2 que sí le permite operar.
  */
 export async function destinoTrasVerificar(
+  supabase: SupabaseClient,
+  userId: string,
+  tipo: string,
+  next: string,
+): Promise<string> {
+  const destino = await destinoBase(supabase, userId, tipo, next);
+
+  if (await faltaCompletar2FA(supabase)) {
+    return `/entrar/2fa?next=${encodeURIComponent(destino)}`;
+  }
+
+  return destino;
+}
+
+async function destinoBase(
   supabase: SupabaseClient,
   userId: string,
   tipo: string,

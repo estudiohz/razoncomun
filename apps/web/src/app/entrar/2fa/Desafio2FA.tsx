@@ -83,7 +83,7 @@ export function Desafio2FA({ next }: { next: string }) {
           perfil y vuelve a intentarlo.
         </p>
         <Link
-          href="/panel"
+          href="/panel/perfil"
           className="inline-block rounded-boton bg-accion px-6 py-3 text-[15px] font-bold text-white shadow-boton transition-transform hover:-translate-y-0.5"
         >
           Ir a mi perfil para activarlo
