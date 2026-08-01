@@ -284,18 +284,37 @@ async function mandatoSepaMasReciente(stripe: Stripe, customerId: string | null)
   return null;
 }
 
-function mapearEstado(estado: Stripe.Subscription.Status): 'active' | 'past_due' | 'canceled' {
-  switch (estado) {
+/**
+ * Traduce el estado de Stripe al de `members`.
+ *
+ * ⚠️ La pausa NO se lee del `status`. Cuando se pausa el cobro de una
+ * suscripción activa (`pause_collection`), Stripe **mantiene el status en
+ * `active`**: lo que indica la pausa es el propio campo `pause_collection`. El
+ * status `paused` de Stripe es otra cosa (un trial que termina en pausa). Por
+ * eso esta función recibe la suscripción entera y no solo el estado: mirando
+ * solo `status`, una cuota pausada parecería estar al corriente y se contaría
+ * como ingreso previsto.
+ *
+ * Y `paused` en nuestro modelo NO es una baja (0037): es una pausa acordada y
+ * conserva los derechos de afiliado. Antes esto mapeaba a `canceled`, de modo
+ * que pausar habría dado de baja a la persona y le habría quitado el voto en
+ * silencio.
+ */
+function mapearEstado(sub: Stripe.Subscription): 'active' | 'past_due' | 'paused' | 'canceled' {
+  if (sub.pause_collection) return 'paused';
+
+  switch (sub.status) {
     case 'active':
     case 'trialing':
       return 'active';
+    case 'paused':
+      return 'paused';
     case 'past_due':
     case 'unpaid':
     case 'incomplete':
       return 'past_due';
     case 'canceled':
     case 'incomplete_expired':
-    case 'paused':
     default:
       return 'canceled';
   }
@@ -322,7 +341,7 @@ async function espejarSuscripcion(
   const price = sub.items.data[0]?.price;
   const billingPeriod: 'monthly' | 'annual' = price?.recurring?.interval === 'year' ? 'annual' : 'monthly';
   const amountCents = price?.unit_amount ?? null;
-  const status = mapearEstado(sub.status);
+  const status = mapearEstado(sub);
   const startedAt = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
   const canceledAt = sub.canceled_at ? new Date(sub.canceled_at * 1000).toISOString() : null;
 
@@ -384,12 +403,17 @@ async function espejarSuscripcion(
   let enviarBienvenida = false;
   const { data: perfil } = await admin.from('profiles').select('level, member_since').eq('id', userId).single();
 
-  if (status === 'active') {
+  // `paused` cuenta igual que `active` para el nivel: una cuota pausada de
+  // mutuo acuerdo no degrada a la persona a "registrado" (0037). Si no se
+  // incluyera aquí, pausar le quitaría el distintivo de afiliado en la web.
+  if (status === 'active' || status === 'paused') {
     const patch: Record<string, unknown> = {};
     if (perfil && perfil.level === 'registered') patch.level = 'member';
     if (perfil && !perfil.member_since) {
       patch.member_since = payload.started_at ?? new Date().toISOString();
-      enviarBienvenida = true;
+      // La bienvenida solo con un alta de verdad: si el primer evento que
+      // vemos es una pausa, no es el momento de dar la bienvenida.
+      enviarBienvenida = status === 'active';
     }
     if (Object.keys(patch).length) await admin.from('profiles').update(patch).eq('id', userId);
   }

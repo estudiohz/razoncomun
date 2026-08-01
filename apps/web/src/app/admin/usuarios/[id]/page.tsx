@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { asignarRolApp, revocarRolApp, cambiarNivelManual } from '../actions';
+import { SuscripcionStripe } from './SuscripcionStripe';
+import { formatearNumeroAfiliado } from '@/lib/afiliacion/numero';
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
@@ -47,7 +49,10 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
   );
   const rolesDisponibles = (catalogoRoles ?? []).filter((r) => !clavesAsignadas.has(r.key));
 
-  const afiliacionActiva = (miembros ?? []).find((m) => m.status === 'active');
+  // La afiliación vigente es la fila más reciente que NO sea una baja: incluye
+  // 'paused' y 'past_due', que siguen siendo relaciones vivas con el partido y
+  // sobre las que tiene sentido actuar (reanudar, reclamar el recibo).
+  const afiliacionVigente = (miembros ?? []).find((m) => m.status !== 'canceled');
   const cargosVigentes = (cargos ?? []).filter((c) => !c.ended_at);
 
   return (
@@ -144,16 +149,37 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
         {/* EJE 3: Afiliación */}
         <Tarjeta className="p-5">
           <h2 className="text-[13px] font-bold uppercase tracking-wide text-titular">Afiliación</h2>
-          {afiliacionActiva ? (
+          {perfil.member_number ? (
+            <p className="mt-2 text-[13.5px]">
+              <span className="text-gris">Nº de afiliado: </span>
+              <span className="font-bold tabular-nums text-titular">
+                {formatearNumeroAfiliado(perfil.member_number)}
+              </span>
+            </p>
+          ) : (
+            <p className="mt-2 text-[12.5px] text-gris">
+              Sin número de afiliado: se asigna con el primer cobro.
+            </p>
+          )}
+
+          {afiliacionVigente ? (
             <div className="mt-2 text-[13.5px]">
-              <p className="font-bold text-titular">Cuota activa</p>
-              <p className="text-gris">
-                {afiliacionActiva.billing_period === 'annual' ? 'Anual' : 'Mensual'} ·{' '}
-                {((afiliacionActiva.amount_cents ?? 0) / 100).toFixed(2)}€
+              <p className="font-bold text-titular">
+                {afiliacionVigente.status === 'paused'
+                  ? 'Cuota pausada'
+                  : afiliacionVigente.status === 'past_due'
+                    ? 'Cuota impagada'
+                    : 'Cuota activa'}
               </p>
               <p className="text-gris">
-                Desde {new Date(afiliacionActiva.started_at).toLocaleDateString('es-ES')}
+                {afiliacionVigente.billing_period === 'annual' ? 'Anual' : 'Mensual'} ·{' '}
+                {((afiliacionVigente.amount_cents ?? 0) / 100).toFixed(2)}€
               </p>
+              {afiliacionVigente.started_at && (
+                <p className="text-gris">
+                  Desde {new Date(afiliacionVigente.started_at).toLocaleDateString('es-ES')}
+                </p>
+              )}
             </div>
           ) : (
             <p className="mt-2 text-[13px] text-gris">Sin afiliación activa.</p>
@@ -161,9 +187,18 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
           <p className="mt-2 text-[12px] text-gris">
             Newsletter: {perfil.newsletter_opt_in ? 'suscrito' : 'no suscrito'}
           </p>
-          <p className="mt-3 text-[12px] text-gris">
-            Gestión de cuotas/Stripe a cargo de rc-07-afiliacion.
-          </p>
+
+          <div className="mt-4 border-t border-linea pt-4">
+            <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wide text-gris">
+              Suscripción en Stripe
+            </h3>
+            <SuscripcionStripe
+              userId={id}
+              estado={afiliacionVigente?.status ?? null}
+              subscriptionId={afiliacionVigente?.stripe_subscription_id ?? null}
+              customerId={afiliacionVigente?.stripe_customer_id ?? null}
+            />
+          </div>
         </Tarjeta>
       </div>
 

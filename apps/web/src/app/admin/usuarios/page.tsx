@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
 import { EliminarUsuarioBoton } from './EliminarUsuarioBoton';
+import { formatearNumeroAfiliado, numeroDesdeBusqueda } from '@/lib/afiliacion/numero';
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
@@ -22,6 +23,9 @@ const CARGOS = [
 const ESTADO_AFILIACION: Record<string, { label: string; clase: string }> = {
   active: { label: 'Al corriente', clase: 'bg-teal/15 text-titular' },
   past_due: { label: 'Impagada', clase: 'bg-magenta/15 text-magenta' },
+  // Pausada conserva los derechos de afiliado (0037): se distingue de la baja
+  // a propósito, porque no es lo mismo para quien mira la lista.
+  paused: { label: 'Pausada', clase: 'bg-cat-educacion/20 text-titular' },
   canceled: { label: 'Baja', clase: 'bg-fondo text-gris' },
 };
 
@@ -83,13 +87,23 @@ export default async function UsuariosPage({
 
   let query = supabase
     .from('profiles')
-    .select('id, email, display_name, level, origin_province_id, member_since, created_at')
+    .select(
+      'id, email, display_name, level, origin_province_id, member_since, created_at, user_number, member_number',
+    )
     .order('created_at', { ascending: false })
     .limit(200);
 
   if (nivel) query = query.eq('level', nivel);
   if (provincia) query = query.eq('origin_province_id', Number(provincia));
-  if (q) query = query.or(`display_name.ilike.%${q}%,email.ilike.%${q}%`);
+  if (q) {
+    // Buscar por texto y, si lo tecleado contiene dígitos, también por los dos
+    // números. "00042" y "42" encuentran lo mismo: el buscador no debe obligar
+    // a saber cuántos ceros lleva delante.
+    const n = numeroDesdeBusqueda(q);
+    const condiciones = [`display_name.ilike.%${q}%`, `email.ilike.%${q}%`];
+    if (n !== null) condiciones.push(`user_number.eq.${n}`, `member_number.eq.${n}`);
+    query = query.or(condiciones.join(','));
+  }
 
   const { data: perfiles, error } = await query;
 
@@ -137,7 +151,7 @@ export default async function UsuariosPage({
         <form className="flex flex-wrap items-end gap-3" method="get">
           <div className="min-w-[200px] flex-1">
             <label className="mb-1 block text-[12px] font-bold text-gris">Buscar</label>
-            <Input name="q" defaultValue={q ?? ''} placeholder="Nombre o email" />
+            <Input name="q" defaultValue={q ?? ''} placeholder="Nombre, email o nº de usuario/afiliado" />
           </div>
           <div>
             <label className="mb-1 block text-[12px] font-bold text-gris">Nivel</label>
@@ -169,6 +183,7 @@ export default async function UsuariosPage({
               <option value="">Todas</option>
               <option value="active">Al corriente</option>
               <option value="past_due">Impagada</option>
+              <option value="paused">Pausada</option>
               <option value="canceled">De baja</option>
               <option value="ninguna">Sin afiliación</option>
             </select>
@@ -204,6 +219,7 @@ export default async function UsuariosPage({
         <table className="w-full min-w-[720px] text-left text-[13.5px]">
           <thead>
             <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
+              <th className="px-4 py-3">Nº</th>
               <th className="px-4 py-3">Usuario</th>
               <th className="px-4 py-3">Nivel</th>
               <th className="px-4 py-3">Afiliación</th>
@@ -215,6 +231,21 @@ export default async function UsuariosPage({
           <tbody>
             {perfilesFiltrados.map((p) => (
               <tr key={p.id} className="border-b border-linea last:border-0">
+                <td className="whitespace-nowrap px-4 py-3">
+                  {p.member_number ? (
+                    <p
+                      className="font-bold tabular-nums text-titular"
+                      title="Número de afiliado"
+                    >
+                      {formatearNumeroAfiliado(p.member_number)}
+                    </p>
+                  ) : (
+                    <p className="text-[12px] text-gris">—</p>
+                  )}
+                  <p className="text-[11.5px] tabular-nums text-gris" title="Número de usuario">
+                    usuario {p.user_number}
+                  </p>
+                </td>
                 <td className="px-4 py-3">
                   <p className="font-semibold">{p.display_name ?? '—'}</p>
                   <p className="text-[12px] text-gris">{p.email}</p>
@@ -275,7 +306,7 @@ export default async function UsuariosPage({
             ))}
             {perfilesFiltrados.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gris">
+                <td colSpan={7} className="px-4 py-8 text-center text-gris">
                   Sin resultados para este filtro.
                 </td>
               </tr>
