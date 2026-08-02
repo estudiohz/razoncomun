@@ -34,9 +34,17 @@ export default async function AdminEncuestasPage() {
           <div key={e.id} className="rounded-tarjeta border border-linea bg-panel p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-[16px] font-bold text-titular">{e.title}</h2>
-              <Link href={`/encuestas/${e.id}`} className="text-[13px] font-semibold text-titular underline">
-                Ver pública →
-              </Link>
+              <span className="flex items-center gap-3">
+                <Link
+                  href={`/admin/participacion/encuestas/${e.id}`}
+                  className="rounded-boton bg-accion px-3.5 py-1.5 text-[12.5px] font-bold text-white no-underline shadow-boton"
+                >
+                  Editar
+                </Link>
+                <Link href={`/encuestas/${e.id}`} className="text-[13px] font-semibold text-titular underline">
+                  Ver pública →
+                </Link>
+              </span>
             </div>
             <p className="mt-1 text-[13px] text-gris">
               Audiencia: {e.audience} · {e.anonymous ? 'Anónima' : 'Con censo'} · Resultados:{' '}

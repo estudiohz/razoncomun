@@ -4,6 +4,7 @@ import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
 import { contarReportesAbiertos } from '@/lib/participacion/reports';
 import { contarBorradores } from '@/lib/participacion/drafts';
+import { TiraDeslizable, ItemTira } from '@/components/ui/TiraDeslizable';
 import {
   ETIQUETA_ESTADO,
   ORDEN_ESTADOS,
@@ -101,23 +102,29 @@ export default async function AdminParticipacionPage({
         </div>
       </div>
 
-      <div className="mb-5 mt-6 flex flex-wrap items-center gap-2">
-        <Link
-          href={filtro()}
-          className={`rounded-full px-3 py-1 text-[12.5px] font-bold no-underline ${!params.status ? 'bg-accion text-white' : 'bg-white text-cuerpo ring-1 ring-linea'}`}
-        >
-          Todos
-        </Link>
-        {([...ORDEN_ESTADOS, 'draft', 'archived'] as EstadoPropuesta[]).map((s) => (
+      {/* 10 estados: en móvil formaban el mismo muro de etiquetas que el blog
+          y propuestas — misma TiraDeslizable con flechas (revisión pedida por
+          Sergio también para el admin). */}
+      <TiraDeslizable className="mb-5 mt-6">
+        <ItemTira>
           <Link
-            key={s}
-            href={filtro(s)}
-            className={`rounded-full px-3 py-1 text-[12.5px] font-bold no-underline ${params.status === s ? 'bg-accion text-white' : 'bg-white text-cuerpo ring-1 ring-linea'}`}
+            href={filtro()}
+            className={`rounded-full px-3 py-1.5 text-[12.5px] font-bold no-underline ${!params.status ? 'bg-accion text-white' : 'bg-white text-cuerpo ring-1 ring-linea'}`}
           >
-            {ETIQUETA_ESTADO[s]}
+            Todos
           </Link>
+        </ItemTira>
+        {([...ORDEN_ESTADOS, 'draft', 'archived'] as EstadoPropuesta[]).map((s) => (
+          <ItemTira key={s}>
+            <Link
+              href={filtro(s)}
+              className={`rounded-full px-3 py-1.5 text-[12.5px] font-bold no-underline ${params.status === s ? 'bg-accion text-white' : 'bg-white text-cuerpo ring-1 ring-linea'}`}
+            >
+              {ETIQUETA_ESTADO[s]}
+            </Link>
+          </ItemTira>
         ))}
-      </div>
+      </TiraDeslizable>
 
       {error ? (
         <p className="rounded-tarjeta border border-linea bg-white p-6 text-cuerpo">
