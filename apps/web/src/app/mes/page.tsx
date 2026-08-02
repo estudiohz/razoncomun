@@ -99,32 +99,43 @@ export default async function MesPage({
         )}
       </header>
 
-      {/* Cinta de meses: el registro anual. */}
-      <nav aria-label="Meses del año" className="mx-auto mt-7 flex max-w-[820px] flex-wrap justify-center gap-2">
-        {MESES.map((nombre, i) => {
-          const k = `${anyo}-${String(i + 1).padStart(2, '0')}`;
-          const activo = k === mes;
-          const tiene = mesesConEncuesta.has(k);
-          if (k > mesActual && !tiene) return null;
-          return (
-            <Link
-              key={k}
-              href={`/mes?m=${k}`}
-              aria-current={activo ? 'page' : undefined}
-              className={cn(
-                'rounded-full px-3.5 py-1.5 text-[12.5px] font-bold no-underline transition-colors',
-                activo
-                  ? 'bg-accion text-white'
-                  : tiene
-                    ? 'bg-white text-titular ring-1 ring-linea hover:ring-titular'
-                    : 'bg-fondo text-gris',
-              )}
-            >
-              {nombre.slice(0, 3)}
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Cinta de meses: el registro anual. En móvil UNA fila deslizable
+          (mismo patrón que los filtros del blog — antes hacía wrap en dos
+          líneas); en ≥720px, centrada con wrap como siempre. */}
+      <div className="relative -mx-4 mt-7 min-[720px]:mx-auto min-[720px]:max-w-[820px]">
+        <nav
+          aria-label="Meses del año"
+          className="flex gap-2 overflow-x-auto px-4 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden min-[720px]:flex-wrap min-[720px]:justify-center min-[720px]:overflow-visible min-[720px]:px-0"
+        >
+          {MESES.map((nombre, i) => {
+            const k = `${anyo}-${String(i + 1).padStart(2, '0')}`;
+            const activo = k === mes;
+            const tiene = mesesConEncuesta.has(k);
+            if (k > mesActual && !tiene) return null;
+            return (
+              <Link
+                key={k}
+                href={`/mes?m=${k}`}
+                aria-current={activo ? 'page' : undefined}
+                className={cn(
+                  'shrink-0 rounded-full px-3.5 py-1.5 text-[12.5px] font-bold no-underline transition-colors min-[720px]:shrink',
+                  activo
+                    ? 'bg-accion text-white'
+                    : tiene
+                      ? 'bg-white text-titular ring-1 ring-linea hover:ring-titular'
+                      : 'bg-fondo text-gris',
+                )}
+              >
+                {nombre.slice(0, 3)}
+              </Link>
+            );
+          })}
+        </nav>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-fondo to-transparent min-[720px]:hidden"
+        />
+      </div>
 
       <div className="mx-auto mt-8 max-w-[640px]">
         {/* Caso 1: hay encuesta y puedo responderla */}
