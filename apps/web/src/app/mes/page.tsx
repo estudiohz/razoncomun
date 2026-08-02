@@ -86,52 +86,64 @@ export default async function MesPage({
   const esActual = mes === mesActual;
   const pinned = (fijadas ?? []) as Pick<Propuesta, 'id' | 'title' | 'slug' | 'status' | 'support_count'>[];
 
+  // Modo asistente = estás respondiendo. Ahí la pantalla es para la pregunta
+  // (petición de Sergio, 02/08): fuera el titular grande y fuera la cinta de
+  // meses — navegar el archivo mientras respondes no tiene sentido, y roban
+  // el espacio que necesita la pregunta. Queda una etiqueta discreta.
+  const respondiendo = Boolean(encuesta && encuesta.abierta && user);
+
   return (
-    <Contenedor as="section" className="py-10 min-[720px]:py-14">
-      <header className="mx-auto max-w-[720px] text-center">
-        <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">
-          {esActual ? 'Participa ahora' : 'Histórico'}
-        </span>
-        <h1 className="mt-2 text-[clamp(26px,4.4vw,40px)] font-extrabold leading-[1.12]">
-          {encuesta ? encuesta.title : `La encuesta de ${MESES[numMes - 1]} ${anyo}`}
-        </h1>
-        {encuesta?.description && (
-          <p className="mx-auto mt-3 max-w-[560px] text-[14.5px] text-cuerpo">{encuesta.description}</p>
-        )}
-      </header>
+    <Contenedor as="section" className={respondiendo ? 'py-5 min-[720px]:py-10' : 'py-10 min-[720px]:py-14'}>
+      {respondiendo ? (
+        <p className="mx-auto max-w-[640px] text-[12px] font-bold uppercase tracking-[.14em] text-gris">
+          {encuesta!.title}
+        </p>
+      ) : (
+        <>
+          <header className="mx-auto max-w-[720px] text-center">
+            <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">
+              {esActual ? 'Participa ahora' : 'Histórico'}
+            </span>
+            <h1 className="mt-2 text-[clamp(26px,4.4vw,40px)] font-extrabold leading-[1.12]">
+              {encuesta ? encuesta.title : `La encuesta de ${MESES[numMes - 1]} ${anyo}`}
+            </h1>
+            {encuesta?.description && (
+              <p className="mx-auto mt-3 max-w-[560px] text-[14.5px] text-cuerpo">{encuesta.description}</p>
+            )}
+          </header>
 
-      {/* Cinta de meses: el registro anual. TiraDeslizable compartida (una
-          fila con flechas ‹ › en móvil, wrap centrado en escritorio) — mismo
-          gesto que blog y propuestas. */}
-      <div className="mt-7 min-[720px]:mx-auto min-[720px]:max-w-[820px]">
-        <TiraDeslizable alinear="centro">
-          {MESES.map((nombre, i) => {
-            const k = `${anyo}-${String(i + 1).padStart(2, '0')}`;
-            const activo = k === mes;
-            const tiene = mesesConEncuesta.has(k);
-            if (k > mesActual && !tiene) return null;
-            return (
-              <Link
-                key={k}
-                href={`/mes?m=${k}`}
-                aria-current={activo ? 'page' : undefined}
-                className={cn(
-                  'shrink-0 rounded-full px-3.5 py-1.5 text-[12.5px] font-bold no-underline transition-colors min-[720px]:shrink',
-                  activo
-                    ? 'bg-accion text-white'
-                    : tiene
-                      ? 'bg-white text-titular ring-1 ring-linea hover:ring-titular'
-                      : 'bg-fondo text-gris',
-                )}
-              >
-                {nombre.slice(0, 3)}
-              </Link>
-            );
-          })}
-        </TiraDeslizable>
-      </div>
+          {/* Cinta de meses: el registro anual. Solo en modo consulta. */}
+          <div className="mt-7 min-[720px]:mx-auto min-[720px]:max-w-[820px]">
+            <TiraDeslizable alinear="centro">
+              {MESES.map((nombre, i) => {
+                const k = `${anyo}-${String(i + 1).padStart(2, '0')}`;
+                const activo = k === mes;
+                const tiene = mesesConEncuesta.has(k);
+                if (k > mesActual && !tiene) return null;
+                return (
+                  <Link
+                    key={k}
+                    href={`/mes?m=${k}`}
+                    aria-current={activo ? 'page' : undefined}
+                    className={cn(
+                      'shrink-0 rounded-full px-3.5 py-1.5 text-[12.5px] font-bold no-underline transition-colors min-[720px]:shrink',
+                      activo
+                        ? 'bg-accion text-white'
+                        : tiene
+                          ? 'bg-white text-titular ring-1 ring-linea hover:ring-titular'
+                          : 'bg-fondo text-gris',
+                    )}
+                  >
+                    {nombre.slice(0, 3)}
+                  </Link>
+                );
+              })}
+            </TiraDeslizable>
+          </div>
+        </>
+      )}
 
-      <div className="mx-auto mt-8 max-w-[640px]">
+      <div className={cn('mx-auto max-w-[640px]', respondiendo ? 'mt-3' : 'mt-8')}>
         {/* Caso 1: hay encuesta y puedo responderla */}
         {encuesta && encuesta.abierta && user && (
           <EncuestaPlayer
@@ -216,7 +228,9 @@ export default async function MesPage({
         )}
       </div>
 
-      {pinned.length > 0 && (
+      {/* Secciones secundarias: solo en modo consulta — mientras respondes,
+          la pantalla es de la pregunta. */}
+      {!respondiendo && pinned.length > 0 && (
         <section className="mx-auto mt-12 max-w-[640px]">
           <h2 className="text-[17px] font-extrabold text-titular">También destacadas este mes</h2>
           <div className="mt-4 grid gap-3">
@@ -237,6 +251,7 @@ export default async function MesPage({
         </section>
       )}
 
+      {!respondiendo && (
       <p className="mx-auto mt-12 max-w-[560px] text-center text-[13px] text-gris">
         Las decisiones cerradas, con sus informes y actas, están en{' '}
         <Link href="/cambios" className="font-semibold text-titular underline">
@@ -244,6 +259,7 @@ export default async function MesPage({
         </Link>
         .
       </p>
+      )}
     </Contenedor>
   );
 }
