@@ -60,11 +60,16 @@ export function TiraDeslizable({
 
   return (
     <div className={cn('relative -mx-4 min-[720px]:mx-0', className)}>
+      {/* overflow-y-hidden EXPLÍCITO: con overflow-x auto, el eje vertical
+          deja de computar como "visible" y un solo píxel de sobra hace la
+          fila desplazable hacia arriba/abajo (los chips "bailaban" y se
+          cortaban — reporte de Sergio). items-center + py-1.5 dan el aire
+          para que nada se recorte. */}
       <div
         ref={scroller}
         className={cn(
-          'flex gap-2 overflow-x-auto px-4 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-          'min-[720px]:flex-wrap min-[720px]:gap-2.5 min-[720px]:overflow-visible min-[720px]:px-0 min-[720px]:pb-0',
+          'flex items-center gap-2 overflow-x-auto overflow-y-hidden px-4 py-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          'min-[720px]:flex-wrap min-[720px]:gap-2.5 min-[720px]:overflow-visible min-[720px]:px-0 min-[720px]:py-0',
           alinear === 'centro' && 'min-[720px]:justify-center',
         )}
       >
@@ -91,9 +96,13 @@ export function TiraDeslizable({
   );
 }
 
-/** Envoltorio de cada elemento: evita que el chip se encoja en la fila. */
+/**
+ * Envoltorio de cada elemento: evita que el chip se encoja en la fila.
+ * inline-flex y no span en línea: el flujo inline añade hueco de descendentes
+ * tipográficos bajo cada chip — era parte del "baile" vertical.
+ */
 export function ItemTira({ children }: { children: ReactNode }) {
-  return <span className="shrink-0 min-[720px]:shrink">{children}</span>;
+  return <span className="inline-flex shrink-0 min-[720px]:shrink">{children}</span>;
 }
 
 function Chevron({ lado }: { lado: 'izq' | 'der' }) {
