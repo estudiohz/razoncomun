@@ -93,9 +93,18 @@ export function ConstructorEncuesta({ territorios }: { territorios: { id: number
             <option value="internal">Solo interno (admin/coordinador)</option>
           </select>
         </Campo>
+        {/* Ya NO viene marcada por defecto: la casilla marcada + encuesta del
+            mes producía respuestas rechazadas por RLS (02/08/2026). Si se fija
+            un mes, el servidor la fuerza a nominal haga lo que haga esto. */}
         <label className="flex items-center gap-2.5 self-end pb-2.5 text-[13.5px] text-cuerpo">
-          <input type="checkbox" name="anonymous" defaultChecked className="h-4 w-4 rounded border-linea text-accion" />
-          Encuesta anónima (sin censo)
+          <input type="checkbox" name="anonymous" className="h-4 w-4 rounded border-linea text-accion" />
+          <span>
+            Encuesta anónima (sin censo)
+            <span className="block text-[11.5px] text-gris">
+              Incompatible con la encuesta del mes: el progreso y el poder editar exigen saber de
+              quién es cada respuesta.
+            </span>
+          </span>
         </label>
       </div>
 

@@ -45,7 +45,9 @@ export async function Footer() {
             height={225}
             className="h-8 w-auto"
           />
-          <div className="grid grid-cols-4 justify-items-center gap-3 min-[720px]:flex min-[720px]:flex-wrap min-[720px]:items-center">
+          {/* w-full + columnas iguales: las dos filas de 4 se reparten TODO el
+              ancho (feedback de Sergio: separados, no apiñados al centro). */}
+          <div className="grid w-full grid-cols-4 justify-items-center gap-y-4 min-[720px]:flex min-[720px]:w-auto min-[720px]:flex-wrap min-[720px]:items-center min-[720px]:gap-3">
             {redesSociales.map((red) => (
               <a
                 key={red.nombre}

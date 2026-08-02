@@ -24,6 +24,14 @@ export async function crearEncuestaAction(formData: FormData) {
     throw new Error('El mes destacado debe tener formato AAAA-MM.');
   }
 
+  // La encuesta del mes NUNCA puede ser anónima, marque lo que marque el
+  // formulario: el reproductor guarda cada respuesta con el usuario (es lo
+  // que hace posible el parcial, el progreso y editar hasta el cierre), y la
+  // RLS de una encuesta anónima rechaza justo eso. Sergio se topó con el
+  // choque el 02/08/2026 ("la encuesta está cerrada o tu cuenta no puede
+  // participar") con la demo creada con la casilla por defecto.
+  const anonymousFinal = featuredRaw ? false : anonymous;
+
   const preguntasRaw = (formData.get('preguntas_json') as string) ?? '[]';
   const preguntasEntrada = JSON.parse(preguntasRaw) as {
     kind: TipoPregunta;
@@ -66,7 +74,7 @@ export async function crearEncuestaAction(formData: FormData) {
     description,
     audience,
     territory_id,
-    anonymous,
+    anonymous: anonymousFinal,
     results_visibility,
     opens_at: new Date(opens_at).toISOString(),
     closes_at: new Date(closes_at).toISOString(),
