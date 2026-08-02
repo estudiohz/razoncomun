@@ -33,7 +33,11 @@ export async function Footer() {
        el contenido se alinea dentro del Contenedor habitual (max-w-wrap). */
     <footer className="bg-grad py-8 text-white">
       <Contenedor>
-        <div className="flex flex-wrap items-center justify-between gap-5">
+        {/* Móvil: logo centrado y las 8 redes en una rejilla 4x2 también
+            centrada (petición de Sergio — el wrap libre partía en 5+3 o 6+2
+            según el ancho y quedaba descolgado). En ≥720px, lo de siempre:
+            logo a la izquierda, iconos en fila a la derecha. */}
+        <div className="flex flex-col items-center gap-6 min-[720px]:flex-row min-[720px]:flex-wrap min-[720px]:justify-between min-[720px]:gap-5">
           <Image
             src="/logo-rc-blanco.png"
             alt={site.nombre}
@@ -41,7 +45,7 @@ export async function Footer() {
             height={225}
             className="h-8 w-auto"
           />
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="grid grid-cols-4 justify-items-center gap-3 min-[720px]:flex min-[720px]:flex-wrap min-[720px]:items-center">
             {redesSociales.map((red) => (
               <a
                 key={red.nombre}
