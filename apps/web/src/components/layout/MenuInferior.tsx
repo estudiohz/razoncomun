@@ -34,10 +34,10 @@ const ITEMS_DER = [
 ] as const;
 
 /**
- * Padding inferior común a los CINCO items. Con `items-end` en la fila, todos
- * acaban a la misma altura, así que un mismo `pb` garantiza que las etiquetas
- * compartan línea base pase lo que pase por encima (el botón central mide
- * distinto que los otros cuatro).
+ * Padding inferior común a los CUATRO items con etiqueta. Con `items-end` en
+ * la fila todos acaban a la misma altura, así que un mismo `pb` garantiza que
+ * las etiquetas compartan línea base pase lo que pase por encima. (El botón
+ * central ya no lo usa: no tiene etiqueta y se posiciona por su cuenta.)
  *
  * El valor sube el bloque icono+etiqueta hasta el centro ÓPTICO de la barra
  * de 74px. El centro geométrico son 19px —icono 21 + gap 4 + etiqueta 10.5 =
@@ -87,32 +87,39 @@ export function MenuInferior() {
         aria-label="Menú de la app"
         className="fixed inset-x-0 bottom-0 z-50 border-t border-linea bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur min-[960px]:hidden"
       >
-        {/* items-end + `PB_ITEM` en todos: así TODAS las etiquetas (incluida
-            "El mes") comparten línea base. El botón central sube con margen
-            negativo, no con `relative -top-4`, que arrastraba también su texto
-            y lo desalineaba. El padding lleva el bloque icono+etiqueta al
-            centro óptico de la barra de 74px (antes con `pb-2` quedaba pegado
-            abajo) y, de paso, devuelve a la burbuja del centro los ~16px que
-            sobresalen por encima de la barra. */}
+        {/* items-end + `PB_ITEM` en los cuatro con etiqueta: así todas las
+            etiquetas comparten línea base, y el padding las lleva al centro
+            óptico de la barra de 74px (antes con `pb-2` quedaban pegadas
+            abajo). La burbuja del centro se alinea también por abajo, pero con
+            su propio `pb` — al no llevar texto no tiene línea base que
+            respetar. */}
         <div className="mx-auto flex h-[74px] max-w-[520px] items-end px-1">
           {ITEMS_IZQ.map(item)}
 
-          {/* El centro: la encuesta del mes, elevada y con el degradado del aro. */}
+          {/* El centro: la encuesta del mes, elevada y con el degradado del
+              aro. SIN etiqueta visible (decisión de Sergio, 02/08/2026): el
+              texto no encajaba bajo la burbuja y quitarlo permite bajarla.
+
+              Al no haber texto, el nombre viaja en `aria-label` — el icono es
+              decorativo (`aria-hidden`), así que sin él un lector de pantalla
+              anunciaría el enlace solo por su destino ("/mes").
+
+              Su posición ya no depende de `PB_ITEM` ni del margen negativo:
+              este `pb` la fija sola. 74 (barra) − 52 (burbuja) + 10 que
+              sobresale = 32. Subir el número la baja, y viceversa. */}
           <Link
             href="/mes"
+            aria-label="El mes"
             aria-current={activo('/mes') ? 'page' : undefined}
-            className={cn('flex flex-col items-center gap-1 px-2 no-underline', PB_ITEM)}
+            className="flex items-end px-2 pb-[32px] no-underline"
           >
             <span
               className={cn(
-                '-mt-5 grid h-[52px] w-[52px] place-items-center rounded-full bg-grad text-white shadow-boton ring-4 ring-white',
+                'grid h-[52px] w-[52px] place-items-center rounded-full bg-grad text-white shadow-boton ring-4 ring-white',
                 activo('/mes') && 'ring-linea',
               )}
             >
               <IconoMes />
-            </span>
-            <span className={cn('text-[10.5px] font-bold leading-none', activo('/mes') ? 'text-titular' : 'text-gris')}>
-              El mes
             </span>
           </Link>
 
