@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { Boton } from '@/components/ui/Boton';
 import { Chip } from '@/components/ui/Chip';
+import { TiraDeslizable, ItemTira } from '@/components/ui/TiraDeslizable';
 import { BarraOrdenarBuscar } from '@/components/participacion/BarraOrdenarBuscar';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
 import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
@@ -99,16 +100,23 @@ export default async function PropuestasPage({
       {/* El orden (Trending/Top/Nuevos) ya no va en chips: vive en la barra
           "Ordenar por + buscar" encima de la lista (petición de Sergio). Los
           chips de estado se mantienen tal cual. */}
-      <div className="mt-10 flex flex-wrap justify-center gap-2.5">
-        <Chip href={hrefFiltro({ status: '' })} activo={!status}>
-          Todos los estados
-        </Chip>
-        {ORDEN_ESTADOS.map((s) => (
-          <Chip key={s} href={hrefFiltro({ status: s })} activo={status === s}>
-            {ETIQUETA_ESTADO[s]}
+      {/* En móvil los 8 estados hacían wrap en 2-3 filas y estropeaban el
+          arranque de la página (mismo problema que el blog): una fila
+          deslizable con flechas ‹ › que invitan al gesto. */}
+      <TiraDeslizable alinear="centro" className="mt-10">
+        <ItemTira>
+          <Chip href={hrefFiltro({ status: '' })} activo={!status}>
+            Todos los estados
           </Chip>
+        </ItemTira>
+        {ORDEN_ESTADOS.map((s) => (
+          <ItemTira key={s}>
+            <Chip href={hrefFiltro({ status: s })} activo={status === s}>
+              {ETIQUETA_ESTADO[s]}
+            </Chip>
+          </ItemTira>
         ))}
-      </div>
+      </TiraDeslizable>
 
       <div className="mx-auto mt-10 grid max-w-[1080px] gap-8 min-[860px]:grid-cols-[220px_1fr]">
         <aside>

@@ -10,6 +10,7 @@ import {
   type ResultadoOpcion,
 } from '@/lib/participacion/encuesta-mes';
 import { EncuestaPlayer } from './EncuestaPlayer';
+import { TiraDeslizable } from '@/components/ui/TiraDeslizable';
 import { cn } from '@/lib/cn';
 import type { Propuesta } from '@/lib/participacion/types';
 
@@ -99,14 +100,11 @@ export default async function MesPage({
         )}
       </header>
 
-      {/* Cinta de meses: el registro anual. En móvil UNA fila deslizable
-          (mismo patrón que los filtros del blog — antes hacía wrap en dos
-          líneas); en ≥720px, centrada con wrap como siempre. */}
-      <div className="relative -mx-4 mt-7 min-[720px]:mx-auto min-[720px]:max-w-[820px]">
-        <nav
-          aria-label="Meses del año"
-          className="flex gap-2 overflow-x-auto px-4 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden min-[720px]:flex-wrap min-[720px]:justify-center min-[720px]:overflow-visible min-[720px]:px-0"
-        >
+      {/* Cinta de meses: el registro anual. TiraDeslizable compartida (una
+          fila con flechas ‹ › en móvil, wrap centrado en escritorio) — mismo
+          gesto que blog y propuestas. */}
+      <div className="mt-7 min-[720px]:mx-auto min-[720px]:max-w-[820px]">
+        <TiraDeslizable alinear="centro">
           {MESES.map((nombre, i) => {
             const k = `${anyo}-${String(i + 1).padStart(2, '0')}`;
             const activo = k === mes;
@@ -130,11 +128,7 @@ export default async function MesPage({
               </Link>
             );
           })}
-        </nav>
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-fondo to-transparent min-[720px]:hidden"
-        />
+        </TiraDeslizable>
       </div>
 
       <div className="mx-auto mt-8 max-w-[640px]">
