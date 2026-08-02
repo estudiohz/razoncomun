@@ -186,6 +186,18 @@ export function EncuestaPlayer({
               ? 'Gracias por participar. Abajo tienes cómo van los resultados.'
               : `Has respondido ${respondidas} de ${total}. Lo marcado ya cuenta; puedes completar las que faltan cuando quieras.`}
           </p>
+          {respondidas < total && (
+            <button
+              type="button"
+              onClick={() => {
+                const primera = preguntas.findIndex((p) => respuestas[p.id] === undefined);
+                if (primera !== -1) setIndice(primera);
+              }}
+              className="mt-4 w-full rounded-boton bg-accion px-5 py-3 text-[14px] font-bold text-white shadow-boton"
+            >
+              Responder las que faltan ({total - respondidas})
+            </button>
+          )}
           <ul className="mt-4 space-y-2">
             {preguntas.map((p, i) => {
               const r = respuestas[p.id];
