@@ -33,6 +33,18 @@ const ITEMS_DER = [
   { href: '/panel/perfil', label: 'Perfil', icono: IconoTu },
 ] as const;
 
+/**
+ * Padding inferior común a los CINCO items. Con `items-end` en la fila, todos
+ * acaban a la misma altura, así que un mismo `pb` garantiza que las etiquetas
+ * compartan línea base pase lo que pase por encima (el botón central mide
+ * distinto que los otros cuatro).
+ *
+ * El valor centra el bloque icono+etiqueta en la barra de 74px:
+ * icono 21 + gap 4 + etiqueta 10.5 = 35.5 → (74 − 35.5) / 2 ≈ 19.
+ * Si cambia la altura de la barra o el tamaño del icono, recalcular aquí.
+ */
+const PB_ITEM = 'pb-[19px]';
+
 export function MenuInferior() {
   const pathname = usePathname() ?? '/';
   const esApp = useEsApp();
@@ -50,7 +62,8 @@ export function MenuInferior() {
       href={i.href}
       aria-current={activo(i.href, i.exacto) ? 'page' : undefined}
       className={cn(
-        'flex min-w-0 flex-1 flex-col items-center gap-1 pb-2 pt-2.5 text-[10.5px] font-bold leading-none no-underline',
+        'flex min-w-0 flex-1 flex-col items-center gap-1 text-[10.5px] font-bold leading-none no-underline',
+        PB_ITEM,
         activo(i.href, i.exacto) ? 'text-titular' : 'text-gris',
       )}
     >
@@ -69,12 +82,13 @@ export function MenuInferior() {
         aria-label="Menú de la app"
         className="fixed inset-x-0 bottom-0 z-50 border-t border-linea bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur min-[960px]:hidden"
       >
-        {/* items-end + mismo padding inferior en todos: así TODAS las
-            etiquetas (incluida "El mes") comparten línea base. El botón
-            central sube con margen negativo, no con `relative -top-4`, que
-            arrastraba también su texto y lo desalineaba. Barra 10px más alta
-            para que la burbuja elevada quepa sin recortarse (petición de
-            Sergio, 02/08/2026). */}
+        {/* items-end + `PB_ITEM` en todos: así TODAS las etiquetas (incluida
+            "El mes") comparten línea base. El botón central sube con margen
+            negativo, no con `relative -top-4`, que arrastraba también su texto
+            y lo desalineaba. El padding centra el bloque icono+etiqueta en la
+            barra de 74px (antes con `pb-2` quedaba pegado abajo) y, de paso,
+            devuelve a la burbuja del centro los ~11px que sobresalen por
+            encima de la barra. */}
         <div className="mx-auto flex h-[74px] max-w-[520px] items-end px-1">
           {ITEMS_IZQ.map(item)}
 
@@ -82,7 +96,7 @@ export function MenuInferior() {
           <Link
             href="/mes"
             aria-current={activo('/mes') ? 'page' : undefined}
-            className="flex flex-col items-center gap-1 px-2 pb-2 no-underline"
+            className={cn('flex flex-col items-center gap-1 px-2 no-underline', PB_ITEM)}
           >
             <span
               className={cn(
