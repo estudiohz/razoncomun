@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { requireUsuario } from '@/lib/auth/niveles';
 import { contarReportesAbiertos } from '@/lib/participacion/reports';
 import { contarBorradores } from '@/lib/participacion/drafts';
+import { progresoEncuestaDelMes } from '@/lib/participacion/encuesta-mes';
 
 /**
  * Dashboard del panel (D-U3). Los widgets son ADITIVOS por rol: un afiliado ve
@@ -67,6 +68,7 @@ export default async function PanelInicioPage() {
   ]);
 
   const puedeModerar = Boolean(esAdmin) || Boolean(esEditor);
+  const encuesta = await progresoEncuestaDelMes(supabase, user.id).catch(() => null);
   const afiliacionActiva = miembros?.find((m) => m.status === 'active');
   const nombre = perfil.display_name?.trim() || perfil.email?.split('@')[0] || '';
 
@@ -89,6 +91,45 @@ export default async function PanelInicioPage() {
           Desde aquí gestionas tu cuenta, tu participación y tu afiliación.
         </p>
       </header>
+
+      {/* La encuesta del mes, siempre lo primero: la "especie de obligación"
+          amable — un recordatorio con progreso, nunca un bloqueo. */}
+      {encuesta && (
+        <Tarjeta titulo={`Encuesta del mes: ${encuesta.titulo}`} acento>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-[180px] flex-1">
+              <p className="text-[13.5px] font-bold text-titular">
+                {encuesta.respondidas === encuesta.total
+                  ? `Completada ✓ (${encuesta.total} de ${encuesta.total})`
+                  : encuesta.respondidas > 0
+                    ? `${encuesta.respondidas} de ${encuesta.total} respondidas — puedes seguir cuando quieras`
+                    : `${encuesta.total} preguntas · 2 minutos`}
+              </p>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                <div
+                  className="h-full rounded-full bg-grad"
+                  style={{ width: `${Math.round((encuesta.respondidas / encuesta.total) * 100)}%` }}
+                />
+              </div>
+              <p className="mt-1.5 text-[12px] text-gris">
+                Cierra el{' '}
+                {new Date(encuesta.cierra).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}
+                . Lo marcado ya cuenta aunque no la termines.
+              </p>
+            </div>
+            <Link
+              href="/mes"
+              className="rounded-boton bg-accion px-5 py-2.5 text-[13.5px] font-bold text-white no-underline shadow-boton"
+            >
+              {encuesta.respondidas === encuesta.total
+                ? 'Revisar respuestas'
+                : encuesta.respondidas > 0
+                  ? 'Continuar'
+                  : 'Empezar'}
+            </Link>
+          </div>
+        </Tarjeta>
+      )}
 
       {/* Avisos accionables primero: lo que le falta al usuario por hacer. */}
       {tieneContrasena === false && (

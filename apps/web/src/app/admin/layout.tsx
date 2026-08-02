@@ -78,7 +78,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             >
               Mi perfil
             </Link>
-            <Link href="/" className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular">
+            <Link href="/?web=1" className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular">
               Ver la web
             </Link>
             <form action={cerrarSesion}>

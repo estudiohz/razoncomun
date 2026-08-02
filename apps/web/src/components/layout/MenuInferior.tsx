@@ -4,37 +4,42 @@ import type React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/cn';
+import { useEsApp } from '@/lib/useEsApp';
 
 /**
  * Menú inferior fijo de la app (móvil, <960px). El elemento central y
  * prominente es "El mes" — la encuesta del mes (0040), que es a lo que Sergio
  * quiere que se llegue en dos toques desde el icono de la app.
  *
- * Los otros cuatro los elegí así:
- * - Inicio y Propuestas: el qué (leer) y el dónde participar a diario.
- * - Cambios: el bucle de retorno — que el resultado de participar esté a un
- *   toque es lo que lo hace creíble.
- * - Tú (/panel): todo lo personal (perfil, mis propuestas, afiliación) ya
- *   vive unificado ahí; un anónimo aterriza en /entrar por el middleware,
- *   que es exactamente el funnel deseado.
+ * Los otros cuatro (para quien está en modo app, que es el único que lo ve):
+ * - Inicio es el PANEL, no la home corporativa — decisión de Sergio: el
+ *   logueado entra a un entorno colaborativo, no a la portada de captación
+ *   (que además le redirige aquí desde el middleware).
+ * - Propuestas: donde se participa a diario.
+ * - Cambios: el bucle de retorno a un toque es lo que lo hace creíble.
+ * - Perfil: datos, contraseña, afiliación.
  *
  * No se monta en /admin: el panel de administración tiene su propio chrome y
  * este menú es de la app ciudadana. En escritorio (≥960px) desaparece — ahí
  * está la nav superior completa.
  */
 const ITEMS_IZQ = [
-  { href: '/', label: 'Inicio', exacto: true, icono: IconoInicio },
+  { href: '/panel', label: 'Inicio', exacto: true, icono: IconoInicio },
   { href: '/propuestas', label: 'Propuestas', icono: IconoPropuestas },
 ] as const;
 
 const ITEMS_DER = [
   { href: '/cambios', label: 'Cambios', icono: IconoCambios },
-  { href: '/panel', label: 'Tú', icono: IconoTu },
+  { href: '/panel/perfil', label: 'Perfil', icono: IconoTu },
 ] as const;
 
 export function MenuInferior() {
   const pathname = usePathname() ?? '/';
-  if (pathname.startsWith('/admin')) return null;
+  const esApp = useEsApp();
+  // Solo en "modo app" (instalada como PWA o con sesión): el visitante
+  // anónimo de navegador ve la web corporativa limpia — y el widget de chat,
+  // que ocupa justo la esquina que aquí taparíamos.
+  if (pathname.startsWith('/admin') || !esApp) return null;
 
   const activo = (href: string, exacto?: boolean) =>
     exacto ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);

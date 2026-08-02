@@ -22,6 +22,16 @@ export async function middleware(request: NextRequest) {
   const { response, supabase, user } = await updateSession(request);
   const { pathname } = request.nextUrl;
 
+  // Un logueado que entra en la portada va directo a su entorno colaborativo
+  // (decisión de Sergio, 02/08/2026): la home corporativa es de captación y a
+  // quien ya está dentro no le aporta. Excepción: `/?web=1` — es el destino de
+  // "Ver la web" en las cabeceras de los paneles, que existe justo para eso.
+  if (pathname === '/' && user && !request.nextUrl.searchParams.has('web')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/panel';
+    return NextResponse.redirect(url);
+  }
+
   const esRutaPanel = pathname.startsWith('/panel') || pathname.startsWith('/perfil');
   const esRutaAdmin = pathname.startsWith('/admin');
 

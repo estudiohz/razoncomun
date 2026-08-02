@@ -82,7 +82,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
               </span>
             </p>
             <Link
-              href="/"
+              href="/?web=1"
               className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular"
             >
               Ver la web

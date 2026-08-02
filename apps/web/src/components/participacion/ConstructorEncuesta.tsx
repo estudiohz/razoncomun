@@ -9,6 +9,8 @@ interface PreguntaBorrador {
   kind: TipoPregunta;
   text: string;
   opcionesTexto: string; // una por línea, solo aplica a single/multiple
+  info: string; // 0041: info ampliada desplegable bajo la pregunta
+  propuestaRef: string; // 0041: slug o URL del hilo de origen (opcional)
 }
 
 const ETIQUETA_TIPO: Record<TipoPregunta, string> = {
@@ -21,11 +23,11 @@ const ETIQUETA_TIPO: Record<TipoPregunta, string> = {
 /** Constructor multi-pregunta del admin (single/multiple/scale/texto), con audiencia y cierre. */
 export function ConstructorEncuesta({ territorios }: { territorios: { id: number; name: string }[] }) {
   const [preguntas, setPreguntas] = useState<PreguntaBorrador[]>([
-    { kind: 'single', text: '', opcionesTexto: '' },
+    { kind: 'single', text: '', opcionesTexto: '', info: '', propuestaRef: '' },
   ]);
 
   function anadirPregunta() {
-    setPreguntas((prev) => [...prev, { kind: 'single', text: '', opcionesTexto: '' }]);
+    setPreguntas((prev) => [...prev, { kind: 'single', text: '', opcionesTexto: '', info: '', propuestaRef: '' }]);
   }
 
   function quitarPregunta(i: number) {
@@ -46,6 +48,8 @@ export function ConstructorEncuesta({ territorios }: { territorios: { id: number
           p.kind === 'single' || p.kind === 'multiple'
             ? p.opcionesTexto.split('\n').map((o) => o.trim()).filter(Boolean)
             : null,
+        info: p.info.trim() || null,
+        proposal_ref: p.propuestaRef.trim() || null,
       }));
     formData.set('preguntas_json', JSON.stringify(preguntasJson));
     return crearEncuestaAction(formData);
@@ -95,6 +99,10 @@ export function ConstructorEncuesta({ territorios }: { territorios: { id: number
         </label>
       </div>
 
+      <Campo etiqueta="Encuesta del mes (opcional — la del botón central de la app)">
+        <input type="month" name="featured_month" className="rounded-boton border border-linea px-4 py-2.5 text-[14px]" />
+      </Campo>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Campo etiqueta="Abre">
           <input type="datetime-local" name="opens_at" required className="w-full rounded-boton border border-linea px-4 py-2.5 text-[14px]" />
@@ -137,6 +145,19 @@ export function ConstructorEncuesta({ territorios }: { territorios: { id: number
                       className="w-full rounded-boton border border-linea px-4 py-2 text-[13.5px]"
                     />
                   )}
+                  <textarea
+                    value={p.info}
+                    onChange={(e) => actualizarPregunta(i, { info: e.target.value })}
+                    placeholder="Info ampliada (se despliega bajo la pregunta: argumentos, contexto…)"
+                    rows={2}
+                    className="w-full rounded-boton border border-linea px-4 py-2 text-[13.5px]"
+                  />
+                  <input
+                    value={p.propuestaRef}
+                    onChange={(e) => actualizarPregunta(i, { propuestaRef: e.target.value })}
+                    placeholder="Propuesta de origen (slug o URL del hilo, opcional)"
+                    className="w-full rounded-boton border border-linea px-4 py-2 text-[13.5px]"
+                  />
                 </div>
                 <button
                   type="button"

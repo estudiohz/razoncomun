@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { ChatWidgetFlotante } from '@/components/chat/ChatWidgetFlotante';
+import { useEsApp } from '@/lib/useEsApp';
 
 /**
  * Decide si se pinta el chrome público (nav + `<main>` centrado + footer) o
@@ -46,7 +47,20 @@ export function ChromePublico({
       {nav}
       <main>{children}</main>
       {footer}
-      {!esPregunta && <ChatWidgetFlotante />}
+      {!esPregunta && <ChatSoloVisitantes />}
     </>
   );
+}
+
+/**
+ * El widget flotante es la herramienta de CAPTAR al visitante; en "modo app"
+ * (sesión o PWA instalada) sobra — el logueado tiene "Pregunta a la IA" en el
+ * menú — y además su burbuja tapaba el elemento derecho del menú inferior en
+ * móvil (reporte de Sergio, 02/08/2026). Como ambas superficies usan el mismo
+ * hook en espejo, nunca coinciden.
+ */
+function ChatSoloVisitantes() {
+  const esApp = useEsApp();
+  if (esApp !== false) return null;
+  return <ChatWidgetFlotante />;
 }

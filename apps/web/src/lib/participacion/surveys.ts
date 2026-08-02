@@ -37,7 +37,17 @@ export interface NuevaEncuestaInput {
   results_visibility: Survey['results_visibility'];
   opens_at: string;
   closes_at: string;
-  preguntas: { kind: TipoPregunta; text: string; options: string[] | null }[];
+  /** 0041: mes del que esta encuesta es "la del mes" ('YYYY-MM' o null). */
+  featured_month: string | null;
+  preguntas: {
+    kind: TipoPregunta;
+    text: string;
+    options: string[] | null;
+    /** 0041: info ampliada desplegable bajo la pregunta. */
+    info: string | null;
+    /** 0041: propuesta de origen (uuid ya resuelto). */
+    proposal_id: string | null;
+  }[];
 }
 
 /** Constructor de encuestas (admin/coordinator). Ver admin-guard.ts. */
@@ -57,6 +67,7 @@ export async function crearEncuesta(
       results_visibility: input.results_visibility,
       opens_at: input.opens_at,
       closes_at: input.closes_at,
+      featured_month: input.featured_month ? `${input.featured_month}-01` : null,
       created_by: createdBy,
     })
     .select('*')
@@ -70,6 +81,8 @@ export async function crearEncuesta(
       kind: p.kind,
       text: p.text,
       options: p.options && p.options.length > 0 ? { options: p.options } : null,
+      info: p.info,
+      proposal_id: p.proposal_id,
     }));
     const { error: e2 } = await supabase.from('survey_questions').insert(filas);
     if (e2) throw e2;

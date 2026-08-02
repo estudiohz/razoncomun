@@ -19,8 +19,40 @@ export async function crearEncuestaAction(formData: FormData) {
   const opens_at = formData.get('opens_at') as string;
   const closes_at = formData.get('closes_at') as string;
 
+  const featuredRaw = (formData.get('featured_month') as string)?.trim() || null;
+  if (featuredRaw && !/^\d{4}-\d{2}$/.test(featuredRaw)) {
+    throw new Error('El mes destacado debe tener formato AAAA-MM.');
+  }
+
   const preguntasRaw = (formData.get('preguntas_json') as string) ?? '[]';
-  const preguntas = JSON.parse(preguntasRaw) as { kind: TipoPregunta; text: string; options: string[] | null }[];
+  const preguntasEntrada = JSON.parse(preguntasRaw) as {
+    kind: TipoPregunta;
+    text: string;
+    options: string[] | null;
+    info: string | null;
+    proposal_ref: string | null; // slug, uuid o URL del hilo — se resuelve aquí
+  }[];
+
+  // Resolver la referencia de propuesta de cada pregunta (0041): quien monta
+  // la encuesta pega el slug o la URL del hilo; guardar el uuid es cosa nuestra.
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const preguntas = [];
+  for (const p of preguntasEntrada) {
+    let proposal_id: string | null = null;
+    const ref = p.proposal_ref?.trim().replace(/\/+$/, '').split('/').pop() ?? null;
+    if (ref) {
+      if (UUID_RE.test(ref)) {
+        proposal_id = ref;
+      } else {
+        const { data } = await supabase.from('proposals').select('id').eq('slug', ref).maybeSingle();
+        if (!data) {
+          throw new Error(`No se encuentra ninguna propuesta con el slug «${ref}» (pregunta: ${p.text.slice(0, 40)}…).`);
+        }
+        proposal_id = data.id;
+      }
+    }
+    preguntas.push({ kind: p.kind, text: p.text, options: p.options, info: p.info, proposal_id });
+  }
 
   if (!title || !audience || !results_visibility || !opens_at || !closes_at) {
     throw new Error('Faltan campos obligatorios de la encuesta.');
@@ -38,6 +70,7 @@ export async function crearEncuestaAction(formData: FormData) {
     results_visibility,
     opens_at: new Date(opens_at).toISOString(),
     closes_at: new Date(closes_at).toISOString(),
+    featured_month: featuredRaw,
     preguntas,
   });
 
