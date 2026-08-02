@@ -39,11 +39,16 @@ const ITEMS_DER = [
  * compartan línea base pase lo que pase por encima (el botón central mide
  * distinto que los otros cuatro).
  *
- * El valor centra el bloque icono+etiqueta en la barra de 74px:
- * icono 21 + gap 4 + etiqueta 10.5 = 35.5 → (74 − 35.5) / 2 ≈ 19.
- * Si cambia la altura de la barra o el tamaño del icono, recalcular aquí.
+ * El valor sube el bloque icono+etiqueta hasta el centro ÓPTICO de la barra
+ * de 74px. El centro geométrico son 19px —icono 21 + gap 4 + etiqueta 10.5 =
+ * 35.5 → (74 − 35.5) / 2— pero ahí se ve bajo: el safe-area del móvil añade
+ * relleno por debajo y la burbuja del centro carga peso visual arriba. Sergio
+ * pidió 5px más (02/08/2026), de donde salen los 24.
+ *
+ * Si cambia la altura de la barra o el tamaño del icono: recalcular el centro
+ * geométrico con la fórmula de arriba y volver a sumarle los 5.
  */
-const PB_ITEM = 'pb-[19px]';
+const PB_ITEM = 'pb-[24px]';
 
 export function MenuInferior() {
   const pathname = usePathname() ?? '/';
@@ -85,10 +90,10 @@ export function MenuInferior() {
         {/* items-end + `PB_ITEM` en todos: así TODAS las etiquetas (incluida
             "El mes") comparten línea base. El botón central sube con margen
             negativo, no con `relative -top-4`, que arrastraba también su texto
-            y lo desalineaba. El padding centra el bloque icono+etiqueta en la
-            barra de 74px (antes con `pb-2` quedaba pegado abajo) y, de paso,
-            devuelve a la burbuja del centro los ~11px que sobresalen por
-            encima de la barra. */}
+            y lo desalineaba. El padding lleva el bloque icono+etiqueta al
+            centro óptico de la barra de 74px (antes con `pb-2` quedaba pegado
+            abajo) y, de paso, devuelve a la burbuja del centro los ~16px que
+            sobresalen por encima de la barra. */}
         <div className="mx-auto flex h-[74px] max-w-[520px] items-end px-1">
           {ITEMS_IZQ.map(item)}
 
