@@ -15,7 +15,7 @@ const OAUTH_FACEBOOK_ACTIVO = process.env.NEXT_PUBLIC_OAUTH_FACEBOOK_ENABLED ===
 type Modo = 'password' | 'magico';
 type Estado = { tipo: 'idle' | 'enviando' | 'ok' | 'error'; mensaje?: string };
 
-export function RegistroForm() {
+export function RegistroForm({ googleActivo }: { googleActivo?: boolean }) {
   const [modo, setModo] = useState<Modo>('password');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -221,7 +221,7 @@ export function RegistroForm() {
       <div className="grid grid-cols-2 gap-3">
         <BotonOAuth
           proveedor="google"
-          activo={OAUTH_GOOGLE_ACTIVO}
+          activo={googleActivo ?? OAUTH_GOOGLE_ACTIVO}
           habilitadoPorConsentimiento={consiente}
         >
           Google

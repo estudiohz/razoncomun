@@ -147,6 +147,28 @@ export default async function PanelInicioPage() {
         </Tarjeta>
       )}
 
+      {/* Perfil incompleto: típico de quien entra con Google — trae email y
+          poco más (petición de Sergio: sugerir SIEMPRE completar datos).
+          Desaparece solo al rellenar nombre y provincia. */}
+      {(!perfil.display_name?.trim() || !perfil.origin_province_id) && (
+        <Tarjeta titulo="Completa tu perfil" acento>
+          <p>
+            {!perfil.display_name?.trim() && !perfil.origin_province_id
+              ? 'Nos falta tu nombre y tu provincia.'
+              : !perfil.display_name?.trim()
+                ? 'Nos falta tu nombre.'
+                : 'Nos falta tu provincia.'}{' '}
+            Con ellos tu participación cuenta donde vives y firma como tú — un minuto.
+          </p>
+          <Link
+            href="/panel/perfil"
+            className="mt-3 inline-block rounded-boton bg-accion px-4 py-2.5 text-[13px] font-bold text-white no-underline shadow-boton"
+          >
+            Completar mis datos
+          </Link>
+        </Tarjeta>
+      )}
+
       {perfil.level === 'registered' && (
         <Tarjeta titulo="Aún no eres afiliado" acento>
           <p>

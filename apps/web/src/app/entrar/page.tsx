@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
+import { googleOAuthActivo } from '@/lib/auth/oauth';
 import { LoginForm } from './LoginForm';
 
 export const metadata: Metadata = metadatosPagina({
@@ -32,7 +33,7 @@ export default async function EntrarPage({
               {mensajeError(error)}
             </p>
           ) : null}
-          <LoginForm next={next ?? '/panel'} />
+          <LoginForm next={next ?? '/panel'} googleActivo={await googleOAuthActivo()} />
         </div>
       </div>
     </Contenedor>

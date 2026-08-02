@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { RegistroForm } from './RegistroForm';
+import { googleOAuthActivo } from '@/lib/auth/oauth';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Crear cuenta',
@@ -26,7 +27,7 @@ export default function RegistroPage() {
           </p>
         </div>
         <div className="mt-8 rounded-tarjeta border border-linea bg-panel p-7 shadow-nav">
-          <RegistroForm />
+          <RegistroForm googleActivo={await googleOAuthActivo()} />
         </div>
       </div>
     </Contenedor>

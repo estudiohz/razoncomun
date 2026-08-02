@@ -9,6 +9,8 @@ import { getUsuarioYPerfil } from '@/lib/auth/niveles';
 import { contarNoLeidas, listarNotificaciones } from '@/lib/participacion/notifications';
 import type { Notificacion } from '@/lib/participacion/notifications';
 import { navPrincipal, redesSociales, site } from '@/lib/site';
+import { googleOAuthActivo } from '@/lib/auth/oauth';
+import { BotonEntrarGoogle } from '@/components/auth/GoogleLogin';
 
 /** Deriva la inicial del avatar del nombre, o del email como fallback. */
 function inicialDe(nombre: string, email: string | null): string {
@@ -26,6 +28,8 @@ function inicialDe(nombre: string, email: string | null): string {
  */
 export async function Nav() {
   const { supabase, user, perfil } = await getUsuarioYPerfil();
+  // Runtime, no bandera de build: GoTrue es la fuente de verdad (lib/auth/oauth.ts).
+  const googleActivo = !user && (await googleOAuthActivo());
 
   // Admin/editor se resuelve con los MISMOS RPC de rc-02 (is_admin/is_editor)
   // que usan los guards, nunca con un claim cacheado del JWT.
@@ -97,14 +101,16 @@ export async function Nav() {
                   <MenuUsuario nombre={nombre} inicial={inicial} mostrarAdmin={mostrarAdmin} />
                 ) : (
                   <>
-                    <Link
-                      href="/entrar"
-                      className="text-sm font-medium text-cuerpo no-underline hover:text-titular"
-                    >
-                      Entrar
-                    </Link>
-                    <Boton href="/afiliate" variante="grad" className="px-[22px] py-[9px] text-sm">
-                      Afíliate
+                    {/* Registro en un clic (petición de Sergio): login y alta
+                        son el mismo gesto con Google. Solo si GoTrue lo tiene
+                        activo de verdad (runtime, no bandera de build). */}
+                    {googleActivo && <BotonEntrarGoogle compacto />}
+                    {/* "Únete" y no "Afíliate" (decisión de Sergio, 02/08):
+                        la puerta grande es unirse gratis; la cuota se pide
+                        después, con el usuario ya dentro (tarjeta del panel).
+                        Afíliate sigue en footer, burger y menú de usuario. */}
+                    <Boton href="/entrar" variante="grad" className="px-[22px] py-[9px] text-sm">
+                      Únete
                     </Boton>
                   </>
                 )}

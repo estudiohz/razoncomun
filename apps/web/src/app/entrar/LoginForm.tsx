@@ -13,7 +13,7 @@ const OAUTH_FACEBOOK_ACTIVO = process.env.NEXT_PUBLIC_OAUTH_FACEBOOK_ENABLED ===
 type Modo = 'password' | 'magico';
 type Estado = { tipo: 'idle' | 'enviando' | 'ok' | 'error'; mensaje?: string };
 
-export function LoginForm({ next }: { next: string }) {
+export function LoginForm({ next, googleActivo }: { next: string; googleActivo?: boolean }) {
   const router = useRouter();
   const [modo, setModo] = useState<Modo>('password');
   const [email, setEmail] = useState('');
@@ -139,7 +139,7 @@ export function LoginForm({ next }: { next: string }) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <BotonOAuth proveedor="google" activo={OAUTH_GOOGLE_ACTIVO} next={next}>
+        <BotonOAuth proveedor="google" activo={googleActivo ?? OAUTH_GOOGLE_ACTIVO} next={next}>
           Google
         </BotonOAuth>
         <BotonOAuth proveedor="facebook" activo={OAUTH_FACEBOOK_ACTIVO} next={next}>

@@ -55,8 +55,8 @@ export function Hero() {
               corrige — como debería haber sido siempre.
             </p>
             <div className="fade d1 mt-[30px] flex flex-wrap items-center gap-3.5">
-              <Boton href="/afiliate" variante="grad">
-                Afíliate
+              <Boton href="/entrar" variante="grad">
+                Únete
               </Boton>
               <Boton href="/manifiesto" variante="heroSuave">
                 Cómo funciona

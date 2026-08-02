@@ -124,6 +124,16 @@ export function MenuUsuario({ nombre, inicial, mostrarAdmin }: MenuUsuarioProps)
             Mis propuestas
           </Link>
 
+          <Link
+            href="/panel/afiliacion"
+            role="menuitem"
+            className={itemClase}
+            onClick={() => setAbierto(false)}
+          >
+            <IconoAfiliate />
+            Afíliate
+          </Link>
+
           {mostrarAdmin && (
             <Link href="/admin" role="menuitem" className={itemClase} onClick={() => setAbierto(false)}>
               <IconoAdmin />
@@ -177,6 +187,19 @@ function IconoPropuestas() {
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M5 4.5h14v12H8.5L5 20V4.5z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconoAfiliate() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 21s-7-4.6-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.4 12 21 12 21z"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinejoin="round"
