@@ -206,7 +206,7 @@ export default async function MesPage({
               {encuesta.preguntas.map((p) => (
                 <ResultadoPregunta
                   key={p.id}
-                  pregunta={p.text}
+                  pregunta={p}
                   filas={resultados.filter((r) => r.question_id === p.id)}
                   miRespuesta={encuesta.misRespuestas.get(p.id) ?? null}
                 />
@@ -249,56 +249,90 @@ export default async function MesPage({
 }
 
 /**
- * Barras horizontales por opción, afiliados vs simpatizantes. Server, sin JS.
- * `miRespuesta` marca con un chip "Tu respuesta" la(s) opción(es) que eligió
- * quien mira — es la vista de solo-lectura de la encuesta cerrada (y también
- * acompaña al marcador de quien acaba de completar).
+ * Resultados de una pregunta al estilo clásico de encuesta (rediseño pedido
+ * por Sergio, 02/08/2026: "las típicas barras respecto al 100%"):
+ *
+ * - El PORCENTAJE sobre el total de votos de la pregunta manda: número grande
+ *   y ancho de barra = ese %. Antes la barra se escalaba contra la opción más
+ *   votada, que no es lo que espera nadie de una encuesta.
+ * - TODAS las opciones de la pregunta aparecen, también las de 0% — el
+ *   agregado solo trae lo votado, así que se parte de `pregunta.options` y se
+ *   mezcla (una opción con 0 votos que desaparece parece un error, no un 0).
+ * - La segmentación afiliados/simpatizantes se conserva DENTRO de la barra
+ *   (teal/gris proporcional) y en el detalle pequeño; el % es del total.
+ *
+ * Server component, sin JS. `miRespuesta` chip "Tu respuesta" (vista de solo
+ * lectura al cierre y acompañante del marcador al completar).
  */
 function ResultadoPregunta({
   pregunta,
   filas,
   miRespuesta,
 }: {
-  pregunta: string;
+  pregunta: { text: string; options: string[] | null };
   filas: ResultadoOpcion[];
   miRespuesta: unknown;
 }) {
-  const max = Math.max(1, ...filas.map((f) => f.afiliados + f.simpatizantes));
+  const porOpcion = new Map(filas.map((f) => [f.option_value, f]));
+  // Las opciones definidas mandan el orden; cualquier valor extra del
+  // agregado (texto libre, opciones antiguas) se añade detrás.
+  const opciones = [
+    ...(pregunta.options ?? []),
+    ...filas.map((f) => f.option_value).filter((v) => !(pregunta.options ?? []).includes(v)),
+  ];
+  const totalPregunta = filas.reduce((a, f) => a + f.afiliados + f.simpatizantes, 0);
   const esMia = (opcion: string) =>
     Array.isArray(miRespuesta) ? (miRespuesta as string[]).includes(opcion) : miRespuesta === opcion;
 
   return (
     <div className="rounded-tarjeta border border-linea bg-panel p-5">
-      <h3 className="text-[15px] font-extrabold text-titular">{pregunta}</h3>
-      <div className="mt-3 space-y-2.5">
-        {filas
-          .slice()
-          .sort((a, b) => b.afiliados + b.simpatizantes - (a.afiliados + a.simpatizantes))
-          .map((f) => {
-            const total = f.afiliados + f.simpatizantes;
-            return (
-              <div key={f.option_value}>
-                <div className="flex items-baseline justify-between gap-2 text-[13px]">
-                  <span className="font-semibold text-cuerpo">
-                    {f.option_value}
-                    {esMia(f.option_value) && (
-                      <span className="ml-2 rounded-full bg-accion px-2 py-0.5 text-[10.5px] font-bold text-white">
-                        Tu respuesta
-                      </span>
-                    )}
-                  </span>
-                  <span className="shrink-0 text-gris">
-                    {total} · {f.afiliados} afil. / {f.simpatizantes} simp.
-                  </span>
-                </div>
-                <div className="mt-1 flex h-3 overflow-hidden rounded-full bg-fondo">
-                  <div className="h-full bg-teal" style={{ width: `${(f.afiliados / max) * 100}%` }} />
-                  <div className="h-full bg-linea" style={{ width: `${(f.simpatizantes / max) * 100}%` }} />
-                </div>
+      <h3 className="text-[15px] font-extrabold text-titular">{pregunta.text}</h3>
+      <p className="mt-0.5 text-[12px] text-gris">
+        {totalPregunta} voto{totalPregunta === 1 ? '' : 's'}
+      </p>
+      <div className="mt-3 space-y-3">
+        {opciones.map((opcion) => {
+          const f = porOpcion.get(opcion);
+          const afiliados = f?.afiliados ?? 0;
+          const simpatizantes = f?.simpatizantes ?? 0;
+          const total = afiliados + simpatizantes;
+          const pct = totalPregunta > 0 ? Math.round((total / totalPregunta) * 100) : 0;
+          return (
+            <div key={opcion}>
+              <div className="flex items-baseline justify-between gap-2 text-[13.5px]">
+                <span className="min-w-0 font-semibold text-cuerpo">
+                  {opcion}
+                  {esMia(opcion) && (
+                    <span className="ml-2 rounded-full bg-accion px-2 py-0.5 text-[10.5px] font-bold text-white">
+                      Tu respuesta
+                    </span>
+                  )}
+                </span>
+                <span className="shrink-0 text-[16px] font-extrabold tabular-nums text-titular">
+                  {pct}%
+                </span>
               </div>
-            );
-          })}
-        {filas.length === 0 && <p className="text-[13px] text-gris">Sin respuestas registradas.</p>}
+              <div className="mt-1 flex h-3.5 overflow-hidden rounded-full bg-fondo">
+                {total > 0 && (
+                  <>
+                    <div
+                      className="h-full bg-teal"
+                      style={{ width: `${(afiliados / totalPregunta) * 100}%` }}
+                    />
+                    <div
+                      className="h-full bg-linea"
+                      style={{ width: `${(simpatizantes / totalPregunta) * 100}%` }}
+                    />
+                  </>
+                )}
+              </div>
+              <p className="mt-0.5 text-[11.5px] text-gris">
+                {total} voto{total === 1 ? '' : 's'} · {afiliados} afil. / {simpatizantes} simp.
+              </p>
+            </div>
+          );
+        })}
+        {opciones.length === 0 && <p className="text-[13px] text-gris">Sin respuestas registradas.</p>}
       </div>
     </div>
   );
