@@ -108,7 +108,12 @@ export function EncuestaPlayer({
             </p>
             <h2 className="mt-1.5 text-[17.5px] font-extrabold leading-snug text-titular">{p.text}</h2>
 
-            <div className="mt-4 flex flex-wrap gap-2.5">
+            {/* Múltiple: una opción POR LÍNEA a todo el ancho — con el wrap,
+                las opciones de texto corto y largo pesaban distinto y parecía
+                que unas importaban más que otras (feedback de Sergio). El
+                cuadradito ☐/☑ además comunica "puedes marcar varias", que el
+                botón-píldora no decía. Única: se mantienen las píldoras. */}
+            <div className={cn('mt-4', p.kind === 'multiple' ? 'flex flex-col gap-2' : 'flex flex-wrap gap-2.5')}>
               {(p.options ?? []).map((opcion) => {
                 const activa =
                   p.kind === 'multiple'
@@ -121,12 +126,26 @@ export function EncuestaPlayer({
                     onClick={() => responder(p, opcion)}
                     aria-pressed={activa}
                     className={cn(
-                      'min-h-[48px] flex-1 basis-[calc(50%-6px)] rounded-boton px-4 py-3 text-[14.5px] font-bold transition-colors min-[480px]:basis-auto min-[480px]:flex-none min-[480px]:px-6',
+                      'min-h-[48px] rounded-boton text-[14.5px] font-bold transition-colors',
+                      p.kind === 'multiple'
+                        ? 'flex w-full items-center gap-3 px-4 py-3 text-left'
+                        : 'flex-1 basis-[calc(50%-6px)] px-4 py-3 min-[480px]:basis-auto min-[480px]:flex-none min-[480px]:px-6',
                       activa
                         ? 'bg-accion text-white shadow-boton'
                         : 'border border-linea bg-white text-cuerpo hover:border-titular hover:text-titular',
                     )}
                   >
+                    {p.kind === 'multiple' && (
+                      <span
+                        aria-hidden
+                        className={cn(
+                          'grid h-5 w-5 shrink-0 place-items-center rounded-[6px] border-2 text-[12px]',
+                          activa ? 'border-white bg-white/20' : 'border-linea',
+                        )}
+                      >
+                        {activa ? '✓' : ''}
+                      </span>
+                    )}
                     {opcion}
                   </button>
                 );
