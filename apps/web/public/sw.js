@@ -10,11 +10,24 @@
  * Lo único que guarda en caché es la página offline y el logo, para que sin
  * conexión se vea un aviso digno en vez del dinosaurio del navegador.
  *
- * Si algún día se quiere offline de verdad (p. ej. leer el programa sin
- * cobertura), se amplía con una estrategia por ruta — no con un cache-all.
+ * ─────────────────────────────────────────────────────────────────────────
+ * ⚡ NAVIGATION PRELOAD (02/08/2026) — el arreglo de "la app instalada va
+ * lenta o no responde a la primera" (reporte de Sergio).
+ *
+ * Causa: en cuanto un SW registra un handler de `fetch` con
+ * `event.respondWith()`, TODA navegación pasa por él. Si el worker estaba
+ * dormido (lo normal tras unos segundos de inactividad, y más aún en una app
+ * instalada que se abre y cierra), el navegador debe ARRANCARLO primero y
+ * solo entonces se lanza la petición de red: 100-500 ms de retraso en el
+ * primer toque, justo la sensación de "no responde a la primera".
+ *
+ * `navigationPreload` lo elimina: el navegador dispara la petición de red EN
+ * PARALELO al arranque del worker, y aquí se consume esa respuesta ya en
+ * curso (`event.preloadResponse`) en vez de empezar un fetch nuevo.
+ * ─────────────────────────────────────────────────────────────────────────
  */
 // Subir la versión invalida la caché anterior en el 'activate' de más abajo.
-const CACHE = 'rc-offline-v2';
+const CACHE = 'rc-offline-v3';
 const OFFLINE_URL = '/offline.html';
 
 self.addEventListener('install', (event) => {
@@ -26,19 +39,34 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim()),
+    (async () => {
+      // Arranca la red en paralelo al worker en cada navegación.
+      if (self.registration.navigationPreload) {
+        await self.registration.navigationPreload.enable();
+      }
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
+      await self.clients.claim();
+    })(),
   );
 });
 
 self.addEventListener('fetch', (event) => {
   // Solo navegaciones de página: los assets y las llamadas a la API pasan de
-  // largo, directos a la red.
+  // largo, directos a la red (sin respondWith no hay intermediación alguna).
   if (event.request.mode !== 'navigate') return;
 
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(OFFLINE_URL)),
+    (async () => {
+      try {
+        // La respuesta que el navegador ya empezó a pedir mientras arrancaba
+        // este worker. Si no hay preload (navegador sin soporte), fetch normal.
+        const preloaded = await event.preloadResponse;
+        if (preloaded) return preloaded;
+        return await fetch(event.request);
+      } catch {
+        return (await caches.match(OFFLINE_URL)) ?? Response.error();
+      }
+    })(),
   );
 });

@@ -50,7 +50,7 @@ export function MenuInferior() {
       href={i.href}
       aria-current={activo(i.href, i.exacto) ? 'page' : undefined}
       className={cn(
-        'flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-bold no-underline',
+        'flex min-w-0 flex-1 flex-col items-center gap-1 pb-2 pt-2.5 text-[10.5px] font-bold leading-none no-underline',
         activo(i.href, i.exacto) ? 'text-titular' : 'text-gris',
       )}
     >
@@ -63,30 +63,36 @@ export function MenuInferior() {
     <>
       {/* Reserva el hueco del menú en el flujo: sin esto, el footer y el final
           de cada página quedarían tapados por la barra fija. */}
-      <div aria-hidden className="h-[calc(64px+env(safe-area-inset-bottom))] min-[960px]:hidden" />
+      <div aria-hidden className="h-[calc(74px+env(safe-area-inset-bottom))] min-[960px]:hidden" />
 
       <nav
         aria-label="Menú de la app"
         className="fixed inset-x-0 bottom-0 z-50 border-t border-linea bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur min-[960px]:hidden"
       >
-        <div className="mx-auto flex max-w-[520px] items-stretch px-1">
+        {/* items-end + mismo padding inferior en todos: así TODAS las
+            etiquetas (incluida "El mes") comparten línea base. El botón
+            central sube con margen negativo, no con `relative -top-4`, que
+            arrastraba también su texto y lo desalineaba. Barra 10px más alta
+            para que la burbuja elevada quepa sin recortarse (petición de
+            Sergio, 02/08/2026). */}
+        <div className="mx-auto flex h-[74px] max-w-[520px] items-end px-1">
           {ITEMS_IZQ.map(item)}
 
           {/* El centro: la encuesta del mes, elevada y con el degradado del aro. */}
           <Link
             href="/mes"
             aria-current={activo('/mes') ? 'page' : undefined}
-            className="relative -top-4 flex flex-col items-center gap-0.5 px-2 no-underline"
+            className="flex flex-col items-center gap-1 px-2 pb-2 no-underline"
           >
             <span
               className={cn(
-                'grid h-[52px] w-[52px] place-items-center rounded-full bg-grad text-white shadow-boton ring-4 ring-white',
+                '-mt-5 grid h-[52px] w-[52px] place-items-center rounded-full bg-grad text-white shadow-boton ring-4 ring-white',
                 activo('/mes') && 'ring-linea',
               )}
             >
               <IconoMes />
             </span>
-            <span className={cn('text-[10.5px] font-bold', activo('/mes') ? 'text-titular' : 'text-gris')}>
+            <span className={cn('text-[10.5px] font-bold leading-none', activo('/mes') ? 'text-titular' : 'text-gris')}>
               El mes
             </span>
           </Link>
