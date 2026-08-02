@@ -11,7 +11,7 @@ export const metadata: Metadata = metadatosPagina({
   noindex: true,
 });
 
-export default function RegistroPage() {
+export default async function RegistroPage() {
   return (
     <Contenedor as="section" className="py-16">
       <div className="mx-auto w-full max-w-[460px]">
