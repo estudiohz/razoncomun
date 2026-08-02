@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { responderPreguntaAction } from './actions';
 import { cn } from '@/lib/cn';
 import type { PreguntaMes } from '@/lib/participacion/encuesta-mes';
@@ -27,6 +28,7 @@ export function EncuestaPlayer({
   respuestasIniciales: Record<string, unknown>;
   cierra: string;
 }) {
+  const router = useRouter();
   const [respuestas, setRespuestas] = useState<Record<string, unknown>>(respuestasIniciales);
   const [error, setError] = useState<string | null>(null);
   const [, iniciar] = useTransition();
@@ -55,7 +57,14 @@ export function EncuestaPlayer({
       if (!res.ok) {
         setRespuestas((r) => ({ ...r, [pregunta.id]: previo }));
         setError(res.error ?? 'No se ha podido guardar.');
+        return;
       }
+      // ¿Acaba de completar la última? Refrescar trae del servidor la sección
+      // de resultados (0043: el marcador es la recompensa por terminar) sin
+      // que tenga que recargar a mano.
+      const contestadas = new Set(Object.keys(respuestas));
+      contestadas.add(pregunta.id);
+      if (contestadas.size >= preguntas.length) router.refresh();
     });
   }
 

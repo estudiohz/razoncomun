@@ -68,8 +68,16 @@ export default async function MesPage({
       .lte('featured_month', `${anyo}-12-01`),
   ]);
 
+  // ¿Este usuario ha completado todas las preguntas?
+  const completada =
+    Boolean(encuesta && user) &&
+    encuesta!.preguntas.length > 0 &&
+    encuesta!.misRespuestas.size >= encuesta!.preguntas.length;
+
+  // El RPC (0043) es la autoridad: en on_close+abierta solo devuelve datos a
+  // quien completó. Aquí solo se decide si merece la pena llamarlo.
   const resultados =
-    encuesta && (!encuesta.abierta || encuesta.results_visibility === 'live')
+    encuesta && (!encuesta.abierta || encuesta.results_visibility === 'live' || completada)
       ? await resultadosEncuesta(supabase, encuesta.id)
       : [];
 
@@ -164,19 +172,39 @@ export default async function MesPage({
           </p>
         )}
 
-        {/* Resultados (cerrada, o en vivo si la visibilidad lo permite) */}
+        {/* Encuesta CERRADA con sesión: recordatorio de solo-lectura. Lo que
+            respondió cada uno se marca dentro de las barras de abajo. */}
+        {encuesta && !encuesta.abierta && user && encuesta.misRespuestas.size > 0 && (
+          <p className="rounded-tarjeta border border-linea bg-panel px-5 py-3.5 text-[13.5px] text-cuerpo">
+            Respondiste {encuesta.misRespuestas.size} de {encuesta.preguntas.length} pregunta
+            {encuesta.preguntas.length === 1 ? '' : 's'}. Tu respuesta aparece marcada en cada
+            resultado — la encuesta está cerrada y ya no puede editarse.
+          </p>
+        )}
+
+        {/* Resultados: cerrada, en vivo, o como recompensa por completar (0043) */}
         {encuesta && resultados.length > 0 && (
           <section className="mt-8">
             <h2 className="text-[20px] font-extrabold text-titular">
-              {encuesta.abierta ? 'Resultados en directo' : 'Resultados'}
+              {!encuesta.abierta
+                ? 'Resultados'
+                : completada && encuesta.results_visibility !== 'live'
+                  ? 'Así van los resultados — gracias por completarla'
+                  : 'Resultados en directo'}
             </h2>
             <p className="mt-1 text-[13px] text-gris">
               El voto de los simpatizantes se publica junto al de los afiliados — así lo dice
               nuestro ideario. Afiliados en teal, simpatizantes en gris.
+              {encuesta.abierta && completada && ' El marcador puede seguir moviéndose hasta el cierre.'}
             </p>
             <div className="mt-4 space-y-5">
               {encuesta.preguntas.map((p) => (
-                <ResultadoPregunta key={p.id} pregunta={p.text} filas={resultados.filter((r) => r.question_id === p.id)} />
+                <ResultadoPregunta
+                  key={p.id}
+                  pregunta={p.text}
+                  filas={resultados.filter((r) => r.question_id === p.id)}
+                  miRespuesta={encuesta.misRespuestas.get(p.id) ?? null}
+                />
               ))}
             </div>
           </section>
@@ -215,9 +243,25 @@ export default async function MesPage({
   );
 }
 
-/** Barras horizontales por opción, afiliados vs simpatizantes. Server, sin JS. */
-function ResultadoPregunta({ pregunta, filas }: { pregunta: string; filas: ResultadoOpcion[] }) {
+/**
+ * Barras horizontales por opción, afiliados vs simpatizantes. Server, sin JS.
+ * `miRespuesta` marca con un chip "Tu respuesta" la(s) opción(es) que eligió
+ * quien mira — es la vista de solo-lectura de la encuesta cerrada (y también
+ * acompaña al marcador de quien acaba de completar).
+ */
+function ResultadoPregunta({
+  pregunta,
+  filas,
+  miRespuesta,
+}: {
+  pregunta: string;
+  filas: ResultadoOpcion[];
+  miRespuesta: unknown;
+}) {
   const max = Math.max(1, ...filas.map((f) => f.afiliados + f.simpatizantes));
+  const esMia = (opcion: string) =>
+    Array.isArray(miRespuesta) ? (miRespuesta as string[]).includes(opcion) : miRespuesta === opcion;
+
   return (
     <div className="rounded-tarjeta border border-linea bg-panel p-5">
       <h3 className="text-[15px] font-extrabold text-titular">{pregunta}</h3>
@@ -229,9 +273,16 @@ function ResultadoPregunta({ pregunta, filas }: { pregunta: string; filas: Resul
             const total = f.afiliados + f.simpatizantes;
             return (
               <div key={f.option_value}>
-                <div className="flex items-baseline justify-between text-[13px]">
-                  <span className="font-semibold text-cuerpo">{f.option_value}</span>
-                  <span className="text-gris">
+                <div className="flex items-baseline justify-between gap-2 text-[13px]">
+                  <span className="font-semibold text-cuerpo">
+                    {f.option_value}
+                    {esMia(f.option_value) && (
+                      <span className="ml-2 rounded-full bg-accion px-2 py-0.5 text-[10.5px] font-bold text-white">
+                        Tu respuesta
+                      </span>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-gris">
                     {total} · {f.afiliados} afil. / {f.simpatizantes} simp.
                   </span>
                 </div>
