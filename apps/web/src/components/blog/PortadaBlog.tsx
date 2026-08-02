@@ -40,7 +40,10 @@ export function PortadaBlog({
         <span className="text-[13px] font-bold uppercase tracking-[.14em] text-tinta">
           {eyebrow}
         </span>
-        <h1 className="mt-2.5 text-[clamp(34px,4.4vw,52px)] font-extrabold text-tinta">{titulo}</h1>
+        {/* Mínimo 21px y no 34px: "Análisis por departamentos" debe caber en
+            UNA línea en un móvil de 360px (petición de Sergio) — a 34px con
+            Montserrat extrabold partía en dos. En escritorio no cambia. */}
+        <h1 className="mt-2.5 text-[clamp(21px,5.6vw,52px)] font-extrabold text-tinta">{titulo}</h1>
         <p className="mt-3 max-w-[60ch] text-[17px] text-cuerpo">{descripcion}</p>
       </header>
 
