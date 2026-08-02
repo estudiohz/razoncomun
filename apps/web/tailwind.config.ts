@@ -77,13 +77,6 @@ const config: Config = {
           'linear-gradient(120deg,#24AF9A 0%,#8B30D9 28%,#C3369E 50%,#E8792F 72%,#16B8A0 100%)',
         // Degradado de acción (botones, celdas — no satura)
         grad: 'linear-gradient(120deg,#24AF9A 0%,#8B30D9 60%,#C3369E 100%)',
-        // El degradado del HERO (azul → morado → magenta → coral → melocotón),
-        // con las tres paradas que en .bg-hero llevan canal alfa ya compuestas
-        // sobre blanco (mismas equivalencias que en los emails): así el color
-        // es idéntico al del hero también sobre fondos claros como el carril
-        // de una barra. Usado en las barras de resultados de la encuesta
-        // (petición de Sergio: "les falta el tono melocotón del extremo").
-        hero: 'linear-gradient(123deg,#0E57A5 0%,#5158A7 30%,#BC60AA 50%,#F25687 60%,#F4825E 85%,#ED7547 100%)',
         // Hero: azul → morado → magenta → rojo → naranja (espectro del aro)
         hero: 'linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8ebf 50%, #ed1156b5 60%, #f05726bd 85%, #ed7547)',
       },
