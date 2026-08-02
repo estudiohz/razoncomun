@@ -144,7 +144,7 @@ export function EditorEncuestaClient({
               </h2>
               {sellada ? (
                 <span className="rounded-full bg-fondo px-2.5 py-1 text-[11px] font-bold text-gris">
-                  {p.respuestas} resp. — sellada
+                  {p.respuestas} resp.
                 </span>
               ) : (
                 <button
@@ -168,7 +168,7 @@ export function EditorEncuestaClient({
             >
               <div>
                 <label className={label}>Enunciado</label>
-                <input name="text" defaultValue={p.text} disabled={sellada} className={`${input} disabled:bg-fondo disabled:text-gris`} />
+                <input name="text" defaultValue={p.text} className={input} />
               </div>
               {(p.kind === 'single' || p.kind === 'multiple') && (
                 <div>
@@ -177,15 +177,16 @@ export function EditorEncuestaClient({
                     name="options"
                     defaultValue={(p.options ?? []).join('\n')}
                     rows={3}
-                    disabled={sellada}
-                    className={`${input} disabled:bg-fondo disabled:text-gris`}
+                    className={input}
                   />
                 </div>
               )}
               {sellada && (
                 <p className="text-[12px] text-gris">
-                  Con respuestas emitidas, enunciado y opciones quedan sellados — cambiarlos
-                  reescribiría lo ya votado. La info y la propuesta sí se pueden editar.
+                  Con {p.respuestas} voto{p.respuestas === 1 ? '' : 's'} emitido
+                  {p.respuestas === 1 ? '' : 's'}: puedes corregir erratas del enunciado y del
+                  texto de las opciones (los votos se migran solos al texto nuevo), pero no
+                  añadir ni quitar opciones.
                 </p>
               )}
               <div>

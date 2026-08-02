@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { metadatosPagina } from '@/lib/seo';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
 import { listarBorradores } from '@/lib/participacion/drafts';
@@ -23,6 +24,9 @@ export default async function AdminBorradoresPage() {
   return (
     <div className="mx-auto w-full max-w-[900px] space-y-6">
       <header>
+        <Link href="/admin/participacion" className="text-[13.5px] text-gris no-underline hover:underline">
+          ← Volver a Participación
+        </Link>
         <h1 className="text-[clamp(24px,3.4vw,32px)] font-extrabold leading-tight">Borradores</h1>
         <p className="mt-1 text-[14px] text-gris">
           Propuestas sin publicar. Las que llegan del RC-bot entran siempre aquí: no son visibles

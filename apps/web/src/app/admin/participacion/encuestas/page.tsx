@@ -18,7 +18,13 @@ export default async function AdminEncuestasPage() {
 
   return (
     <Contenedor as="section" className="py-14">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <Link
+        href="/admin/participacion"
+        className="text-[13.5px] text-gris no-underline hover:underline"
+      >
+        ← Volver a Participación
+      </Link>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-[28px] font-extrabold text-titular">Encuestas</h1>
         <Link
           href="/admin/participacion/encuestas/nueva"

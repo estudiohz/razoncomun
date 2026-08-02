@@ -84,10 +84,14 @@ export default async function AdminParticipacionPage({
             oficial, fusionar o eliminar.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {secciones.map((s) => (
+      </div>
+
+      {/* Accesos a secciones: también en una fila deslizable — en móvil los 4
+          botones hacían wrap en 2 líneas (reporte de Sergio). */}
+      <TiraDeslizable className="mt-4">
+        {secciones.map((s) => (
+          <ItemTira key={s.href}>
             <Link
-              key={s.href}
               href={s.href}
               className="inline-flex items-center gap-2 rounded-boton border border-linea bg-white px-4 py-2 text-[13px] font-bold text-titular no-underline hover:border-titular"
             >
@@ -98,9 +102,9 @@ export default async function AdminParticipacionPage({
                 </span>
               )}
             </Link>
-          ))}
-        </div>
-      </div>
+          </ItemTira>
+        ))}
+      </TiraDeslizable>
 
       {/* 10 estados: en móvil formaban el mismo muro de etiquetas que el blog
           y propuestas — misma TiraDeslizable con flechas (revisión pedida por
@@ -131,7 +135,47 @@ export default async function AdminParticipacionPage({
           No se han podido cargar las propuestas: {error.message}
         </p>
       ) : (
-        <div className="overflow-hidden rounded-tarjeta border border-linea bg-white">
+        <>
+        {/* Móvil: tarjetas (sugerencia de Sergio — como las encuestas; una
+            tabla ancha con scroll lateral es incómoda con el pulgar). */}
+        <div className="grid gap-3 min-[720px]:hidden">
+          {propuestas.map((p) => {
+            const cat = p.category_id ? mapaCategorias.get(p.category_id) : null;
+            return (
+              <Link
+                key={p.id}
+                href={`/admin/participacion/propuestas/${p.id}`}
+                className="block rounded-tarjeta border border-linea bg-white p-4 no-underline"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="rounded-full bg-fondo px-2.5 py-0.5 text-[11px] font-bold text-cuerpo ring-1 ring-linea">
+                    {ETIQUETA_ESTADO[p.status]}
+                  </span>
+                  <span className="text-[12px] text-gris">👍 {p.support_count}</span>
+                </div>
+                <p className="mt-2 text-[15px] font-bold leading-snug text-titular">{p.title}</p>
+                <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-gris">
+                  <span>{p.autor?.display_name ?? '—'}</span>
+                  {cat && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: cat.color }} />
+                      {cat.nombre}
+                    </span>
+                  )}
+                  {p.deadline_at && <span>límite {new Date(p.deadline_at).toLocaleDateString('es-ES')}</span>}
+                </p>
+              </Link>
+            );
+          })}
+          {propuestas.length === 0 && (
+            <p className="rounded-tarjeta border border-linea bg-white p-6 text-center text-gris">
+              No hay propuestas con ese filtro.
+            </p>
+          )}
+        </div>
+
+        {/* Escritorio: la tabla de siempre. */}
+        <div className="hidden overflow-hidden rounded-tarjeta border border-linea bg-white min-[720px]:block">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-left text-[13.5px]">
               <thead className="bg-fondo text-[12px] font-bold uppercase tracking-wide text-gris">
@@ -200,6 +244,7 @@ export default async function AdminParticipacionPage({
             </table>
           </div>
         </div>
+        </>
       )}
     </div>
   );

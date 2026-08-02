@@ -132,6 +132,14 @@ export async function anadirPreguntaAction(
   return { ok: true };
 }
 
+/**
+ * Guardar una pregunta. Política de erratas (decisión de Sergio, 02/08):
+ * - ENUNCIADO e info: editables SIEMPRE — corregir texto libre no toca votos.
+ * - OPCIONES con votos: se pueden CORREGIR (mismo número, renombrado por
+ *   posición) y los votos emitidos se MIGRAN al texto nuevo vía RPC 0044.
+ *   Añadir o quitar opciones con votos sigue bloqueado: eso sí cambia las
+ *   reglas del juego, no la ortografía.
+ */
 export async function guardarPreguntaAction(
   surveyId: string,
   questionId: string,
@@ -143,8 +151,10 @@ export async function guardarPreguntaAction(
     .from('survey_responses')
     .select('id', { count: 'exact', head: true })
     .eq('question_id', questionId);
-  const sellada = (count ?? 0) > 0;
+  const conVotos = (count ?? 0) > 0;
 
+  const text = String(fd.get('text') ?? '').trim();
+  if (!text) return { ok: false, error: 'La pregunta no puede estar vacía.' };
   const info = String(fd.get('info') ?? '').trim() || null;
   let proposalId: string | null = null;
   try {
@@ -153,17 +163,44 @@ export async function guardarPreguntaAction(
     return { ok: false, error: (e as Error).message };
   }
 
-  const cambios: Record<string, unknown> = { info, proposal_id: proposalId };
+  const nuevas = String(fd.get('options') ?? '')
+    .split('\n')
+    .map((o) => o.trim())
+    .filter(Boolean);
 
-  if (!sellada) {
-    const text = String(fd.get('text') ?? '').trim();
-    if (!text) return { ok: false, error: 'La pregunta no puede estar vacía.' };
-    const opciones = String(fd.get('options') ?? '')
-      .split('\n')
-      .map((o) => o.trim())
-      .filter(Boolean);
-    cambios.text = text;
-    if (opciones.length > 0) cambios.options = { options: opciones };
+  const cambios: Record<string, unknown> = { text, info, proposal_id: proposalId };
+
+  if (nuevas.length > 0) {
+    if (conVotos) {
+      const { data: fila } = await supabase
+        .from('survey_questions')
+        .select('options')
+        .eq('id', questionId)
+        .single();
+      const viejas: string[] = Array.isArray(fila?.options)
+        ? (fila?.options as string[])
+        : ((fila?.options as { options?: string[] } | null)?.options ?? []);
+
+      if (nuevas.length !== viejas.length) {
+        return {
+          ok: false,
+          error: `Con ${count} voto${count === 1 ? '' : 's'} emitido${count === 1 ? '' : 's'} puedes corregir el texto de las opciones (los votos se migran solos), pero no añadir ni quitar: eran ${viejas.length} y has puesto ${nuevas.length}.`,
+        };
+      }
+
+      // Renombrado por posición: los votos siguen a su opción corregida.
+      for (let i = 0; i < viejas.length; i++) {
+        if (viejas[i] !== nuevas[i]) {
+          const { error: errorRen } = await supabase.rpc('survey_renombrar_opcion', {
+            p_question: questionId,
+            p_vieja: viejas[i],
+            p_nueva: nuevas[i],
+          });
+          if (errorRen) return { ok: false, error: errorRen.message };
+        }
+      }
+    }
+    cambios.options = { options: nuevas };
   }
 
   const { error } = await supabase
