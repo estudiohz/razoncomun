@@ -319,7 +319,7 @@ function ResultadoPregunta({
                   vacía. La partición vive ahora solo en el texto de abajo. */}
               <div className="mt-1 h-3.5 overflow-hidden rounded-full bg-fondo ring-1 ring-inset ring-linea/60">
                 {total > 0 && (
-                  <div className="h-full rounded-full bg-grad" style={{ width: `${pct}%` }} />
+                  <div className="h-full rounded-full bg-hero" style={{ width: `${pct}%` }} />
                 )}
               </div>
               <p className="mt-0.5 text-[11.5px] text-gris">
