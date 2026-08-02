@@ -166,14 +166,18 @@ services:
       GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS: ${GOTRUE_RATE_LIMIT_SIGN_IN_SIGN_UPS:-30}
       GOTRUE_RATE_LIMIT_TOKEN_REFRESH: ${GOTRUE_RATE_LIMIT_TOKEN_REFRESH:-150}
       GOTRUE_RATE_LIMIT_VERIFY: ${GOTRUE_RATE_LIMIT_VERIFY:-30}
-      # OAuth Google/Facebook (rc-03-auth, Ola 2 — ver apps/web/AUTH-SETUP.md
-      # §1-2 para la receta completa de creación de las apps OAuth). Sin
-      # credenciales todavía: quedan reservadas y comentadas — NO
-      # descomentar sin rellenar CLIENT_ID/SECRET reales, o GoTrue no arranca.
-      # GOTRUE_EXTERNAL_GOOGLE_ENABLED: "true"
-      # GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      # GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_SECRET}
-      # GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${API_EXTERNAL_URL}/callback
+      # OAuth Google (rc-03-auth — receta de creación de la app OAuth en
+      # apps/web/AUTH-SETUP.md §1). Activación SOLO por entorno (02/08/2026):
+      # con GOOGLE_ENABLED ausente o false, GoTrue arranca igual que siempre y
+      # las credenciales vacías no molestan. Para encender: poner en el env del
+      # servicio en Dokploy GOOGLE_ENABLED=true + GOOGLE_CLIENT_ID +
+      # GOOGLE_SECRET, y redeploy. Sin tocar este fichero.
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: ${GOOGLE_ENABLED:-false}
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_SECRET:-}
+      # OJO: API_EXTERNAL_URL ya incluye /auth/v1 en el env de dev — con
+      # /auth/v1/callback aquí saldría la ruta duplicada.
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${API_EXTERNAL_URL}/callback
       # GOTRUE_EXTERNAL_FACEBOOK_ENABLED: "true"
       # GOTRUE_EXTERNAL_FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID}
       # GOTRUE_EXTERNAL_FACEBOOK_SECRET: ${FACEBOOK_SECRET}
