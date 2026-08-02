@@ -312,18 +312,14 @@ function ResultadoPregunta({
                   {pct}%
                 </span>
               </div>
-              <div className="mt-1 flex h-3.5 overflow-hidden rounded-full bg-fondo">
+              {/* Relleno con el degradado de marca del hero (petición de
+                  Sergio). El intento anterior partía la barra en teal/gris
+                  por segmento y el gris (bg-linea) era casi invisible sobre
+                  el carril — su voto de "simpatizante" parecía una barra
+                  vacía. La partición vive ahora solo en el texto de abajo. */}
+              <div className="mt-1 h-3.5 overflow-hidden rounded-full bg-fondo ring-1 ring-inset ring-linea/60">
                 {total > 0 && (
-                  <>
-                    <div
-                      className="h-full bg-teal"
-                      style={{ width: `${(afiliados / totalPregunta) * 100}%` }}
-                    />
-                    <div
-                      className="h-full bg-linea"
-                      style={{ width: `${(simpatizantes / totalPregunta) * 100}%` }}
-                    />
-                  </>
+                  <div className="h-full rounded-full bg-grad" style={{ width: `${pct}%` }} />
                 )}
               </div>
               <p className="mt-0.5 text-[11.5px] text-gris">
