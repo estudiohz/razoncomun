@@ -67,7 +67,6 @@ export const navPrincipal = [
   { label: 'Programa', href: '/programa' },
   { label: 'El País', href: '/pais' },
   { label: 'Propuestas', href: '/propuestas' },
-  { label: 'Qué cambió', href: '/cambios' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pregunta a la IA', href: '/pregunta' },
   { label: 'Cuentas', href: '/cuentas' },
@@ -79,6 +78,14 @@ export const navPrincipal = [
 export const navFooter = [
   { label: 'Afíliate', href: '/afiliate' },
   { label: 'Observatorio', href: '/observatorio' },
+  // "Qué cambió" baja del nav al footer (Sergio, 02/08/2026): el bucle de
+  // retorno promete consecuencias, y sin representación en el Congreso todavía
+  // no hay ninguna que enseñar. Prometerlo desde la nav principal invita a
+  // entrar esperando resultados que aún no existen. La página sigue viva y es
+  // primera línea DENTRO de la app (menú inferior), que es donde la ve quien
+  // ya participa y entiende el estado del proyecto. Volverá arriba cuando haya
+  // algo que contar.
+  { label: 'Qué cambió', href: '/cambios' },
   { label: 'Contacto', href: '/contacto' },
   { label: 'Discord', href: site.discord },
 ] as const;

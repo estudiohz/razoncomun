@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
+import { IconoGoogle } from '@/components/auth/GoogleLogin';
 import { cn } from '@/lib/cn';
 
 const OAUTH_GOOGLE_ACTIVO = process.env.NEXT_PUBLIC_OAUTH_GOOGLE_ENABLED === 'true';
@@ -184,10 +185,14 @@ function BotonOAuth({
       disabled={!activo}
       title={!activo ? 'Próximamente: pendiente de credenciales OAuth (ver AUTH-SETUP.md)' : undefined}
       className={cn(
-        'rounded-boton border border-linea bg-white px-4 py-2.5 text-[13.5px] font-semibold text-cuerpo transition-colors',
+        'inline-flex items-center justify-center gap-2 rounded-boton border border-linea bg-white px-4 py-2.5 text-[13.5px] font-semibold text-cuerpo transition-colors',
         activo ? 'hover:border-titular hover:text-titular' : 'cursor-not-allowed opacity-40',
       )}
     >
+      {/* La "G" oficial multicolor, del mismo componente que la usa en el resto
+          de la app — las guías de Google Sign-In piden su marca en el botón, y
+          aquí es además la única señal de que este es el camino rápido. */}
+      {proveedor === 'google' && <IconoGoogle className="h-[18px] w-[18px]" />}
       {children}
       {!activo && <span className="ml-1 text-[11px] text-gris">(pronto)</span>}
     </button>

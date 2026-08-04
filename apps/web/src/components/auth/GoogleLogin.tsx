@@ -28,7 +28,13 @@ export function IconoGoogle({ className }: { className?: string }) {
 }
 
 /**
- * Botón "Entrar con Google" reutilizable (nav, burger, /entrar). Inicia el
+ * ⚠️ Sin montar ahora mismo (Sergio, 02/08/2026): salió del nav porque no
+ * cabía, y en /entrar el botón de Google lo pinta el propio `LoginForm` junto
+ * al de Facebook. Se conserva —no se borra— porque el flujo PKCE que
+ * encapsula es correcto y volverá a hacer falta si algún día se quiere el
+ * "entra con Google" en otro sitio. `IconoGoogle`, en cambio, sí se usa.
+ *
+ * Botón "Entrar con Google" reutilizable. Inicia el
  * flujo PKCE contra /auth/callback conservando el destino. El registro y el
  * login son el mismo gesto: si la cuenta no existe, GoTrue la crea y la
  * pasarela de consentimiento RGPD hace el resto — por eso este botón "motiva
