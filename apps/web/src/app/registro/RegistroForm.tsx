@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
 import { Boton } from '@/components/ui/Boton';
+import { IconoGoogle } from '@/components/auth/GoogleLogin';
 import { cn } from '@/lib/cn';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { METADATA_ALTA } from '@/lib/auth/alta';
@@ -282,10 +283,15 @@ function BotonOAuth({
             : undefined
       }
       className={cn(
-        'rounded-boton border border-linea bg-white px-4 py-2.5 text-[13.5px] font-semibold text-cuerpo transition-colors',
+        'inline-flex items-center justify-center gap-2 rounded-boton border border-linea bg-white px-4 py-2.5 text-[13.5px] font-semibold text-cuerpo transition-colors',
         habilitado ? 'hover:border-titular hover:text-titular' : 'cursor-not-allowed opacity-40',
       )}
     >
+      {/* La "G" oficial multicolor, del mismo componente que la usa en /entrar
+          y en el resto de la app — las guías de Google Sign-In piden su marca
+          en el botón. Ojo: este `BotonOAuth` es un gemelo del de LoginForm,
+          así que un cambio de aspecto aquí hay que replicarlo allí. */}
+      {proveedor === 'google' && <IconoGoogle className="h-[18px] w-[18px]" />}
       {children}
       {!activo && <span className="ml-1 text-[11px] text-gris">(pronto)</span>}
     </button>
