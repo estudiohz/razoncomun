@@ -12,10 +12,13 @@ export function Bento() {
   return (
     <section className="pb-[60px] pt-10">
       <Contenedor className="grid auto-rows-[150px] grid-cols-12 gap-[18px] max-[960px]:auto-rows-auto max-[960px]:grid-cols-1">
-        {/* Manifiesto — 7×2, degradado de marca */}
+        {/* Manifiesto — 7×2, degradado del hero.
+            `bg-hero` y no `bg-grad` (Sergio, 02/08/2026): `grad` se corta en el
+            magenta, así que a la tarjeta le faltaba el melocotón del final.
+            `hero` es el espectro completo del aro, el mismo de la cabecera. */}
         <Link
           href="/manifiesto"
-          className={`${celdaBase} col-span-7 row-span-2 justify-between bg-grad !p-8 max-[960px]:min-h-[260px]`}
+          className={`${celdaBase} col-span-7 row-span-2 justify-between bg-hero !p-8 max-[960px]:min-h-[260px]`}
         >
           {/* Checklist en vez del aro (Sergio, 02/08/2026): el círculo no decía
               nada y competía con el texto. Una lista con checks sí nombra lo
