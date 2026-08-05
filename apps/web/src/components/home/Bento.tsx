@@ -12,13 +12,15 @@ export function Bento() {
   return (
     <section className="pb-[60px] pt-10">
       <Contenedor className="grid auto-rows-[150px] grid-cols-12 gap-[18px] max-[960px]:auto-rows-auto max-[960px]:grid-cols-1">
-        {/* Manifiesto — 7×2, degradado del hero.
-            `bg-hero` y no `bg-grad` (Sergio, 02/08/2026): `grad` se corta en el
-            magenta, así que a la tarjeta le faltaba el melocotón del final.
-            `hero` es el espectro completo del aro, el mismo de la cabecera. */}
+        {/* Manifiesto — 7×2, espectro completo del aro (Sergio, 02/08/2026).
+            No usa `bg-grad`, que se corta en el magenta y dejaba la tarjeta sin
+            melocotón, ni `bg-hero` tal cual: en una celda ancha y baja sus
+            paradas comprimen el melocotón contra la esquina. `bg-hero-celda`
+            es el mismo espectro con las paradas recalibradas para esta caja
+            (ver tailwind.config.ts). */}
         <Link
           href="/manifiesto"
-          className={`${celdaBase} col-span-7 row-span-2 justify-between bg-hero !p-8 max-[960px]:min-h-[260px]`}
+          className={`${celdaBase} col-span-7 row-span-2 justify-between bg-hero-celda !p-8 max-[960px]:min-h-[260px]`}
         >
           {/* Checklist en vez del aro (Sergio, 02/08/2026): el círculo no decía
               nada y competía con el texto. Una lista con checks sí nombra lo

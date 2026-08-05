@@ -79,6 +79,17 @@ const config: Config = {
         grad: 'linear-gradient(120deg,#24AF9A 0%,#8B30D9 60%,#C3369E 100%)',
         // Hero: azul → morado → magenta → rojo → naranja (espectro del aro)
         hero: 'linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8ebf 50%, #ed1156b5 60%, #f05726bd 85%, #ed7547)',
+        // Mismo espectro que `hero`, recalibrado para una CELDA ancha y baja
+        // (tarjeta del manifiesto). Dos diferencias, ambas a propósito:
+        //  1. Paradas adelantadas: en `hero` el melocotón vive en el último
+        //     15% del eje, que en una caja apaisada se comprime en la esquina
+        //     y no se ve. Aquí entra al 66% y el tramo final se mantiene
+        //     plano, así que ocupa casi un tercio.
+        //  2. Sin alfa: `hero` lleva colores translúcidos (#…bf, #…b5) porque
+        //     se superpone al fondo de la cabecera. Sobre una tarjeta se
+        //     mezclarían con `bg-panel` y saldrían lavados.
+        'hero-celda':
+          'linear-gradient(115deg,#0e57a5 0%,#5158a7 18%,#a52b8e 34%,#ed1156 50%,#f05726 66%,#ed7547 88%)',
       },
       maxWidth: {
         wrap: '1400px',
