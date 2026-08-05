@@ -17,8 +17,28 @@ export function Bento() {
           href="/manifiesto"
           className={`${celdaBase} col-span-7 row-span-2 justify-between bg-grad !p-8 max-[960px]:min-h-[260px]`}
         >
-          {/* Sin aro decorativo de fondo (Sergio, 02/08/2026): el degradado ya
-              carga bastante y el círculo competía con el texto. */}
+          {/* Checklist en vez del aro (Sergio, 02/08/2026): el círculo no decía
+              nada y competía con el texto. Una lista con checks sí nombra lo
+              que hay dentro — 30 puntos concretos, no un manifiesto vago.
+              Queda DETRÁS del texto (sin z-index; el bloque de abajo lleva
+              z-[2]) y a baja opacidad, así que si en móvil el titular se cruza
+              con él no estorba la lectura. */}
+          <svg
+            className="pointer-events-none absolute right-6 top-6 opacity-25"
+            width="150"
+            height="150"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M3 5.2l1.7 1.7L8.4 3.2M12 5.2h9.5" />
+            <path d="M3 12.2l1.7 1.7L8.4 10.2M12 12.2h9.5" />
+            <path d="M3 19.2l1.7 1.7L8.4 17.2M12 19.2h9.5" />
+          </svg>
           <div className="relative z-[2]">
             {/* h2: primer encabezado tras el h1 del hero — mantiene el orden
                 jerárquico (a11y) sin cambiar un solo píxel del boceto. */}
