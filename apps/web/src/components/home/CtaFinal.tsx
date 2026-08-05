@@ -1,7 +1,7 @@
 import { Boton } from '@/components/ui/Boton';
 import { Contenedor } from '@/components/layout/Contenedor';
 
-/** CTA final: caja blanca con glows de marca y botón de afiliación. */
+/** CTA final: caja blanca con glows de marca y botón de alta ("Únete"). */
 export function CtaFinal() {
   return (
     <section className="pb-[100px]">
@@ -20,12 +20,17 @@ export function CtaFinal() {
           <h2 className="relative mx-auto max-w-[26ch] text-[clamp(28px,3.4vw,44px)] font-extrabold leading-[1.18]">
             La alternativa que estabas esperando ya existe. Y es tuya.
           </h2>
+          {/* "Únete" y no "Afíliate" (Sergio, 02/08/2026), igual que en el nav:
+              la puerta grande es entrar gratis y participar; la cuota se pide
+              después, con la persona ya dentro. Pedir dinero en el primer clic
+              filtra justo a quien todavía no te conoce. La afiliación sigue
+              nombrada aquí y tiene su sitio en footer, burger y panel. */}
           <p className="relative mx-auto mb-[34px] mt-[18px] max-w-[50ch] text-cuerpo">
-            Afíliate y convierte tu cuota en recursos, legitimidad y voz para una política basada en
-            evidencia.
+            Únete gratis y participa en las propuestas, las votaciones y el programa. Si además
+            quieres sostenerlo, la afiliación está a un paso.
           </p>
-          <Boton href="/afiliate" variante="marca" className="relative">
-            Afíliate
+          <Boton href="/entrar" variante="marca" className="relative">
+            Únete
           </Boton>
         </div>
       </Contenedor>
