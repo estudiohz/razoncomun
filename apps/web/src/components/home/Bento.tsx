@@ -17,16 +17,8 @@ export function Bento() {
           href="/manifiesto"
           className={`${celdaBase} col-span-7 row-span-2 justify-between bg-grad !p-8 max-[960px]:min-h-[260px]`}
         >
-          <svg
-            className="absolute -right-[60px] -top-[60px] opacity-35"
-            width="260"
-            height="260"
-            viewBox="0 0 100 100"
-            fill="none"
-            aria-hidden
-          >
-            <circle cx="50" cy="50" r="40" stroke="#FFFFFF" strokeWidth="8" strokeLinecap="round" />
-          </svg>
+          {/* Sin aro decorativo de fondo (Sergio, 02/08/2026): el degradado ya
+              carga bastante y el círculo competía con el texto. */}
           <div className="relative z-[2]">
             {/* h2: primer encabezado tras el h1 del hero — mantiene el orden
                 jerárquico (a11y) sin cambiar un solo píxel del boceto. */}
