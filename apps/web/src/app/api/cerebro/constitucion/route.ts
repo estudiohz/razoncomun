@@ -3,12 +3,13 @@ import { generarConstitucion } from '@/lib/cerebro/constitucion';
 
 /**
  * Genera la "constitución" en Markdown del cerebro (0046, petición de
- * Sergio): la wiki de conocimiento (`brain_entries`, visibility='public')
- * organizada en un índice + un archivo por categoría. Devuelve el CONTENIDO,
- * no lo escribe en git — eso lo hace el workflow n8n "cerebro-constitucion"
- * (Schedule Trigger diario → este endpoint → nodo GitHub "Create/Update
- * File" por cada archivo devuelto), para que quede versionado y con
- * historial de commits como cualquier otro cambio de código.
+ * Sergio): la wiki de conocimiento (`brain_entries`, TODAS las entradas,
+ * también las internas) organizada en un índice + un archivo por categoría.
+ * Devuelve el CONTENIDO, no lo escribe en git — eso lo hace el workflow n8n
+ * "cerebro-constitucion" (Schedule Trigger diario → este endpoint → nodo
+ * GitHub "Create/Update File" por cada archivo devuelto) contra
+ * `razoncomun-docs`, el repo PRIVADO de documentación — nunca contra
+ * `razoncomun` (código, público).
  *
  * Protegido por secreto compartido (no hay sesión de usuario: lo llama un
  * workflow, no un navegador) — mismo patrón que un webhook interno.

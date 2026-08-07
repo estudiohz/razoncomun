@@ -8,18 +8,19 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * equipo pueda auditar/corregir el conocimiento del partido como si fuera un
  * libro.
  *
- * SOLO entradas `visibility = 'public'`: el repo de código es público en
- * GitHub (github.com/estudiohz/razoncomun), así que cualquier cosa que se
- * escriba aquí y se commitee es pública de facto. Las entradas `internal`
- * (borradores, notas de trabajo) se quedan solo en BD — nunca en este
- * Markdown versionado. El índice deja constancia de cuántas se han excluido
- * por eso, para que no parezca que faltan por error.
+ * Incluye TODAS las entradas, también `visibility='internal'` (marcadas como
+ * tal en el propio Markdown): el destino es `razoncomun-docs`, el repo
+ * PRIVADO de documentación del proyecto (decisión de Sergio, 07/08/2026,
+ * distinto de `razoncomun` — el repo de código, que sí es público). Si algún
+ * día el destino cambiara a un repo público, esta función tendría que
+ * volver a filtrar por `visibility='public'` — no asumir lo contrario.
  */
 
 export interface EntradaConstitucion {
   title: string;
   body: string;
   area_name: string | null;
+  visibility: 'public' | 'internal';
   updated_at: string;
 }
 
@@ -50,7 +51,7 @@ function renderCategoria(cat: CategoriaConstitucion, generatedAt: string): strin
   const cabecera = `<!-- GENERADO AUTOMÁTICAMENTE por /api/cerebro/constitucion — no editar a mano, se sobrescribe. Fuente real: tabla brain_entries. Última generación: ${generatedAt} -->\n\n# ${cat.name}\n`;
 
   if (cat.entradas.length === 0) {
-    return `${cabecera}\n_Todavía no hay entradas públicas en esta categoría._\n`;
+    return `${cabecera}\n_Todavía no hay entradas en esta categoría._\n`;
   }
 
   // Agrupadas por área temática dentro de la categoría (Sanidad, Educación...)
@@ -70,10 +71,10 @@ function renderCategoria(cat: CategoriaConstitucion, generatedAt: string): strin
     .map((area) => {
       const entradas = porArea
         .get(area)!
-        .map(
-          (e) =>
-            `### ${e.title}\n\n${e.body.trim()}\n\n_Actualizado: ${new Date(e.updated_at).toLocaleDateString('es-ES')}_\n`,
-        )
+        .map((e) => {
+          const etiquetaInterna = e.visibility === 'internal' ? ' `[interno]`' : '';
+          return `### ${e.title}${etiquetaInterna}\n\n${e.body.trim()}\n\n_Actualizado: ${new Date(e.updated_at).toLocaleDateString('es-ES')}_\n`;
+        })
         .join('\n---\n\n');
       return `## ${area}\n\n${entradas}`;
     })
@@ -82,7 +83,7 @@ function renderCategoria(cat: CategoriaConstitucion, generatedAt: string): strin
   return `${cabecera}\n${secciones}\n`;
 }
 
-function renderIndice(categorias: CategoriaConstitucion[], generatedAt: string, excluidasInternal: number): string {
+function renderIndice(categorias: CategoriaConstitucion[], generatedAt: string): string {
   const filas = categorias
     .map((c) => `- [${c.name}](./${c.slug}.md) — ${c.entradas.length} entrada${c.entradas.length === 1 ? '' : 's'}`)
     .join('\n');
@@ -92,14 +93,13 @@ function renderIndice(categorias: CategoriaConstitucion[], generatedAt: string, 
     '',
     '# La constitución de Razón Común',
     '',
-    'Espejo en Markdown del conocimiento público del partido (wiki `brain_entries`),',
+    'Espejo en Markdown de la wiki de conocimiento del partido (`brain_entries`),',
     'organizado por categoría. Pensado para que una IA (o una persona) lo lea de un',
     'tirón sin tener que consultar la base de datos.',
     '',
     `Generado: ${new Date(generatedAt).toLocaleString('es-ES')}.`,
-    excluidasInternal > 0
-      ? `\n> ${excluidasInternal} entrada${excluidasInternal === 1 ? '' : 's'} interna${excluidasInternal === 1 ? '' : 's'} (visibility='internal') no se incluyen aquí a propósito: este repositorio es público.`
-      : '',
+    '',
+    "> Incluye entradas internas (marcadas `[interno]`): este repositorio es PRIVADO.",
     '',
     '## Categorías',
     '',
@@ -112,23 +112,16 @@ function renderIndice(categorias: CategoriaConstitucion[], generatedAt: string, 
 export async function generarConstitucion(admin: SupabaseClient): Promise<ResultadoConstitucion> {
   const generatedAt = new Date().toISOString();
 
-  const [{ data: categorias, error: e1 }, { data: entradas, error: e2 }, { count: internos, error: e3 }] =
-    await Promise.all([
-      admin.from('brain_categories').select('id, slug, name').order('position', { ascending: true }),
-      admin
-        .from('brain_entries')
-        .select('title, body, category_id, updated_at, area:categories(name)')
-        .eq('visibility', 'public')
-        .order('updated_at', { ascending: false }),
-      admin
-        .from('brain_entries')
-        .select('id', { count: 'exact', head: true })
-        .eq('visibility', 'internal'),
-    ]);
+  const [{ data: categorias, error: e1 }, { data: entradas, error: e2 }] = await Promise.all([
+    admin.from('brain_categories').select('id, slug, name').order('position', { ascending: true }),
+    admin
+      .from('brain_entries')
+      .select('title, body, category_id, visibility, updated_at, area:categories(name)')
+      .order('updated_at', { ascending: false }),
+  ]);
 
   if (e1) throw e1;
   if (e2) throw e2;
-  if (e3) throw e3;
 
   const porCategoria = new Map<string, CategoriaConstitucion>();
   for (const cat of categorias ?? []) {
@@ -139,6 +132,7 @@ export async function generarConstitucion(admin: SupabaseClient): Promise<Result
     title: string;
     body: string;
     category_id: string;
+    visibility: 'public' | 'internal';
     updated_at: string;
     area: { name: string } | { name: string }[] | null;
   }[]) {
@@ -149,6 +143,7 @@ export async function generarConstitucion(admin: SupabaseClient): Promise<Result
       title: fila.title,
       body: fila.body,
       area_name: areaNombre,
+      visibility: fila.visibility,
       updated_at: fila.updated_at,
     });
   }
@@ -162,7 +157,7 @@ export async function generarConstitucion(admin: SupabaseClient): Promise<Result
 
   const index: ArchivoGenerado = {
     path: `${CARPETA}/INDICE.md`,
-    content: renderIndice(listaCategorias, generatedAt, internos ?? 0),
+    content: renderIndice(listaCategorias, generatedAt),
   };
 
   return { generated_at: generatedAt, index, files };
