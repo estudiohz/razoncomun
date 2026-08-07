@@ -5,13 +5,21 @@ import { useState, useTransition } from 'react';
 import {
   archivarAction,
   cambiarEstadoAction,
+  editarClasificacionAction,
   eliminarAction,
   fijarDeadlineAction,
   fijarMesAction,
   fusionarAction,
   publicarRespuestaOficialAction,
 } from '../actions';
-import { ETIQUETA_ESTADO, ORDEN_ESTADOS, type EstadoPropuesta, type Propuesta } from '@/lib/participacion/types';
+import { DEPARTAMENTOS, etiquetaDepartamento } from '@/lib/participacion/departments';
+import {
+  ETIQUETA_ESTADO,
+  ORDEN_ESTADOS,
+  type EstadoPropuesta,
+  type Propuesta,
+  type ProposalCategory,
+} from '@/lib/participacion/types';
 
 const TODOS_ESTADOS: EstadoPropuesta[] = [...ORDEN_ESTADOS, 'archived'];
 
@@ -22,9 +30,16 @@ function paraInputLocal(iso: string | null): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-export function ModerarPropuestaClient({ propuesta }: { propuesta: Propuesta }) {
+export function ModerarPropuestaClient({
+  propuesta,
+  categorias,
+}: {
+  propuesta: Propuesta;
+  categorias: ProposalCategory[];
+}) {
   const router = useRouter();
   const [pendiente, iniciar] = useTransition();
+  const [errorClasificacion, setErrorClasificacion] = useState<string | null>(null);
   const [errorEstado, setErrorEstado] = useState<string | null>(null);
   const [errorDeadline, setErrorDeadline] = useState<string | null>(null);
   const [errorRespuesta, setErrorRespuesta] = useState<string | null>(null);
@@ -33,6 +48,15 @@ export function ModerarPropuestaClient({ propuesta }: { propuesta: Propuesta }) 
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [motivoEliminar, setMotivoEliminar] = useState('');
+
+  function onEditarClasificacion(fd: FormData) {
+    setErrorClasificacion(null);
+    iniciar(async () => {
+      const r = await editarClasificacionAction(propuesta.id, fd);
+      if (!r.ok) setErrorClasificacion(r.error ?? 'Error desconocido.');
+      else router.refresh();
+    });
+  }
 
   function onCambiarEstado(fd: FormData) {
     setErrorEstado(null);
@@ -99,6 +123,62 @@ export function ModerarPropuestaClient({ propuesta }: { propuesta: Propuesta }) 
 
   return (
     <div className="grid gap-6 min-[960px]:grid-cols-2">
+      {/* Departamento y categoría */}
+      <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
+        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">
+          Departamento y categoría
+        </h2>
+        <form action={onEditarClasificacion} className="flex flex-wrap items-end gap-3">
+          <div>
+            <label htmlFor="department" className="mb-1 block text-[12.5px] font-semibold text-cuerpo">
+              Departamento <span className="text-gris">(el que se ve en la ficha pública)</span>
+            </label>
+            <select
+              id="department"
+              name="department"
+              defaultValue={propuesta.department}
+              className="rounded-boton border border-linea bg-white px-3 py-2 text-[14px] text-titular"
+            >
+              {DEPARTAMENTOS.map((d) => (
+                <option key={d} value={d}>
+                  {etiquetaDepartamento(d)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="category_id" className="mb-1 block text-[12.5px] font-semibold text-cuerpo">
+              Categoría <span className="text-gris">(color del tablero, opcional)</span>
+            </label>
+            <select
+              id="category_id"
+              name="category_id"
+              defaultValue={propuesta.category_id ?? ''}
+              className="rounded-boton border border-linea bg-white px-3 py-2 text-[14px] text-titular"
+            >
+              <option value="">Sin categoría</option>
+              {categorias.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            disabled={pendiente}
+            className="rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white disabled:opacity-60"
+          >
+            Guardar
+          </button>
+        </form>
+        {errorClasificacion && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorClasificacion}</p>}
+        <p className="mt-3 text-[12.5px] text-gris">
+          Corrige aquí un departamento elegido por error al crear la propuesta (D-P2: sin trigger de
+          protección, cualquier coordinator/admin puede cambiarlo).
+        </p>
+      </section>
+
       {/* Estado */}
       <section className="rounded-tarjeta border border-linea bg-white p-5">
         <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">Estado</h2>

@@ -13,6 +13,9 @@ export function SuscripcionBoton({
   siguiendoInicial: boolean;
 }) {
   const [pendiente, iniciar] = useTransition();
+  const explicacion = siguiendoInicial
+    ? 'Dejar de seguir este hilo: no llegarán más avisos a tu campanita de notificaciones.'
+    : 'Al seguir este hilo, cada comentario o respuesta oficial nueva te avisa en la campanita de notificaciones (arriba, en el menú). No se envían emails.';
 
   return (
     <button
@@ -20,15 +23,15 @@ export function SuscripcionBoton({
       disabled={pendiente}
       onClick={() => iniciar(() => alternarSuscripcionAction(proposalId))}
       className={cn(
-        'inline-flex items-center gap-2 rounded-boton border px-4 py-2 text-[13.5px] font-bold transition-colors',
+        'mt-2 inline-flex w-full items-center justify-center gap-2 rounded-boton border px-4 py-2.5 text-[13.5px] font-bold transition-colors sm:w-auto',
         siguiendoInicial ? 'border-accion bg-accion/10 text-titular' : 'border-linea bg-white text-cuerpo hover:border-titular',
         pendiente && 'opacity-60',
       )}
       aria-pressed={siguiendoInicial}
-      title={siguiendoInicial ? 'Dejar de seguir este hilo' : 'Seguir este hilo (avisos de novedades)'}
+      title={explicacion}
     >
       <span aria-hidden>{siguiendoInicial ? '🔔' : '🔕'}</span>
-      {siguiendoInicial ? 'Siguiendo' : 'Seguir'}
+      {siguiendoInicial ? 'Siguiendo este hilo' : 'Seguir este hilo (avisos en tu campanita)'}
     </button>
   );
 }

@@ -4,21 +4,8 @@ import { useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { buscarSimilaresAction, crearPropuestaAction } from '@/app/propuestas/actions';
 import { CaptchaCampo } from '@/components/participacion/CaptchaCampo';
+import { DEPARTAMENTOS, etiquetaDepartamento } from '@/lib/participacion/departments';
 import type { Propuesta } from '@/lib/participacion/types';
-
-const DEPARTAMENTOS = [
-  'agricultura-ganaderia',
-  'autonomos',
-  'economia',
-  'educacion',
-  'gasto-publico',
-  'igualdad',
-  'industria',
-  'justicia',
-  'sanidad',
-  'transportes',
-  'vivienda',
-];
 
 /**
  * Formulario de nueva propuesta con detección de duplicados
@@ -70,6 +57,26 @@ export function FormularioPropuesta({ captcha }: { captcha: { pregunta: string; 
         />
       </div>
 
+      <div>
+        <label htmlFor="question" className="mb-1.5 block text-[13.5px] font-semibold">
+          Pregunta de la votación
+        </label>
+        <p className="mb-1.5 text-[12.5px] text-gris">
+          Formúlala para que se pueda estar claramente a favor o en contra — sin ambigüedad,
+          aunque el título quede abierto a interpretación. Ej.: &ldquo;¿Debería el desahucio por
+          impago resolverse en un plazo máximo de 48h?&rdquo;
+        </p>
+        <input
+          id="question"
+          name="question"
+          required
+          minLength={10}
+          maxLength={200}
+          placeholder="¿Debería...?"
+          className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
+        />
+      </div>
+
       {(buscando || similares.length > 0) && (
         <div className="rounded-boton border border-cat-educacion/40 bg-cat-educacion/10 p-4">
           <p className="text-[13px] font-bold text-titular">
@@ -98,11 +105,15 @@ export function FormularioPropuesta({ captcha }: { captcha: { pregunta: string; 
           id="department"
           name="department"
           required
+          defaultValue=""
           className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
         >
+          <option value="" disabled>
+            Selecciona un departamento…
+          </option>
           {DEPARTAMENTOS.map((d) => (
             <option key={d} value={d}>
-              {d.replace(/-/g, ' ')}
+              {etiquetaDepartamento(d)}
             </option>
           ))}
         </select>

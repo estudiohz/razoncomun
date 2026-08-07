@@ -5,7 +5,7 @@ import { Contenedor } from '@/components/layout/Contenedor';
 import { Boton } from '@/components/ui/Boton';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
 import { Deliberacion } from '@/components/participacion/Deliberacion';
-import { ApoyoBoton } from '@/components/participacion/ApoyoBoton';
+import { VotoPropuesta } from '@/components/participacion/VotoPropuesta';
 import { ComentariosHilo } from '@/components/participacion/ComentariosHilo';
 import { SuscripcionBoton } from '@/components/participacion/SuscripcionBoton';
 import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
@@ -16,7 +16,7 @@ import {
   obtenerPropuesta,
   obtenerPropuestaPorSlug,
   pareceUuid,
-  usuarioApoya,
+  posturaUsuario,
 } from '@/lib/participacion/proposals';
 import { listarAfirmaciones, misVotosAfirmaciones } from '@/lib/participacion/statements';
 import { listarComentarios, usuarioDioLike } from '@/lib/participacion/comments';
@@ -82,10 +82,10 @@ export default async function PropuestaDetallePage({
 
   const abierta = votacionAbierta(propuesta);
 
-  const [filas, apoya, siguiendo, comentarios, { data: votaciones }, categorias, conteos] =
+  const [filas, postura, siguiendo, comentarios, { data: votaciones }, categorias, conteos] =
     await Promise.all([
       propuesta.status === 'deliberation' ? listarAfirmaciones(supabase, propuesta.id) : Promise.resolve([]),
-      user ? usuarioApoya(supabase, propuesta.id, user.id) : Promise.resolve(false),
+      user ? posturaUsuario(supabase, propuesta.id, user.id) : Promise.resolve(null),
       user ? usuarioSigue(supabase, propuesta.id, user.id) : Promise.resolve(false),
       listarComentarios(supabase, propuesta.id),
       supabase
@@ -214,17 +214,31 @@ export default async function PropuestaDetallePage({
           )}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        {/* 0045: pregunta cerrada justo antes de votar, para que el sí/no no dependa de interpretar el título. */}
+        {propuesta.question && (
+          <p className="mt-6 rounded-tarjeta border-l-4 border-accion bg-accion/10 px-5 py-3.5 text-[16px] font-bold leading-snug text-titular">
+            {propuesta.question}
+          </p>
+        )}
+
+        <div className="mt-4">
           {abierta ? (
-            <ApoyoBoton proposalId={propuesta.id} apoyaInicial={apoya} totalInicial={propuesta.support_count} />
+            <VotoPropuesta
+              proposalId={propuesta.id}
+              posturaInicial={postura}
+              apoyosIniciales={propuesta.support_count}
+              contrasIniciales={propuesta.oppose_count}
+            />
           ) : (
-            <div className="inline-flex items-center gap-2 rounded-boton border border-linea bg-fondo px-5 py-2.5 text-[14px] text-gris">
+            <div className="flex flex-wrap items-center gap-2 rounded-boton border border-linea bg-fondo px-5 py-2.5 text-[14px] text-gris">
               <span aria-hidden>🔒</span>
-              Apoyo cerrado —{' '}
+              Votación cerrada —{' '}
               {propuesta.status === 'adopted' || propuesta.status === 'discarded'
                 ? 'esta propuesta ya tiene un resultado final'
                 : 'la fecha límite de votación ya pasó'}
-              <span className="rounded-full bg-black/[.06] px-2 py-0.5 text-[12px]">{propuesta.support_count}</span>
+              <span className="rounded-full bg-black/[.06] px-2 py-0.5 text-[12px]">
+                {propuesta.support_count} a favor · {propuesta.oppose_count} en contra
+              </span>
             </div>
           )}
           {user && <SuscripcionBoton proposalId={propuesta.id} siguiendoInicial={siguiendo} />}

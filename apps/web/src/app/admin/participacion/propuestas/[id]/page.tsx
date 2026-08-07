@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
 import { ETIQUETA_ESTADO, type Propuesta } from '@/lib/participacion/types';
+import { etiquetaDepartamento } from '@/lib/participacion/departments';
+import { listarCategorias } from '@/lib/participacion/categories';
 import { ModerarPropuestaClient } from './ModerarPropuestaClient';
 
 export const metadata: Metadata = metadatosPagina({
@@ -31,9 +33,12 @@ export default async function ModerarPropuestaPage({
 
   const propuesta = data as Propuesta;
 
-  const { data: categoria } = propuesta.category_id
-    ? await supabase.from('proposal_categories').select('nombre, color').eq('id', propuesta.category_id).single()
-    : { data: null };
+  const [{ data: categoria }, categorias] = await Promise.all([
+    propuesta.category_id
+      ? supabase.from('proposal_categories').select('nombre, color').eq('id', propuesta.category_id).single()
+      : Promise.resolve({ data: null }),
+    listarCategorias(supabase),
+  ]);
 
   return (
     <div className="py-2">
@@ -56,11 +61,16 @@ export default async function ModerarPropuestaPage({
             <span className="rounded-full bg-fondo px-2.5 py-0.5 font-bold text-cuerpo ring-1 ring-linea">
               {ETIQUETA_ESTADO[propuesta.status]}
             </span>
-            {categoria && (
+            <span className="rounded-full bg-fondo px-2.5 py-0.5 font-bold uppercase tracking-[.03em] text-cuerpo ring-1 ring-linea">
+              {etiquetaDepartamento(propuesta.department)}
+            </span>
+            {categoria ? (
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: categoria.color }} />
                 {categoria.nombre}
               </span>
+            ) : (
+              <span className="text-gris/70">sin categoría de tablero</span>
             )}
             <span>{propuesta.support_count} apoyos</span>
             {propuesta.merged_into_id && <span>· fusionada en otra propuesta</span>}
@@ -79,7 +89,7 @@ export default async function ModerarPropuestaPage({
       <p className="mt-4 max-w-3xl whitespace-pre-wrap text-[14.5px] text-cuerpo">{propuesta.body}</p>
 
       <div className="mt-8">
-        <ModerarPropuestaClient propuesta={propuesta} />
+        <ModerarPropuestaClient propuesta={propuesta} categorias={categorias} />
       </div>
     </div>
   );

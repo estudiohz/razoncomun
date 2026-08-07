@@ -134,6 +134,8 @@ export interface NuevaPropuestaInput {
   title: string;
   body: string;
   department: string;
+  /** 0045: formulación como pregunta cerrada, para que el voto a favor/en contra sea inequívoco. */
+  question?: string | null;
   estimated_cost_cents?: number | null;
 }
 
@@ -150,6 +152,7 @@ export async function crearPropuesta(
       title: input.title,
       body: input.body,
       department: input.department,
+      question: input.question?.trim() || null,
       estimated_cost_cents: input.estimated_cost_cents ?? null,
       author_id: authorId,
       slug,
@@ -176,40 +179,55 @@ export async function contarPropuestasRecientes(
   return count ?? 0;
 }
 
-/** ¿El usuario actual ya apoya esta propuesta? */
-export async function usuarioApoya(
+export type Postura = 'support' | 'oppose';
+
+/** ¿Cuál es la postura actual del usuario sobre esta propuesta (si tiene alguna)? */
+export async function posturaUsuario(
   supabase: SupabaseClient,
   proposalId: string,
   userId: string,
-): Promise<boolean> {
+): Promise<Postura | null> {
   const { data, error } = await supabase
     .from('proposal_supports')
-    .select('proposal_id')
+    .select('stance')
     .eq('proposal_id', proposalId)
     .eq('user_id', userId)
     .maybeSingle();
   if (error) throw error;
-  return Boolean(data);
+  return (data?.stance as Postura | undefined) ?? null;
 }
 
-/** Apoyo 1-clic (registered+). support_count se recalcula por trigger en BD. */
-export async function alternarApoyo(
+/**
+ * Voto 1-clic a favor o en contra (registered+). Pulsar la postura ya activa
+ * la retira (sin postura); pulsar la contraria la cambia in-place. Una sola
+ * fila por usuario/propuesta, así que nunca se cuenta dos veces (0045).
+ * support_count/oppose_count se recalculan por trigger en BD.
+ */
+export async function alternarPostura(
   supabase: SupabaseClient,
   proposalId: string,
   userId: string,
-  apoyaActualmente: boolean,
+  deseada: Postura,
+  actual: Postura | null,
 ): Promise<void> {
-  if (apoyaActualmente) {
+  if (actual === deseada) {
     const { error } = await supabase
       .from('proposal_supports')
       .delete()
       .eq('proposal_id', proposalId)
       .eq('user_id', userId);
     if (error) throw error;
+  } else if (actual === null) {
+    const { error } = await supabase
+      .from('proposal_supports')
+      .insert({ proposal_id: proposalId, user_id: userId, stance: deseada });
+    if (error) throw error;
   } else {
     const { error } = await supabase
       .from('proposal_supports')
-      .insert({ proposal_id: proposalId, user_id: userId });
+      .update({ stance: deseada })
+      .eq('proposal_id', proposalId)
+      .eq('user_id', userId);
     if (error) throw error;
   }
 }

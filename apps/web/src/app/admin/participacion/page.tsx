@@ -195,7 +195,12 @@ export default async function AdminParticipacionPage({
                   return (
                     <tr key={p.id} className="border-t border-linea/60">
                       <td className="max-w-[320px] truncate px-4 py-3 font-semibold text-titular">
-                        {p.title}
+                        <Link
+                          href={`/admin/participacion/propuestas/${p.id}`}
+                          className="hover:underline"
+                        >
+                          {p.title}
+                        </Link>
                       </td>
                       <td className="px-4 py-3 text-[12.5px] text-gris">
                         {p.autor?.display_name ?? '—'}

@@ -45,6 +45,8 @@ export interface Propuesta {
   id: string;
   title: string;
   body: string;
+  /** 0045: la propuesta formulada como pregunta cerrada, para votar sin ambigüedad. Opcional. */
+  question: string | null;
   department: string;
   category_id: string | null;
   slug: string | null;
@@ -57,6 +59,8 @@ export interface Propuesta {
   merged_into_id: string | null;
   status: EstadoPropuesta;
   support_count: number;
+  /** 0045: cuenta de posturas en contra (mismo mecanismo de trigger que support_count). */
+  oppose_count: number;
   estimated_cost_cents: number | null;
   author_id: string | null;
   report_url: string | null;

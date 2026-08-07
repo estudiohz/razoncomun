@@ -11,6 +11,7 @@ import {
   fusionarPropuestas,
   publicarRespuestaOficial,
 } from '@/lib/participacion/moderation';
+import { DEPARTAMENTOS } from '@/lib/participacion/departments';
 import type { EstadoPropuesta, Propuesta } from '@/lib/participacion/types';
 
 export interface ResultadoAccion {
@@ -99,6 +100,35 @@ export async function fijarDeadlineAction(id: string, fd: FormData): Promise<Res
   }
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);
+  return { ok: true };
+}
+
+/**
+ * Corrige el departamento y/o la categoría (D-P2) de una propuesta ya publicada.
+ * Sergio (07/08/2026): en el alta se puede olvidar elegir el desplegable de
+ * departamento y queda con el primero de la lista sin que nadie lo note; hasta
+ * ahora no había forma de arreglarlo después. category_id es opcional (vacío
+ * = sin categoría en el tablero con colores); department es obligatorio.
+ */
+export async function editarClasificacionAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+
+  const department = String(fd.get('department') ?? '').trim();
+  const categoryId = String(fd.get('category_id') ?? '').trim();
+
+  if (!DEPARTAMENTOS.includes(department as (typeof DEPARTAMENTOS)[number])) {
+    return { ok: false, error: 'Departamento inválido.' };
+  }
+
+  const { error } = await supabase
+    .from('proposals')
+    .update({ department, category_id: categoryId || null })
+    .eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/admin/participacion/propuestas/${id}`);
+  revalidatePath('/admin/participacion');
+  revalidatePath('/propuestas');
   return { ok: true };
 }
 

@@ -4,12 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import {
-  alternarApoyo,
+  alternarPostura,
   buscarPropuestasSimilares,
   contarPropuestasRecientes,
   crearPropuesta,
   obtenerPropuesta,
-  usuarioApoya,
+  posturaUsuario,
+  type Postura,
 } from '@/lib/participacion/proposals';
 import { anadirAfirmacion, votarAfirmacion } from '@/lib/participacion/statements';
 import {
@@ -42,13 +43,14 @@ export async function crearPropuestaAction(formData: FormData) {
 
   const title = (formData.get('title') as string)?.trim();
   const body = (formData.get('body') as string)?.trim();
+  const question = (formData.get('question') as string)?.trim();
   const department = (formData.get('department') as string)?.trim();
   const costeRaw = (formData.get('estimated_cost_euros') as string)?.trim();
   const captchaToken = (formData.get('captcha_token') as string) ?? '';
   const captchaRespuesta = (formData.get('captcha_respuesta') as string) ?? '';
 
-  if (!title || !body || !department) {
-    throw new Error('Faltan campos obligatorios (título, texto y departamento).');
+  if (!title || !body || !department || !question) {
+    throw new Error('Faltan campos obligatorios (título, pregunta, texto y departamento).');
   }
 
   // D-P8: captcha HMAC — verificación de coste cero, sin tabla ni servicio externo.
@@ -69,6 +71,7 @@ export async function crearPropuestaAction(formData: FormData) {
     title,
     body,
     department,
+    question,
     estimated_cost_cents,
   });
 
@@ -79,15 +82,15 @@ export async function crearPropuestaAction(formData: FormData) {
   redirect(`/propuestas/${propuesta.slug ?? propuesta.id}`);
 }
 
-export async function alternarApoyoAction(proposalId: string) {
+export async function alternarPosturaAction(proposalId: string, deseada: Postura) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect(`/entrar?next=/propuestas/${proposalId}`);
 
-  const apoyaActualmente = await usuarioApoya(supabase, proposalId, user.id);
-  await alternarApoyo(supabase, proposalId, user.id, apoyaActualmente);
+  const actual = await posturaUsuario(supabase, proposalId, user.id);
+  await alternarPostura(supabase, proposalId, user.id, deseada, actual);
   revalidatePath(`/propuestas/${proposalId}`);
   revalidatePath('/propuestas');
 }
