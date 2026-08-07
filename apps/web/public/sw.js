@@ -51,6 +51,45 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+/**
+ * Web Push (0046, 07/08/2026). El payload lo construye enviarPush() en el
+ * servidor como JSON {title, body, url} — ver apps/web/src/lib/push/send.ts.
+ */
+self.addEventListener('push', (event) => {
+  let datos = { title: 'Razón Común', body: '', url: '/' };
+  try {
+    if (event.data) datos = { ...datos, ...event.data.json() };
+  } catch {
+    // payload no-JSON (no debería pasar, enviarPush siempre manda JSON): usa los defaults.
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(datos.title, {
+      body: datos.body,
+      icon: '/logo-rc.png',
+      badge: '/logo-rc.png',
+      data: { url: datos.url },
+    }),
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url ?? '/';
+
+  event.waitUntil(
+    (async () => {
+      const clientsList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      const existente = clientsList.find((c) => new URL(c.url).pathname === url);
+      if (existente) {
+        existente.focus();
+        return;
+      }
+      await self.clients.openWindow(url);
+    })(),
+  );
+});
+
 self.addEventListener('fetch', (event) => {
   // Solo navegaciones de página: los assets y las llamadas a la API pasan de
   // largo, directos a la red (sin respondWith no hay intermediación alguna).

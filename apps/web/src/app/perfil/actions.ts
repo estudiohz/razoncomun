@@ -93,3 +93,59 @@ export async function cerrarSesion() {
   await supabase.auth.signOut();
   redirect('/');
 }
+
+// ── Web Push (0046) ─────────────────────────────────────────────────────────
+
+export interface SuscripcionPushInput {
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+}
+
+/**
+ * Da de alta ESTE dispositivo/navegador para recibir Web Push y activa
+ * `notification_preferences.push_enabled` (por si el usuario lo había
+ * desactivado antes desde otro dispositivo). RLS de `push_subscriptions` es
+ * 100% propia, así que basta el cliente de sesión — no hace falta admin.
+ */
+export async function guardarSuscripcionPushAction(
+  sub: SuscripcionPushInput,
+  userAgent: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'Sin sesión.' };
+
+  const { error: errorSub } = await supabase.from('push_subscriptions').upsert(
+    {
+      user_id: user.id,
+      endpoint: sub.endpoint,
+      p256dh: sub.keys.p256dh,
+      auth: sub.keys.auth,
+      user_agent: userAgent.slice(0, 300),
+    },
+    { onConflict: 'endpoint' },
+  );
+  if (errorSub) return { ok: false, error: errorSub.message };
+
+  const { error: errorPrefs } = await supabase
+    .from('notification_preferences')
+    .upsert({ user_id: user.id, push_enabled: true }, { onConflict: 'user_id' });
+  if (errorPrefs) return { ok: false, error: errorPrefs.message };
+
+  return { ok: true };
+}
+
+/** Da de baja ESTE dispositivo. Si era el único, deja de recibir push (no toca los demás). */
+export async function eliminarSuscripcionPushAction(endpoint: string): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'Sin sesión.' };
+
+  const { error } = await supabase.from('push_subscriptions').delete().eq('endpoint', endpoint);
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}

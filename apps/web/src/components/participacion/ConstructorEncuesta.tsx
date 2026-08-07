@@ -112,6 +112,17 @@ export function ConstructorEncuesta({ territorios }: { territorios: { id: number
         <input type="month" name="featured_month" className="rounded-boton border border-linea px-4 py-2.5 text-[14px]" />
       </Campo>
 
+      <label className="flex items-center gap-2.5 text-[13.5px] text-cuerpo">
+        <input type="checkbox" name="notify_push" className="h-4 w-4 rounded border-linea text-accion" />
+        <span>
+          Avisar por notificación push al publicarla
+          <span className="block text-[11.5px] text-gris">
+            Manda un aviso push a quienes hayan activado notificaciones y encajen en la audiencia
+            elegida arriba — incita a participar en cuanto se abre.
+          </span>
+        </span>
+      </label>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Campo etiqueta="Abre">
           <input type="datetime-local" name="opens_at" required className="w-full rounded-boton border border-linea px-4 py-2.5 text-[14px]" />

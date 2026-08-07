@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
 import { crearEncuesta } from '@/lib/participacion/surveys';
+import { notificarEncuestaNueva } from '@/lib/participacion/notifications-admin';
 import type { TipoPregunta } from '@/lib/participacion/types';
 
 export async function crearEncuestaAction(formData: FormData) {
@@ -15,6 +16,7 @@ export async function crearEncuestaAction(formData: FormData) {
   const territoryRaw = (formData.get('territory_id') as string)?.trim();
   const territory_id = territoryRaw ? Number(territoryRaw) : null;
   const anonymous = formData.get('anonymous') === 'on';
+  const notifyPush = formData.get('notify_push') === 'on';
   const results_visibility = formData.get('results_visibility') as 'live' | 'on_close' | 'internal';
   const opens_at = formData.get('opens_at') as string;
   const closes_at = formData.get('closes_at') as string;
@@ -81,6 +83,12 @@ export async function crearEncuestaAction(formData: FormData) {
     featured_month: featuredRaw,
     preguntas,
   });
+
+  if (notifyPush) {
+    // No debe tumbar la creación de la encuesta si el envío falla (VAPID sin
+    // configurar en este entorno, red, etc.) — la encuesta ya está guardada.
+    await notificarEncuestaNueva(title, encuesta.id, audience).catch(() => {});
+  }
 
   revalidatePath('/admin/participacion/encuestas');
   redirect(`/admin/participacion/encuestas?creada=${encuesta.id}`);

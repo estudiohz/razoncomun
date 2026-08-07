@@ -7,6 +7,7 @@ import { ContrasenaForm } from '@/components/perfil/ContrasenaForm';
 import { Seguridad2FA } from '@/components/perfil/Seguridad2FA';
 import { ExportarBorrarCuenta } from '@/components/perfil/ExportarBorrarCuenta';
 import { VerificarIdentidad } from '@/components/perfil/VerificarIdentidad';
+import { NotificacionesPushForm } from '@/components/perfil/NotificacionesPushForm';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Mi perfil',
@@ -101,6 +102,14 @@ export default async function PanelPerfilPage() {
             newsletterOptInAt={perfil.newsletter_opt_in_at}
             provincias={provincias ?? []}
           />
+        </div>
+      </section>
+
+      {/* NOTIFICACIONES PUSH (0046) */}
+      <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
+        <h2 className="text-[15px] font-bold text-titular">Notificaciones push</h2>
+        <div className="mt-3">
+          <NotificacionesPushForm />
         </div>
       </section>
 
