@@ -15,14 +15,18 @@ import { slugificar } from '@/lib/blog/markdown';
  * 'internal'` (marcadas como tales en el propio Markdown).
  *
  * ÁRBOL A 4 NIVELES (Sergio, 07/08/2026: "se prevé mucha info, hasta 3 o 4
- * niveles sería lo ideal") — cada nivel es un INDICE.md que enlaza hacia
- * abajo (y hacia arriba, con un enlace "← Volver") para poder navegar el
- * árbol sin salir de GitHub:
+ * niveles sería lo ideal — que decida la IA la estructura, pensando como si
+ * organizara las leyes de un país entero"). Se toma prestada la jerarquía
+ * legal de una constitución real — Constitución → Título → Capítulo →
+ * Artículo — porque es exactamente el problema: un cuerpo de conocimiento
+ * grande y creciente que necesita subdividirse sin perder navegabilidad.
+ * Cada nivel es un INDICE.md que enlaza hacia abajo (y hacia arriba, con un
+ * enlace "← Volver") para poder recorrer el árbol sin salir de GitHub:
  *
- *   docs/cerebro/INDICE.md                                   (1: categorías)
- *   docs/cerebro/<categoria>/INDICE.md                        (2: áreas)
- *   docs/cerebro/<categoria>/<area>/INDICE.md                 (3: entradas)
- *   docs/cerebro/<categoria>/<area>/<entrada>.md               (4: contenido)
+ *   docs/cerebro/INDICE.md                       (1: LA CONSTITUCIÓN — categorías)
+ *   docs/cerebro/<categoria>/INDICE.md            (2: TÍTULO — áreas temáticas)
+ *   docs/cerebro/<categoria>/<area>/INDICE.md     (3: CAPÍTULO — entradas)
+ *   docs/cerebro/<categoria>/<area>/<entrada>.md  (4: ARTÍCULO — contenido)
  *
  * Si una entrada no tiene área (p.ej. Estatutos, Ideario general) cae en el
  * cajón `general/` de su categoría — así el árbol es siempre regular
@@ -81,9 +85,9 @@ function renderEntrada(cat: CategoriaConstitucion, area: AreaConstitucion, e: En
   return [
     `<!-- GENERADO AUTOMÁTICAMENTE por /api/cerebro/constitucion — no editar a mano, se sobrescribe. Fuente real: tabla brain_entries. Última generación: ${generatedAt} -->`,
     '',
-    `[← ${area.name}](./INDICE.md) · [${cat.name}](../INDICE.md) · [Constitución](../../INDICE.md)`,
+    `[← Capítulo: ${area.name}](./INDICE.md) · [Título: ${cat.name}](../INDICE.md) · [La Constitución](../../INDICE.md)`,
     '',
-    `# ${e.title}`,
+    `# Artículo — ${e.title}`,
     etiquetaInterna,
     '',
     e.body.trim(),
@@ -96,17 +100,17 @@ function renderEntrada(cat: CategoriaConstitucion, area: AreaConstitucion, e: En
 function renderIndiceArea(cat: CategoriaConstitucion, area: AreaConstitucion, generatedAt: string): string {
   const filas =
     area.entradas.length === 0
-      ? '_Todavía no hay entradas aquí._'
+      ? '_Todavía no hay artículos en este capítulo._'
       : area.entradas
-          .map((e) => `- [${e.title}${e.visibility === 'internal' ? ' `[interno]`' : ''}](./${e.slug}.md)`)
+          .map((e) => `- Art. — [${e.title}${e.visibility === 'internal' ? ' `[interno]`' : ''}](./${e.slug}.md)`)
           .join('\n');
 
   return [
     `<!-- GENERADO AUTOMÁTICAMENTE por /api/cerebro/constitucion — no editar a mano, se sobrescribe. -->`,
     '',
-    `[← ${cat.name}](../INDICE.md) · [Constitución](../../INDICE.md)`,
+    `[← Título: ${cat.name}](../INDICE.md) · [La Constitución](../../INDICE.md)`,
     '',
-    `# ${cat.name} · ${area.name}`,
+    `# Título ${cat.name} — Capítulo: ${area.name}`,
     '',
     filas,
     '',
@@ -115,17 +119,20 @@ function renderIndiceArea(cat: CategoriaConstitucion, area: AreaConstitucion, ge
 
 function renderIndiceCategoria(cat: CategoriaConstitucion, generatedAt: string): string {
   const filas = cat.areas
-    .map((a) => `- [${a.name}](./${a.slug}/INDICE.md) — ${a.entradas.length} entrada${a.entradas.length === 1 ? '' : 's'}`)
+    .map(
+      (a) =>
+        `- Cap. — [${a.name}](./${a.slug}/INDICE.md) — ${a.entradas.length} artículo${a.entradas.length === 1 ? '' : 's'}`,
+    )
     .join('\n');
 
   return [
     `<!-- GENERADO AUTOMÁTICAMENTE por /api/cerebro/constitucion — no editar a mano, se sobrescribe. -->`,
     '',
-    `[← Constitución](../INDICE.md)`,
+    `[← La Constitución](../INDICE.md)`,
     '',
-    `# ${cat.name}`,
+    `# Título — ${cat.name}`,
     '',
-    filas || '_Todavía no hay áreas con entradas en esta categoría._',
+    filas || '_Todavía no hay capítulos con artículos en este título._',
     '',
   ].join('\n');
 }
@@ -134,24 +141,25 @@ function renderIndiceRaiz(categorias: CategoriaConstitucion[], generatedAt: stri
   const filas = categorias
     .map((c) => {
       const total = c.areas.reduce((acc, a) => acc + a.entradas.length, 0);
-      return `- [${c.name}](./${c.slug}/INDICE.md) — ${total} entrada${total === 1 ? '' : 's'} en ${c.areas.length} área${c.areas.length === 1 ? '' : 's'}`;
+      return `- Título — [${c.name}](./${c.slug}/INDICE.md) — ${total} artículo${total === 1 ? '' : 's'} en ${c.areas.length} capítulo${c.areas.length === 1 ? '' : 's'}`;
     })
     .join('\n');
 
   return [
     `<!-- GENERADO AUTOMÁTICAMENTE por /api/cerebro/constitucion — no editar a mano, se sobrescribe. -->`,
     '',
-    '# La constitución de Razón Común',
+    '# La Constitución de Razón Común',
     '',
     'Espejo en Markdown de la wiki de conocimiento del partido (`brain_entries`),',
-    'organizado en árbol (categoría → área → entrada) para que una IA — o una',
-    'persona — lo navegue sin tener que consultar la base de datos.',
+    'organizado como el cuerpo legal de un país — Constitución → Título →',
+    'Capítulo → Artículo — para que una IA (o una persona) lo navegue de un',
+    'tirón sin tener que consultar la base de datos.',
     '',
     `Generado: ${new Date(generatedAt).toLocaleString('es-ES')}.`,
     '',
     "> Incluye entradas internas (marcadas `[interno]`): este repositorio es PRIVADO.",
     '',
-    '## Categorías',
+    '## Títulos',
     '',
     filas,
     '',
