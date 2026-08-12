@@ -92,6 +92,48 @@ export default async function MesPage({
   // el espacio que necesita la pregunta. Queda una etiqueta discreta.
   const respondiendo = Boolean(encuesta && encuesta.abierta && user);
 
+  // Dos columnas cuando estás respondiendo Y ya hay resultados que enseñar
+  // (izquierda la encuesta con scroll de página, derecha los resultados fijos).
+  const dosColumnas = Boolean(encuesta?.abierta && user && resultados.length > 0);
+
+  const playerNode =
+    encuesta && encuesta.abierta && user ? (
+      <EncuestaPlayer
+        surveyId={encuesta.id}
+        preguntas={encuesta.preguntas}
+        respuestasIniciales={Object.fromEntries(encuesta.misRespuestas)}
+        cierra={encuesta.closes_at}
+      />
+    ) : null;
+
+  const resultadosNode =
+    encuesta && resultados.length > 0 ? (
+      <section>
+        <h2 className="text-[20px] font-extrabold text-titular">
+          {!encuesta.abierta
+            ? 'Resultados'
+            : completada && encuesta.results_visibility !== 'live'
+              ? 'Así van los resultados — gracias por completarla'
+              : 'Resultados en directo'}
+        </h2>
+        <p className="mt-1 text-[13px] text-gris">
+          El voto de los simpatizantes se publica junto al de los afiliados — así lo dice nuestro
+          ideario. Afiliados en teal, simpatizantes en gris.
+          {encuesta.abierta && completada && ' El marcador puede seguir moviéndose hasta el cierre.'}
+        </p>
+        <div className="mt-4 space-y-5">
+          {encuesta.preguntas.map((p) => (
+            <ResultadoPregunta
+              key={p.id}
+              pregunta={p}
+              filas={resultados.filter((r) => r.question_id === p.id)}
+              miRespuesta={encuesta.misRespuestas.get(p.id) ?? null}
+            />
+          ))}
+        </div>
+      </section>
+    ) : null;
+
   return (
     <Contenedor as="section" className={respondiendo ? 'py-5 min-[720px]:py-10' : 'py-10 min-[720px]:py-14'}>
       {respondiendo ? (
@@ -143,90 +185,67 @@ export default async function MesPage({
         </>
       )}
 
-      <div className={cn('mx-auto max-w-[640px]', respondiendo ? 'mt-3' : 'mt-8')}>
-        {/* Caso 1: hay encuesta y puedo responderla */}
-        {encuesta && encuesta.abierta && user && (
-          <EncuestaPlayer
-            surveyId={encuesta.id}
-            preguntas={encuesta.preguntas}
-            respuestasIniciales={Object.fromEntries(encuesta.misRespuestas)}
-            cierra={encuesta.closes_at}
-          />
-        )}
-
-        {/* Caso 2: hay encuesta pero soy anónimo → el funnel */}
-        {encuesta && encuesta.abierta && !user && (
-          <div className="rounded-tarjeta border border-teal/40 bg-teal/[.06] p-7 text-center">
-            <p className="text-[15px] font-bold text-titular">
-              {encuesta.preguntas.length} pregunta{encuesta.preguntas.length === 1 ? '' : 's'} · 2 minutos
-            </p>
-            <p className="mx-auto mt-2 max-w-[46ch] text-[14px] text-cuerpo">
-              Cada pregunta nace de una propuesta ciudadana debatida y votada. Crea una cuenta
-              gratuita con tu email y tu opinión queda contada — se publica junto a la de los
-              afiliados.
-            </p>
-            <Link
-              href={`/registro?next=${encodeURIComponent('/mes')}`}
-              className="mt-4 inline-block rounded-boton bg-accion px-6 py-3 text-[14.5px] font-bold text-white no-underline shadow-boton"
-            >
-              Crear cuenta y responder
-            </Link>
-            <p className="mt-3 text-[12.5px] text-gris">
-              ¿Ya tienes cuenta?{' '}
-              <Link href={`/entrar?next=${encodeURIComponent('/mes')}`} className="font-semibold text-titular underline">
-                Entra
-              </Link>
-            </p>
+      {dosColumnas ? (
+        /* Dos columnas ocupando el contenedor: izquierda la encuesta (scroll
+           normal de la página), derecha los resultados FIJOS (sticky, con
+           scroll propio si son largos). En móvil se apilan. */
+        <div className="mx-auto mt-4 grid max-w-wrap items-start gap-8 lg:grid-cols-2">
+          <div className="min-w-0">{playerNode}</div>
+          <div className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-2.5rem)] lg:overflow-y-auto lg:pr-1">
+            {resultadosNode}
           </div>
-        )}
+        </div>
+      ) : (
+        <div className={cn('mx-auto max-w-[640px]', respondiendo ? 'mt-3' : 'mt-8')}>
+          {playerNode}
 
-        {/* Caso 3: sin encuesta este mes */}
-        {!encuesta && (
-          <p className="rounded-tarjeta border border-linea bg-panel p-8 text-center text-[14.5px] text-gris">
-            {esActual
-              ? 'La encuesta de este mes todavía no está publicada. El tablero de propuestas está siempre abierto.'
-              : 'Este mes no tuvo encuesta.'}
-          </p>
-        )}
-
-        {/* Encuesta CERRADA con sesión: recordatorio de solo-lectura. Lo que
-            respondió cada uno se marca dentro de las barras de abajo. */}
-        {encuesta && !encuesta.abierta && user && encuesta.misRespuestas.size > 0 && (
-          <p className="rounded-tarjeta border border-linea bg-panel px-5 py-3.5 text-[13.5px] text-cuerpo">
-            Respondiste {encuesta.misRespuestas.size} de {encuesta.preguntas.length} pregunta
-            {encuesta.preguntas.length === 1 ? '' : 's'}. Tu respuesta aparece marcada en cada
-            resultado — la encuesta está cerrada y ya no puede editarse.
-          </p>
-        )}
-
-        {/* Resultados: cerrada, en vivo, o como recompensa por completar (0043) */}
-        {encuesta && resultados.length > 0 && (
-          <section className="mt-8">
-            <h2 className="text-[20px] font-extrabold text-titular">
-              {!encuesta.abierta
-                ? 'Resultados'
-                : completada && encuesta.results_visibility !== 'live'
-                  ? 'Así van los resultados — gracias por completarla'
-                  : 'Resultados en directo'}
-            </h2>
-            <p className="mt-1 text-[13px] text-gris">
-              El voto de los simpatizantes se publica junto al de los afiliados — así lo dice
-              nuestro ideario. Afiliados en teal, simpatizantes en gris.
-              {encuesta.abierta && completada && ' El marcador puede seguir moviéndose hasta el cierre.'}
-            </p>
-            <div className="mt-4 space-y-5">
-              {encuesta.preguntas.map((p) => (
-                <ResultadoPregunta
-                  key={p.id}
-                  pregunta={p}
-                  filas={resultados.filter((r) => r.question_id === p.id)}
-                  miRespuesta={encuesta.misRespuestas.get(p.id) ?? null}
-                />
-              ))}
+          {/* Caso 2: hay encuesta pero soy anónimo → el funnel */}
+          {encuesta && encuesta.abierta && !user && (
+            <div className="rounded-tarjeta border border-teal/40 bg-teal/[.06] p-7 text-center">
+              <p className="text-[15px] font-bold text-titular">
+                {encuesta.preguntas.length} pregunta{encuesta.preguntas.length === 1 ? '' : 's'} · 2 minutos
+              </p>
+              <p className="mx-auto mt-2 max-w-[46ch] text-[14px] text-cuerpo">
+                Cada pregunta nace de una propuesta ciudadana debatida y votada. Crea una cuenta
+                gratuita con tu email y tu opinión queda contada — se publica junto a la de los
+                afiliados.
+              </p>
+              <Link
+                href={`/registro?next=${encodeURIComponent('/mes')}`}
+                className="mt-4 inline-block rounded-boton bg-accion px-6 py-3 text-[14.5px] font-bold text-white no-underline shadow-boton"
+              >
+                Crear cuenta y responder
+              </Link>
+              <p className="mt-3 text-[12.5px] text-gris">
+                ¿Ya tienes cuenta?{' '}
+                <Link href={`/entrar?next=${encodeURIComponent('/mes')}`} className="font-semibold text-titular underline">
+                  Entra
+                </Link>
+              </p>
             </div>
-          </section>
-        )}
-      </div>
+          )}
+
+          {/* Caso 3: sin encuesta este mes */}
+          {!encuesta && (
+            <p className="rounded-tarjeta border border-linea bg-panel p-8 text-center text-[14.5px] text-gris">
+              {esActual
+                ? 'La encuesta de este mes todavía no está publicada. El tablero de propuestas está siempre abierto.'
+                : 'Este mes no tuvo encuesta.'}
+            </p>
+          )}
+
+          {/* Encuesta CERRADA con sesión: recordatorio de solo-lectura. */}
+          {encuesta && !encuesta.abierta && user && encuesta.misRespuestas.size > 0 && (
+            <p className="rounded-tarjeta border border-linea bg-panel px-5 py-3.5 text-[13.5px] text-cuerpo">
+              Respondiste {encuesta.misRespuestas.size} de {encuesta.preguntas.length} pregunta
+              {encuesta.preguntas.length === 1 ? '' : 's'}. Tu respuesta aparece marcada en cada
+              resultado — la encuesta está cerrada y ya no puede editarse.
+            </p>
+          )}
+
+          {resultadosNode && <div className="mt-8">{resultadosNode}</div>}
+        </div>
+      )}
 
       {/* Secciones secundarias: solo en modo consulta — mientras respondes,
           la pantalla es de la pregunta. */}
