@@ -31,7 +31,7 @@ export async function Footer() {
   return (
     /* Full-bleed: el degradado de marca ocupa todo el ancho de la ventana;
        el contenido se alinea dentro del Contenedor habitual (max-w-wrap). */
-    <footer className="bg-grad py-8 text-white">
+    <footer className="bg-grad-footer py-8 text-white">
       <Contenedor>
         {/* Móvil: logo centrado y las 8 redes en una rejilla 4x2 también
             centrada (petición de Sergio — el wrap libre partía en 5+3 o 6+2

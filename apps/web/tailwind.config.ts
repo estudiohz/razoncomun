@@ -77,6 +77,9 @@ const config: Config = {
           'linear-gradient(120deg,#24AF9A 0%,#8B30D9 28%,#C3369E 50%,#E8792F 72%,#16B8A0 100%)',
         // Degradado de acción (botones, celdas — no satura)
         grad: 'linear-gradient(120deg,#24AF9A 0%,#8B30D9 60%,#C3369E 100%)',
+        // Footer: como `grad` pero con naranja→melocotón a la derecha (igual que el hero)
+        'grad-footer':
+          'linear-gradient(120deg,#24AF9A 0%,#8B30D9 32%,#C3369E 55%,#E8792F 82%,#ED7547 100%)',
         // Hero: azul → morado → magenta → rojo → naranja (espectro del aro)
         hero: 'linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8ebf 50%, #ed1156b5 60%, #f05726bd 85%, #ed7547)',
         // Mismo espectro que `hero`, recalibrado para una CELDA ancha y baja
