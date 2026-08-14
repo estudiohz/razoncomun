@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
-import { obtenerProducto } from '@/lib/tienda/printful';
+import { obtenerProducto, PrintfulNoConfiguradoError } from '@/lib/tienda/printful';
 import { BotonCarrito } from '../BotonCarrito';
+import { TiendaNoConfigurada } from '../TiendaNoConfigurada';
 import { FichaCliente } from './FichaCliente';
 
 export const revalidate = 3600;
@@ -36,7 +37,15 @@ export default async function ProductoPage({ params }: { params: Promise<{ id: s
   const numero = idValido(id);
   if (!numero) notFound();
 
-  const producto = await obtenerProducto(numero);
+  // Sin la key, `obtenerProducto` lanza: hay que degradar igual que la
+  // parrilla o la ficha responde 500 (pasó al desplegar T1).
+  let producto;
+  try {
+    producto = await obtenerProducto(numero);
+  } catch (err) {
+    if (err instanceof PrintfulNoConfiguradoError) return <TiendaNoConfigurada />;
+    throw err;
+  }
   if (!producto) notFound();
 
   return (

@@ -7,6 +7,7 @@ import { listarProductos, PrintfulNoConfiguradoError } from '@/lib/tienda/printf
 import { formatoPrecio } from '@/lib/tienda/precios';
 import { obtenerProducto } from '@/lib/tienda/printful';
 import { BotonCarrito } from './BotonCarrito';
+import { TiendaNoConfigurada } from './TiendaNoConfigurada';
 
 // D-T10: noindex y fuera del menú hasta el visto bueno legal.
 export const metadata: Metadata = metadatosPagina({
@@ -29,16 +30,7 @@ export default async function TiendaPage() {
   try {
     productos = await listarProductos();
   } catch (err) {
-    if (err instanceof PrintfulNoConfiguradoError) {
-      return (
-        <Contenedor as="section" className="py-14">
-          <h1 className="text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.12]">Tienda</h1>
-          <p className="mt-4 text-[16px] text-cuerpo">
-            La tienda todavía no está configurada en este entorno.
-          </p>
-        </Contenedor>
-      );
-    }
+    if (err instanceof PrintfulNoConfiguradoError) return <TiendaNoConfigurada />;
     throw err;
   }
 
