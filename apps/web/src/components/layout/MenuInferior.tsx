@@ -1,131 +1,45 @@
 'use client';
 
-import type React from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/cn';
 import { useEsApp } from '@/lib/useEsApp';
+import { LiquidTabBar, type ItemBarraLiquida } from '@/components/nav/LiquidTabBar';
 
 /**
- * Menú inferior fijo de la app (móvil, <960px). El elemento central y
- * prominente es "El mes" — la encuesta del mes (0040), que es a lo que Sergio
- * quiere que se llegue en dos toques desde el icono de la app.
+ * Menú inferior fijo de la app (móvil, <960px), con el diseño "líquido"
+ * (LiquidTabBar): la sección activa es una bola que hunde el borde superior.
  *
- * Los otros cuatro (para quien está en modo app, que es el único que lo ve):
- * - Inicio es el PANEL, no la home corporativa — decisión de Sergio: el
- *   logueado entra a un entorno colaborativo, no a la portada de captación
- *   (que además le redirige aquí desde el middleware).
+ * Los cinco destinos (para quien está en modo app, el único que lo ve):
+ * - Inicio es el PANEL, no la home corporativa (el logueado entra al entorno
+ *   colaborativo, no a la portada de captación).
  * - Propuestas: donde se participa a diario.
- * - Cambios: el bucle de retorno a un toque es lo que lo hace creíble.
+ * - El mes: la encuesta del mes (0040) — el centro, a lo que se llega en dos toques.
+ * - Cambios: el bucle de retorno.
  * - Perfil: datos, contraseña, afiliación.
  *
- * No se monta en /admin: el panel de administración tiene su propio chrome y
- * este menú es de la app ciudadana. En escritorio (≥960px) desaparece — ahí
- * está la nav superior completa.
+ * No se monta en /admin (tiene su propio chrome) ni fuera del modo app. El
+ * choque con el widget de chat no aplica: ChatSoloVisitantes ya lo oculta en
+ * modo app (ambos usan useEsApp en espejo, nunca coinciden).
  */
-const ITEMS_IZQ = [
-  { href: '/panel', label: 'Inicio', exacto: true, icono: IconoInicio },
-  { href: '/propuestas', label: 'Propuestas', icono: IconoPropuestas },
-] as const;
-
-const ITEMS_DER = [
-  { href: '/cambios', label: 'Cambios', icono: IconoCambios },
-  { href: '/panel/perfil', label: 'Perfil', icono: IconoTu },
-] as const;
-
-/**
- * Padding inferior común a los CUATRO items con etiqueta. Con `items-end` en
- * la fila todos acaban a la misma altura, así que un mismo `pb` garantiza que
- * las etiquetas compartan línea base pase lo que pase por encima. (El botón
- * central ya no lo usa: no tiene etiqueta y se posiciona por su cuenta.)
- *
- * El valor sube el bloque icono+etiqueta hasta el centro ÓPTICO de la barra
- * de 74px. El centro geométrico son 19px —icono 21 + gap 4 + etiqueta 10.5 =
- * 35.5 → (74 − 35.5) / 2— pero ahí se ve bajo: el safe-area del móvil añade
- * relleno por debajo y la burbuja del centro carga peso visual arriba. Sergio
- * pidió 5px más (02/08/2026), de donde salen los 24.
- *
- * Si cambia la altura de la barra o el tamaño del icono: recalcular el centro
- * geométrico con la fórmula de arriba y volver a sumarle los 5.
- */
-const PB_ITEM = 'pb-[24px]';
-
 export function MenuInferior() {
   const pathname = usePathname() ?? '/';
   const esApp = useEsApp();
-  // Solo en "modo app" (instalada como PWA o con sesión): el visitante
-  // anónimo de navegador ve la web corporativa limpia — y el widget de chat,
-  // que ocupa justo la esquina que aquí taparíamos.
   if (pathname.startsWith('/admin') || !esApp) return null;
 
-  const activo = (href: string, exacto?: boolean) =>
-    exacto ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
-
-  const item = (i: { href: string; label: string; exacto?: boolean; icono: () => React.ReactElement }) => (
-    <Link
-      key={i.href}
-      href={i.href}
-      aria-current={activo(i.href, i.exacto) ? 'page' : undefined}
-      className={cn(
-        'flex min-w-0 flex-1 flex-col items-center gap-1 text-[10.5px] font-bold leading-none no-underline',
-        PB_ITEM,
-        activo(i.href, i.exacto) ? 'text-titular' : 'text-gris',
-      )}
-    >
-      <i.icono />
-      {i.label}
-    </Link>
-  );
+  const items: ItemBarraLiquida[] = [
+    { href: '/panel', label: 'Inicio', exacto: true, icono: <IconoInicio /> },
+    { href: '/propuestas', label: 'Propuestas', icono: <IconoPropuestas /> },
+    { href: '/mes', label: 'El mes', icono: <IconoMes /> },
+    { href: '/cambios', label: 'Cambios', icono: <IconoCambios /> },
+    { href: '/panel/perfil', label: 'Perfil', icono: <IconoTu /> },
+  ];
 
   return (
     <>
-      {/* Reserva el hueco del menú en el flujo: sin esto, el footer y el final
-          de cada página quedarían tapados por la barra fija. */}
-      <div aria-hidden className="h-[calc(74px+env(safe-area-inset-bottom))] min-[960px]:hidden" />
-
-      <nav
-        aria-label="Menú de la app"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-linea bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur min-[960px]:hidden"
-      >
-        {/* items-end + `PB_ITEM` en los cuatro con etiqueta: así todas las
-            etiquetas comparten línea base, y el padding las lleva al centro
-            óptico de la barra de 74px (antes con `pb-2` quedaban pegadas
-            abajo). La burbuja del centro se alinea también por abajo, pero con
-            su propio `pb` — al no llevar texto no tiene línea base que
-            respetar. */}
-        <div className="mx-auto flex h-[74px] max-w-[520px] items-end px-1">
-          {ITEMS_IZQ.map(item)}
-
-          {/* El centro: la encuesta del mes, elevada y con el degradado del
-              aro. SIN etiqueta visible (decisión de Sergio, 02/08/2026): el
-              texto no encajaba bajo la burbuja y quitarlo permite bajarla.
-
-              Al no haber texto, el nombre viaja en `aria-label` — el icono es
-              decorativo (`aria-hidden`), así que sin él un lector de pantalla
-              anunciaría el enlace solo por su destino ("/mes").
-
-              Su posición ya no depende de `PB_ITEM` ni del margen negativo:
-              este `pb` la fija sola. 74 (barra) − 52 (burbuja) + 10 que
-              sobresale = 32. Subir el número la baja, y viceversa. */}
-          <Link
-            href="/mes"
-            aria-label="El mes"
-            aria-current={activo('/mes') ? 'page' : undefined}
-            className="flex items-end px-2 pb-[32px] no-underline"
-          >
-            <span
-              className={cn(
-                'grid h-[52px] w-[52px] place-items-center rounded-full bg-grad text-white shadow-boton ring-4 ring-white',
-                activo('/mes') && 'ring-linea',
-              )}
-            >
-              <IconoMes />
-            </span>
-          </Link>
-
-          {ITEMS_DER.map(item)}
-        </div>
-      </nav>
+      {/* Reserva el hueco de la barra fija: sin esto, el final de cada página
+          quedaría tapado por la barra flotante. Se corresponde con la altura
+          de la LiquidTabBar (64px) + su despegue inferior + el safe-area. */}
+      <div aria-hidden className="h-[calc(70px+env(safe-area-inset-bottom))] min-[960px]:hidden" />
+      <LiquidTabBar items={items} />
     </>
   );
 }

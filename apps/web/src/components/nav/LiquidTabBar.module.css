@@ -20,8 +20,9 @@
   display: none;
 }
 
-/* Móvil: por encima de este ancho manda la navegación de escritorio. */
-@media (max-width: 820px) {
+/* Móvil: por encima de este ancho manda la navegación de escritorio.
+   959px para casar con el `min-[960px]:hidden` del resto del chrome de la app. */
+@media (max-width: 959px) {
   .barra {
     display: block;
     position: fixed;
