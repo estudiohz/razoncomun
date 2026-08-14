@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { loadStripe, type Stripe as StripeJs } from '@stripe/stripe-js';
 import { Elements, IbanElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { stripePublishableKey } from '@/lib/stripe/publicKey';
-import { CUOTA_REFERENCIA_CENTS, type Periodicidad } from '@/lib/stripe/config';
+import { CUOTA_REFERENCIA_CENTS, type Periodicidad, type PlanCuota } from '@/lib/stripe/config';
 import { TEXTO_AVISO_MANDATO_SEPA, formatearCents } from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF } from '@/lib/afiliacion/nif';
@@ -19,8 +19,25 @@ function getStripe() {
 
 type Paso = 'datos' | 'pago';
 
-export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicial: string | null }) {
+export function AltaSepa({
+  email,
+  nombreInicial,
+  planInicial = 'socio',
+  verificadoDisponible,
+}: {
+  email: string;
+  nombreInicial: string | null;
+  /** Plan preseleccionado. Llega de `?plan=` en la URL: los botones de la
+      escalera de niveles bajan hasta aquí con el tramo ya elegido. */
+  planInicial?: PlanCuota;
+  /** Si los Price del tramo verificado no están configurados en el entorno,
+      no se ofrece ese plan (ver `planVerificadoDisponible()`). */
+  verificadoDisponible: boolean;
+}) {
   const [paso, setPaso] = useState<Paso>('datos');
+  const [plan, setPlan] = useState<PlanCuota>(
+    planInicial === 'verificado' && verificadoDisponible ? 'verificado' : 'socio',
+  );
   const [periodo, setPeriodo] = useState<Periodicidad>('monthly');
   const [nif, setNif] = useState('');
   const [consentimiento, setConsentimiento] = useState(false);
@@ -42,7 +59,7 @@ export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicia
     }
 
     setCargando(true);
-    const resultado = await iniciarDomiciliacion({ periodo, nif, consentimiento });
+    const resultado = await iniciarDomiciliacion({ plan, periodo, nif, consentimiento });
     setCargando(false);
 
     if (!resultado.ok) {
@@ -57,6 +74,7 @@ export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicia
     return (
       <Elements stripe={getStripe()} options={{ locale: 'es' }}>
         <PasoIban
+          plan={plan}
           periodo={periodo}
           email={email}
           nombreInicial={nombreInicial}
@@ -70,6 +88,59 @@ export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicia
 
   return (
     <form onSubmit={continuar} className="mt-6 space-y-6">
+      {/* PASO 1 — el tramo. Solo se pinta si el tramo verificado existe en
+          este entorno; si no, se cobra `socio` sin preguntar nada, igual que
+          antes de que existieran los dos planes. */}
+      {verificadoDisponible && (
+        <fieldset>
+          <legend className="mb-2 text-[12.5px] font-bold text-titular">Tu tramo de cuota</legend>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="flex cursor-pointer flex-col rounded-boton border border-linea bg-white p-4 has-[:checked]:border-morado has-[:checked]:ring-2 has-[:checked]:ring-morado/30">
+              <input
+                type="radio"
+                name="plan"
+                value="socio"
+                checked={plan === 'socio'}
+                onChange={() => setPlan('socio')}
+                className="sr-only"
+              />
+              <span className="text-[13.5px] font-extrabold text-titular">Socio</span>
+              <span className="mt-1 text-[12.5px] leading-relaxed text-cuerpo">
+                {formatearCents(CUOTA_REFERENCIA_CENTS.socio.monthly)}/mes ·{' '}
+                {formatearCents(CUOTA_REFERENCIA_CENTS.socio.annual)}/año
+              </span>
+            </label>
+            <label className="flex cursor-pointer flex-col rounded-boton border border-linea bg-white p-4 has-[:checked]:border-magenta has-[:checked]:ring-2 has-[:checked]:ring-magenta/30">
+              <input
+                type="radio"
+                name="plan"
+                value="verificado"
+                checked={plan === 'verificado'}
+                onChange={() => setPlan('verificado')}
+                className="sr-only"
+              />
+              <span className="text-[13.5px] font-extrabold text-titular">Socio verificado</span>
+              <span className="mt-1 text-[12.5px] leading-relaxed text-cuerpo">
+                {formatearCents(CUOTA_REFERENCIA_CENTS.verificado.monthly)}/mes ·{' '}
+                {formatearCents(CUOTA_REFERENCIA_CENTS.verificado.annual)}/año
+              </span>
+            </label>
+          </div>
+          {/* Aviso obligatorio, no decorativo: el tramo alto costea la
+              verificación, pero el NIVEL "verificado" solo lo da completar
+              Stripe Identity desde el perfil. Sin esta línea estaríamos
+              cobrando 1 €/mes más por algo que la cuota no entrega. */}
+          {plan === 'verificado' && (
+            <p className="mt-2 rounded-boton bg-magenta/10 px-4 py-3 text-[12.5px] leading-relaxed text-cuerpo">
+              Este tramo costea tu verificación de identidad. Para que el nivel pase de verdad a
+              <b className="font-bold"> Socio verificado</b> tendrás que completarla desde tu perfil
+              cuando termines el alta — la cuota sola no lo activa.
+            </p>
+          )}
+        </fieldset>
+      )}
+
+      {/* PASO 2 — la periodicidad, con los importes del tramo elegido. */}
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex cursor-pointer flex-col rounded-boton border border-linea bg-white p-5 has-[:checked]:border-accion has-[:checked]:ring-2 has-[:checked]:ring-accion/30">
           <input
@@ -82,7 +153,7 @@ export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicia
           />
           <span className="text-[12px] font-bold uppercase tracking-wide text-gris">Mensual</span>
           <span className="mt-1 text-[28px] font-extrabold text-titular">
-            {formatearCents(CUOTA_REFERENCIA_CENTS.monthly)}
+            {formatearCents(CUOTA_REFERENCIA_CENTS[plan].monthly)}
             <span className="text-[14px] font-semibold text-gris">/mes</span>
           </span>
         </label>
@@ -99,7 +170,7 @@ export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicia
             Anual <span className="text-accion">· 2 meses gratis</span>
           </span>
           <span className="mt-1 text-[28px] font-extrabold text-titular">
-            {formatearCents(CUOTA_REFERENCIA_CENTS.annual)}
+            {formatearCents(CUOTA_REFERENCIA_CENTS[plan].annual)}
             <span className="text-[14px] font-semibold text-gris">/año</span>
           </span>
         </label>
@@ -164,6 +235,7 @@ export function AltaSepa({ email, nombreInicial }: { email: string; nombreInicia
 }
 
 function PasoIban({
+  plan,
   periodo,
   email,
   nombreInicial,
@@ -171,6 +243,7 @@ function PasoIban({
   customerId,
   onVolver,
 }: {
+  plan: PlanCuota;
   periodo: Periodicidad;
   email: string;
   nombreInicial: string | null;
@@ -233,7 +306,12 @@ function PasoIban({
       return;
     }
 
-    const resultado = await confirmarAfiliacion({ periodo, customerId, paymentMethodId: pmId });
+    const resultado = await confirmarAfiliacion({
+      plan,
+      periodo,
+      customerId,
+      paymentMethodId: pmId,
+    });
     if (!resultado.ok) {
       setError(resultado.mensaje);
       setProcesando(false);
@@ -253,6 +331,17 @@ function PasoIban({
       >
         ← Volver a tus datos
       </button>
+
+      {/* Resumen de lo que se va a cobrar. Este paso es el que firma el
+          mandato: la persona debe ver el importe exacto sin volver atrás. */}
+      <p className="rounded-boton border border-linea bg-fondo px-4 py-3 text-[13px] text-cuerpo">
+        Vas a domiciliar{' '}
+        <b className="font-bold text-titular">
+          {formatearCents(CUOTA_REFERENCIA_CENTS[plan][periodo])}
+        </b>{' '}
+        {periodo === 'monthly' ? 'al mes' : 'al año'} — tramo{' '}
+        {plan === 'verificado' ? 'Socio verificado' : 'Socio'}.
+      </p>
 
       <div>
         <label htmlFor="titular" className="mb-1.5 block text-[12.5px] font-bold text-titular">

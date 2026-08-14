@@ -2,7 +2,13 @@
 
 import { requireUsuario } from '@/lib/auth/niveles';
 import { registrarAuditoria } from '@/lib/admin/audit';
-import { stripeCliente, priceIdCuota, type Periodicidad } from '@/lib/stripe/config';
+import {
+  stripeCliente,
+  priceIdCuota,
+  planVerificadoDisponible,
+  type Periodicidad,
+  type PlanCuota,
+} from '@/lib/stripe/config';
 import { TEXTO_CONSENTIMIENTO_AFILIACION } from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF, normalizarNIF } from '@/lib/afiliacion/nif';
@@ -37,12 +43,31 @@ export type ResultadoInicio =
   | { ok: false; mensaje: string }
   | { ok: true; clientSecret: string; customerId: string };
 
+/**
+ * Valida el plan que llega del cliente. Se comprueba en SERVIDOR y no solo en
+ * el formulario: `plan` decide qué Price se cobra, así que nunca se puede
+ * confiar en lo que mande el navegador. Si el tramo verificado no está
+ * configurado en este entorno se rechaza en vez de caer más adelante con un
+ * "Falta STRIPE_PRICE_VERIFICADO_MENSUAL" cuando ya se ha firmado el mandato.
+ */
+function validarPlan(plan: unknown): PlanCuota | null {
+  if (plan !== 'socio' && plan !== 'verificado') return null;
+  if (plan === 'verificado' && !planVerificadoDisponible()) return null;
+  return plan;
+}
+
 export async function iniciarDomiciliacion(input: {
+  plan: PlanCuota;
   periodo: Periodicidad;
   nif: string;
   consentimiento: boolean;
 }): Promise<ResultadoInicio> {
-  const { user, supabase } = await requireUsuario('/afiliate');
+  const { user, supabase } = await requireUsuario('/unete');
+
+  const plan = validarPlan(input.plan);
+  if (!plan) {
+    return { ok: false, mensaje: 'Ese plan de cuota no está disponible. Elige uno de la lista.' };
+  }
 
   if (input.periodo !== 'monthly' && input.periodo !== 'annual') {
     return { ok: false, mensaje: 'Elige una periodicidad de cuota antes de continuar.' };
@@ -86,6 +111,7 @@ export async function iniciarDomiciliacion(input: {
     entity: 'affiliation_consent',
     entityId: user.id,
     meta: {
+      plan,
       periodo: input.periodo,
       texto_voto_publico_nominal_d001: TEXTO_CONSENTIMIENTO,
       texto_domiciliacion_sepa: TEXTO_CONSENTIMIENTO_AFILIACION,
@@ -122,7 +148,7 @@ export async function iniciarDomiciliacion(input: {
   const setupIntent = await stripe.setupIntents.create({
     customer: customerId,
     payment_method_types: ['sepa_debit'],
-    metadata: { user_id: user.id, periodo: input.periodo },
+    metadata: { user_id: user.id, plan, periodo: input.periodo },
   });
 
   if (!setupIntent.client_secret) {
@@ -135,12 +161,24 @@ export async function iniciarDomiciliacion(input: {
 export type ResultadoConfirmacion = { ok: true } | { ok: false; mensaje: string };
 
 export async function confirmarAfiliacion(input: {
+  plan: PlanCuota;
   periodo: Periodicidad;
   customerId: string;
   paymentMethodId: string;
 }): Promise<ResultadoConfirmacion> {
-  const { user } = await requireUsuario('/afiliate');
+  const { user } = await requireUsuario('/unete');
   const stripe = stripeCliente();
+
+  // Se revalida aquí y no solo en `iniciarDomiciliacion`: son dos llamadas
+  // independientes desde el cliente, y esta es la que de verdad crea la
+  // Subscription (la que cobra).
+  const plan = validarPlan(input.plan);
+  if (!plan) {
+    return { ok: false, mensaje: 'Ese plan de cuota no está disponible. Vuelve atrás y elige uno.' };
+  }
+  if (input.periodo !== 'monthly' && input.periodo !== 'annual') {
+    return { ok: false, mensaje: 'Elige una periodicidad de cuota antes de continuar.' };
+  }
 
   try {
     await stripe.customers.update(input.customerId, {
@@ -149,10 +187,13 @@ export async function confirmarAfiliacion(input: {
 
     await stripe.subscriptions.create({
       customer: input.customerId,
-      items: [{ price: priceIdCuota(input.periodo) }],
+      items: [{ price: priceIdCuota(plan, input.periodo) }],
       default_payment_method: input.paymentMethodId,
       collection_method: 'charge_automatically',
-      metadata: { user_id: user.id },
+      // `plan` en el metadata para poder auditar desde Stripe qué tramo
+      // eligió cada quien. `members.amount_cents` ya lo refleja (el webhook lo
+      // lee del Price real), pero el metadata lo deja explícito.
+      metadata: { user_id: user.id, plan },
     });
   } catch (err) {
     return { ok: false, mensaje: (err as Error).message };

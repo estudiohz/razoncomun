@@ -26,7 +26,7 @@ Checkout) — es el propio banco quien debe validar el mandato, no Stripe ni nos
 2. **Activar el Customer Portal con `sepa_debit`.** En el dashboard de Stripe → Settings →
    Billing → Customer Portal, permitir "Update payment method" y asegurarse de que
    `sepa_debit` está entre los métodos ofrecidos ahí (mismo flag de cuenta que ya usa
-   `/afiliate`, ver `lib/stripe/config.ts` → `metodosPagoCheckout()`).
+   `/unete`, ver `lib/stripe/config.ts` → `metodosPagoCheckout()`).
 
 3. **Campaña de invitación (una tanda, no goteo).** Email a los afiliados con tarjeta
    (plantilla nueva, mismo estilo que `lib/email/plantillas.ts`, tono de marca — no reutilizar

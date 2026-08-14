@@ -23,10 +23,14 @@ import { useEsApp } from '@/lib/useEsApp';
 export function ChromePublico({
   nav,
   footer,
+  donacion,
   children,
 }: {
   nav: ReactNode;
   footer: ReactNode;
+  /** Banda de donación, encima del footer. Sigue exactamente su misma regla:
+      si no hay footer (paneles con shell propio), tampoco hay banda. */
+  donacion: ReactNode;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -46,6 +50,7 @@ export function ChromePublico({
     <>
       {nav}
       <main>{children}</main>
+      {donacion}
       {footer}
       {!esPregunta && <ChatSoloVisitantes />}
     </>

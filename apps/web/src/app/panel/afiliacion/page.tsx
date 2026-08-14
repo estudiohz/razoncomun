@@ -16,7 +16,7 @@ export const metadata: Metadata = metadatosPagina({
  * de esconderla a quien no es afiliado (D-U3): si no lo eres, es donde te das
  * de alta; si lo eres, es donde gestionas la cuota y descargas certificados.
  *
- * El alta real sigue viviendo en `/afiliate` (flujo público con Stripe/SEPA,
+ * El alta real sigue viviendo en `/unete` (flujo público con Stripe/SEPA,
  * propiedad de rc-07): aquí no se duplica, se enlaza.
  */
 export default async function PanelAfiliacionPage() {
@@ -81,7 +81,7 @@ export default async function PanelAfiliacionPage() {
             cuota desgrava el 20% en el IRPF (límite 600€/año, LO 8/2007).
           </p>
           <Link
-            href="/afiliate"
+            href="/unete"
             className="mt-4 inline-block rounded-boton bg-accion px-5 py-3 text-[14px] font-bold text-white no-underline shadow-boton"
           >
             Afiliarme

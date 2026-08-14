@@ -69,6 +69,10 @@ export const navPrincipal = [
   { label: 'Propuestas', href: '/propuestas' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pregunta a la IA', href: '/pregunta' },
+  // Placeholder: la tienda todavía no existe como página (Sergio, 10/08/2026).
+  // Entra en la nav con href '#' para reservarle el sitio; se cambia por su
+  // ruta real cuando esté montada.
+  { label: 'Tienda', href: '#' },
   { label: 'Cuentas', href: '/cuentas' },
 ] as const;
 
@@ -76,7 +80,10 @@ export const navPrincipal = [
 // Enlaces fijos del footer que NO son páginas del CMS (los legales/estatutos
 // salen de la tabla `pages` según sus checkboxes). Aquí solo lo externo/fijo.
 export const navFooter = [
-  { label: 'Afíliate', href: '/afiliate' },
+  // "Únete" y ruta /unete (Sergio, 10/08/2026): la página de afiliación pasa a
+  // llamarse así en toda la web. /afiliate sigue vivo como redirección
+  // permanente (next.config.mjs) para no romper enlaces ya publicados.
+  { label: 'Únete', href: '/unete' },
   { label: 'Observatorio', href: '/observatorio' },
   // "Qué cambió" baja del nav al footer (Sergio, 02/08/2026): el bucle de
   // retorno promete consecuencias, y sin representación en el Congreso todavía
@@ -100,5 +107,5 @@ export const rutasPublicas = [
   '/blog',
   '/pregunta',
   '/cuentas',
-  '/afiliate',
+  '/unete',
 ] as const;

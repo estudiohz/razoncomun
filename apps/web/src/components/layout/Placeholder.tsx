@@ -35,7 +35,7 @@ export function Placeholder({
           <Boton href="/" variante="suave">
             Volver a la home
           </Boton>
-          <Boton href="/afiliate" variante="grad">
+          <Boton href="/unete" variante="grad">
             Afíliate
           </Boton>
         </div>

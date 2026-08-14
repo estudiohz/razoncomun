@@ -4,6 +4,7 @@ import './globals.css';
 import { Nav } from '@/components/layout/Nav';
 import { Footer } from '@/components/layout/Footer';
 import { ChromePublico } from '@/components/layout/ChromePublico';
+import { BandaDonacion } from '@/components/layout/BandaDonacion';
 import { RegistroPWA } from '@/components/layout/RegistroPWA';
 import { MenuInferior } from '@/components/layout/MenuInferior';
 import { jsonLdOrganizacion } from '@/lib/seo';
@@ -49,7 +50,7 @@ export default function RootLayout({
           // JSON-LD de organización política (schema.org/PoliticalParty)
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganizacion()) }}
         />
-        <ChromePublico nav={<Nav />} footer={<Footer />}>
+        <ChromePublico nav={<Nav />} footer={<Footer />} donacion={<BandaDonacion />}>
           {children}
         </ChromePublico>
         {/* Menú inferior de la app (móvil). Fuera de ChromePublico a propósito:

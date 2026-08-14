@@ -68,7 +68,7 @@ export async function requireNivel(minimo: Nivel, rutaVuelta?: string) {
   const { user, perfil, supabase } = await requireUsuario(rutaVuelta);
   const nivelActual = perfil?.level ?? 'registered';
   if (ORDEN[nivelActual] < ORDEN[minimo]) {
-    redirect('/afiliate');
+    redirect('/unete');
   }
   return { user, perfil: perfil!, supabase };
 }

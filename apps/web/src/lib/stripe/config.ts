@@ -50,15 +50,45 @@ export function stripeCliente(): Stripe {
 export type Periodicidad = 'monthly' | 'annual';
 
 /**
+ * Plan de cuota (Sergio, 10/08/2026). Dos tramos, no uno:
+ *
+ * - `socio`       — 5 €/mes · 50 €/año. La cuota de siempre.
+ * - `verificado`  — 6 €/mes · 60 €/año. Un euro más al mes que costea la
+ *   verificación de identidad (Stripe Identity, ~1,50 € por verificación) y
+ *   el sobrecoste de mantener el censo verificado.
+ *
+ * ⚠️ **Pagar el plan `verificado` NO sube el nivel a `verified`.** El nivel lo
+ * concede exclusivamente el webhook de Stripe Identity cuando la persona
+ * completa la verificación desde su perfil (D-017). El plan solo elige cuánto
+ * se cobra; quien pague el tramo alto y nunca verifique se queda en `member`.
+ * La UI debe decirlo con todas las letras — vender el nivel con la cuota sería
+ * cobrar por algo que no se entrega.
+ */
+export type PlanCuota = 'socio' | 'verificado';
+
+/**
  * Precios de la cuota. Los IDs de Price los crea Sergio en el dashboard de
  * Stripe (test o live) — ver AFILIACION-SETUP.md — y se configuran por env
- * var para no tocar código si cambian los importes. En ausencia de las
- * variables (entorno de desarrollo temprano) se usan los Price de TEST
- * creados por este mismo agente para poder construir y probar el flujo
- * completo (ver AFILIACION-SETUP.md, tabla de IDs de prueba).
+ * var para no tocar código si cambian los importes.
+ *
+ * Los dos Price del plan `socio` conservan sus nombres de variable originales
+ * (`STRIPE_PRICE_CUOTA_*`) a propósito: ya están puestas en Dokploy y
+ * renombrarlas dejaría la afiliación caída en el mismo despliegue en que se
+ * subiera este cambio. Los del tramo verificado son variables nuevas.
  */
-export function priceIdCuota(periodo: Periodicidad): string {
-  const envVar = periodo === 'monthly' ? 'STRIPE_PRICE_CUOTA_MENSUAL' : 'STRIPE_PRICE_CUOTA_ANUAL';
+const ENV_PRICE: Record<PlanCuota, Record<Periodicidad, string>> = {
+  socio: {
+    monthly: 'STRIPE_PRICE_CUOTA_MENSUAL',
+    annual: 'STRIPE_PRICE_CUOTA_ANUAL',
+  },
+  verificado: {
+    monthly: 'STRIPE_PRICE_VERIFICADO_MENSUAL',
+    annual: 'STRIPE_PRICE_VERIFICADO_ANUAL',
+  },
+};
+
+export function priceIdCuota(plan: PlanCuota, periodo: Periodicidad): string {
+  const envVar = ENV_PRICE[plan][periodo];
   const valor = process.env[envVar];
   if (!valor) {
     throw new Error(`Falta ${envVar}. Ver apps/web/AFILIACION-SETUP.md.`);
@@ -66,10 +96,27 @@ export function priceIdCuota(periodo: Periodicidad): string {
   return valor;
 }
 
+/** ¿Están configurados los dos Price del tramo verificado? Si no, la UI no
+ *  ofrece ese plan: es preferible enseñar solo el de siempre a enseñar una
+ *  opción que reventaría con "Falta STRIPE_PRICE_VERIFICADO_MENSUAL" justo
+ *  al confirmar el mandato. */
+export function planVerificadoDisponible(): boolean {
+  return Boolean(
+    process.env.STRIPE_PRICE_VERIFICADO_MENSUAL?.trim() &&
+      process.env.STRIPE_PRICE_VERIFICADO_ANUAL?.trim(),
+  );
+}
+
 /** Importes de referencia (solo para pintar la UI; el cobro real lo decide el Price de Stripe). */
-export const CUOTA_REFERENCIA_CENTS: Record<Periodicidad, number> = {
-  monthly: 500, // 5,00 €/mes
-  annual: 5000, // 50,00 €/año (2 meses "gratis" frente a 12×5€, ventaja SEPA de la doc)
+export const CUOTA_REFERENCIA_CENTS: Record<PlanCuota, Record<Periodicidad, number>> = {
+  socio: {
+    monthly: 500, // 5,00 €/mes
+    annual: 5000, // 50,00 €/año (2 meses "gratis" frente a 12×5€, ventaja SEPA de la doc)
+  },
+  verificado: {
+    monthly: 600, // 6,00 €/mes
+    annual: 6000, // 60,00 €/año (misma proporción: 2 meses "gratis" frente a 12×6€)
+  },
 };
 
 /**

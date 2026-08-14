@@ -56,7 +56,7 @@ Reporte HTML tras una corrida: `npx playwright show-report`.
 | `blog.spec.ts` | `@publico` | `/blog` 200, `h1` "Análisis por departamentos", al menos una ficha enlazada. |
 | `entrada.spec.ts` | `@publico` | **Layout nuevo D-022** por geometría real: etiqueta a la izquierda y antes del título; orden título→imagen→**metadatos bajo la imagen**. |
 | `auth.spec.ts` | `@auth @publico` | `/entrar` renderiza el modo enlace mágico; `/auth/confirm` con token inválido redirige al **origen público** (regresión del bug `0.0.0.0`) con su mensaje de error. |
-| `afiliate.spec.ts` | `@publico` / `@auth` | Anónimo: escalera de 3 niveles + CTA a `/entrar?next=/afiliate`, y **NO** el formulario NIF/IBAN (regresión de la fuga). Con sesión: los dos planes (Mensual/Anual). |
+| `unete.spec.ts` | `@publico` / `@auth` | Anónimo: escalera de 3 niveles + CTA a `/entrar?next=/unete`, y **NO** el formulario NIF/IBAN (regresión de la fuga). Con sesión: los dos planes (Mensual/Anual). |
 | `admin.spec.ts` | `@auth` | Sin sesión: `/admin` y `/admin/*` redirigen a `/entrar`. Con sesión no-admin: el guard saca del panel. |
 | `perfil.spec.ts` | `@publico` / `@auth` | Sin sesión: `/perfil` redirige (control). Con sesión: guardar nombre+provincia muestra "Guardado" y el `<select>` **conserva el valor** (regresión de 3 capas), incluso tras recargar. |
 | `menu-movil.spec.ts` | `@movil` | A 390 px el burger abre el overlay fullscreen con enlaces + redes; cierra con Escape. Se salta en escritorio y —de forma resiliente— si rc-04 no estuviera desplegado. |

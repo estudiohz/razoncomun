@@ -15,7 +15,7 @@ export function CtaAfiliacion() {
         Este análisis lo hace posible la comunidad. Afíliate y decide qué investigamos.
       </p>
       <Link
-        href="/afiliate"
+        href="/unete"
         className="inline-block rounded-[11px] bg-white px-[22px] py-[11px] text-[14px] font-bold text-accion no-underline"
       >
         Afíliate

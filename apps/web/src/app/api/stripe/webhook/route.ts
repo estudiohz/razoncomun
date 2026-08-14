@@ -114,7 +114,7 @@ export async function POST(request: Request) {
         }
 
         if (perfil?.email) {
-          const urlEncuesta = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.razoncomun.com'}/afiliate/encuesta-baja`;
+          const urlEncuesta = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.razoncomun.com'}/unete/encuesta-baja`;
           const plantilla = correoBaja({ nombre: perfil.display_name, urlEncuesta });
           await enviarCorreo({ para: perfil.email, ...plantilla });
         }

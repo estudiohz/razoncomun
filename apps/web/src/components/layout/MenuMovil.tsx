@@ -188,7 +188,7 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
                   Entrar
                 </Link>
                 <Link
-                  href="/afiliate"
+                  href="/unete"
                   onClick={cerrar}
                   className="flex-1 rounded-boton bg-accion py-3 text-center text-base font-bold text-white no-underline shadow-boton"
                 >
