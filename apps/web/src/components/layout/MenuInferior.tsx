@@ -26,7 +26,7 @@ export function MenuInferior() {
   if (pathname.startsWith('/admin') || !esApp) return null;
 
   const items: ItemBarraLiquida[] = [
-    { href: '/panel', label: 'Inicio', exacto: true, icono: <IconoInicio /> },
+    { href: '/panel', label: 'Inicio', exacto: true, noActivo: true, icono: <IconoInicio /> },
     { href: '/propuestas', label: 'Propuestas', icono: <IconoPropuestas /> },
     { href: '/mes', label: 'El mes', icono: <IconoMes /> },
     { href: '/cambios', label: 'Cambios', icono: <IconoCambios /> },

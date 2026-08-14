@@ -40,6 +40,10 @@ export type ItemBarraLiquida = {
   icono: ReactNode;
   /** Marca "activo" solo con coincidencia exacta (para raíces como /panel). */
   exacto?: boolean;
+  /** El item navega, pero nunca captura la bola: en su ruta la bola descansa en
+   *  `indicePorDefecto`. Útil para la pantalla de apertura (ej. Inicio/panel),
+   *  cuando se quiere que el centro sea el destino "por defecto" de la bola. */
+  noActivo?: boolean;
   /** Contador que se pinta sobre el icono. */
   badge?: number;
 };
@@ -79,9 +83,11 @@ export function LiquidTabBar({
   itemsRef.current = items;
 
   const esActivo = (item: ItemBarraLiquida) =>
-    item.exacto
-      ? pathname === item.href
-      : pathname === item.href || pathname.startsWith(`${item.href}/`);
+    item.noActivo
+      ? false
+      : item.exacto
+        ? pathname === item.href
+        : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
   // Si la ruta no cae en ningún item, la bola se queda donde estaba.
   const indiceActivo = items.findIndex(esActivo);
