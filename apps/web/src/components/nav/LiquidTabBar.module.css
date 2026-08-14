@@ -1,0 +1,169 @@
+/* ==========================================================================
+   Barra de navegación inferior "líquida" — solo móvil.
+
+   El borde superior es una superficie líquida y la sección activa es una bola
+   que la hunde. El hundimiento es un socket paramétrico recortado en UN path
+   SVG (ver LiquidTabBar.tsx), que es lo que le permite inclinarse con la
+   velocidad — una pila de pseudo-elementos con border-radius no puede.
+
+   Capas, de abajo arriba:
+     1 .piel    el contorno con el socket, relleno de panel y perfilado de línea
+     2 .bola    la bola de acento, aplastada por su propia velocidad
+     3 .items   iconos + etiquetas; cada icono cabalga --t (0…1) hacia la bola
+
+   Todo lo que se mueve es transform o una custom property: nada de layout.
+   Los colores son los tokens de marca de tailwind.config.ts, escritos aquí
+   como literales porque un módulo CSS no ve la paleta de Tailwind.
+   ========================================================================== */
+
+.barra {
+  display: none;
+}
+
+/* Móvil: por encima de este ancho manda la navegación de escritorio. */
+@media (max-width: 820px) {
+  .barra {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+  }
+
+  /* Isla flotante: se despega de los lados y del borde inferior para que su
+     contorno redondeado se vea entero. Sin fondo propio detrás. */
+  .marco {
+    padding: 0 2px calc(3px + env(safe-area-inset-bottom));
+  }
+
+  .dock {
+    position: relative;
+    height: 64px;
+    touch-action: pan-y;               /* el scroll vertical sigue siendo de la página */
+    -webkit-tap-highlight-color: transparent;
+    /* JS sobrescribe las dos en cada medida */
+    --ltb-bola: 44px;
+    --ltb-subida: 26px;
+    /* Ajustables sin tocar el resto */
+    --ltb-icono: 18px;
+    --ltb-acento: #157F70;             /* accion */
+    --ltb-panel: #FFFFFF;              /* panel */
+    --ltb-linea: #E2E9F5;              /* linea */
+    --ltb-apagado: #5A6780;            /* cuerpo */
+    --ltb-encendido: #1B3D9C;          /* tinta */
+  }
+
+  .piel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .relleno {
+    fill: var(--ltb-panel);
+    stroke: var(--ltb-linea);
+    stroke-width: 1;
+  }
+
+  .bola {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--ltb-bola);
+    height: var(--ltb-bola);
+    margin: calc(var(--ltb-bola) / -2) 0 0 calc(var(--ltb-bola) / -2);
+    border-radius: 50%;
+    background: var(--ltb-acento);
+    box-shadow: 0 6px 16px -6px rgba(15, 61, 138, .35);
+    will-change: transform;
+    pointer-events: none;
+  }
+  /* Hasta la primera medida no se sabe dónde va: mejor invisible que saltando. */
+  .dock:not(.listo) .bola {
+    opacity: 0;
+  }
+
+  .items {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    padding-inline: clamp(14px, 6%, 34px);
+  }
+
+  .item {
+    position: relative;
+    flex: 1;
+    display: block;
+    height: 100%;
+    border-radius: 12px;
+    text-decoration: none;
+    --t: 0;                            /* 0 = en reposo · 1 = dentro de la bola */
+  }
+  .item:focus-visible {
+    outline: 2px solid var(--ltb-encendido);
+    outline-offset: -3px;
+  }
+
+  /* El icono descansa sobre la etiqueta y sube hacia la bola según --t. El
+     valor de `top` debe coincidir con ICONO_TOP en LiquidTabBar.tsx. */
+  .icono {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    display: flex;
+    /* Apagado sobre la barra; blanco una vez que cabalga la bola de acento. */
+    color: color-mix(in oklab, var(--ltb-apagado) calc((1 - var(--t)) * 100%), #FFFFFF);
+    transform: translate(-50%, -50%) translateY(calc(var(--t) * var(--ltb-subida) * -1));
+    will-change: transform;
+    pointer-events: none;
+  }
+  .icono svg {
+    width: var(--ltb-icono);
+    height: var(--ltb-icono);
+  }
+
+  /* Todas las etiquetas están siempre visibles; la activa se oscurece. */
+  .label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: -.01em;
+    color: color-mix(in oklab, var(--ltb-apagado) calc((1 - var(--t)) * 100%), var(--ltb-encendido));
+    pointer-events: none;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .activo .label {
+    font-weight: 700;
+  }
+
+  .badge {
+    position: absolute;
+    top: -6px;
+    right: -9px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    border-radius: 8px;
+    background: #C3369E;               /* magenta */
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 15px;
+    text-align: center;
+  }
+}
+
+/* El muelle ya se salta solo cuando se pide menos movimiento (ver el
+   componente); esto cubre lo que quede en CSS. */
+@media (prefers-reduced-motion: reduce) {
+  .bola,
+  .icono {
+    transition: none;
+  }
+}
