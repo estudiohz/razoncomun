@@ -69,10 +69,11 @@ export const navPrincipal = [
   { label: 'Propuestas', href: '/propuestas' },
   { label: 'Blog', href: '/blog' },
   { label: 'Pregunta a la IA', href: '/pregunta' },
-  // Placeholder: la tienda todavía no existe como página (Sergio, 10/08/2026).
-  // Entra en la nav con href '#' para reservarle el sitio; se cambia por su
-  // ruta real cuando esté montada.
-  { label: 'Tienda', href: '#' },
+  // La tienda ya está montada (olas T0-T1, 14/08/2026), así que el
+  // placeholder '#' pasa a su ruta real (Sergio). Sigue con `noindex` y
+  // fuera de `rutasPublicas`/sitemap hasta el visto bueno legal de la
+  // LO 8/2007 — ver docs/tecnico/tienda-printful.md (D-T10).
+  { label: 'Tienda', href: '/tienda' },
   { label: 'Cuentas', href: '/cuentas' },
 ] as const;
 
