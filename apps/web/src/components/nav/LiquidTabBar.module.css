@@ -63,7 +63,7 @@
     overflow: visible;
     /* La sombra se aplica al PATH (no a la caja): así sigue la curva del cuenco
        y aparece también en el hueco entre la bola y la barra, dando el 3D. */
-    filter: drop-shadow(0 3px 7px rgba(15, 61, 138, .20))
+    filter: drop-shadow(0 3px 7px rgba(15, 61, 138, .5))
             drop-shadow(0 1px 2px rgba(15, 61, 138, .12));
   }
   .relleno {
@@ -83,7 +83,7 @@
     /* Degradado corporativo del hero (variante sólida `hero-celda`, sin alfa:
        el hero lleva transparencias para ir sobre vídeo y aquí se lavarían). */
     background: linear-gradient(115deg, #0e57a5 0%, #5158a7 18%, #a52b8e 34%, #ed1156 50%, #f05726 66%, #ed7547 88%);
-    box-shadow: 0 7px 16px -5px rgba(15, 61, 138, .45), 0 2px 5px rgba(15, 61, 138, .30);
+    box-shadow: 0px -1px 15px 2px rgba(15, 61, 138, .45), 0 2px 5px rgba(15, 61, 138, .30);
     will-change: transform;
     pointer-events: none;
   }
