@@ -118,7 +118,7 @@ export function LiquidTabBar({
         if (semi <= sitio) break;
         D *= sitio / semi;
       }
-      G.D = Math.max(Math.round(D), 30);
+      G.D = Math.max(Math.round(D), 30) + 5;   // +5px de bola por decisión de diseño
       G.S = G.D * 0.22;
       G.RB = G.D / 2 + 6;
       svg!.setAttribute('viewBox', `0 0 ${W} ${H}`);
