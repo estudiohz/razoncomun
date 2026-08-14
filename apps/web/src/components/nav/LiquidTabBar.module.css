@@ -35,7 +35,7 @@
   /* Isla flotante: se despega de los lados y del borde inferior para que su
      contorno redondeado se vea entero. Sin fondo propio detrás. */
   .marco {
-    padding: 0 2px calc(3px + env(safe-area-inset-bottom));
+    padding: 0 2px calc(2px + env(safe-area-inset-bottom));
   }
 
   .dock {
@@ -90,7 +90,9 @@
     position: absolute;
     inset: 0;
     display: flex;
-    padding-inline: clamp(14px, 6%, 34px);
+    /* Casi sin sangrado: que los extremos (Inicio/Perfil) aprovechen el ancho.
+       El motor ya encoge la bola si el primer hueco queda muy pegado a la esquina. */
+    padding-inline: clamp(4px, 1.5%, 12px);
   }
 
   .item {
@@ -112,7 +114,7 @@
   .icono {
     position: absolute;
     left: 50%;
-    top: 40%;
+    top: 35%;
     display: flex;
     /* Apagado sobre la barra; blanco una vez que cabalga la bola de acento. */
     color: color-mix(in oklab, var(--ltb-apagado) calc((1 - var(--t)) * 100%), #FFFFFF);
@@ -131,7 +133,7 @@
     left: 0;
     right: 0;
     bottom: 8px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: -.01em;
     color: color-mix(in oklab, var(--ltb-apagado) calc((1 - var(--t)) * 100%), var(--ltb-encendido));

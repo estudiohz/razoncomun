@@ -39,7 +39,7 @@ export function MenuInferior() {
           quedaría tapado por la barra flotante. Se corresponde con la altura
           de la LiquidTabBar (64px) + su despegue inferior + el safe-area. */}
       <div aria-hidden className="h-[calc(70px+env(safe-area-inset-bottom))] min-[960px]:hidden" />
-      <LiquidTabBar items={items} />
+      <LiquidTabBar items={items} indicePorDefecto={2} />
     </>
   );
 }

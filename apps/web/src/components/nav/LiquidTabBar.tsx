@@ -57,16 +57,23 @@ const alcance = (s: number, rb: number, by: number) =>
 
 /** Reposo vertical del icono, en tanto por uno de la altura. Debe coincidir con
  *  el `top` de .icono en LiquidTabBar.module.css. */
-const ICONO_TOP = 0.4;
+const ICONO_TOP = 0.35;
 
-export function LiquidTabBar({ items }: { items: ItemBarraLiquida[] }) {
+export function LiquidTabBar({
+  items,
+  indicePorDefecto = 0,
+}: {
+  items: ItemBarraLiquida[];
+  /** Hueco donde descansa la bola cuando la ruta no cae en ningún item. */
+  indicePorDefecto?: number;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const dockRef = useRef<HTMLElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const bolaRef = useRef<HTMLDivElement>(null);
-  const huecoRef = useRef(0);
+  const huecoRef = useRef(indicePorDefecto);
   const saltarRef = useRef<(hueco: number, animar: boolean) => void>(() => {});
   const itemsRef = useRef(items);
   itemsRef.current = items;
