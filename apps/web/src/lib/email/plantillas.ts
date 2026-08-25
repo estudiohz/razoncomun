@@ -22,9 +22,9 @@ import { formatearCents } from '@/lib/afiliacion/consentimiento';
  * llevan canal alfa ya compuestas sobre blanco — el hexadecimal de 8 dígitos
  * no es fiable en clientes de correo.
  *
- * Logo: el MISMO fichero que el footer de la web (1400x225). Se pinta a
- * 240x39 respetando su proporción de 6.22; antes iba a 220x66, que lo
- * aplastaba a la mitad de altura.
+ * Logo: el MISMO fichero que el footer de la web (3234x730 desde el logo
+ * nuevo del 25/08/2026). Se pinta a 240x54 respetando su proporción de 4.43
+ * (antes 240x39 con el logo viejo, proporción 6.22).
  */
 const LOGO_BLANCO_URL =
   'https://dev-api.razoncomun.com/storage/v1/object/public/marca/logo-rc-blanco.png';
@@ -54,7 +54,7 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="rc-container" style="width:600px;max-width:600px;">
         <tr>
           <td align="center" bgcolor="${BANDA_FALLBACK}" style="background:${BANDA_FALLBACK};background-image:${DEGRADADO_CABECERA};padding:26px 0;border-radius:14px 14px 0 0;">
-            <img src="${LOGO_BLANCO_URL}" width="240" height="39" alt="Razón Común" style="display:block;border:0;outline:none;">
+            <img src="${LOGO_BLANCO_URL}" width="240" height="54" alt="Razón Común" style="display:block;border:0;outline:none;">
           </td>
         </tr>
         <tr>

@@ -43,11 +43,12 @@ cargarEnvLocal();
 // el logo también al bucket de producción y cambiar SOLO esta constante.
 const LOGO_BLANCO_URL = 'https://dev-api.razoncomun.com/storage/v1/object/public/marca/logo-rc-blanco.png';
 // El fichero del bucket `marca` es el MISMO que usa el footer de la web
-// (public/logo-rc-blanco.png, 1400x225). Ojo con estas dos constantes: la
-// proporción real es 6.22, y hasta el 01/08/2026 aquí ponía 240x72 (3.33), que
-// aplastaba el logo a la mitad de su altura en todos los correos.
+// (public/logo-rc-blanco.png, 3234x730 desde el logo nuevo del 25/08/2026).
+// Ojo con estas dos constantes: la proporción real es 4.43 (antes 6.22 con
+// el logo viejo) — si se aplasta el logo en los correos, es que se tocó una
+// sin la otra.
 const LOGO_ANCHO = 240;
-const LOGO_ALTO = 39; // 240 / (1400/225)
+const LOGO_ALTO = 54; // 240 / (3234/730)
 
 // Paleta (docs/marca/identidad-visual.md). Texto SIEMPRE en tinta/gris oscuro
 // -- el teal incumple AA para texto (2.73:1) y aquí solo se usa como banda

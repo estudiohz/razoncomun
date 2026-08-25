@@ -41,8 +41,8 @@ export async function Footer() {
           <Image
             src="/logo-rc-blanco.png"
             alt={site.nombre}
-            width={1400}
-            height={225}
+            width={3234}
+            height={730}
             className="h-8 w-auto"
           />
           {/* w-full + columnas iguales: las dos filas de 4 se reparten TODO el
