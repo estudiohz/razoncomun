@@ -73,10 +73,10 @@ export async function Nav() {
               <Image
                 src="/logo-rc.png"
                 alt={site.nombre}
-                width={165}
-                height={37}
+                width={210}
+                height={47}
                 priority
-                className="h-[37px] w-auto"
+                className="h-[47px] w-auto"
               />
             </Link>
             <div className="flex items-center gap-[26px]">
