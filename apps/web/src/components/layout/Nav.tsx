@@ -71,11 +71,12 @@ export async function Nav() {
           <div className="flex h-16 items-center justify-between rounded-[18px] border border-linea bg-white px-4 shadow-nav min-[720px]:px-[22px]">
             <Link href="/" className="flex items-center gap-3 no-underline" aria-label={site.nombre}>
               <Image
-                src="/logo-rc.png"
+                src="/logo-rc.svg"
                 alt={site.nombre}
                 width={210}
                 height={47}
                 priority
+                unoptimized
                 className="h-[47px] w-auto"
               />
             </Link>
