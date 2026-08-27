@@ -16,7 +16,7 @@ name: rc-brain-service
 
 services:
   brain-service:
-    container_name: rc-brain-service
+    container_name: ${CONTAINER_PREFIX:-rc}-brain-service
     build:
       context: .
       dockerfile: Dockerfile
@@ -66,7 +66,7 @@ services:
   # Verificación post-deploy: golpea /health y falla el despliegue si el
   # servicio no arrancó bien -- mismo patrón "autoverificable" que brain-control.
   brain-service-healthcheck:
-    container_name: rc-brain-service-healthcheck
+    container_name: ${CONTAINER_PREFIX:-rc}-brain-service-healthcheck
     image: node:20-alpine
     restart: "no"
     depends_on:

@@ -16,7 +16,7 @@ name: rc-brain-ingest
 
 services:
   brain-ingest:
-    container_name: rc-brain-ingest
+    container_name: ${CONTAINER_PREFIX:-rc}-brain-ingest
     build:
       context: .
       dockerfile: Dockerfile
@@ -55,7 +55,7 @@ services:
   # Hace el despliegue autoverificable: si la ingesta deja el corpus en mal
   # estado, esto lo delata sin intervencion humana.
   brain-control:
-    container_name: rc-brain-control
+    container_name: ${CONTAINER_PREFIX:-rc}-brain-control
     build:
       context: .
       dockerfile: Dockerfile

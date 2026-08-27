@@ -29,7 +29,7 @@ name: rc-supabase
 services:
 
   studio:
-    container_name: rc-supabase-studio
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-studio
     image: supabase/studio:2026.07.07-sha-a6a04f2
     restart: unless-stopped
     healthcheck:
@@ -70,7 +70,7 @@ services:
       - rc-supabase-internal
 
   kong:
-    container_name: rc-supabase-kong
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-kong
     image: kong/kong:3.9.1
     restart: unless-stopped
     healthcheck:
@@ -110,7 +110,7 @@ services:
       - rc-supabase-public
 
   auth:
-    container_name: rc-supabase-auth
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-auth
     image: supabase/gotrue:v2.189.0
     restart: unless-stopped
     healthcheck:
@@ -222,7 +222,7 @@ services:
       - rc-supabase-internal
 
   rest:
-    container_name: rc-supabase-rest
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-rest
     image: postgrest/postgrest:v14.12
     restart: unless-stopped
     depends_on:
@@ -257,7 +257,7 @@ services:
   realtime:
     # Nombre de contenedor tal cual lo exige la imagen oficial: Realtime
     # construye el tenant id parseando el subdominio de este nombre.
-    container_name: realtime-dev.rc-supabase-realtime
+    container_name: realtime-dev.${CONTAINER_PREFIX:-rc}-supabase-realtime
     image: supabase/realtime:v2.102.3
     restart: unless-stopped
     depends_on:
@@ -296,7 +296,7 @@ services:
       - rc-supabase-internal
 
   storage:
-    container_name: rc-supabase-storage
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-storage
     image: supabase/storage-api:v1.60.4
     restart: unless-stopped
     depends_on:
@@ -344,7 +344,7 @@ services:
       - rc-supabase-internal
 
   imgproxy:
-    container_name: rc-supabase-imgproxy
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-imgproxy
     image: darthsim/imgproxy:v3.30.1
     restart: unless-stopped
     volumes:
@@ -364,7 +364,7 @@ services:
       - rc-supabase-internal
 
   meta:
-    container_name: rc-supabase-meta
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-meta
     image: supabase/postgres-meta:v0.96.6
     restart: unless-stopped
     depends_on:
@@ -382,7 +382,7 @@ services:
       - rc-supabase-internal
 
   db:
-    container_name: rc-supabase-db
+    container_name: ${CONTAINER_PREFIX:-rc}-supabase-db
     image: supabase/postgres:17.6.1.136
     restart: unless-stopped
     volumes:

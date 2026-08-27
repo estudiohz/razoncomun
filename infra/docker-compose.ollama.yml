@@ -22,7 +22,7 @@ name: rc-ollama
 
 services:
   ollama:
-    container_name: rc-ollama
+    container_name: ${CONTAINER_PREFIX:-rc}-ollama
     image: ollama/ollama:latest
     restart: unless-stopped
     # Sin publicar puerto a internet: solo alcanzable desde otros contenedores
@@ -58,7 +58,7 @@ services:
   # Idempotente: si el modelo ya está en el volumen, /api/pull no vuelve a
   # descargarlo. `restart: "no"` para que no reintente en bucle al terminar.
   ollama-init:
-    container_name: rc-ollama-init
+    container_name: ${CONTAINER_PREFIX:-rc}-ollama-init
     image: curlimages/curl:8.11.1
     restart: "no"
     depends_on:
