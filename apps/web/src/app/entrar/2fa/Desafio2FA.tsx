@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
@@ -15,7 +14,6 @@ type Estado = { tipo: 'cargando' | 'listo' | 'verificando' | 'error' | 'sin_fact
  * solo falta completar el segundo factor.
  */
 export function Desafio2FA({ next }: { next: string }) {
-  const router = useRouter();
   const [factorId, setFactorId] = useState<string | null>(null);
   const [challengeId, setChallengeId] = useState<string | null>(null);
   const [codigo, setCodigo] = useState('');
@@ -61,8 +59,18 @@ export function Desafio2FA({ next }: { next: string }) {
         setEstado({ tipo: 'error', mensaje: 'Código incorrecto o caducado. Prueba con el código actual.' });
         return;
       }
-      router.push(next);
-      router.refresh();
+      // Navegación DURA, no `router.push`.
+      //
+      // `mfa.verify` emite una sesión nueva (aal2) y revoca la anterior. Con
+      // una navegación de cliente, la petición al servidor puede salir antes
+      // de que la cookie nueva esté asentada: el middleware lee la vieja —ya
+      // revocada—, `getUser()` devuelve null y rebota a /entrar. El síntoma es
+      // "meto el 2FA y vuelvo al login", intermitente y desesperante.
+      //
+      // Se confirma que la sesión está persistida y se recarga entera, así el
+      // navegador manda las cookies definitivas y no hay carrera posible.
+      await supabase.auth.getSession();
+      window.location.assign(next);
     } catch {
       setEstado({
         tipo: 'error',
