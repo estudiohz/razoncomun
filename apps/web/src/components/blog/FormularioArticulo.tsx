@@ -56,6 +56,7 @@ export function FormularioArticulo({
     articulo?.published_at ? paraInput(articulo.published_at) : '',
   );
   const programando = estadoPub === 'published' && programar && cuando !== '';
+  const [opinion, setOpinion] = useState(Boolean(articulo?.is_opinion));
   const [portada, setPortada] = useState(articulo?.cover_image ?? '');
   const [previsualizar, setPrevisualizar] = useState(false);
 
@@ -119,7 +120,7 @@ export function FormularioArticulo({
 
         <div className={campo}>
           <label className={etiqueta} htmlFor="source_urls">
-            Fuentes (una URL por línea) · obligatorias para publicar
+            Fuentes (una URL por línea){opinion ? '' : ' · obligatorias para publicar'}
           </label>
           <textarea
             id="source_urls"
@@ -218,9 +219,33 @@ export function FormularioArticulo({
             <option value="draft">Borrador</option>
             <option value="published">Publicado</option>
           </select>
-          <p className="mt-3 text-[13px] leading-relaxed text-gris">
-            Publicar exige al menos una fuente: el sello de trazabilidad es obligatorio.
+          <label className="mt-4 flex items-start gap-2 text-[13.5px] text-cuerpo">
+            <input
+              type="checkbox"
+              name="is_opinion"
+              form="articulo"
+              checked={opinion}
+              onChange={(e) => setOpinion(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span>Artículo de opinión</span>
+          </label>
+          <p className="mt-2 text-[13px] leading-relaxed text-gris">
+            {opinion
+              ? 'Contenido propio: no se exigen fuentes para publicar.'
+              : 'Publicar exige al menos una fuente: el sello de trazabilidad es la marca de la casa.'}
           </p>
+
+          {articulo?.slug ? (
+            <a
+              href={`${articulo.source_type === 'observatorio' ? '/observatorio' : '/blog'}/${articulo.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 block text-[14px] font-bold text-titular underline"
+            >
+              Ver artículo ↗
+            </a>
+          ) : null}
         </div>
 
         <div className="mb-6 rounded-tarjeta border border-linea bg-white p-5">

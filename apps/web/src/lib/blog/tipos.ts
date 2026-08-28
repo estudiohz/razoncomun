@@ -23,6 +23,8 @@ export interface Articulo {
   title: string;
   excerpt: string | null;
   body: string;
+  /** Articulo de opinion: exime de citar fuentes al publicar (migracion 0051). */
+  is_opinion?: boolean | null;
   /** Formato de `body` (migracion 0049). Sin valor = markdown heredado. */
   body_format?: 'markdown' | 'html' | null;
   category_id: number | null;

@@ -44,6 +44,7 @@ export async function guardarArticulo(
   // que no lo sea, ni al reves. El saneado ocurre al RENDERIZAR, no aqui.
   const bodyFormat = texto(fd, 'body_format') === 'html' ? 'html' : 'markdown';
   const estado = texto(fd, 'status') === 'published' ? 'published' : 'draft';
+  const esOpinion = fd.get('is_opinion') !== null;
   const slug = slugificar(texto(fd, 'slug') || title);
   const fuentes = texto(fd, 'source_urls')
     .split('\n')
@@ -53,11 +54,15 @@ export async function guardarArticulo(
   if (!title) return { ok: false, error: 'El título es obligatorio.' };
   if (!body) return { ok: false, error: 'El cuerpo del artículo es obligatorio.' };
   if (!slug) return { ok: false, error: 'No se ha podido generar un slug válido.' };
-  if (estado === 'published' && fuentes.length === 0) {
+  // El sello de trazabilidad se mantiene para los articulos de datos: publicar
+  // sin fuentes solo se permite si el articulo se declara DE OPINION (0051).
+  // Se resolvio asi, y no quitando la regla, para no perder la garantia en los
+  // articulos que si deben citar.
+  if (estado === 'published' && fuentes.length === 0 && !esOpinion) {
     return {
       ok: false,
       error:
-        'No se puede publicar sin al menos una fuente. El sello de trazabilidad es obligatorio.',
+        'No se puede publicar sin fuentes. Si es un articulo de opinion, marcalo como tal en la barra lateral.',
     };
   }
 
@@ -84,6 +89,7 @@ export async function guardarArticulo(
     cover_image: texto(fd, 'cover_image') || null,
     source_type: texto(fd, 'source_type') === 'observatorio' ? 'observatorio' : 'editorial',
     source_urls: fuentes,
+    is_opinion: esOpinion,
     status: estado,
     seo_title: texto(fd, 'seo_title') || null,
     seo_desc: texto(fd, 'seo_desc') || null,
