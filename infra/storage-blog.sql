@@ -13,12 +13,25 @@
 -- Idempotente: se puede aplicar varias veces sin efectos secundarios.
 
 -- ── 1. El bucket ────────────────────────────────────────────────────────────
--- Límites alineados con la validación de `subirPortada()` en admin.ts:
--- 5 MB y solo JPEG/PNG/WebP/AVIF. Si divergen, manda el bucket (falla antes).
+-- Sirve para dos cosas:
+--   · portadas de artículo (`subirPortada()` valida además 5 MB e imagen)
+--   · multimedia insertada en el cuerpo desde el editor visual
+--
+-- ⚠️ TECHO REAL: el Storage API aplica `STORAGE_FILE_SIZE_LIMIT` (50 MB) de la
+-- config del stack POR ENCIMA de este valor. Subir el límite de aquí sin subir
+-- también esa variable no sirve de nada. Y Cloudflare Free corta las subidas a
+-- 100 MB, así que 50 MB es el máximo práctico mientras el proxy esté activo.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
-  'articulos', 'articulos', true, 5242880,
-  array['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+  'articulos', 'articulos', true, 52428800,
+  array[
+    -- imágenes
+    'image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif',
+    -- vídeo (formatos que reproduce <video> en navegador sin plugins)
+    'video/mp4', 'video/webm',
+    -- documentos
+    'application/pdf'
+  ]
 )
 on conflict (id) do update set
   public             = excluded.public,

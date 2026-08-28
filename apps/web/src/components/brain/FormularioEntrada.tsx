@@ -162,8 +162,8 @@ export function FormularioEntrada({
           )}
           {previsualizar ? <input type="hidden" name="body" value={body} /> : null}
           <p className="mt-2 text-[12.5px] text-gris">
-            Escribe con normalidad. Usa los botones para dar formato (títulos, negrita, listas) —
-            no necesitas saber Markdown. «Previsualizar» muestra cómo se verá.
+            Escribe con normalidad. Usa los botones para dar formato (títulos, negrita, listas).
+            «Previsualizar» muestra cómo se verá.
           </p>
         </div>
 

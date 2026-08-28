@@ -67,7 +67,7 @@ export function FormularioArticulo({
         <div className={campo}>
           <div className="mb-2 flex items-center justify-between">
             <label className={`${etiqueta} mb-0`} htmlFor="body">
-              Cuerpo (markdown)
+              Cuerpo
             </label>
             <button
               type="button"

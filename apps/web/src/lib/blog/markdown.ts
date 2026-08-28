@@ -5,7 +5,8 @@ import type { EntradaIndice } from './tipos';
  *
  * Cubre exactamente el subconjunto que aparece en `bocetos-home/blog-articulo.html`:
  * h2/h3, párrafos, listas, cita destacada, imagen con pie, negrita/cursiva,
- * enlaces, código en línea y el bloque `:::dato` (la caja con el número grande).
+ * enlaces, código en línea y los bloques propios `:::dato` (la caja con el
+ * número grande), `:::video` y `:::pdf` (multimedia insertada desde el editor).
  *
  * Seguridad: el texto se escapa a HTML ANTES de aplicar ninguna regla, y las
  * URLs de enlaces e imágenes se filtran por protocolo. El HTML crudo que un
@@ -111,6 +112,56 @@ export function renderizarMarkdown(markdown: string): {
       salida.push(
         `<div class="rc-dato"><div class="rc-dato-n">${enLinea(escapar(numero))}</div>` +
           `<p>${enLinea(escapar(cuerpo.join(' ').trim()))}</p></div>`,
+      );
+      continue;
+    }
+
+    // Vídeo subido al bucket:  :::video https://.../clip.mp4
+    //                          Pie opcional
+    //                          :::
+    //
+    // Markdown no tiene sintaxis para vídeo. Se reutiliza el mecanismo de
+    // bloque de `:::dato` en vez de permitir HTML crudo, para no romper la
+    // garantía de seguridad: aquí también se escapa todo y la URL se filtra
+    // por protocolo. `controls` sin `autoplay` a propósito.
+    if (/^:::video\s+/.test(linea)) {
+      const url = urlSegura(linea.replace(/^:::video\s+/, '').trim());
+      const pie: string[] = [];
+      i += 1;
+      while (i < lineas.length && !/^:::\s*$/.test(lineas[i])) {
+        pie.push(lineas[i]);
+        i += 1;
+      }
+      i += 1; // cierre :::
+      const texto = pie.join(' ').trim();
+      salida.push(
+        `<figure class="rc-video"><video controls preload="metadata" src="${url}"></video>` +
+          (texto ? `<figcaption>${enLinea(escapar(texto))}</figcaption>` : '') +
+          `</figure>`,
+      );
+      continue;
+    }
+
+    // Documento PDF:  :::pdf https://.../informe.pdf
+    //                 Texto del enlace
+    //                 :::
+    //
+    // No se incrusta en un <iframe>: se ofrece como enlace de descarga. Un
+    // iframe a un PDF del propio dominio es superficie de ataque innecesaria
+    // y en móvil se comporta mal.
+    if (/^:::pdf\s+/.test(linea)) {
+      const url = urlSegura(linea.replace(/^:::pdf\s+/, '').trim());
+      const etiqueta: string[] = [];
+      i += 1;
+      while (i < lineas.length && !/^:::\s*$/.test(lineas[i])) {
+        etiqueta.push(lineas[i]);
+        i += 1;
+      }
+      i += 1; // cierre :::
+      const texto = etiqueta.join(' ').trim() || 'Descargar documento (PDF)';
+      salida.push(
+        `<p class="rc-pdf"><a href="${url}" target="_blank" rel="noopener noreferrer">` +
+          `${enLinea(escapar(texto))}</a></p>`,
       );
       continue;
     }
