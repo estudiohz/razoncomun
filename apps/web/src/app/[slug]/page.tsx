@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { sanearHtml } from '@/lib/blog/html';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import type { Pagina } from '@/lib/paginas';
@@ -56,7 +57,7 @@ export default async function PaginaCms({ params }: { params: Promise<{ slug: st
         <h1 className="mb-8 text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] text-titular">
           {pagina.title}
         </h1>
-        <article className="prose-rc" dangerouslySetInnerHTML={{ __html: pagina.body_html }} />
+        <article className="prose-rc" dangerouslySetInnerHTML={{ __html: sanearHtml(pagina.body_html) }} />
       </div>
     </Contenedor>
   );

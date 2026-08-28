@@ -1,3 +1,4 @@
+import { aTextoPlano } from '@/lib/blog/html';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { slugificar } from '@/lib/blog/markdown';
 
@@ -37,6 +38,7 @@ export interface EntradaConstitucion {
   slug: string;
   title: string;
   body: string;
+  body_format?: 'markdown' | 'html' | null;
   visibility: 'public' | 'internal';
   updated_at: string;
 }
@@ -174,7 +176,7 @@ export async function generarConstitucion(admin: SupabaseClient): Promise<Result
     admin.from('brain_categories').select('id, slug, name').order('position', { ascending: true }),
     admin
       .from('brain_entries')
-      .select('title, body, category_id, visibility, updated_at, area:categories(slug, name)')
+      .select('title, body, body_format, category_id, visibility, updated_at, area:categories(slug, name)')
       .order('updated_at', { ascending: false }),
   ]);
 
@@ -196,6 +198,7 @@ export async function generarConstitucion(admin: SupabaseClient): Promise<Result
   for (const fila of (entradasBD ?? []) as unknown as {
     title: string;
     body: string;
+    body_format?: 'markdown' | 'html' | null;
     category_id: string;
     visibility: 'public' | 'internal';
     updated_at: string;
@@ -218,7 +221,10 @@ export async function generarConstitucion(admin: SupabaseClient): Promise<Result
     areasDeCategoria.get(areaSlug)!.entradas.push({
       slug: slugUnico(fila.title, slugsPorArea.get(claveSlugsArea)!),
       title: fila.title,
-      body: fila.body,
+      // Si la entrada se edito con el editor visual viene en HTML. El corpus
+      // del RAG debe recibir TEXTO, no etiquetas: un embedding lleno de <p>
+      // recupera peor y nadie lo nota, porque el chat sigue respondiendo.
+      body: fila.body_format === 'html' ? aTextoPlano(fila.body) : fila.body,
       visibility: fila.visibility,
       updated_at: fila.updated_at,
     });

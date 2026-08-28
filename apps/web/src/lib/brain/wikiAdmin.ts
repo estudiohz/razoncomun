@@ -83,6 +83,9 @@ export async function guardarEntrada(
   const id = texto(fd, 'id');
   const title = texto(fd, 'title');
   const body = texto(fd, 'body');
+  // El editor visual guarda HTML. La constitucion que alimenta el corpus RAG
+  // lo convierte a texto plano (ver lib/cerebro/constitucion.ts).
+  const bodyFormat = texto(fd, 'body_format') === 'html' ? 'html' : 'markdown';
   const categoryId = texto(fd, 'category_id');
   const areaIdTexto = texto(fd, 'area_id');
   const visibility = texto(fd, 'visibility') === 'public' ? 'public' : 'internal';
@@ -110,6 +113,7 @@ export async function guardarEntrada(
   const fila = {
     title,
     body,
+    body_format: bodyFormat,
     category_id: categoryId,
     area_id: areaIdTexto ? Number(areaIdTexto) : null,
     visibility,

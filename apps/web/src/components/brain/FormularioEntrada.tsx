@@ -1,15 +1,13 @@
 'use client';
 
-import { useActionState, useMemo, useRef, useState } from 'react';
+import { useActionState, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { EditorGraficos } from '@/components/brain/EditorGraficos';
 import { EditorSimulador } from '@/components/brain/EditorSimulador';
 import { guardarEntrada, type ResultadoAccion } from '@/lib/brain/wikiAdmin';
-import { renderizarMarkdown } from '@/lib/blog/markdown';
+import { prepararCuerpo } from '@/lib/blog/cuerpo';
+import { EditorRico } from '@/components/blog/EditorRico';
 import type { AreaTematica, BrainCategoria, BrainEntrada } from '@/lib/brain/tipos';
-
-const botonFmt =
-  'rounded-boton border border-linea px-2.5 py-1 text-[12.5px] font-bold text-titular hover:border-titular';
 
 const etiqueta = 'mb-2 block text-[13px] font-bold uppercase tracking-[.08em] text-gris';
 const campo = 'mb-6';
@@ -33,45 +31,20 @@ export function FormularioEntrada({
     null,
   );
 
-  const [body, setBody] = useState(entrada?.body ?? '');
+  // El cuerpo se edita y guarda en HTML (migracion 0049). Una entrada heredada
+  // en markdown se convierte al abrirla y se auto-migra al guardar.
+  const [body, setBody] = useState(
+    () => prepararCuerpo(entrada?.body, entrada?.body_format).html,
+  );
   const [categoryId, setCategoryId] = useState(entrada?.category_id ?? categorias[0]?.id ?? '');
   const [previsualizar, setPrevisualizar] = useState(false);
 
-  const html = useMemo(() => (previsualizar ? renderizarMarkdown(body).html : ''), [previsualizar, body]);
+  const html = useMemo(() => (previsualizar ? prepararCuerpo(body, 'html').html : ''), [previsualizar, body]);
 
   const categoriaSeleccionada = categorias.find((c) => c.id === categoryId);
   const esPreguntaFrecuente = categoriaSeleccionada?.slug === SLUG_PREGUNTAS_FRECUENTES;
 
   const pendienteDeIndexar = entrada !== null && entrada.indexed_at === null;
-
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
-
-  // Barra de formato "visual": el admin no escribe Markdown, pulsa botones y la
-  // plataforma inserta la sintaxis por él (determinista, nunca cambia el texto).
-  function envolver(pre: string, post: string, porDefecto: string) {
-    const ta = bodyRef.current;
-    if (!ta) return;
-    const ini = ta.selectionStart;
-    const fin = ta.selectionEnd;
-    const sel = body.slice(ini, fin) || porDefecto;
-    setBody(body.slice(0, ini) + pre + sel + post + body.slice(fin));
-    requestAnimationFrame(() => {
-      ta.focus();
-      ta.selectionStart = ini + pre.length;
-      ta.selectionEnd = ini + pre.length + sel.length;
-    });
-  }
-  function prefijoLinea(pre: string) {
-    const ta = bodyRef.current;
-    if (!ta) return;
-    const pos = ta.selectionStart;
-    const inicioLinea = body.lastIndexOf('\n', pos - 1) + 1;
-    setBody(body.slice(0, inicioLinea) + pre + body.slice(inicioLinea));
-    requestAnimationFrame(() => {
-      ta.focus();
-      ta.selectionStart = ta.selectionEnd = pos + pre.length;
-    });
-  }
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
@@ -116,54 +89,19 @@ export function FormularioEntrada({
               {previsualizar ? 'Editar' : 'Previsualizar'}
             </button>
           </div>
-          {!previsualizar && (
-            <div className="mb-2 flex flex-wrap gap-1.5">
-              <button type="button" title="Título de sección" className={botonFmt} onClick={() => prefijoLinea('## ')}>
-                Título
-              </button>
-              <button type="button" title="Subtítulo" className={botonFmt} onClick={() => prefijoLinea('### ')}>
-                Subtítulo
-              </button>
-              <button type="button" title="Negrita" className={botonFmt} onClick={() => envolver('**', '**', 'negrita')}>
-                <strong>N</strong>
-              </button>
-              <button type="button" title="Cursiva" className={botonFmt} onClick={() => envolver('*', '*', 'cursiva')}>
-                <em>C</em>
-              </button>
-              <button type="button" title="Lista" className={botonFmt} onClick={() => prefijoLinea('- ')}>
-                • Lista
-              </button>
-              <button
-                type="button"
-                title="Enlace"
-                className={botonFmt}
-                onClick={() => envolver('[', '](https://)', 'texto del enlace')}
-              >
-                Enlace
-              </button>
-            </div>
-          )}
           {previsualizar ? (
             <div
               className="prose-rc min-h-[420px] rounded-boton border border-linea bg-white px-5 py-4"
               dangerouslySetInnerHTML={{ __html: html }}
             />
           ) : (
-            <textarea
-              ref={bodyRef}
-              id="body"
-              name="body"
-              rows={18}
-              required
-              className={`${areaTexto} text-[15px]`}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-            />
+            <EditorRico valor={body} onChange={setBody} />
           )}
-          {previsualizar ? <input type="hidden" name="body" value={body} /> : null}
+          <input type="hidden" name="body" value={body} />
+          <input type="hidden" name="body_format" value="html" />
           <p className="mt-2 text-[12.5px] text-gris">
-            Escribe con normalidad. Usa los botones para dar formato (títulos, negrita, listas).
-            «Previsualizar» muestra cómo se verá.
+            Escribe con normalidad y usa la barra para dar formato. «Previsualizar» muestra
+            cómo se verá publicado.
           </p>
         </div>
 

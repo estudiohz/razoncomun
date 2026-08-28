@@ -55,6 +55,7 @@ export interface BrainEntrada {
   id: string;
   title: string;
   body: string;
+  body_format?: 'markdown' | 'html' | null;
   category_id: string;
   area_id: number | null;
   visibility: VisibilidadEntrada;

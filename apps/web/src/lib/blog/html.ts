@@ -141,3 +141,30 @@ export function prepararHtml(html: string): { html: string; indice: EntradaIndic
 
   return { html: conIds, indice };
 }
+
+/**
+ * HTML → texto plano legible.
+ *
+ * Necesario porque el cuerpo del cerebro alimenta la "constitución"
+ * (`lib/cerebro/constitucion.ts`), que es la FUENTE DEL CORPUS RAG. Si el HTML
+ * del editor llegara tal cual a los embeddings, el vector se llenaría de
+ * etiquetas y la recuperación empeoraría sin que nadie lo notara: el chat
+ * seguiría respondiendo, solo que peor.
+ *
+ * Se conservan los saltos de bloque para que el texto no quede pegado.
+ */
+export function aTextoPlano(html: string): string {
+  return sanearHtml(html)
+    .replace(/<\/(p|h2|h3|h4|li|blockquote|tr)>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}

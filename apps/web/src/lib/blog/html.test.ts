@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { prepararHtml, sanearHtml } from './html';
+import { aTextoPlano, prepararHtml, sanearHtml } from './html';
 
 /**
  * Al pasar el cuerpo de markdown a HTML se pierde la garantía que daba
@@ -136,5 +136,20 @@ describe('prepararHtml: índice y saneado en una pasada', () => {
   it('sanea TAMBIÉN al preparar, no solo al guardar', () => {
     const { html } = prepararHtml('<h2>Título</h2><script>alert(1)</script>');
     expect(html).not.toContain('<script');
+  });
+});
+
+describe('aTextoPlano (alimenta el corpus del RAG)', () => {
+  it('quita las etiquetas y conserva los saltos de bloque', () => {
+    const t = aTextoPlano('<h2>Vivienda</h2><p>Uno</p><p>Dos</p>');
+    expect(t).toBe('Vivienda\nUno\nDos');
+  });
+  it('no deja etiquetas que ensucien el embedding', () => {
+    const t = aTextoPlano('<p><strong>Negrita</strong> y <a href="https://x.com">enlace</a>.</p>');
+    expect(t).not.toMatch(/<[^>]+>/);
+    expect(t).toBe('Negrita y enlace.');
+  });
+  it('sanea antes de extraer: un script no aporta texto al corpus', () => {
+    expect(aTextoPlano('<p>Hola</p><script>alert(1)</script>')).toBe('Hola');
   });
 });

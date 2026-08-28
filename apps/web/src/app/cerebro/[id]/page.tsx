@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { CuerpoArticulo } from '@/components/blog/CuerpoArticulo';
-import { renderizarMarkdown } from '@/lib/blog/markdown';
+import { prepararCuerpo } from '@/lib/blog/cuerpo';
 import { metadatosPagina } from '@/lib/seo';
 
 /**
@@ -28,7 +28,7 @@ async function obtenerEntradaPublica(id: string) {
     .eq('id', id)
     .maybeSingle();
   if (!data || data.visibility !== 'public') return null;
-  return data as { id: string; title: string; body: string };
+  return data as { id: string; title: string; body: string; body_format?: 'markdown' | 'html' | null };
 }
 
 export async function generateMetadata({
@@ -62,7 +62,7 @@ export default async function EntradaCerebroPublicaPage({
   const entrada = await obtenerEntradaPublica(id);
   if (!entrada) notFound();
 
-  const { html } = renderizarMarkdown(entrada.body);
+  const { html } = prepararCuerpo(entrada.body, entrada.body_format);
 
   return (
     <Contenedor as="article" className="py-10 min-[720px]:py-14">

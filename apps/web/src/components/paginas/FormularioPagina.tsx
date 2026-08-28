@@ -1,8 +1,8 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { Input } from '@/components/ui/Input';
-import { EditorWysiwyg } from '@/components/paginas/EditorWysiwyg';
+import { EditorRico } from '@/components/blog/EditorRico';
 import { guardarPagina, type ResultadoPagina } from '@/app/admin/paginas/actions';
 import type { Pagina } from '@/lib/paginas';
 
@@ -14,6 +14,9 @@ export function FormularioPagina({ pagina }: { pagina: Pagina | null }) {
     guardarPagina,
     null,
   );
+  // El editor completo no pinta el input oculto: lo hace quien lo monta, para
+  // que el nombre del campo sea cosa de cada formulario.
+  const [html, setHtml] = useState(pagina?.body_html ?? '');
 
   return (
     <form action={accion} className="grid gap-8 lg:grid-cols-[1fr_320px]">
@@ -28,7 +31,8 @@ export function FormularioPagina({ pagina }: { pagina: Pagina | null }) {
         </div>
 
         <label className={etiqueta}>Contenido</label>
-        <EditorWysiwyg inicial={pagina?.body_html ?? ''} />
+        <EditorRico valor={html} onChange={setHtml} />
+        <input type="hidden" name="body_html" value={html} />
 
         {estado?.error ? (
           <p className="mb-4 rounded-boton border border-magenta/40 bg-magenta/5 px-4 py-3 text-[15px] text-magenta">
