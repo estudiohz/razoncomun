@@ -144,14 +144,21 @@ export function EditorRico({
         >
           Enlace
         </button>
-      </div>
 
-      <EditorContent editor={editor} />
+        <span className="mx-1 h-5 w-px bg-linea" />
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-linea px-4 py-2.5">
-        {/* Formulario propio: va dentro del <form> del artículo, así que NO
-            puede ser otro <form> anidado. Se usa formAction sobre el input. */}
-        <label className="cursor-pointer text-[13px] font-bold text-titular">
+        {/* Subir va EN LA BARRA, no debajo del área de escritura: es una acción
+            de edición y el usuario la busca junto a las demás. Estaba al pie del
+            recuadro, a 420 px de scroll, y sencillamente no se encontraba.
+            No puede ser un <form> propio: esto vive dentro del <form> del
+            artículo y anidarlos es HTML inválido. Se dispara la server action
+            desde el onChange del input. */}
+        <label
+          className={`cursor-pointer rounded px-2.5 py-1 text-[13px] font-bold text-titular hover:bg-linea/60 ${
+            subiendo ? 'pointer-events-none opacity-50' : ''
+          }`}
+          title="Insertar imagen, vídeo o PDF (hasta 50 MB)"
+        >
           <input
             type="file"
             name="archivo"
@@ -167,13 +174,17 @@ export function EditorRico({
               e.target.value = '';
             }}
           />
-          {subiendo ? 'Subiendo…' : '+ Insertar imagen, vídeo o PDF'}
+          {subiendo ? 'Subiendo…' : '+ Imagen / Vídeo / PDF'}
         </label>
-        <span className="text-[12.5px] text-gris">Hasta 50 MB.</span>
-        {subida?.error ? (
-          <span className="text-[12.5px] font-bold text-[#c0392b]">{subida.error}</span>
-        ) : null}
       </div>
+
+      {subida?.error ? (
+        <p className="border-b border-linea bg-[#c0392b]/5 px-4 py-2 text-[12.5px] font-bold text-[#c0392b]">
+          {subida.error}
+        </p>
+      ) : null}
+
+      <EditorContent editor={editor} />
     </div>
   );
 }
