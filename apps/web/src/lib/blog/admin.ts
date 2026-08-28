@@ -228,3 +228,70 @@ export async function subirPortada(
   const { data } = supabase.storage.from(BUCKET_PORTADAS).getPublicUrl(ruta);
   return { url: data.publicUrl };
 }
+
+/** Tipos que admite el cuerpo del artículo. Debe caber en lo que acepta el
+ *  bucket (`infra/storage-blog.sql`): si aquí se amplía y allí no, la subida
+ *  falla en el Storage API con un error mucho menos claro. */
+const MEDIA_ADMITIDA: Record<string, 'imagen' | 'video' | 'pdf'> = {
+  'image/jpeg': 'imagen',
+  'image/png': 'imagen',
+  'image/webp': 'imagen',
+  'image/avif': 'imagen',
+  'image/gif': 'imagen',
+  'video/mp4': 'video',
+  'video/webm': 'video',
+  'application/pdf': 'pdf',
+};
+
+/**
+ * Sube un fichero para insertarlo EN EL CUERPO del artículo y devuelve, además
+ * de la URL, el markdown ya listo para intercalar.
+ *
+ * Devuelve el markdown y no solo la URL a propósito: vídeo y PDF no tienen
+ * sintaxis nativa en markdown y usan los bloques `:::video` / `:::pdf` de
+ * `markdown.ts`. Que el fragmento lo componga el servidor evita que cada
+ * formulario se invente la suya y se desincronicen del renderizador.
+ */
+export async function subirMedia(
+  _previo: { markdown?: string; url?: string; error?: string } | null,
+  fd: FormData,
+): Promise<{ markdown?: string; url?: string; error?: string }> {
+  const { supabase } = await requireEditor();
+
+  const archivo = fd.get('archivo');
+  if (!(archivo instanceof File) || archivo.size === 0) {
+    return { error: 'Selecciona un fichero.' };
+  }
+
+  const clase = MEDIA_ADMITIDA[archivo.type];
+  if (!clase) {
+    return { error: 'Formato no admitido. Usa imagen (JPG, PNG, WebP, AVIF, GIF), vídeo (MP4, WebM) o PDF.' };
+  }
+  // 50 MB: el techo real lo impone STORAGE_FILE_SIZE_LIMIT del stack, y por
+  // encima Cloudflare corta las subidas a 100 MB. Se valida aquí para dar un
+  // mensaje entendible en vez del error crudo del Storage API.
+  if (archivo.size > 50 * 1024 * 1024) {
+    return { error: 'El fichero supera los 50 MB.' };
+  }
+
+  const ext = archivo.name.split('.').pop()?.toLowerCase() ?? 'bin';
+  const base = slugificar(archivo.name.replace(/\.[^.]+$/, ''));
+  const ruta = `cuerpo/${Date.now()}-${base}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from(BUCKET_PORTADAS)
+    .upload(ruta, archivo, { cacheControl: '31536000', upsert: false });
+  if (error) return { error: `No se ha podido subir: ${error.message}` };
+
+  const { data } = supabase.storage.from(BUCKET_PORTADAS).getPublicUrl(ruta);
+  const url = data.publicUrl;
+
+  const markdown =
+    clase === 'imagen'
+      ? `![${base}](${url})`
+      : clase === 'video'
+        ? `:::video ${url}\n\n:::`
+        : `:::pdf ${url}\n${archivo.name}\n:::`;
+
+  return { url, markdown };
+}

@@ -4,6 +4,8 @@ import { useActionState, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { guardarArticulo, subirPortada, type ResultadoAccion } from '@/lib/blog/admin';
 import { renderizarMarkdown } from '@/lib/blog/markdown';
+import { roundTripSeguro } from '@/lib/blog/editorMarkdown';
+import { EditorRico } from './EditorRico';
 import type { Articulo, Categoria } from '@/lib/blog/tipos';
 
 const etiqueta = 'mb-2 block text-[13px] font-bold uppercase tracking-[.08em] text-gris';
@@ -30,6 +32,11 @@ export function FormularioArticulo({
   const [body, setBody] = useState(articulo?.body ?? '');
   const [portada, setPortada] = useState(articulo?.cover_image ?? '');
   const [previsualizar, setPrevisualizar] = useState(false);
+  // Se decide una sola vez y con el markdown ORIGINAL: si el documento no
+  // sobrevive la ida y vuelta por el editor visual (tablas, bloques :::),
+  // se edita en texto plano. Nunca al revés — abrirlo en visual lo mutilaría
+  // al guardar. Un artículo nuevo siempre puede usar el editor visual.
+  const [visual] = useState(() => roundTripSeguro(articulo?.body ?? ''));
 
   const urlPortada = subida?.url ?? portada;
   const html = useMemo(
@@ -82,6 +89,8 @@ export function FormularioArticulo({
               className="prose-rc min-h-[420px] rounded-boton border border-linea bg-white px-5 py-4"
               dangerouslySetInnerHTML={{ __html: html }}
             />
+          ) : visual ? (
+            <EditorRico valor={body} onChange={setBody} />
           ) : (
             <textarea
               id="body"
@@ -93,7 +102,13 @@ export function FormularioArticulo({
               onChange={(e) => setBody(e.target.value)}
             />
           )}
-          {previsualizar ? <input type="hidden" name="body" value={body} /> : null}
+          {!visual && !previsualizar ? (
+            <p className="mt-2 text-[12.5px] text-gris">
+              Este artículo usa tablas o bloques especiales que el editor visual todavía no sabe
+              reproducir, así que se edita en texto para no perder nada al guardar.
+            </p>
+          ) : null}
+          {previsualizar || visual ? <input type="hidden" name="body" value={body} /> : null}
         </div>
 
         <div className={campo}>
