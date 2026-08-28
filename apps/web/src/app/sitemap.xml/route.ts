@@ -1,9 +1,14 @@
 import { rutasPublicas, site } from '@/lib/site';
 import { listarCategorias, listarSlugsPublicados } from '@/lib/blog/consultas';
+import { manifiestoParaSitemap, paginasParaSitemap } from '@/lib/sitemapContenido';
 
 /**
  * sitemap.xml como route handler (evita el bug EISDIR de las metadata routes
  * de Next en Windows con rutas que contienen espacios). Solo rutas públicas.
+ *
+ * Cubre: rutas estáticas, categorías y artículos publicados, páginas del CMS y
+ * puntos del manifiesto. El cerebro queda fuera (no necesita indexarse) y
+ * /propuestas y /votaciones tampoco entran: robots.txt ya las excluye.
  *
  * rc-05 añade el contenido: categorías y artículos PUBLICADOS de /blog y
  * /observatorio. Los borradores no pueden entrar aquí ni por error —
@@ -30,9 +35,11 @@ export async function GET() {
     );
   });
 
-  const [categorias, articulos] = await Promise.all([
+  const [categorias, articulos, paginas, manifiesto] = await Promise.all([
     listarCategorias(),
     listarSlugsPublicados(),
+    paginasParaSitemap(),
+    manifiestoParaSitemap(),
   ]);
 
   const hayEditorial = articulos.some((a) => a.source_type === 'editorial');
@@ -54,6 +61,16 @@ export async function GET() {
       '0.7',
     );
   });
+
+  // Paginas del CMS (legales, estatutos...) y puntos del manifiesto. Ambas se
+  // consultan como `anon`, asi que RLS decide que es publico: no puede colarse
+  // un borrador aunque alguien olvide un filtro.
+  const dePaginas = paginas.map((p) =>
+    entrada(`${site.urlBase}${p.loc}`, p.lastmod ?? ahora, 'monthly', '0.5'),
+  );
+  const deManifiesto = manifiesto.map((m) =>
+    entrada(`${site.urlBase}${m.loc}`, m.lastmod ?? ahora, 'monthly', '0.6'),
+  );
 
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +

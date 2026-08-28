@@ -74,13 +74,17 @@ export const navPrincipal = [
   // fuera de `rutasPublicas`/sitemap hasta el visto bueno legal de la
   // LO 8/2007 — ver docs/tecnico/tienda-printful.md (D-T10).
   { label: 'Tienda', href: '/tienda' },
-  { label: 'Cuentas', href: '/cuentas' },
 ] as const;
 
 /** Enlaces del footer. */
 // Enlaces fijos del footer que NO son páginas del CMS (los legales/estatutos
 // salen de la tabla `pages` según sus checkboxes). Aquí solo lo externo/fijo.
 export const navFooter = [
+  // "Cuentas" baja del nav principal al footer (Sergio, 29/08/2026): la
+  // transparencia de cuentas es un compromiso que hay que poder consultar,
+  // pero no es una puerta de entrada — ocupaba sitio en la nav a costa de
+  // lo que si capta. La pagina sigue viva y en el sitemap.
+  { label: 'Cuentas', href: '/cuentas' },
   // "Únete" y ruta /unete (Sergio, 10/08/2026): la página de afiliación pasa a
   // llamarse así en toda la web. /afiliate sigue vivo como redirección
   // permanente (next.config.mjs) para no romper enlaces ya publicados.
