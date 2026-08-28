@@ -15,8 +15,17 @@ import { manifiestoParaSitemap, paginasParaSitemap } from '@/lib/sitemapContenid
  * `listarSlugsPublicados` consulta como rol `anon` y la política RLS
  * `articles_select_published_or_team` filtra en Postgres.
  */
-export const dynamic = 'force-static';
-export const revalidate = 300;
+// DINÁMICO, no `force-static`.
+//
+// Con `force-static` el sitemap se cocinaba durante `next build`, y ahí las
+// consultas a la base no siempre salen (la API puede no ser alcanzable desde
+// el contenedor de construcción): el resultado era un sitemap incompleto
+// horneado en la imagen. Ademas, un articulo recien publicado no aparecia
+// hasta el siguiente build.
+//
+// Generandolo en cada peticion se consulta la base de verdad. Se cachea 1 hora
+// en el CDN para que no sea un coste por visita de robot.
+export const dynamic = 'force-dynamic';
 
 function entrada(loc: string, lastmod: string, freq: string, priority: string) {
   return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
@@ -79,6 +88,9 @@ export async function GET() {
     `\n</urlset>`;
 
   return new Response(xml, {
-    headers: { 'Content-Type': 'application/xml; charset=utf-8' },
+    headers: {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+    },
   });
 }

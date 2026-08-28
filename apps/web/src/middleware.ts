@@ -53,6 +53,7 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith('/recuperar') ||
       pathname.startsWith('/api/auth') ||
       pathname === '/robots.txt' ||
+      pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';
 
     if (!abierta && !user) {
