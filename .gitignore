@@ -67,3 +67,4 @@ n8n/**/*.credentials.json
 scripts/migracion-wp/assets/
 scripts/migracion-wp/wp-snapshot.json
 scripts/migracion-wp/__pycache__/
+webhook.txt
