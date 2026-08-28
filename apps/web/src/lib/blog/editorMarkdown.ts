@@ -25,7 +25,10 @@ function esc(t: string): string {
 /** Deshace el escapado al volver del editor a markdown. */
 function desesc(t: string): string {
   return t
-    .replace(/&nbsp;/g, ' ')
+    // Espacio duro: se devuelve como U+00A0, NO como espacio normal. Si se
+    // degradara, guardar reescribiría el contenido original (lo destapó un
+    // artículo con un incrustado de Instagram, lleno de &nbsp;).
+    .replace(/&nbsp;/g, String.fromCharCode(160))
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
@@ -123,6 +126,20 @@ export function markdownAEditor(md: string): string {
       continue;
     }
 
+    // Imagen sola en su línea → nodo de BLOQUE, no dentro de un <p>.
+    //
+    // La extensión Image de TipTap está en modo bloque: si la imagen llega
+    // envuelta en un párrafo, el editor la DESCARTA al normalizar contra su
+    // esquema y se pierde sin avisar. Lo detectó `editorTiptap.test.ts`, que
+    // hace la ida y vuelta pasando por el editor real; los tests que solo
+    // prueban los conversores no lo veían. Hay 7 artículos con imágenes.
+    const mimg = /^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/.exec(linea);
+    if (mimg) {
+      salida.push(`<img src="${esc(mimg[2])}" alt="${esc(mimg[1])}">`);
+      i += 1;
+      continue;
+    }
+
     // Párrafo: líneas seguidas hasta un blanco o el inicio de otro bloque.
     const parrafo: string[] = [];
     while (
@@ -148,7 +165,7 @@ export function editorAMarkdown(html: string): string {
   const bloques: string[] = [];
   // TipTap devuelve los bloques de primer nivel sin saltos entre ellos.
   const re =
-    /<(h2|h3|p|ul|ol|blockquote|hr)(?:\s[^>]*)?>([\s\S]*?)<\/\1>|<hr\s*\/?>/g;
+    /<(h2|h3|p|ul|ol|blockquote)(?:\s[^>]*)?>([\s\S]*?)<\/\1>|<hr\s*\/?>|<img[^>]*>/g;
   let m: RegExpExecArray | null;
 
   while ((m = re.exec(html)) !== null) {
@@ -156,7 +173,14 @@ export function editorAMarkdown(html: string): string {
     const dentro = m[2] ?? '';
 
     if (!etiqueta) {
-      bloques.push('---');
+      // Sin grupo de captura: o es un <hr> o es una imagen de bloque.
+      const crudo = m[0];
+      if (crudo.startsWith('<img')) {
+        const t = lineaAMd(crudo);
+        if (t) bloques.push(t);
+      } else {
+        bloques.push('---');
+      }
       continue;
     }
     if (etiqueta === 'h2') bloques.push(`## ${lineaAMd(dentro)}`);

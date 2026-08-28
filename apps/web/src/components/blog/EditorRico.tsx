@@ -3,7 +3,6 @@
 import { useActionState, useEffect, useRef } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import { editorAMarkdown, markdownAEditor } from '@/lib/blog/editorMarkdown';
 import { subirMedia } from '@/lib/blog/admin';
@@ -44,9 +43,10 @@ export function EditorRico({
       StarterKit.configure({
         heading: { levels: [2, 3] }, // el renderizador solo pinta h2/h3
         codeBlock: false,
-        horizontalRule: {},
+        // StarterKit v3 ya trae Link: configurarlo aquí en vez de añadir la
+        // extensión aparte, que provocaba "Duplicate extension names".
+        link: { openOnClick: false, autolink: false },
       }),
-      Link.configure({ openOnClick: false, autolink: false }),
       Image.configure({ inline: false }),
     ],
     content: inicial,
