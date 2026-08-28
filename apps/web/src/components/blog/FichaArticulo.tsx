@@ -6,7 +6,8 @@ import { Relacionados } from './Relacionados';
 import { CtaAfiliacion } from './CtaAfiliacion';
 import { Compartir } from './Compartir';
 import { fechaLarga, selloTrazabilidad } from '@/lib/blog/consultas';
-import { minutosLectura, renderizarMarkdown } from '@/lib/blog/markdown';
+import { minutosLectura } from '@/lib/blog/markdown';
+import { prepararCuerpo } from '@/lib/blog/cuerpo';
 import { site } from '@/lib/site';
 import type { ArticuloConRelaciones } from '@/lib/blog/tipos';
 
@@ -44,7 +45,7 @@ export function FichaArticulo({
    *  visibles se retiraron; el breadcrumb vive solo en el JSON-LD). */
   nombreSeccion?: string;
 }) {
-  const { html, indice } = renderizarMarkdown(articulo.body);
+  const { html, indice } = prepararCuerpo(articulo.body, articulo.body_format);
   const sello = selloTrazabilidad(articulo);
   const url = `${site.urlBase}${base}/${articulo.slug}`;
 

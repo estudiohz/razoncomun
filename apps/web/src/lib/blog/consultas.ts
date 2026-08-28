@@ -24,7 +24,7 @@ import type {
  */
 
 const SELECT_ARTICULO = `
-  id, slug, title, excerpt, body, category_id, cover_image, author_id,
+  id, slug, title, excerpt, body, body_format, category_id, cover_image, author_id,
   source_type, source_urls, status, published_at, seo_title, seo_desc, created_at,
   categoria:categories ( id, slug, name, color ),
   autor:profiles ( id, display_name )

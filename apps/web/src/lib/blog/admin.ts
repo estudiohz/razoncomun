@@ -39,6 +39,10 @@ export async function guardarArticulo(
   const id = texto(fd, 'id');
   const title = texto(fd, 'title');
   const body = texto(fd, 'body');
+  // El editor visual guarda HTML (migracion 0049). Se acepta solo uno de los
+  // dos valores validos: el formulario no debe poder marcar como 'html' algo
+  // que no lo sea, ni al reves. El saneado ocurre al RENDERIZAR, no aqui.
+  const bodyFormat = texto(fd, 'body_format') === 'html' ? 'html' : 'markdown';
   const estado = texto(fd, 'status') === 'published' ? 'published' : 'draft';
   const slug = slugificar(texto(fd, 'slug') || title);
   const fuentes = texto(fd, 'source_urls')
@@ -75,6 +79,7 @@ export async function guardarArticulo(
     title,
     excerpt: texto(fd, 'excerpt') || null,
     body,
+    body_format: bodyFormat,
     category_id: categoriaId ? Number(categoriaId) : null,
     cover_image: texto(fd, 'cover_image') || null,
     source_type: texto(fd, 'source_type') === 'observatorio' ? 'observatorio' : 'editorial',

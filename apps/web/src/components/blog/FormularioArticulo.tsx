@@ -3,8 +3,7 @@
 import { useActionState, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { guardarArticulo, subirPortada, type ResultadoAccion } from '@/lib/blog/admin';
-import { renderizarMarkdown } from '@/lib/blog/markdown';
-import { roundTripSeguro } from '@/lib/blog/editorMarkdown';
+import { prepararCuerpo } from '@/lib/blog/cuerpo';
 import { EditorRico } from './EditorRico';
 import type { Articulo, Categoria } from '@/lib/blog/tipos';
 
@@ -29,18 +28,20 @@ export function FormularioArticulo({
     FormData
   >(subirPortada, null);
 
-  const [body, setBody] = useState(articulo?.body ?? '');
+  // El cuerpo se edita y se guarda SIEMPRE en HTML (migracion 0049). Un
+  // articulo heredado en markdown se convierte al abrirlo, con el propio
+  // renderizador de siempre: se auto-migra en la primera edicion sin que el
+  // editor tenga que saber de dos formatos.
+  const [body, setBody] = useState(
+    () => prepararCuerpo(articulo?.body, articulo?.body_format).html,
+  );
+  const formato = 'html' as const;
   const [portada, setPortada] = useState(articulo?.cover_image ?? '');
   const [previsualizar, setPrevisualizar] = useState(false);
-  // Se decide una sola vez y con el markdown ORIGINAL: si el documento no
-  // sobrevive la ida y vuelta por el editor visual (tablas, bloques :::),
-  // se edita en texto plano. Nunca al revés — abrirlo en visual lo mutilaría
-  // al guardar. Un artículo nuevo siempre puede usar el editor visual.
-  const [visual] = useState(() => roundTripSeguro(articulo?.body ?? ''));
 
   const urlPortada = subida?.url ?? portada;
   const html = useMemo(
-    () => (previsualizar ? renderizarMarkdown(body).html : ''),
+    () => (previsualizar ? prepararCuerpo(body, formato).html : ''),
     [previsualizar, body],
   );
 
@@ -89,26 +90,11 @@ export function FormularioArticulo({
               className="prose-rc min-h-[420px] rounded-boton border border-linea bg-white px-5 py-4"
               dangerouslySetInnerHTML={{ __html: html }}
             />
-          ) : visual ? (
-            <EditorRico valor={body} onChange={setBody} />
           ) : (
-            <textarea
-              id="body"
-              name="body"
-              rows={20}
-              required
-              className={`${areaTexto} font-mono text-[14px]`}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-            />
+            <EditorRico valor={body} onChange={setBody} />
           )}
-          {!visual && !previsualizar ? (
-            <p className="mt-2 text-[12.5px] text-gris">
-              Este artículo usa tablas o bloques especiales que el editor visual todavía no sabe
-              reproducir, así que se edita en texto para no perder nada al guardar.
-            </p>
-          ) : null}
-          {previsualizar || visual ? <input type="hidden" name="body" value={body} /> : null}
+          <input type="hidden" name="body" value={body} />
+          <input type="hidden" name="body_format" value={formato} />
         </div>
 
         <div className={campo}>

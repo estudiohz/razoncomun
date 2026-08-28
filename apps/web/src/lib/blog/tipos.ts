@@ -23,6 +23,8 @@ export interface Articulo {
   title: string;
   excerpt: string | null;
   body: string;
+  /** Formato de `body` (migracion 0049). Sin valor = markdown heredado. */
+  body_format?: 'markdown' | 'html' | null;
   category_id: number | null;
   cover_image: string | null;
   author_id: string | null;
