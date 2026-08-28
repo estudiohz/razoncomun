@@ -1,9 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 import { requiereMfa } from '@/lib/auth/niveles';
+import { entornoCerrado } from '@/lib/entorno';
 
 /**
  * Middleware global:
+ * 0. Entorno cerrado (dev, `RC_ENTORNO_CERRADO=true`): la web ENTERA exige
+ *    sesión y se marca como no indexable. dev sirve el mismo contenido que
+ *    producción, así que sin esto Google lo indexaría y competiría con la web
+ *    real por las mismas búsquedas.
  * 1. Refresca la sesión de Supabase en cada petición (patrón oficial @supabase/ssr).
  * 2. Protege /panel (y /perfil, que ya solo redirige allí): exige sesión.
  *    OJO: /panel NO exige 2FA. El panel del usuario es donde un afiliado ve su
@@ -30,6 +35,35 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/panel';
     return NextResponse.redirect(url);
+  }
+
+  // ── Entorno cerrado (dev): la web entera tras el login ──────────────────
+  //
+  // Se comprueba ANTES que cualquier otra regla: en dev no debe poder verse ni
+  // la portada sin sesión. Se dejan pasar solo las rutas imprescindibles para
+  // poder autenticarse — si no, el usuario no podría ni llegar al formulario.
+  //
+  // Además se marca TODA respuesta como no indexable con `X-Robots-Tag`: la
+  // cabecera la respetan los buscadores aunque alguien enlace una URL suelta,
+  // cosa que un `robots.txt` por sí solo no garantiza.
+  if (entornoCerrado()) {
+    const abierta =
+      pathname.startsWith('/entrar') ||
+      pathname.startsWith('/auth') ||
+      pathname.startsWith('/recuperar') ||
+      pathname.startsWith('/api/auth') ||
+      pathname === '/robots.txt' ||
+      pathname === '/favicon.ico';
+
+    if (!abierta && !user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/entrar';
+      url.searchParams.set('next', pathname);
+      const redir = NextResponse.redirect(url);
+      redir.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+      return redir;
+    }
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
   }
 
   const esRutaPanel = pathname.startsWith('/panel') || pathname.startsWith('/perfil');

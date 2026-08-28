@@ -478,8 +478,10 @@ export function CerebroClient({
                   </th>
                   <th className="px-4 py-4 font-bold">Título</th>
                   <th className="px-4 py-4 font-bold">Categoría</th>
-                  <th className="px-4 py-4 font-bold">Área</th>
-                  <th className="px-4 py-4 font-bold">Visibilidad</th>
+                  {/* +15px de ancho: px-4 son 16px por lado; el derecho pasa a 31px. */}
+                  <th className="py-4 pl-4 pr-[31px] font-bold">Área</th>
+                  {/* -10px de ancho y titulo mas corto: el relleno derecho baja de 16px a 6px. */}
+                  <th className="py-4 pl-4 pr-[6px] font-bold">Visible</th>
                   <th className="w-[90px] px-4 py-4 text-center font-bold">Cerebro</th>
                   <th className="px-4 py-4 font-bold">Autor</th>
                   <th className="px-4 py-4 font-bold">Actualizado</th>
