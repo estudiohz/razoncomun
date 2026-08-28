@@ -87,6 +87,9 @@ export async function listarArticulos({
     .from('articles')
     .select(SELECT_ARTICULO)
     .eq('status', 'published')
+    // Segunda capa: los programados al futuro ya los oculta la politica RLS
+    // (migracion 0050); esto lo hace explicito para quien lea la consulta.
+    .lte('published_at', new Date().toISOString())
     .eq('source_type', tipo)
     .order('published_at', { ascending: false, nullsFirst: false })
     .limit(limite);
@@ -119,6 +122,7 @@ export async function obtenerArticulo(slug: string): Promise<ArticuloConRelacion
     .select(SELECT_ARTICULO)
     .eq('slug', slug)
     .eq('status', 'published')
+    .lte('published_at', new Date().toISOString())
     .maybeSingle();
   if (error || !data) return null;
   return normalizar(data as Record<string, unknown>);
@@ -133,7 +137,8 @@ export async function listarSlugsPublicados(): Promise<
   const { data, error } = await sb
     .from('articles')
     .select('slug, published_at, source_type')
-    .eq('status', 'published');
+    .eq('status', 'published')
+    .lte('published_at', new Date().toISOString());
   if (error || !data) return [];
   return data as { slug: string; published_at: string | null; source_type: string }[];
 }

@@ -101,9 +101,27 @@ export async function guardarArticulo(
     eraPublicado = actual?.status === 'published';
   }
 
+  // Publicacion programada (migracion 0050): si el editor eligio fecha y hora,
+  // se sella `published_at` con ella aunque este en el futuro. Quien decide si
+  // el articulo es visible es la POLITICA RLS comparando con now(), no esta
+  // funcion — asi no hace falta ningun cron que pueda fallar en silencio.
+  const programada = texto(fd, 'published_at');
+  let fechaProgramada: string | null = null;
+  if (estado === 'published' && programada) {
+    const d = new Date(programada);
+    if (Number.isNaN(d.getTime())) {
+      return { ok: false, error: 'La fecha de programacion no es valida.' };
+    }
+    fechaProgramada = d.toISOString();
+  }
+
   const conFecha = {
     ...fila,
-    ...(estado === 'published' && !eraPublicado ? { published_at: new Date().toISOString() } : {}),
+    ...(fechaProgramada
+      ? { published_at: fechaProgramada }
+      : estado === 'published' && !eraPublicado
+        ? { published_at: new Date().toISOString() }
+        : {}),
     ...(id ? {} : { author_id: userId }),
   };
 
@@ -124,7 +142,10 @@ export async function guardarArticulo(
 
   // Evento de publicación: solo en la transición draft → published.
   let aviso: string | undefined;
-  if (estado === 'published' && !eraPublicado) {
+  // Si la publicacion esta PROGRAMADA al futuro no se emite todavia el evento
+  // de redes: anunciariamos en redes un articulo que aun no es visible.
+  const yaVisible = !fechaProgramada || new Date(fechaProgramada) <= new Date();
+  if (estado === 'published' && !eraPublicado && yaVisible) {
     const { data: completo } = await supabase
       .from('articles')
       .select(

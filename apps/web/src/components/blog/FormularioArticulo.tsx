@@ -12,6 +12,13 @@ const campo = 'mb-6';
 const areaTexto =
   'w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-cuerpo placeholder:text-gris focus:border-titular focus:outline-none focus:ring-2 focus:ring-titular/20';
 
+/** ISO → valor de <input type="datetime-local"> en hora LOCAL del editor. */
+function paraInput(iso: string): string {
+  const d = new Date(iso);
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
 export function FormularioArticulo({
   articulo,
   categorias,
@@ -36,6 +43,19 @@ export function FormularioArticulo({
     () => prepararCuerpo(articulo?.body, articulo?.body_format).html,
   );
   const formato = 'html' as const;
+
+  // Publicacion programada (estilo WordPress). Un articulo programado es
+  // simplemente publicado con `published_at` en el futuro: la politica RLS
+  // (migracion 0050) lo oculta hasta su hora, sin cron que pueda fallar.
+  const [estadoPub, setEstadoPub] = useState(articulo?.status ?? 'draft');
+  const yaProgramado = Boolean(
+    articulo?.published_at && new Date(articulo.published_at).getTime() > Date.now(),
+  );
+  const [programar, setProgramar] = useState(yaProgramado);
+  const [cuando, setCuando] = useState(
+    articulo?.published_at ? paraInput(articulo.published_at) : '',
+  );
+  const programando = estadoPub === 'published' && programar && cuando !== '';
   const [portada, setPortada] = useState(articulo?.cover_image ?? '');
   const [previsualizar, setPrevisualizar] = useState(false);
 
@@ -139,16 +159,50 @@ export function FormularioArticulo({
           </p>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={pendiente}
-          className="rounded-boton bg-accion px-8 py-3.5 text-[15px] font-bold text-white shadow-boton disabled:opacity-60"
-        >
-          {pendiente ? 'Guardando…' : 'Guardar'}
-        </button>
       </form>
 
       <aside className="min-w-0">
+        <div className="mb-6 rounded-tarjeta border border-linea bg-white p-5">
+          <button
+            type="submit"
+            form="articulo"
+            disabled={pendiente}
+            className="w-full rounded-boton bg-accion px-8 py-3.5 text-[15px] font-bold text-white shadow-boton disabled:opacity-60"
+          >
+            {pendiente ? 'Guardando…' : programando ? 'Programar' : 'Guardar'}
+          </button>
+
+          {estadoPub === 'published' ? (
+            <>
+              <label className="mt-4 flex items-center gap-2 text-[13.5px] text-cuerpo">
+                <input
+                  type="checkbox"
+                  checked={programar}
+                  onChange={(e) => setProgramar(e.target.checked)}
+                />
+                Programar
+              </label>
+              {programar ? (
+                <>
+                  <input
+                    type="datetime-local"
+                    name="published_at"
+                    form="articulo"
+                    value={cuando}
+                    onChange={(e) => setCuando(e.target.value)}
+                    className={`${areaTexto} mt-2`}
+                  />
+                  <p className="mt-2 text-[12.5px] leading-relaxed text-gris">
+                    {cuando
+                      ? 'Se publicará solo a esa hora. Hasta entonces no es visible para nadie: lo impide la base de datos, no solo la web.'
+                      : 'Elige fecha y hora.'}
+                  </p>
+                </>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+
         <div className="mb-6 rounded-tarjeta border border-linea bg-white p-5">
           <label className={etiqueta} htmlFor="status">
             Estado
@@ -157,7 +211,8 @@ export function FormularioArticulo({
             id="status"
             name="status"
             form="articulo"
-            defaultValue={articulo?.status ?? 'draft'}
+            value={estadoPub}
+            onChange={(e) => setEstadoPub(e.target.value === 'published' ? 'published' : 'draft')}
             className={areaTexto}
           >
             <option value="draft">Borrador</option>
