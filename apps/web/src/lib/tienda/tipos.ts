@@ -37,7 +37,15 @@ export interface VarianteTienda {
   /** Precio de venta en céntimos (Printful lo da como "27.00" en EUR). */
   precioCents: number;
   moneda: string;
+  /** Primera de `imagenes` — tarjeta de la parrilla y línea del carrito. */
   imagen: string | null;
+  /**
+   * Galería: TODOS los mockups (`files` de tipo `preview`) de esta variante,
+   * ya deduplicados. Printful devuelve uno por vista que se eligiera al
+   * crear el producto (frente, espalda, ambiente); si solo se eligió una,
+   * aquí solo hay una y la ficha oculta la tira de miniaturas.
+   */
+  imagenes: string[];
   /** `availability_status === 'active'`: si no, no se puede comprar. */
   disponible: boolean;
 }

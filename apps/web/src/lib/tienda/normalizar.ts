@@ -46,19 +46,31 @@ export function normalizarResumen(crudo: Crudo): ProductoResumen {
  * product también lleva el diseño. La foto en blanco queda solo como último
  * recurso para no dejar el hueco vacío.
  */
-export function imagenDeVariante(v: Crudo, producto: Crudo): string | null {
+export function imagenesDeVariante(v: Crudo, producto: Crudo): string[] {
   const ficheros = Array.isArray(v.files) ? (v.files as Crudo[]) : [];
   // Solo `preview`: los ficheros `default`/`front`/`back` son los de
   // impresión, y su preview es el logo suelto sobre transparencia.
-  const preview = ficheros.find((f) => texto(f.type) === 'preview');
+  // Puede haber VARIOS (frente, espalda, ambiente) -> son la galería.
+  const previews = ficheros
+    .filter((f) => texto(f.type) === 'preview')
+    .map((f) => texto(f.preview_url) || texto(f.thumbnail_url))
+    .filter(Boolean);
+
+  // Printful repite la misma URL en varias posiciones; sin dedupe la galería
+  // enseñaría dos miniaturas idénticas.
+  if (previews.length > 0) return [...new Set(previews)];
+
+  // Sin mockups: UNA sola foto de reserva, nunca las dos. El
+  // `product.image` es el producto en blanco y no debe acabar de diapositiva
+  // junto al mockup bueno: solo se usa si no hay absolutamente nada más.
   const anidado = (v.product ?? {}) as Crudo;
-  return (
-    texto(preview?.preview_url) ||
-    texto(preview?.thumbnail_url) ||
-    texto(producto.thumbnail_url) ||
-    texto(anidado.image) ||
-    null
-  );
+  const reserva = texto(producto.thumbnail_url) || texto(anidado.image);
+  return reserva ? [reserva] : [];
+}
+
+/** Primera imagen de la variante — la que va en la tarjeta y en el carrito. */
+export function imagenDeVariante(v: Crudo, producto: Crudo): string | null {
+  return imagenesDeVariante(v, producto)[0] ?? null;
 }
 
 /**
@@ -72,6 +84,7 @@ export function normalizarDetalle(resultado: Crudo): ProductoDetalle | null {
 
   const variantes: VarianteTienda[] = crudas.map((v) => {
     const anidado = (v.product ?? {}) as Crudo;
+    const imagenes = imagenesDeVariante(v, producto);
     return {
       id: numero(v.id),
       // `variant_id` vive tanto en la raíz de la sync variant como en
@@ -80,7 +93,8 @@ export function normalizarDetalle(resultado: Crudo): ProductoDetalle | null {
       nombre: texto(v.name),
       precioCents: precioACents(v.retail_price),
       moneda: texto(v.currency) || 'EUR',
-      imagen: imagenDeVariante(v, producto),
+      imagen: imagenes[0] ?? null,
+      imagenes,
       disponible: texto(v.availability_status) === 'active',
     };
   });

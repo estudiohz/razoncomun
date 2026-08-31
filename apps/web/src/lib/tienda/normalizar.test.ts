@@ -41,6 +41,10 @@ const DETALLE_REAL = {
           preview_url: 'https://files.cdn.printful.com/mockup-botella.png',
           thumbnail_url: 'https://files.cdn.printful.com/mockup-botella-thumb.png',
         },
+        // Segunda vista (otro mockup) -> galería.
+        { id: 3, type: 'preview', preview_url: 'https://files.cdn.printful.com/mockup-botella-2.png' },
+        // Repetida: Printful repite URLs; no debe salir dos veces.
+        { id: 4, type: 'preview', preview_url: 'https://files.cdn.printful.com/mockup-botella.png' },
       ],
     },
   ],
@@ -66,14 +70,22 @@ describe('normalizar — respuesta real de Printful', () => {
     expect(v.imagen).not.toBe('https://files.cdn.printful.com/logo-suelto.png');
   });
 
+  it('junta todos los previews en la galería, sin repetir', () => {
+    expect(normalizarDetalle(DETALLE_REAL)!.variantes[0].imagenes).toEqual([
+      'https://files.cdn.printful.com/mockup-botella.png',
+      'https://files.cdn.printful.com/mockup-botella-2.png',
+    ]);
+  });
+
   it('sin fichero de preview cae al thumbnail del producto (que sí lleva diseño)', () => {
     const sinPreview = {
       ...DETALLE_REAL,
       sync_variants: [{ ...DETALLE_REAL.sync_variants[0], files: [{ id: 1, type: 'default' }] }],
     };
-    expect(normalizarDetalle(sinPreview)!.variantes[0].imagen).toBe(
-      'https://files.cdn.printful.com/botella.png',
-    );
+    const v = normalizarDetalle(sinPreview)!.variantes[0];
+    expect(v.imagen).toBe('https://files.cdn.printful.com/botella.png');
+    // Una sola foto: la ficha oculta la tira de miniaturas.
+    expect(v.imagenes).toHaveLength(1);
   });
 
   it('convierte el precio decimal de Printful a céntimos', () => {
@@ -134,6 +146,7 @@ describe('itemsParaTarifas / itemsParaPedido — el error nº1 de esta integraci
     precioCents: 2700,
     moneda: 'EUR',
     imagen: null,
+    imagenes: [],
     disponible: true,
   };
   const lineas: LineaResuelta[] = [{ variante, cantidad: 2 }];
