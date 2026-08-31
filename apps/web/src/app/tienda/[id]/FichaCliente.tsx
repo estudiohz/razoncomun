@@ -20,6 +20,9 @@ export function FichaCliente({ producto }: { producto: ProductoDetalle }) {
 
   return (
     <div className="grid gap-8 min-[860px]:grid-cols-2">
+      {/* `object-contain`, no `cover`: los mockups de Printful no son
+          cuadrados y recortarlos deja el producto (y el logo) fuera de
+          cuadro. Aquí manda ver la pieza entera, aunque sobre fondo. */}
       <div className="relative aspect-square overflow-hidden rounded-tarjeta bg-fondo">
         {imagen && (
           <Image
@@ -27,7 +30,7 @@ export function FichaCliente({ producto }: { producto: ProductoDetalle }) {
             alt={producto.nombre}
             fill
             sizes="(max-width: 860px) 100vw, 50vw"
-            className="object-cover"
+            className="object-contain p-4"
             priority
           />
         )}

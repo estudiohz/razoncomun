@@ -37,6 +37,31 @@ export function normalizarResumen(crudo: Crudo): ProductoResumen {
 }
 
 /**
+ * Imagen que se le enseña al comprador para una sync variant.
+ *
+ * ⚠️ NO usar `sync_variant.product.image`: ese es el producto EN BLANCO del
+ * catálogo de Printful (la botella lisa, la taza vacía), y además viene con
+ * otra proporción. El mockup con nuestro diseño está en el fichero de tipo
+ * `preview` de la variante; si no lo trae, el `thumbnail_url` del sync
+ * product también lleva el diseño. La foto en blanco queda solo como último
+ * recurso para no dejar el hueco vacío.
+ */
+export function imagenDeVariante(v: Crudo, producto: Crudo): string | null {
+  const ficheros = Array.isArray(v.files) ? (v.files as Crudo[]) : [];
+  // Solo `preview`: los ficheros `default`/`front`/`back` son los de
+  // impresión, y su preview es el logo suelto sobre transparencia.
+  const preview = ficheros.find((f) => texto(f.type) === 'preview');
+  const anidado = (v.product ?? {}) as Crudo;
+  return (
+    texto(preview?.preview_url) ||
+    texto(preview?.thumbnail_url) ||
+    texto(producto.thumbnail_url) ||
+    texto(anidado.image) ||
+    null
+  );
+}
+
+/**
  * `GET /store/products/{id}` -> ficha. Aquí es donde se separan los dos ids:
  * `sync_variant.id` (nuestro) y `sync_variant.variant_id` (catálogo).
  */
@@ -55,7 +80,7 @@ export function normalizarDetalle(resultado: Crudo): ProductoDetalle | null {
       nombre: texto(v.name),
       precioCents: precioACents(v.retail_price),
       moneda: texto(v.currency) || 'EUR',
-      imagen: texto(anidado.image) || texto(producto.thumbnail_url) || null,
+      imagen: imagenDeVariante(v, producto),
       disponible: texto(v.availability_status) === 'active',
     };
   });

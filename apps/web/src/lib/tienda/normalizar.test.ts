@@ -31,7 +31,17 @@ const DETALLE_REAL = {
       currency: 'EUR',
       availability_status: 'active',
       product: { variant_id: 10798, product_id: 382, image: 'https://files.cdn.printful.com/v.png' },
-      files: [{ id: 1 }, { id: 2 }],
+      files: [
+        // Fichero de IMPRESIÓN: su preview es el logo suelto, no el producto.
+        { id: 1, type: 'default', preview_url: 'https://files.cdn.printful.com/logo-suelto.png' },
+        // Fichero de PREVIEW: el mockup con nuestro diseño puesto.
+        {
+          id: 2,
+          type: 'preview',
+          preview_url: 'https://files.cdn.printful.com/mockup-botella.png',
+          thumbnail_url: 'https://files.cdn.printful.com/mockup-botella-thumb.png',
+        },
+      ],
     },
   ],
 };
@@ -45,6 +55,25 @@ describe('normalizar — respuesta real de Printful', () => {
     expect(v.id).toBe(5440442338);
     expect(v.catalogVariantId).toBe(10798);
     expect(v.id).not.toBe(v.catalogVariantId);
+  });
+
+  it('enseña el mockup con el diseño, nunca el producto en blanco', () => {
+    // El bug de la ficha (31/08/2026): se pintaba `product.image`, que es la
+    // botella lisa del catálogo de Printful, sin nuestro logo.
+    const v = normalizarDetalle(DETALLE_REAL)!.variantes[0];
+    expect(v.imagen).toBe('https://files.cdn.printful.com/mockup-botella.png');
+    expect(v.imagen).not.toBe('https://files.cdn.printful.com/v.png');
+    expect(v.imagen).not.toBe('https://files.cdn.printful.com/logo-suelto.png');
+  });
+
+  it('sin fichero de preview cae al thumbnail del producto (que sí lleva diseño)', () => {
+    const sinPreview = {
+      ...DETALLE_REAL,
+      sync_variants: [{ ...DETALLE_REAL.sync_variants[0], files: [{ id: 1, type: 'default' }] }],
+    };
+    expect(normalizarDetalle(sinPreview)!.variantes[0].imagen).toBe(
+      'https://files.cdn.printful.com/botella.png',
+    );
   });
 
   it('convierte el precio decimal de Printful a céntimos', () => {
