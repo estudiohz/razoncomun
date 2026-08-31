@@ -63,7 +63,7 @@ function AvisoNoDisponibles({
 }
 
 export function ResumenCheckout() {
-  const { items, cargado, cambiarCantidad, quitar } = useCarrito();
+  const { items, cargado, cambiarCantidad, quitar, vaciar } = useCarrito();
   const [datos, setDatos] = useState<CarritoResuelto | null>(null);
   const [cargando, setCargando] = useState(true);
 
@@ -147,7 +147,14 @@ export function ResumenCheckout() {
     return (
       <div className="mx-auto max-w-[520px]">
         <AvisoNoDisponibles items={datos.noDisponibles} onQuitar={quitar} />
-        <Link href="/tienda" className="text-[14px] font-bold text-titular">
+        <button
+          type="button"
+          onClick={vaciar}
+          className="w-full rounded-boton border border-linea bg-white px-5 py-2.5 text-[14px] font-bold text-titular hover:border-titular"
+        >
+          Vaciar el carrito
+        </button>
+        <Link href="/tienda" className="mt-3 block text-center text-[14px] font-bold text-titular">
           ← Ver productos
         </Link>
       </div>
