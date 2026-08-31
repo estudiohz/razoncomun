@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { stripeCliente, stripeSecretKey, stripeWebhookSecret } from '@/lib/stripe/servidor';
+import { cumplirPedidoTienda } from '@/lib/tienda/cumplir';
+import { META_TIPO, TIPO_TIENDA } from '@/lib/tienda/pedido';
 import { yaProcesado, registrarEvento } from '@/lib/stripe/eventos';
 import { enviarCorreo } from '@/lib/email/enviar';
 import { correoBienvenida, correoImpago, correoRecuperado, correoBaja } from '@/lib/email/plantillas';
@@ -220,6 +222,65 @@ export async function POST(request: Request) {
         userId,
         meta: { invoice_id: invoice.id, subscription_id: subId, attempt_count: invoice.attempt_count },
       });
+      break;
+    }
+
+    case 'checkout.session.completed': {
+      const sesionCruda = event.data.object as Stripe.Checkout.Session;
+
+      // El MISMO endpoint recibe los eventos de afiliación y los de la
+      // tienda. La marca de la metadata decide: sin ella, esto es una sesión
+      // de otra cosa y no se toca.
+      if (sesionCruda.metadata?.[META_TIPO] !== TIPO_TIENDA) {
+        await registrarEvento(admin, {
+          eventId: event.id,
+          tipo: event.type,
+          action: 'stripe_checkout_no_es_tienda',
+          meta: { session_id: sesionCruda.id },
+        });
+        break;
+      }
+
+      // Solo se fabrica si el pago está realmente cobrado. `complete` sin
+      // `paid` es, por ejemplo, un método asíncrono aún pendiente.
+      if (sesionCruda.payment_status !== 'paid') {
+        await registrarEvento(admin, {
+          eventId: event.id,
+          tipo: event.type,
+          action: 'stripe_checkout_tienda_sin_cobrar',
+          meta: { session_id: sesionCruda.id, payment_status: sesionCruda.payment_status },
+        });
+        break;
+      }
+
+      // La dirección viaja en el PaymentIntent y el evento no lo trae
+      // expandido: hay que releer la sesión pidiéndolo.
+      let sesion = sesionCruda;
+      try {
+        sesion = await stripe.checkout.sessions.retrieve(sesionCruda.id, {
+          expand: ['payment_intent'],
+        });
+      } catch (err) {
+        console.error('[tienda] no se pudo releer la sesión de Stripe', err);
+      }
+
+      const resultado = await cumplirPedidoTienda(admin, sesion);
+
+      await registrarEvento(admin, {
+        eventId: event.id,
+        tipo: event.type,
+        action: `stripe_pedido_tienda_${resultado.estado}`,
+        entityId: sesion.id,
+        meta: {
+          session_id: sesion.id,
+          printful_order_id: resultado.printfulOrderId ?? null,
+          detalle: resultado.detalle ?? null,
+        },
+      });
+
+      // Se devuelve 200 incluso si falló el cumplimiento: el pedido ya está
+      // registrado como `failed` con su motivo, y que Stripe reintente no lo
+      // arreglaría — lo arregla una persona mirando /admin.
       break;
     }
 
