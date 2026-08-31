@@ -12,6 +12,10 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'files.cdn.printful.com' },
       { protocol: 'https', hostname: '*.cdn.printful.com' },
+      // Storage de Supabase: fotos de uso de las fichas de producto (0052) y
+      // cualquier media subida desde /admin. Sin esto next/image responde 400.
+      { protocol: 'https', hostname: 'api.razoncomun.com', pathname: '/storage/v1/object/public/**' },
+      { protocol: 'https', hostname: 'dev-api.razoncomun.com', pathname: '/storage/v1/object/public/**' },
     ],
   },
   // La página de afiliación pasó de /afiliate a /unete (Sergio, 10/08/2026).

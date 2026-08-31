@@ -10,18 +10,37 @@ import { Galeria } from './Galeria';
 const MAX_POR_LINEA = 20;
 
 /**
+ * Ficha editable del producto (0052), con el HTML YA SANEADO en el servidor
+ * (page.tsx). Aquí no se sanea nada: este componente corre en el navegador.
+ */
+export interface FichaEditable {
+  descripcionHtml: string;
+  guiaTallasHtml: string;
+  plazoEntrega: string;
+  fotosExtra: string[];
+}
+
+/**
  * Parte interactiva de la ficha: galería, selector de variante (solo si hay
  * más de una, Sergio: "sencilla"), cantidad y el único botón de la página.
  */
-export function FichaCliente({ producto }: { producto: ProductoDetalle }) {
+export function FichaCliente({
+  producto,
+  ficha,
+}: {
+  producto: ProductoDetalle;
+  ficha: FichaEditable;
+}) {
   const disponibles = producto.variantes.filter((v) => v.disponible);
   const [seleccionadaId, setSeleccionadaId] = useState<number | null>(disponibles[0]?.id ?? null);
   const [cantidad, setCantidad] = useState(1);
   const { anadir } = useCarrito();
 
   const seleccionada = disponibles.find((v) => v.id === seleccionadaId) ?? null;
-  const imagenes =
-    seleccionada?.imagenes ?? (producto.imagen ? [producto.imagen] : []);
+  // Mockups de Printful primero y fotos de uso después: la foto de producto
+  // identifica, la de uso convence, pero quien llega quiere ver el producto.
+  const mockups = seleccionada?.imagenes ?? (producto.imagen ? [producto.imagen] : []);
+  const imagenes = [...new Set([...mockups, ...ficha.fotosExtra])];
 
   return (
     <div className="grid gap-8 min-[860px]:grid-cols-2 min-[860px]:gap-12">
@@ -41,6 +60,25 @@ export function FichaCliente({ producto }: { producto: ProductoDetalle }) {
             </span>
             <span className="text-[13px] text-gris">envío aparte</span>
           </p>
+        )}
+
+        {ficha.descripcionHtml && (
+          <div
+            className="prose-rc mt-6 text-[15px] leading-[1.6] text-cuerpo"
+            dangerouslySetInnerHTML={{ __html: ficha.descripcionHtml }}
+          />
+        )}
+
+        {ficha.guiaTallasHtml && (
+          <details className="mt-5 rounded-[14px] border border-linea bg-white px-4 py-3">
+            <summary className="cursor-pointer text-[14px] font-bold text-titular">
+              Guía de tallas
+            </summary>
+            <div
+              className="prose-rc mt-3 text-[14px] leading-[1.55] text-cuerpo"
+              dangerouslySetInnerHTML={{ __html: ficha.guiaTallasHtml }}
+            />
+          </details>
         )}
 
         {/* Selector solo cuando aporta algo: con una única variante sobra. */}
@@ -108,7 +146,8 @@ export function FichaCliente({ producto }: { producto: ProductoDetalle }) {
         )}
 
         <p className="mt-4 text-[14.5px] text-cuerpo">
-          Se fabrica bajo pedido. Envío a España; los gastos exactos se calculan al tramitar el pedido.
+          Se fabrica bajo pedido{ficha.plazoEntrega ? `: ${ficha.plazoEntrega}` : ''}. Envío a
+          España; los gastos exactos se calculan al tramitar el pedido.
         </p>
 
         {/* Aviso de autofinanciación (Sergio, 31/08/2026): la tienda no es

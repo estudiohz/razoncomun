@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
+import { sanearHtml } from '@/lib/blog/html';
 import { metadatosPagina } from '@/lib/seo';
+import { obtenerFicha } from '@/lib/tienda/fichas';
 import { obtenerProducto, PrintfulNoConfiguradoError } from '@/lib/tienda/printful';
 import { BotonCarrito } from '../BotonCarrito';
 import { TarjetaProducto } from '../TarjetaProducto';
@@ -57,6 +59,20 @@ export default async function ProductoPage({ params }: { params: Promise<{ id: s
     .then((t) => t.filter((p) => p.id !== producto.id).slice(0, 3))
     .catch(() => []);
 
+  // Descripción, guía de tallas, plazo y fotos de uso (0052): lo que Printful
+  // no trae. Un producto sin ficha se pinta igual, solo que sin esos bloques.
+  const guardada = await obtenerFicha(producto.id);
+  // El saneado se hace AQUÍ, en el servidor, y a FichaCliente (que es
+  // 'use client') solo le llega HTML ya limpio: así `sanitize-html` no viaja
+  // al navegador y ninguna fila de la BD alcanza el DOM sin pasar por la
+  // lista blanca de lib/blog/html.ts.
+  const ficha = {
+    descripcionHtml: sanearHtml(guardada.description_html),
+    guiaTallasHtml: sanearHtml(guardada.size_guide_html),
+    plazoEntrega: guardada.delivery_note,
+    fotosExtra: guardada.extra_images,
+  };
+
   return (
     <Contenedor as="section" className="py-14">
       <div className="mb-8 flex items-center justify-between gap-4">
@@ -66,7 +82,7 @@ export default async function ProductoPage({ params }: { params: Promise<{ id: s
         <BotonCarrito />
       </div>
 
-      <FichaCliente producto={producto} />
+      <FichaCliente producto={producto} ficha={ficha} />
 
       {otros.length > 0 && (
         <section className="mt-16 border-t border-linea pt-12">
