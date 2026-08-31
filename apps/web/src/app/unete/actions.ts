@@ -119,7 +119,7 @@ export async function iniciarDomiciliacion(input: {
     },
   });
 
-  const stripe = stripeCliente();
+  const stripe = await stripeCliente();
 
   // 3. Customer de Stripe. Se reutiliza el de un intento anterior si existe
   // (lectura de `members`, permitida por RLS propia — nunca se escribe aquí:
@@ -167,7 +167,7 @@ export async function confirmarAfiliacion(input: {
   paymentMethodId: string;
 }): Promise<ResultadoConfirmacion> {
   const { user } = await requireUsuario('/unete');
-  const stripe = stripeCliente();
+  const stripe = await stripeCliente();
 
   // Se revalida aquí y no solo en `iniciarDomiciliacion`: son dos llamadas
   // independientes desde el cliente, y esta es la que de verdad crea la

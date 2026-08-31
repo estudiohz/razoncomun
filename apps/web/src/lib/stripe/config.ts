@@ -17,32 +17,69 @@
  * Sergio en el dashboard.
  */
 import Stripe from 'stripe';
+import { credencialActiva } from '@/lib/pagos/credenciales';
 
-export function stripeSecretKey(): string {
+/**
+ * DE DÓNDE SALE LA CLAVE (migración 0053, 31/08/2026)
+ *
+ * Primero la credencial activa de `payment_provider_credentials`, que se pega
+ * desde /admin/tienda/pagos; si no hay ninguna, la variable de entorno de
+ * siempre. Ese orden importa: mientras nadie guarde nada en el panel, el
+ * comportamiento es EXACTAMENTE el de antes, así que activar esto no puede
+ * romper la afiliación ni el webhook por sí solo.
+ *
+ * Por eso `stripeCliente()` y `stripeWebhookSecret()` son ahora async: leer la
+ * clave implica ir a la base y descifrar. Todos los sitios que las usaban ya
+ * eran contextos async.
+ */
+
+/** Clave secreta: BD primero, entorno de reserva. */
+export async function stripeSecretKey(): Promise<string> {
+  const guardada = await credencialActiva('stripe').catch(() => null);
+  if (guardada?.secret) return guardada.secret;
+
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) {
-    throw new Error('Falta STRIPE_SECRET_KEY. Ver apps/web/AFILIACION-SETUP.md.');
+    throw new Error(
+      'No hay clave de Stripe: ni credencial guardada en /admin/tienda/pagos ni STRIPE_SECRET_KEY ' +
+        'en el entorno. Ver apps/web/AFILIACION-SETUP.md.',
+    );
   }
   return key;
 }
 
-export function stripeWebhookSecret(): string {
+export async function stripeWebhookSecret(): Promise<string> {
+  const guardada = await credencialActiva('stripe').catch(() => null);
+  if (guardada?.webhook_secret) return guardada.webhook_secret;
+
   const key = process.env.STRIPE_WEBHOOK_SECRET;
   if (!key) {
-    throw new Error('Falta STRIPE_WEBHOOK_SECRET. Ver apps/web/AFILIACION-SETUP.md.');
+    throw new Error(
+      'No hay secreto de webhook de Stripe: ni guardado en /admin/tienda/pagos ni ' +
+        'STRIPE_WEBHOOK_SECRET en el entorno. Ver apps/web/AFILIACION-SETUP.md.',
+    );
   }
   return key;
 }
 
 let cliente: Stripe | null = null;
+let claveDelCliente: string | null = null;
 
-/** Cliente Stripe compartido (server-side SOLO — nunca importar desde 'use client'). */
-export function stripeCliente(): Stripe {
+/**
+ * Cliente Stripe compartido (server-side SOLO — nunca importar desde 'use client').
+ *
+ * Se cachea por CLAVE, no a secas: si alguien cambia la credencial en el panel
+ * (o pasa de test a live), un cliente memoizado con la clave vieja seguiría
+ * cobrando en la cuenta equivocada hasta el siguiente despliegue.
+ */
+export async function stripeCliente(): Promise<Stripe> {
   if (typeof window !== 'undefined') {
     throw new Error('stripeCliente() es solo de servidor.');
   }
-  if (!cliente) {
-    cliente = new Stripe(stripeSecretKey());
+  const clave = await stripeSecretKey();
+  if (!cliente || claveDelCliente !== clave) {
+    cliente = new Stripe(clave);
+    claveDelCliente = clave;
   }
   return cliente;
 }

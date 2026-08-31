@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   }
 
   const admin = createAdminClient();
-  const stripe = stripeCliente();
+  const stripe = await stripeCliente();
   const filas = await filasModelo182(admin, stripe, year);
   const csv = csvModelo182(filas, year);
 

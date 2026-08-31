@@ -36,12 +36,20 @@ export default async function TiendaAdminPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-[24px] font-extrabold">Tienda</h1>
-        <p className="mt-1 text-[13.5px] text-gris">
-          Descripción, guía de tallas, plazo de entrega y fotos de uso de cada producto. El
-          catálogo (nombre, precio, variantes y mockups) se gestiona en Printful.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[24px] font-extrabold">Tienda</h1>
+          <p className="mt-1 text-[13.5px] text-gris">
+            Descripción, guía de tallas, plazo de entrega y fotos de uso de cada producto. El
+            catálogo (nombre, precio, variantes y mockups) se gestiona en Printful.
+          </p>
+        </div>
+        <Link
+          href="/admin/tienda/pagos"
+          className="rounded-boton border border-linea bg-white px-5 py-2.5 text-[14px] font-bold text-titular"
+        >
+          Pagos
+        </Link>
       </div>
 
       <Tarjeta className="overflow-x-auto">

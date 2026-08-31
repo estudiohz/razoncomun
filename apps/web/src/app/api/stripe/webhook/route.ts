@@ -29,13 +29,13 @@ import { correoBienvenida, correoImpago, correoRecuperado, correoBaja } from '@/
 export async function POST(request: Request) {
   let webhookSecret: string;
   try {
-    stripeSecretKey();
-    webhookSecret = stripeWebhookSecret();
+    await stripeSecretKey();
+    webhookSecret = await stripeWebhookSecret();
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 501 });
   }
 
-  const stripe = stripeCliente();
+  const stripe = await stripeCliente();
   const payload = await request.text();
   const signature = request.headers.get('stripe-signature');
 

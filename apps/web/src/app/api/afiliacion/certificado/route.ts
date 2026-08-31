@@ -31,7 +31,7 @@ export async function GET(request: Request) {
   }
 
   const admin = createAdminClient();
-  const stripe = stripeCliente();
+  const stripe = await stripeCliente();
 
   const datos = await datosCertificado(admin, stripe, user.id, year);
   if (!datos) {

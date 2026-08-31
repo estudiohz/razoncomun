@@ -23,8 +23,8 @@ export interface ResultadoSuscripcion {
  */
 async function conStripe(rutaVuelta: string) {
   const { user, supabase } = await requireAdmin(rutaVuelta);
-  stripeSecretKey(); // lanza si no está configurada
-  return { stripe: stripeCliente(), supabase, actorId: user.id };
+  await stripeSecretKey(); // lanza si no está configurada
+  return { stripe: await stripeCliente(), supabase, actorId: user.id };
 }
 
 async function auditar(
