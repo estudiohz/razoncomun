@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useTransition } from 'react';
 import { formatoPrecio } from '@/lib/tienda/precios';
@@ -21,8 +22,48 @@ const etiqueta = 'mb-1 block text-[12px] font-bold uppercase tracking-[.06em] te
 const campo =
   'w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[14.5px] text-cuerpo outline-none focus:border-titular';
 
+/**
+ * Aviso de artículos que ya no se pueden comprar, con salida directa.
+ *
+ * Antes de esto, un carrito con una línea agotada bloqueaba el pago para
+ * siempre: el checkout no dejaba quitar nada y "Ir a pagar" solo devolvía
+ * un error genérico ("algún producto ya no está disponible") sin decir cuál
+ * ni cómo arreglarlo.
+ */
+function AvisoNoDisponibles({
+  items,
+  onQuitar,
+}: {
+  items: CarritoResuelto['noDisponibles'];
+  onQuitar: (variantId: number) => void;
+}) {
+  if (items.length === 0) return null;
+  return (
+    <div className="mb-6 rounded-tarjeta border border-magenta/40 bg-magenta/5 p-5">
+      <p className="text-[14px] font-bold text-magenta">
+        {items.length === 1 ? 'Un artículo ya no está disponible' : 'Algunos artículos ya no están disponibles'}
+      </p>
+      <p className="mt-1 text-[13px] text-cuerpo">Quítalos del carrito para poder pagar el resto.</p>
+      <ul className="mt-3 grid gap-2">
+        {items.map((i) => (
+          <li key={i.variantId} className="flex items-center justify-between gap-3 text-[13.5px]">
+            <span className="text-cuerpo">{i.nombre ?? 'Artículo ya no disponible'}</span>
+            <button
+              type="button"
+              onClick={() => onQuitar(i.variantId)}
+              className="shrink-0 rounded-boton border border-linea bg-white px-3 py-1.5 text-[12.5px] font-bold text-titular hover:border-magenta"
+            >
+              Quitar
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function ResumenCheckout() {
-  const { items, cargado } = useCarrito();
+  const { items, cargado, cambiarCantidad, quitar } = useCarrito();
   const [datos, setDatos] = useState<CarritoResuelto | null>(null);
   const [cargando, setCargando] = useState(true);
 
@@ -88,7 +129,7 @@ export function ResumenCheckout() {
 
   if (cargando) return <p className="text-[15px] text-gris">Cargando tu pedido…</p>;
 
-  if (!datos || datos.lineas.length === 0) {
+  if (!datos || (datos.lineas.length === 0 && datos.noDisponibles.length === 0)) {
     return (
       <div className="rounded-tarjeta border border-linea bg-panel p-8 text-center">
         <p className="text-[15px] text-gris">No tienes nada en el carrito.</p>
@@ -99,12 +140,28 @@ export function ResumenCheckout() {
     );
   }
 
+  // Carrito con solo artículos agotados: no hay nada que pagar todavía, pero
+  // sí hay algo que hacer — quitarlos —, así que no se manda directamente a
+  // "ver productos" sin darle salida.
+  if (datos.lineas.length === 0) {
+    return (
+      <div className="mx-auto max-w-[520px]">
+        <AvisoNoDisponibles items={datos.noDisponibles} onQuitar={quitar} />
+        <Link href="/tienda" className="text-[14px] font-bold text-titular">
+          ← Ver productos
+        </Link>
+      </div>
+    );
+  }
+
   const envio = tarifas?.find((t) => t.id === tarifaId) ?? null;
   const total = datos.subtotalCents + (envio?.precioCents ?? 0);
 
   return (
-    <div className="grid gap-8 min-[900px]:grid-cols-[1fr_360px] min-[900px]:items-start">
+    <div className="grid gap-8 min-[900px]:grid-cols-[1fr_400px] min-[900px]:items-start">
       <div className="rounded-tarjeta border border-linea bg-white p-6">
+        <AvisoNoDisponibles items={datos.noDisponibles} onQuitar={quitar} />
+
         <h2 className="text-[17px] font-extrabold text-titular">Tus datos</h2>
 
         <div className="mt-5 grid gap-4">
@@ -190,13 +247,45 @@ export function ResumenCheckout() {
 
         <ul className="mt-3 divide-y divide-linea">
           {datos.lineas.map((l) => (
-            <li key={l.variante.id} className="flex items-baseline justify-between gap-4 py-3">
-              <div className="min-w-0">
+            <li key={l.variante.id} className="flex gap-3 py-3">
+              <div className="relative h-[60px] w-[60px] shrink-0 overflow-hidden rounded-boton bg-fondo">
+                {l.variante.imagen && (
+                  <Image src={l.variante.imagen} alt="" fill sizes="60px" className="object-cover" />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
                 <p className="truncate text-[14.5px] font-bold text-titular">{l.productoNombre}</p>
-                <p className="text-[12.5px] text-gris">
-                  {l.variante.nombre !== l.productoNombre ? `${l.variante.nombre} · ` : ''}
-                  {l.cantidad} × {formatoPrecio(l.variante.precioCents)}
-                </p>
+                {l.variante.nombre !== l.productoNombre && (
+                  <p className="truncate text-[12.5px] text-gris">{l.variante.nombre}</p>
+                )}
+                <div className="mt-1.5 flex items-center gap-3">
+                  <div className="flex items-center gap-2 rounded-full border border-linea px-2 py-0.5">
+                    <button
+                      type="button"
+                      onClick={() => cambiarCantidad(l.variante.id, l.cantidad - 1)}
+                      aria-label={`Quitar una unidad de ${l.productoNombre}`}
+                      className="px-1 text-[15px] leading-none text-gris hover:text-titular"
+                    >
+                      −
+                    </button>
+                    <span className="min-w-[16px] text-center text-[12.5px] font-bold tabular-nums">{l.cantidad}</span>
+                    <button
+                      type="button"
+                      onClick={() => cambiarCantidad(l.variante.id, l.cantidad + 1)}
+                      aria-label={`Añadir una unidad de ${l.productoNombre}`}
+                      className="px-1 text-[15px] leading-none text-gris hover:text-titular"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => quitar(l.variante.id)}
+                    className="text-[12px] text-gris underline-offset-2 hover:underline"
+                  >
+                    Quitar
+                  </button>
+                </div>
               </div>
               <span className="shrink-0 text-[14.5px] font-bold text-titular tabular-nums">
                 {formatoPrecio(l.totalLineaCents)}
@@ -226,13 +315,15 @@ export function ResumenCheckout() {
         <button
           type="button"
           onClick={pagar}
-          disabled={!tarifaId || pagando}
+          disabled={!tarifaId || pagando || datos.noDisponibles.length > 0}
           className="mt-5 w-full rounded-boton bg-accion px-6 py-3.5 text-[15px] font-bold text-white shadow-boton transition-transform enabled:hover:-translate-y-0.5 disabled:opacity-50"
         >
           {pagando ? 'Abriendo el pago…' : 'Ir a pagar'}
         </button>
-        {!tarifaId && (
-          <p className="mt-2 text-center text-[12.5px] text-gris">Calcula el envío para poder pagar.</p>
+        {datos.noDisponibles.length > 0 ? (
+          <p className="mt-2 text-center text-[12.5px] text-magenta">Quita antes lo que ya no está disponible.</p>
+        ) : (
+          !tarifaId && <p className="mt-2 text-center text-[12.5px] text-gris">Calcula el envío para poder pagar.</p>
         )}
 
         <p className="mt-4 text-[12px] leading-[1.5] text-gris">

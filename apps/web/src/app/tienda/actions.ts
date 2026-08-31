@@ -23,11 +23,18 @@ export interface LineaCarrito {
   totalLineaCents: number;
 }
 
+/** Línea del carrito que ya no se puede comprar (agotada o borrada en Printful). */
+export interface LineaNoDisponible {
+  variantId: number;
+  /** Nombre si todavía existe en el catálogo (solo está agotada); `null` si ya no existe. */
+  nombre: string | null;
+}
+
 export interface CarritoResuelto {
   lineas: LineaCarrito[];
   subtotalCents: number;
   /** Variantes del carrito que ya no existen o están agotadas en Printful. */
-  noDisponibles: number[];
+  noDisponibles: LineaNoDisponible[];
 }
 
 export async function resolverCarritoAction(items: ItemCarrito[]): Promise<CarritoResuelto> {
@@ -51,12 +58,14 @@ export async function resolverCarritoAction(items: ItemCarrito[]): Promise<Carri
   }
 
   const lineas: LineaCarrito[] = [];
-  const noDisponibles: number[] = [];
+  const noDisponibles: LineaNoDisponible[] = [];
 
   for (const item of pedidos) {
     const encontrada = indice.get(item.variantId);
     if (!encontrada || !encontrada.variante.disponible) {
-      noDisponibles.push(item.variantId);
+      // Si sigue en el índice solo está agotada (se sabe su nombre); si no
+      // está, es que el producto o la variante ya no existen en Printful.
+      noDisponibles.push({ variantId: item.variantId, nombre: encontrada?.variante.nombre ?? null });
       continue;
     }
     lineas.push({

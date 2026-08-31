@@ -13,12 +13,13 @@ export const metadata: Metadata = metadatosPagina({
 export default function CheckoutPage() {
   return (
     <Contenedor as="section" className="py-14">
-      <div className="mx-auto max-w-[980px]">
-        <h1 className="text-[clamp(24px,3vw,34px)] font-extrabold leading-[1.15]">Tu pedido</h1>
-        <p className="mt-2 text-[15px] text-cuerpo">Repasa lo que te llevas, calcula el envío y paga.</p>
-        <div className="mt-8">
-          <ResumenCheckout />
-        </div>
+      {/* Sin envoltorio con max-w propio: `Contenedor` ya usa el mismo ancho
+          (`max-w-wrap`, 1400px) que la cabecera — un tope aparte aquí solo
+          la estrechaba respecto al resto de la web. */}
+      <h1 className="text-[clamp(24px,3vw,34px)] font-extrabold leading-[1.15]">Tu pedido</h1>
+      <p className="mt-2 text-[15px] text-cuerpo">Repasa lo que te llevas, calcula el envío y paga.</p>
+      <div className="mt-8">
+        <ResumenCheckout />
       </div>
     </Contenedor>
   );
