@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
-import { stripeCliente, stripeSecretKey } from '@/lib/stripe/config';
+import { stripeCliente, stripeSecretKey } from '@/lib/stripe/servidor';
 
 export interface ResultadoSuscripcion {
   ok: boolean;

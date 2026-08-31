@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { stripeCliente } from '@/lib/stripe/config';
+import { stripeCliente } from '@/lib/stripe/servidor';
 import { requireFinanzas } from '@/lib/afiliacion/acceso';
 import { filasModelo182, csvModelo182 } from '@/lib/afiliacion/modelo182';
 

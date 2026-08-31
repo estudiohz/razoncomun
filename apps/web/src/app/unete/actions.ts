@@ -3,12 +3,12 @@
 import { requireUsuario } from '@/lib/auth/niveles';
 import { registrarAuditoria } from '@/lib/admin/audit';
 import {
-  stripeCliente,
   priceIdCuota,
   planVerificadoDisponible,
   type Periodicidad,
   type PlanCuota,
 } from '@/lib/stripe/config';
+import { stripeCliente } from '@/lib/stripe/servidor';
 import { TEXTO_CONSENTIMIENTO_AFILIACION } from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF, normalizarNIF } from '@/lib/afiliacion/nif';

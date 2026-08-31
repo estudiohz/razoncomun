@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { stripeCliente, stripeSecretKey, stripeWebhookSecret } from '@/lib/stripe/config';
+import { stripeCliente, stripeSecretKey, stripeWebhookSecret } from '@/lib/stripe/servidor';
 import { yaProcesado, registrarEvento } from '@/lib/stripe/eventos';
 import { enviarCorreo } from '@/lib/email/enviar';
 import { correoBienvenida, correoImpago, correoRecuperado, correoBaja } from '@/lib/email/plantillas';
