@@ -52,6 +52,12 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith('/auth') ||
       pathname.startsWith('/recuperar') ||
       pathname.startsWith('/api/auth') ||
+      // Webhooks: NO se autentican con sesión sino con la firma de Stripe,
+      // que se verifica dentro de cada ruta. Ponerles el login delante no
+      // añadía seguridad — solo hacía imposible recibirlos en dev, que es
+      // justo donde hay que probarlos antes de tocar producción. Sin firma
+      // válida responden 400 igual que en producción.
+      pathname.startsWith('/api/stripe') ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { codificarLineas, decodificarLineas, verificarImporte } from './pedido';
+import { codificarLineas, decodificarLineas, hostDe, verificarImporte } from './pedido';
 
 describe('carrito en la metadata de Stripe', () => {
   it('va y vuelve sin perder nada', () => {
@@ -50,5 +50,22 @@ describe('verificarImporte — la puerta que impide fabricar sin cobrar', () => 
   it('cuenta el envío: cobrar solo el producto NO cuadra', () => {
     const v = verificarImporte({ subtotalCents: 2750, envioCents: 649, cobradoCents: 2750 });
     expect(v.ok).toBe(false);
+  });
+});
+
+describe('hostDe — la marca que impide que dev fabrique compras de producción', () => {
+  it('extrae el host de una URL completa', () => {
+    expect(hostDe('https://www.razoncomun.com')).toBe('www.razoncomun.com');
+    expect(hostDe('https://dev.razoncomun.com/')).toBe('dev.razoncomun.com');
+    expect(hostDe('http://localhost:3000')).toBe('localhost:3000');
+  });
+
+  it('dev y producción NO se confunden', () => {
+    expect(hostDe('https://dev.razoncomun.com')).not.toBe(hostDe('https://www.razoncomun.com'));
+  });
+
+  it('no revienta con basura', () => {
+    expect(hostDe('no-es-una-url')).toBe('no-es-una-url');
+    expect(hostDe('')).toBe('');
   });
 });

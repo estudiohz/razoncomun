@@ -25,6 +25,26 @@ export const META_TIPO = 'rc_tipo';
 export const TIPO_TIENDA = 'tienda';
 /** Portes en céntimos, tal y como se cobraron. */
 export const META_ENVIO = 'rc_envio_cents';
+/**
+ * Host de la web que creó la sesión.
+ *
+ * ⚠️ ESTO EVITA UN PEDIDO DUPLICADO REAL. Los endpoints de webhook son de la
+ * CUENTA de Stripe, no de una aplicación: si hay un endpoint apuntando a dev
+ * y otro a producción, una compra hecha en producción se entrega a LOS DOS.
+ * Sin esta marca, dev recibiría el evento de una compra real y crearía un
+ * segundo pedido en Printful — misma cuenta de Printful, mismo producto,
+ * impreso y enviado dos veces. Cada entorno solo cumple lo suyo.
+ */
+export const META_ORIGEN = 'rc_origen';
+
+/** Host desnudo de una URL ('https://dev.razoncomun.com/' -> 'dev.razoncomun.com'). */
+export function hostDe(url: string): string {
+  try {
+    return new URL(url).host.toLowerCase();
+  } catch {
+    return String(url ?? '').trim().toLowerCase();
+  }
+}
 
 /** Stripe limita cada valor de metadata a 500 caracteres. */
 const MAX_METADATA = 500;

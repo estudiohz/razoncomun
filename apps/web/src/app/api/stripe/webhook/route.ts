@@ -3,7 +3,8 @@ import Stripe from 'stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { stripeCliente, stripeSecretKey, stripeWebhookSecret } from '@/lib/stripe/servidor';
 import { cumplirPedidoTienda } from '@/lib/tienda/cumplir';
-import { META_TIPO, TIPO_TIENDA } from '@/lib/tienda/pedido';
+import { META_ORIGEN, META_TIPO, TIPO_TIENDA, hostDe } from '@/lib/tienda/pedido';
+import { urlSitio } from '@/lib/supabase/env';
 import { yaProcesado, registrarEvento } from '@/lib/stripe/eventos';
 import { enviarCorreo } from '@/lib/email/enviar';
 import { correoBienvenida, correoImpago, correoRecuperado, correoBaja } from '@/lib/email/plantillas';
@@ -237,6 +238,22 @@ export async function POST(request: Request) {
           tipo: event.type,
           action: 'stripe_checkout_no_es_tienda',
           meta: { session_id: sesionCruda.id },
+        });
+        break;
+      }
+
+      // Los endpoints de webhook son de la CUENTA de Stripe, no de una app:
+      // con un endpoint en dev y otro en producción, una compra en
+      // producción se entrega a los DOS. Sin esta comprobación, dev
+      // fabricaría un segundo pedido en Printful de una compra real.
+      const miHost = hostDe(urlSitio());
+      const origen = String(sesionCruda.metadata?.[META_ORIGEN] ?? '');
+      if (origen && origen !== miHost) {
+        await registrarEvento(admin, {
+          eventId: event.id,
+          tipo: event.type,
+          action: 'stripe_checkout_de_otro_entorno',
+          meta: { session_id: sesionCruda.id, origen, mi_host: miHost },
         });
         break;
       }

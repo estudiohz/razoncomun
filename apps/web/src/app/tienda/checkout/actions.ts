@@ -5,9 +5,11 @@ import { stripeCliente } from '@/lib/stripe/servidor';
 import {
   META_ENVIO,
   META_LINEAS,
+  META_ORIGEN,
   META_TIPO,
   TIPO_TIENDA,
   codificarLineas,
+  hostDe,
 } from '@/lib/tienda/pedido';
 import { calcularEnvio } from '@/lib/tienda/printful';
 import type { DestinoEnvio, ItemCarrito, TarifaEnvio } from '@/lib/tienda/tipos';
@@ -190,6 +192,8 @@ export async function crearSesionPagoAction(
           carrito.lineas.map((l) => ({ variantId: l.variante.id, cantidad: l.cantidad })),
         ),
         [META_ENVIO]: String(tarifa.precioCents),
+        // Qué entorno creó esta sesión: el webhook del OTRO la ignorará.
+        [META_ORIGEN]: hostDe(base),
       },
       success_url: `${base}/tienda/gracias?sesion={CHECKOUT_SESSION_ID}`,
       cancel_url: `${base}/tienda/checkout`,
