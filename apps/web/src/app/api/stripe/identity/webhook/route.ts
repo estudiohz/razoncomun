@@ -16,7 +16,9 @@ import { createAdminClient } from '@/lib/supabase/admin';
  */
 export async function POST(request: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
-  const webhookSecret = process.env.STRIPE_IDENTITY_WEBHOOK_SECRET;
+  // .trim(): ver la nota de lib/stripe/servidor.ts — un espacio al pegar en
+  // Dokploy convierte esto en un fallo silencioso de firma.
+  const webhookSecret = process.env.STRIPE_IDENTITY_WEBHOOK_SECRET?.trim();
 
   if (!secretKey || !webhookSecret) {
     return NextResponse.json({ error: 'Stripe Identity no configurado' }, { status: 501 });

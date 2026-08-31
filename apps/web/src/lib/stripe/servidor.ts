@@ -24,7 +24,11 @@ export async function stripeSecretKey(): Promise<string> {
   const guardada = await credencialActiva('stripe').catch(() => null);
   if (guardada?.secret) return guardada.secret;
 
-  const key = process.env.STRIPE_SECRET_KEY;
+  // `.trim()`: en Dokploy es fácil dejar un espacio tras el `=` al pegar
+  // ("STRIPE_WEBHOOK_SECRET= whsec_..."). Sin recortar, la variable pasa la
+  // comprobación de "está configurada" y luego falla TODA firma, que es un
+  // fallo mucho más caro de diagnosticar que uno vacío. Pasó el 31/08/2026.
+  const key = process.env.STRIPE_SECRET_KEY?.trim();
   if (!key) {
     throw new Error(
       'No hay clave de Stripe: ni credencial guardada en /admin/tienda/pagos ni STRIPE_SECRET_KEY ' +
@@ -38,7 +42,7 @@ export async function stripeWebhookSecret(): Promise<string> {
   const guardada = await credencialActiva('stripe').catch(() => null);
   if (guardada?.webhook_secret) return guardada.webhook_secret;
 
-  const key = process.env.STRIPE_WEBHOOK_SECRET;
+  const key = process.env.STRIPE_WEBHOOK_SECRET?.trim();
   if (!key) {
     throw new Error(
       'No hay secreto de webhook de Stripe: ni guardado en /admin/tienda/pagos ni ' +
