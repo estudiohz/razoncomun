@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 /**
- * CTA de afiliación del sidebar (.side-cta del boceto): tarjeta con el
+ * CTA de alta como socio del sidebar (.side-cta del boceto): tarjeta con el
  * degradado de marca y botón blanco. El degradado usa `bg-grad`, el token
  * de rc-04 — mismo `linear-gradient(120deg,#24AF9A,#8B30D9,#C3369E)` del boceto.
  */

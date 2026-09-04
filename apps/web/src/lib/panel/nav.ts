@@ -7,8 +7,8 @@ import type { GrupoNavPanel } from '@/components/panel/PanelNav';
  * nivel: lo que cambia dentro de cada una es el contenido, no el acceso. Es
  * deliberado (D-U3):
  *
- * - Afiliación la ve un `registered` porque es justo donde se da de alta; un
- *   `member` ve la gestión de su cuota. Ocultarla al no afiliado sería
+ * - Cuota la ve un `registered` porque es justo donde se da de alta; un
+ *   `member` ve la gestión de su cuota. Ocultarla al no socio sería
  *   esconderle la puerta de entrada.
  * - Propuestas la ve todo el mundo porque cualquier registrado puede crear y
  *   seguir hilos; votar es lo que exige nivel, y eso se resuelve dentro.
@@ -23,7 +23,7 @@ export const gruposPanelUsuario: GrupoNavPanel[] = [
       { href: '/panel', label: 'Inicio', exacto: true },
       { href: '/panel/perfil', label: 'Mi perfil' },
       { href: '/panel/propuestas', label: 'Mis propuestas' },
-      { href: '/panel/afiliacion', label: 'Afiliación' },
+      { href: '/panel/afiliacion', label: 'Cuota' },
     ],
   },
 ];

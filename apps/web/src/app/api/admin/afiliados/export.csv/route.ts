@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireFinanzas } from '@/lib/afiliacion/acceso';
 
-/** Export CSV del listado de afiliados — mismo filtro de acceso que el panel (admin/tesorero). */
+/** Export CSV del listado de socios — mismo filtro de acceso que el panel (admin/tesorero). */
 export async function GET() {
   const { supabase } = await requireFinanzas();
 
@@ -42,7 +42,7 @@ export async function GET() {
     status: 200,
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': 'attachment; filename="razon-comun-afiliados.csv"',
+      'Content-Disposition': 'attachment; filename="razon-comun-socios.csv"',
       'Cache-Control': 'private, no-store',
     },
   });

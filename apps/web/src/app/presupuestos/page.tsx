@@ -57,7 +57,7 @@ export default async function PresupuestosPage() {
         <section className="mx-auto mt-16 max-w-[760px]">
           <h2 className="text-[20px] font-extrabold text-titular">El Presupuesto de la Gente</h2>
           <p className="mt-1.5 text-[13.5px] text-gris">
-            Mediana agregada de todos los escenarios guardados, separando afiliados de público
+            Mediana agregada de todos los escenarios guardados, separando socios de público
             general.
           </p>
           <div className="mt-5 overflow-x-auto rounded-tarjeta border border-linea">
@@ -65,7 +65,7 @@ export default async function PresupuestosPage() {
               <thead className="bg-fondo text-[12px] uppercase tracking-[.04em] text-gris">
                 <tr>
                   <th className="px-4 py-2.5 font-bold">Ministerio</th>
-                  <th className="px-4 py-2.5 font-bold">Mediana afiliados</th>
+                  <th className="px-4 py-2.5 font-bold">Mediana socios</th>
                   <th className="px-4 py-2.5 font-bold">Mediana público</th>
                 </tr>
               </thead>

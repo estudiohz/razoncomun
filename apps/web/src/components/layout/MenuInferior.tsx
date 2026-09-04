@@ -14,7 +14,7 @@ import { LiquidTabBar, type ItemBarraLiquida } from '@/components/nav/LiquidTabB
  * - Propuestas: donde se participa a diario.
  * - El mes: la encuesta del mes (0040) — el centro, a lo que se llega en dos toques.
  * - Cambios: el bucle de retorno.
- * - Perfil: datos, contraseña, afiliación.
+ * - Perfil: datos, contraseña, cuota.
  *
  * No se monta en /admin (tiene su propio chrome) ni fuera del modo app. El
  * choque con el widget de chat no aplica: ChatSoloVisitantes ya lo oculta en

@@ -18,7 +18,7 @@ export const metadata: Metadata = metadatosPagina({
  * núcleo inmutable — el programa lo edita el equipo desde `/admin/manifiesto`
  * como si fueran noticias, PERO cada cambio queda versionado con historial
  * público (manifesto_point_versions) — sin eso se cae el relato de que el
- * programa lo cambian los afiliados.
+ * programa lo cambian los socios.
  *
  * Diseño deliberadamente sobrio aquí (rc-09): la pieza visual definitiva de
  * esta ruta es del sistema de diseño de rc-04/rc-05; esta versión ya no es

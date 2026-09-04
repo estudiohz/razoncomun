@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 /**
- * Envío de correo transaccional propio de afiliación (bienvenida, dunning,
+ * Envío de correo transaccional propio de socios (bienvenida, dunning,
  * encuesta de baja) — reutiliza el MISMO transporte que ya usa GoTrue para
  * los correos de auth (Brevo, 300/día, rc-03): mismas credenciales SMTP,
  * pero leídas bajo el namespace propio `RC_SMTP_*` para no acoplar este

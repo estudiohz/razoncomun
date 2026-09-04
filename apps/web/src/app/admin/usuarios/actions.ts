@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { registrarAuditoria } from '@/lib/admin/audit';
 import { enviarCorreo } from '@/lib/email/enviar';
 import { METADATA_ALTA } from '@/lib/auth/alta';
+import { darDeBajaCuenta, puedeBorrarseSinRastro } from '@/lib/auth/baja';
 
 const NIVELES_VALIDOS = ['registered', 'member', 'verified'] as const;
 
@@ -282,19 +283,30 @@ export async function revocarRolApp(formData: FormData) {
 export interface ResultadoEliminacion {
   ok: boolean;
   error?: string;
+  /** Qué se hizo de verdad: borrar la cuenta o darla de baja anonimizándola. */
+  accion?: 'borrada' | 'dada_de_baja';
+  /** Solo en la baja: true si se conservan NIF y espejo de Stripe por ley. */
+  retieneDatosFiscales?: boolean;
 }
 
 /**
- * Elimina una cuenta por completo (auth.users + profiles en cascada). SOLO
- * admin (no basta editor) y con doble confirmación en la UI. Límites:
- * - Un admin no puede eliminarse a sí mismo (se quedaría fuera a mitad de
- *   sesión y el partido podría quedarse sin admins).
- * - Si el usuario tiene contenido con FK sin `on delete` (votos en ballots,
- *   propuestas/artículos como autor, rastro en audit_log…), Postgres rechaza
- *   el borrado: se devuelve un mensaje claro en vez de un 500. Ese caso es
- *   una DECISIÓN pendiente (RGPD: anonimizar vs. borrar) — no se fuerza aquí.
+ * Da de baja una cuenta. Decisión de Sergio (04/09/2026): dar de baja es
+ * ANONIMIZAR — el perfil se vacía de datos personales pero la fila sobrevive,
+ * así que los votos que emitió esa persona siguen contando en las votaciones
+ * ya cerradas y sus comentarios siguen publicados, firmados como "Usuario dado
+ * de baja". El voto público pasa a ser anónimo: confirmado explícitamente.
+ *
+ * Excepción: una cuenta que no ha dejado NADA detrás (ni cuota, ni voto, ni
+ * propuesta, ni NIF, ni escenario) se borra de verdad. Son las cuentas de
+ * prueba y las altas que salieron mal y quieren repetirse — no tiene sentido
+ * dejarlas como fantasmas para siempre.
+ *
+ * SOLO admin (no basta editor) y con doble confirmación en la UI. Un admin no
+ * puede darse de baja a sí mismo: se quedaría fuera a mitad de sesión y el
+ * partido podría quedarse sin ningún admin.
  */
 export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEliminacion> {
+  const motivoBaja = 'Baja ejecutada desde el panel de administración.';
   const { user, supabase } = await requireAdmin('/admin/usuarios');
 
   if (!targetUserId) return { ok: false, error: 'Usuario no indicado.' };
@@ -305,30 +317,59 @@ export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEl
   const admin = createAdminClient();
   const { data: cuenta } = await admin.auth.admin.getUserById(targetUserId);
   if (!cuenta?.user) return { ok: false, error: 'Usuario no encontrado.' };
-  const email = cuenta.user.email ?? null;
 
-  const { error } = await admin.auth.admin.deleteUser(targetUserId);
-  if (error) {
-    const esFk = /foreign key|violates|constraint/i.test(error.message);
-    return {
-      ok: false,
-      error: esFk
-        ? 'No se puede eliminar: el usuario tiene actividad vinculada (votos, propuestas o artículos). ' +
-          'Borrarla rompería la trazabilidad — de momento, revoca sus roles y accesos en su lugar.'
-        : `No se pudo eliminar: ${error.message}`,
-    };
+  // Una cuenta que no ha dejado nada detrás se borra de verdad: son las de
+  // prueba y las altas que salieron mal y quieren repetirse. Cualquier otra
+  // se da de baja anonimizándola, porque borrar su fila arrastraría votos ya
+  // contados y comentarios publicados (0055).
+  const sinRastro = await puedeBorrarseSinRastro(admin, targetUserId);
+
+  if (sinRastro) {
+    const { error } = await admin.auth.admin.deleteUser(targetUserId);
+    if (error) {
+      // GoTrue no propaga el error de Postgres: envuelve cualquier fallo de
+      // base de datos en un "Database error deleting user" que no dice nada.
+      // Si aparece aquí es que algo referencia al perfil y el semáforo de
+      // arriba no lo contempla — se cae a la baja, que siempre funciona.
+      const baja = await darDeBajaCuenta(admin, targetUserId, motivoBaja);
+      if (!baja.ok) return { ok: false, error: baja.error };
+      await registrarAuditoria(supabase, {
+        actorId: user.id,
+        action: 'user_anonymized',
+        entity: 'profiles',
+        entityId: targetUserId,
+        meta: { motivo: motivoBaja, fallback_de_borrado: error.message },
+      });
+      revalidatePath('/admin/usuarios');
+      return { ok: true, accion: 'dada_de_baja', retieneDatosFiscales: baja.retieneDatosFiscales };
+    }
+
+    // Sin `meta.email`: el asiento sobrevive a la persona y no tiene sentido
+    // que la siga identificando justo cuando se ha ido.
+    await registrarAuditoria(supabase, {
+      actorId: user.id,
+      action: 'user_deleted',
+      entity: 'auth.users',
+      entityId: targetUserId,
+      meta: { motivo: motivoBaja, sin_rastro: true },
+    });
+    revalidatePath('/admin/usuarios');
+    return { ok: true, accion: 'borrada' };
   }
+
+  const baja = await darDeBajaCuenta(admin, targetUserId, motivoBaja);
+  if (!baja.ok) return { ok: false, error: baja.error };
 
   await registrarAuditoria(supabase, {
     actorId: user.id,
-    action: 'user_deleted',
-    entity: 'auth.users',
+    action: 'user_anonymized',
+    entity: 'profiles',
     entityId: targetUserId,
-    meta: { email },
+    meta: { motivo: motivoBaja, retiene_datos_fiscales: baja.retieneDatosFiscales },
   });
 
   revalidatePath('/admin/usuarios');
-  return { ok: true };
+  return { ok: true, accion: 'dada_de_baja', retieneDatosFiscales: baja.retieneDatosFiscales };
 }
 
 /**

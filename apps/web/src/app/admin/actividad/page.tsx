@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/Input';
 
 /**
  * Lectura del `audit_log` (I6, revision-seguridad.md) con filtros. Tabla
- * compartida por TODOS los agentes (blog, participación, afiliación...) —
+ * compartida por TODOS los agentes (blog, participación, socios...) —
  * por eso los filtros de entidad/acción son dinámicos (se listan los
  * valores que de verdad existen) en vez de una lista fija solo con las
  * acciones que escribe este panel.

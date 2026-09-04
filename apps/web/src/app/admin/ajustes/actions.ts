@@ -239,7 +239,7 @@ export async function eliminarProveedorIA(formData: FormData) {
 }
 
 /**
- * Antigüedad mínima de afiliación exigida para voto vinculante (D-017/D-018,
+ * Antigüedad mínima como socio exigida para voto vinculante (D-017/D-018,
  * 0019_antiguedad_configurable.sql — migración de rc-02, no se toca aquí).
  * `settings.min_membership_days` es SOLO el valor por defecto para
  * votaciones NUEVAS: la fila de `votes` se sella con el valor vigente en el

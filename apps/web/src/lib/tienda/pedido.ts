@@ -20,7 +20,7 @@
 
 /** Clave de metadata con el carrito. */
 export const META_LINEAS = 'rc_lineas';
-/** Clave de metadata que marca la sesión como de la tienda (no afiliación). */
+/** Clave de metadata que marca la sesión como de la tienda (no cuota de socio). */
 export const META_TIPO = 'rc_tipo';
 export const TIPO_TIENDA = 'tienda';
 /** Portes en céntimos, tal y como se cobraron. */

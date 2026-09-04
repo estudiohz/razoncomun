@@ -47,7 +47,7 @@ export default async function AdminInicioPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Tarjeta className="p-5">
-          <p className="text-[12px] font-bold uppercase tracking-wide text-gris">Afiliados activos</p>
+          <p className="text-[12px] font-bold uppercase tracking-wide text-gris">Socios activos</p>
           <p className="mt-2 text-[32px] font-extrabold text-titular">{afiliadosActivos ?? 0}</p>
         </Tarjeta>
         {Object.entries(NOMBRE_ESTADO)

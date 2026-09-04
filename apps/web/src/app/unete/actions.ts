@@ -14,7 +14,7 @@ import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF, normalizarNIF } from '@/lib/afiliacion/nif';
 
 /**
- * Alta de afiliado NATIVA (rc-07, encargo del orquestador): sin salir de la
+ * Alta de socio NATIVA (rc-07, encargo del orquestador): sin salir de la
  * web (a diferencia del Checkout hospedado que sustituye esta versión).
  * Reusa la base de la Ola 3 — mismo `stripeCliente()`/`priceIdCuota()` de
  * `lib/stripe/config.ts`, mismo webhook (`/api/stripe/webhook`) y misma
@@ -103,7 +103,7 @@ export async function iniciarDomiciliacion(input: {
   // SEPA. Se reutiliza literalmente TEXTO_CONSENTIMIENTO de rc-03 (mismo
   // texto que ya se muestra en /registro/consentimiento) para que quede
   // sellado también en el momento exacto en que la persona pasa a ser
-  // afiliada de cuota — el hecho que activa de verdad el tratamiento de
+  // socia de cuota — el hecho que activa de verdad el tratamiento de
   // categoría especial y la aparición en el censo de votaciones.
   await registrarAuditoria(supabase, {
     actorId: user.id,

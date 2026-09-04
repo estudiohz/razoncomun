@@ -38,7 +38,7 @@ export default async function AfiliadoDetallePage({ params }: { params: Promise<
       </Link>
 
       <div>
-        <h1 className="text-[24px] font-extrabold">{perfil?.display_name ?? 'Afiliado'}</h1>
+        <h1 className="text-[24px] font-extrabold">{perfil?.display_name ?? 'Socio'}</h1>
         <p className="mt-1 text-[13.5px] text-gris">{perfil?.email}</p>
       </div>
 
@@ -49,7 +49,7 @@ export default async function AfiliadoDetallePage({ params }: { params: Promise<
           ['Cuota', euros(miembro.amount_cents)],
           ['Método de pago', miembro.payment_method],
           ['Mandato SEPA', miembro.sepa_mandate_id ?? 'sin registrar'],
-          ['Afiliado desde', fecha(miembro.started_at)],
+          ['Socio desde', fecha(miembro.started_at)],
           ['Baja', fecha(miembro.canceled_at)],
           ['Stripe customer', miembro.stripe_customer_id ?? '—'],
           ['Stripe subscription', miembro.stripe_subscription_id ?? '—'],
@@ -65,7 +65,7 @@ export default async function AfiliadoDetallePage({ params }: { params: Promise<
         <p className="font-bold text-titular">Solo lectura</p>
         <p className="mt-1">
           Este panel espeja Stripe vía webhook. Para gestionar cobros, reembolsos o cambiar el método
-          de pago de este afiliado, hazlo desde el{' '}
+          de pago de este socio, hazlo desde el{' '}
           <a
             href={`https://dashboard.stripe.com/test/customers/${miembro.stripe_customer_id}`}
             target="_blank"

@@ -1,5 +1,5 @@
 /**
- * Plantillas de correo transaccional de afiliación. Tono de marca: directo,
+ * Plantillas de correo transaccional de socios. Tono de marca: directo,
  * sin rodeos, empoderador (CLAUDE.md raíz). HTML tabla-based (compatible
  * Outlook), texto plano siempre incluido.
  *
@@ -66,7 +66,7 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
         </tr>
         <tr>
           <td class="rc-px" style="padding:20px 40px 0;font-family:Montserrat,'Segoe UI',Arial,Helvetica,sans-serif;">
-            <p style="margin:0;font-size:12px;line-height:1.6;color:#5A6780;">Razón Común — partido político inscrito en el Registro del Ministerio del Interior. Este correo es transaccional (afiliación), no publicitario.</p>
+            <p style="margin:0;font-size:12px;line-height:1.6;color:#5A6780;">Razón Común — partido político inscrito en el Registro del Ministerio del Interior. Este correo es transaccional (cuota de socio), no publicitario.</p>
           </td>
         </tr>
       </table>
@@ -77,14 +77,14 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
 }
 
 export function correoBienvenida(opts: { nombre: string | null; periodo: 'monthly' | 'annual'; amountCents: number }) {
-  const nombre = opts.nombre?.trim() || 'afiliado/a';
+  const nombre = opts.nombre?.trim() || 'socio/a';
   const periodoTexto = opts.periodo === 'monthly' ? 'mensual' : 'anual';
-  const asunto = 'Bienvenido/a a Razón Común — ya eres afiliado/a';
-  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha activado: eres afiliado/a de Razón Común con una cuota ${periodoTexto} de ${formatearCents(opts.amountCents)}.\n\nA partir de ahora puedes:\n- Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).\n- Proponer y debatir en el programa vivo.\n- Auditar en /cuentas cada euro que gestiona el partido.\n\nGestiona tu cuota, cambia de periodicidad o date de baja cuando quieras desde tu perfil.\n\nGracias por sostener con tu cuota una política basada en datos.\n\n— Razón Común`;
+  const asunto = 'Bienvenido/a a Razón Común — ya eres socio/a';
+  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha activado: eres socio/a de Razón Común con una cuota ${periodoTexto} de ${formatearCents(opts.amountCents)}.\n\nA partir de ahora puedes:\n- Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).\n- Proponer y debatir en el programa vivo.\n- Auditar en /cuentas cada euro que gestiona el partido.\n\nGestiona tu cuota, cambia de periodicidad o date de baja cuando quieras desde tu perfil.\n\nGracias por sostener con tu cuota una política basada en datos.\n\n— Razón Común`;
   const html = envoltorio(
     'Bienvenido/a',
-    `Ya eres afiliado/a, ${nombre}`,
-    `<p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#232A3B;">Tu domiciliación SEPA se ha activado: eres <strong>afiliado/a de Razón Común</strong> con una cuota <strong>${periodoTexto}</strong> de <strong>${formatearCents(opts.amountCents)}</strong>.</p>
+    `Ya eres socio/a, ${nombre}`,
+    `<p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#232A3B;">Tu domiciliación SEPA se ha activado: eres <strong>socio/a de Razón Común</strong> con una cuota <strong>${periodoTexto}</strong> de <strong>${formatearCents(opts.amountCents)}</strong>.</p>
     <p style="margin:0 0 8px;font-size:15px;color:#232A3B;">A partir de ahora puedes:</p>
     <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:1.7;color:#232A3B;">
       <li>Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).</li>
@@ -103,13 +103,13 @@ export function correoBienvenida(opts: { nombre: string | null; periodo: 'monthl
  * amenazante — vision-plataforma.md pide "emails amables".
  */
 export function correoImpago(opts: { nombre: string | null; intento: number; amountCents: number }) {
-  const nombre = opts.nombre?.trim() || 'afiliado/a';
+  const nombre = opts.nombre?.trim() || 'socio/a';
   const esUltimo = opts.intento >= 3;
   const asunto = esUltimo
     ? 'No hemos podido cobrar tu cuota — última notificación'
     : 'No hemos podido cobrar tu cuota de Razón Común';
   const cuerpo = esUltimo
-    ? `Hola ${nombre},\n\nEs el tercer intento y seguimos sin poder cobrar tu domiciliación SEPA de ${formatearCents(opts.amountCents)}. Si no se regulariza, tu afiliación pasará a estado inactivo y perderás el derecho a voto hasta que la reactives.\n\nRevisa tu método de pago desde tu perfil (Customer Portal de Stripe) — no hace falta que hagas nada más, Stripe reintentará automáticamente.\n\nSi ha sido un error de nuestra parte o quieres darte de baja, contesta a este correo, una persona del equipo te atenderá.\n\n— Razón Común`
+    ? `Hola ${nombre},\n\nEs el tercer intento y seguimos sin poder cobrar tu domiciliación SEPA de ${formatearCents(opts.amountCents)}. Si no se regulariza, dejarás de constar como socio activo y perderás el derecho a voto hasta que lo reactives.\n\nRevisa tu método de pago desde tu perfil (Customer Portal de Stripe) — no hace falta que hagas nada más, Stripe reintentará automáticamente.\n\nSi ha sido un error de nuestra parte o quieres darte de baja, contesta a este correo, una persona del equipo te atenderá.\n\n— Razón Común`
     : `Hola ${nombre},\n\nHemos intentado cobrar tu cuota de ${formatearCents(opts.amountCents)} por domiciliación SEPA y el banco la ha devuelto. No pasa nada: Stripe reintentará automáticamente en los próximos días.\n\nSi crees que es un error (IBAN caducado, fondos insuficientes puntuales...), puedes revisar tu método de pago desde tu perfil.\n\n— Razón Común`;
   const html = envoltorio(
     esUltimo ? 'Última notificación' : 'Aviso de cobro',
@@ -120,20 +120,20 @@ export function correoImpago(opts: { nombre: string | null; intento: number; amo
 }
 
 export function correoRecuperado(opts: { nombre: string | null }) {
-  const nombre = opts.nombre?.trim() || 'afiliado/a';
+  const nombre = opts.nombre?.trim() || 'socio/a';
   const asunto = 'Todo en orden — tu cuota se ha cobrado';
-  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha cobrado correctamente y tu afiliación vuelve a estar activa. Gracias por regularizarlo.\n\n— Razón Común`;
+  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha cobrado correctamente y vuelves a estar al corriente como socio. Gracias por regularizarlo.\n\n— Razón Común`;
   const html = envoltorio(
     'Al día',
     'Todo en orden',
-    `<p style="margin:0;font-size:15px;line-height:1.7;color:#232A3B;">Tu domiciliación SEPA se ha cobrado correctamente y tu afiliación vuelve a estar activa. Gracias por regularizarlo.</p>`,
+    `<p style="margin:0;font-size:15px;line-height:1.7;color:#232A3B;">Tu domiciliación SEPA se ha cobrado correctamente y vuelves a estar al corriente como socio. Gracias por regularizarlo.</p>`,
   );
   return { asunto, html, texto };
 }
 
 /** Encuesta de baja de una pregunta (vision-plataforma.md, Pilar 2 punto 4). */
 export function correoBaja(opts: { nombre: string | null; urlEncuesta: string }) {
-  const nombre = opts.nombre?.trim() || 'afiliado/a';
+  const nombre = opts.nombre?.trim() || 'socio/a';
   const asunto = 'Antes de irte, una pregunta (30 segundos)';
   const texto = `Hola ${nombre},\n\nSentimos que te vayas. Si tienes 30 segundos, cuéntanos por qué en una sola pregunta: ${opts.urlEncuesta}\n\nEs el dato que más nos ayuda a mejorar. Y si algún día cambias de opinión, la puerta sigue abierta.\n\n— Razón Común`;
   const html = envoltorio(

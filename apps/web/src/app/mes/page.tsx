@@ -31,7 +31,7 @@ const MESES = [
 /**
  * El centro de la app (E1-E3, 02/08/2026). Si el mes tiene encuesta (0041),
  * ella lidera: reproductor con guardado por toque para quien puede responder,
- * resultados segmentados afiliados/simpatizantes cuando la visibilidad lo
+ * resultados segmentados socios/simpatizantes cuando la visibilidad lo
  * permite, y un aterrizaje de registro para el anónimo (la RLS ya le oculta
  * la encuesta; aquí se le cuenta qué se pierde). Las propuestas fijadas del
  * mes (0040) quedan como sección secundaria.
@@ -117,8 +117,8 @@ export default async function MesPage({
               : 'Resultados en directo'}
         </h2>
         <p className="mt-1 text-[13px] text-gris">
-          El voto de los simpatizantes se publica junto al de los afiliados — así lo dice nuestro
-          ideario. Afiliados en teal, simpatizantes en gris.
+          El voto de los simpatizantes se publica junto al de los socios — así lo dice nuestro
+          ideario. Socios en teal, simpatizantes en gris.
           {encuesta.abierta && completada && ' El marcador puede seguir moviéndose hasta el cierre.'}
         </p>
         <div className="mt-4 space-y-5">
@@ -208,7 +208,7 @@ export default async function MesPage({
               <p className="mx-auto mt-2 max-w-[46ch] text-[14px] text-cuerpo">
                 Cada pregunta nace de una propuesta ciudadana debatida y votada. Crea una cuenta
                 gratuita con tu email y tu opinión queda contada — se publica junto a la de los
-                afiliados.
+                socios.
               </p>
               <Link
                 href={`/registro?next=${encodeURIComponent('/mes')}`}
@@ -293,7 +293,7 @@ export default async function MesPage({
  * - TODAS las opciones de la pregunta aparecen, también las de 0% — el
  *   agregado solo trae lo votado, así que se parte de `pregunta.options` y se
  *   mezcla (una opción con 0 votos que desaparece parece un error, no un 0).
- * - La segmentación afiliados/simpatizantes se conserva DENTRO de la barra
+ * - La segmentación socios/simpatizantes se conserva DENTRO de la barra
  *   (teal/gris proporcional) y en el detalle pequeño; el % es del total.
  *
  * Server component, sin JS. `miRespuesta` chip "Tu respuesta" (vista de solo
@@ -358,7 +358,7 @@ function ResultadoPregunta({
                 )}
               </div>
               <p className="mt-0.5 text-[11.5px] text-gris">
-                {total} voto{total === 1 ? '' : 's'} · {afiliados} afil. / {simpatizantes} simp.
+                {total} voto{total === 1 ? '' : 's'} · {afiliados} soc. / {simpatizantes} simp.
               </p>
             </div>
           );

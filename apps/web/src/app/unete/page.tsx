@@ -26,7 +26,7 @@ export const metadata: Metadata = metadatosPagina({
  * literales —nada de plantillas `bg-${x}`— porque Tailwind solo compila lo
  * que puede ver escrito.
  *
- * Nomenclatura: "socio", no "afiliado" (Sergio, 10/08/2026). El valor de
+ * Nomenclatura: "socio", no "socio" (Sergio, 10/08/2026). El valor de
  * `activo` sigue siendo el del ENUM de la BD (`member`, `verified`), que no
  * se toca — es solo la etiqueta visible la que cambia.
  *

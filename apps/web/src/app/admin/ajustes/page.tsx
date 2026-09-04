@@ -15,7 +15,7 @@ const DIAS_OPCIONES = [0, 1, 3, 5, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270,
  *
  * 1. Proveedor de IA activo (D-016) — gestión de las API keys que usa
  *    RC-Brain. La clave completa NUNCA llega a este componente.
- * 2. Antigüedad mínima de afiliación para voto vinculante (D-017/D-018) —
+ * 2. Antigüedad mínima como socio para voto vinculante (D-017/D-018) —
  *    valor por defecto para votaciones NUEVAS; las ya creadas quedan
  *    seladas y no se ven afectadas por ningún cambio de aquí en adelante.
  *
@@ -172,14 +172,14 @@ export default async function AjustesPage() {
           admin puede tocarlo en una votación ya abierta: la base de datos lo rechaza directamente
           (<code>P0001</code>, &quot;queda sellado al crear la votación&quot;). Esto evita que un cambio,
           bienintencionado o no, invalide una votación reñida en curso al habilitar de golpe a
-          afiliados muy recientes. Poner el valor en <strong>0 días</strong> desactiva por completo la
-          protección frente a afiliación oportunista de última hora — solo para votaciones futuras.
+          socios muy recientes. Poner el valor en <strong>0 días</strong> desactiva por completo la
+          protección frente a altas oportunistas de última hora — solo para votaciones futuras.
         </p>
       </Tarjeta>
 
       <Tarjeta className="p-5">
         <h3 className="text-[13px] font-bold uppercase tracking-wide text-titular">
-          Antigüedad mínima de afiliación (voto vinculante)
+          Antigüedad mínima como socio (voto vinculante)
         </h3>
         <p className="mt-2 text-[13.5px] text-cuerpo">
           Valor actual por defecto: <strong>{diasActuales} días</strong>

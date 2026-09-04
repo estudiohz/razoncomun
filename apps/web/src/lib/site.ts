@@ -85,7 +85,7 @@ export const navFooter = [
   // pero no es una puerta de entrada — ocupaba sitio en la nav a costa de
   // lo que si capta. La pagina sigue viva y en el sitemap.
   { label: 'Cuentas', href: '/cuentas' },
-  // "Únete" y ruta /unete (Sergio, 10/08/2026): la página de afiliación pasa a
+  // "Únete" y ruta /unete (Sergio, 10/08/2026): la página de alta como socio pasa a
   // llamarse así en toda la web. /afiliate sigue vivo como redirección
   // permanente (next.config.mjs) para no romper enlaces ya publicados.
   { label: 'Únete', href: '/unete' },

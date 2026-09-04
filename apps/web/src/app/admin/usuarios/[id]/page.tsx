@@ -8,8 +8,8 @@ import { formatearNumeroAfiliado } from '@/lib/afiliacion/numero';
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
-  member: 'Afiliado',
-  verified: 'Afiliado verificado',
+  member: 'Socio',
+  verified: 'Socio verificado',
 };
 
 const NOMBRE_CARGO: Record<string, string> = {
@@ -49,7 +49,7 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
   );
   const rolesDisponibles = (catalogoRoles ?? []).filter((r) => !clavesAsignadas.has(r.key));
 
-  // La afiliación vigente es la fila más reciente que NO sea una baja: incluye
+  // La condición de socio vigente es la fila más reciente que NO sea una baja: incluye
   // 'paused' y 'past_due', que siguen siendo relaciones vivas con el partido y
   // sobre las que tiene sentido actuar (reanudar, reclamar el recibo).
   const afiliacionVigente = (miembros ?? []).find((m) => m.status !== 'canceled');
@@ -73,7 +73,7 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
           <p className="mt-1 text-[12.5px] text-gris">Provincia de origen: {provinciaNombre}</p>
           {perfil.member_since && (
             <p className="text-[12.5px] text-gris">
-              Afiliado desde {new Date(perfil.member_since).toLocaleDateString('es-ES')}
+              Socio desde {new Date(perfil.member_since).toLocaleDateString('es-ES')}
             </p>
           )}
           {perfil.identity_verified_at && (
@@ -87,8 +87,8 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
             <label className="block text-[12px] font-bold text-gris">Cambiar nivel manualmente</label>
             <select name="nivel" defaultValue={perfil.level} className="w-full rounded-boton border border-linea px-3 py-2 text-[13.5px]">
               <option value="registered">Registrado</option>
-              <option value="member">Afiliado</option>
-              <option value="verified">Afiliado verificado</option>
+              <option value="member">Socio</option>
+              <option value="verified">Socio verificado</option>
             </select>
             <textarea
               name="motivo"
@@ -146,19 +146,19 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
           )}
         </Tarjeta>
 
-        {/* EJE 3: Afiliación */}
+        {/* EJE 3: Socio */}
         <Tarjeta className="p-5">
-          <h2 className="text-[13px] font-bold uppercase tracking-wide text-titular">Afiliación</h2>
+          <h2 className="text-[13px] font-bold uppercase tracking-wide text-titular">Socio</h2>
           {perfil.member_number ? (
             <p className="mt-2 text-[13.5px]">
-              <span className="text-gris">Nº de afiliado: </span>
+              <span className="text-gris">Nº de socio: </span>
               <span className="font-bold tabular-nums text-titular">
                 {formatearNumeroAfiliado(perfil.member_number)}
               </span>
             </p>
           ) : (
             <p className="mt-2 text-[12.5px] text-gris">
-              Sin número de afiliado: se asigna con el primer cobro.
+              Sin número de socio: se asigna con el primer cobro.
             </p>
           )}
 
@@ -182,7 +182,7 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
               )}
             </div>
           ) : (
-            <p className="mt-2 text-[13px] text-gris">Sin afiliación activa.</p>
+            <p className="mt-2 text-[13px] text-gris">No es socio.</p>
           )}
           <p className="mt-2 text-[12px] text-gris">
             Newsletter: {perfil.newsletter_opt_in ? 'suscrito' : 'no suscrito'}

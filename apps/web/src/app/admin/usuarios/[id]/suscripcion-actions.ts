@@ -11,7 +11,7 @@ export interface ResultadoSuscripcion {
 }
 
 /**
- * Acciones sobre la suscripción de un afiliado, sin salir del panel.
+ * Acciones sobre la suscripción de un socio, sin salir del panel.
  *
  * Reglas que valen para las tres:
  *  - Solo **admin** (no editor ni tesorero): tocan el cobro de una persona.
@@ -79,7 +79,7 @@ export async function pausarCuotaAction(userId: string): Promise<ResultadoSuscri
     await auditar(supabase, actorId, 'member_subscription_pause', userId, { subscription_id: s.subId });
     revalidatePath(`/admin/usuarios/${userId}`);
     revalidatePath('/admin/usuarios');
-    return { ok: true, mensaje: 'Cuota pausada. Conserva su condición de afiliado.' };
+    return { ok: true, mensaje: 'Cuota pausada. Conserva su condición de socio.' };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido pausar la cuota.' };
   }
@@ -124,7 +124,7 @@ export async function cancelarCuotaAction(userId: string): Promise<ResultadoSusc
     revalidatePath('/admin/usuarios');
     return {
       ok: true,
-      mensaje: 'La cuota se cancelará al terminar el periodo ya pagado. Hasta entonces sigue siendo afiliado.',
+      mensaje: 'La cuota se cancelará al terminar el periodo ya pagado. Hasta entonces sigue siendo socio.',
     };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido cancelar la cuota.' };

@@ -7,8 +7,8 @@ import { formatearNumeroAfiliado, numeroDesdeBusqueda } from '@/lib/afiliacion/n
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
-  member: 'Afiliado',
-  verified: 'Afiliado verificado',
+  member: 'Socio',
+  verified: 'Socio verificado',
 };
 
 const CARGOS = [
@@ -23,7 +23,7 @@ const CARGOS = [
 const ESTADO_AFILIACION: Record<string, { label: string; clase: string }> = {
   active: { label: 'Al corriente', clase: 'bg-teal/15 text-titular' },
   past_due: { label: 'Impagada', clase: 'bg-magenta/15 text-magenta' },
-  // Pausada conserva los derechos de afiliado (0037): se distingue de la baja
+  // Pausada conserva los derechos de socio (0037): se distingue de la baja
   // a propósito, porque no es lo mismo para quien mira la lista.
   paused: { label: 'Pausada', clase: 'bg-cat-educacion/20 text-titular' },
   canceled: { label: 'Baja', clase: 'bg-fondo text-gris' },
@@ -36,11 +36,11 @@ function euros(cents: number | null): string {
 
 /**
  * Lista única de personas (T1). Antes había dos secciones —"Usuarios" leyendo
- * `profiles` y "Afiliados" leyendo `members`— y parecían dos poblaciones
- * distintas. No lo son: un afiliado es un usuario que además tiene una fila de
- * afiliación. La separación era por tabla, no por concepto, y confundía.
+ * `profiles` y "Socios" leyendo `members`— y parecían dos poblaciones
+ * distintas. No lo son: un socio es un usuario que además tiene una fila de
+ * cuota. La separación era por tabla, no por concepto, y confundía.
  *
- * Aquí se ven TODOS, con la afiliación como una columna y un filtro más. La
+ * Aquí se ven TODOS, con la condición de socio como una columna y un filtro más. La
  * gestión del dinero (cuotas cobradas, importaciones del banco, cuentas
  * públicas) NO está aquí: vive en /admin/tesoreria.
  */
@@ -119,7 +119,7 @@ export default async function UsuariosPage({
     ? (perfiles ?? []).filter((p) => cargosPorUsuario.get(p.id)?.includes(cargo))
     : perfiles ?? [];
 
-  // El filtro de afiliación se aplica aquí y no en la consulta porque la
+  // El filtro de socio se aplica aquí y no en la consulta porque la
   // situación de cada usuario es "su fila de members más reciente", y eso no
   // se expresa con un .eq() sobre el join.
   if (afiliacion) {
@@ -136,7 +136,7 @@ export default async function UsuariosPage({
         <div>
           <h1 className="text-[24px] font-extrabold">Usuarios</h1>
           <p className="mt-1 text-[13.5px] text-gris">
-            Todas las personas registradas. Un afiliado es un usuario con cuota activa: se filtra aquí, no es una lista aparte. El dinero está en Tesorería.
+            Todas las personas registradas. Un socio es un usuario con cuota activa: se filtra aquí, no es una lista aparte. El dinero está en Tesorería.
           </p>
         </div>
         <Link
@@ -151,15 +151,15 @@ export default async function UsuariosPage({
         <form className="flex flex-wrap items-end gap-3" method="get">
           <div className="min-w-[200px] flex-1">
             <label className="mb-1 block text-[12px] font-bold text-gris">Buscar</label>
-            <Input name="q" defaultValue={q ?? ''} placeholder="Nombre, email o nº de usuario/afiliado" />
+            <Input name="q" defaultValue={q ?? ''} placeholder="Nombre, email o nº de usuario/socio" />
           </div>
           <div>
             <label className="mb-1 block text-[12px] font-bold text-gris">Nivel</label>
             <select name="nivel" defaultValue={nivel ?? ''} className="rounded-boton border border-linea px-3 py-3 text-[14px]">
               <option value="">Todos</option>
               <option value="registered">Registrado</option>
-              <option value="member">Afiliado</option>
-              <option value="verified">Afiliado verificado</option>
+              <option value="member">Socio</option>
+              <option value="verified">Socio verificado</option>
             </select>
           </div>
           <div>
@@ -174,7 +174,7 @@ export default async function UsuariosPage({
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-[12px] font-bold text-gris">Afiliación</label>
+            <label className="mb-1 block text-[12px] font-bold text-gris">Socio</label>
             <select
               name="afiliacion"
               defaultValue={afiliacion ?? ''}
@@ -185,7 +185,7 @@ export default async function UsuariosPage({
               <option value="past_due">Impagada</option>
               <option value="paused">Pausada</option>
               <option value="canceled">De baja</option>
-              <option value="ninguna">Sin afiliación</option>
+              <option value="ninguna">No es socio</option>
             </select>
           </div>
           <div>
@@ -222,7 +222,7 @@ export default async function UsuariosPage({
               <th className="px-4 py-3">Nº</th>
               <th className="px-4 py-3">Usuario</th>
               <th className="px-4 py-3">Nivel</th>
-              <th className="px-4 py-3">Afiliación</th>
+              <th className="px-4 py-3">Socio</th>
               <th className="px-4 py-3">Provincia</th>
               <th className="px-4 py-3">Cargo vigente</th>
               <th className="px-4 py-3" />
@@ -235,7 +235,7 @@ export default async function UsuariosPage({
                   {p.member_number ? (
                     <p
                       className="font-bold tabular-nums text-titular"
-                      title="Número de afiliado"
+                      title="Número de socio"
                     >
                       {formatearNumeroAfiliado(p.member_number)}
                     </p>
@@ -258,7 +258,7 @@ export default async function UsuariosPage({
                 <td className="px-4 py-3">
                   {(() => {
                     const a = afiliacionPorUsuario.get(p.id);
-                    if (!a) return <span className="text-[12.5px] text-gris">Sin afiliación</span>;
+                    if (!a) return <span className="text-[12.5px] text-gris">No es socio</span>;
                     const e = ESTADO_AFILIACION[a.status] ?? {
                       label: a.status,
                       clase: 'bg-fondo text-gris',

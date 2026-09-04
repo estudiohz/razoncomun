@@ -18,8 +18,8 @@ export const metadata: Metadata = metadatosPagina({
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
-  member: 'Afiliado',
-  verified: 'Afiliado verificado',
+  member: 'Socio',
+  verified: 'Socio verificado',
 };
 
 /**
@@ -29,7 +29,7 @@ const NOMBRE_NIVEL: Record<string, string> = {
  * para que no vivan colgando de una ruta que ya solo redirige.
  *
  * Lo que ANTES estaba aquí y ahora vive en otras secciones del panel:
- * afiliación y certificados → /panel/afiliacion; "Mis votos" → /panel/propuestas.
+ * cuota y certificados → /panel/afiliacion; "Mis votos" → /panel/propuestas.
  */
 export default async function PanelPerfilPage() {
   const { user, perfil, supabase } = await requireUsuario('/panel/perfil');
@@ -67,9 +67,9 @@ export default async function PanelPerfilPage() {
         <div id="verificacion" className="mt-4 scroll-mt-24 space-y-3 text-[13.5px] text-cuerpo">
           {perfil.level === 'registered' && (
             <p>
-              Hazte afiliado para votar en las propuestas de departamento.{' '}
+              Hazte socio para votar en las propuestas de departamento.{' '}
               <a href="/panel/afiliacion" className="font-semibold text-titular underline">
-                Ver cómo afiliarte
+                Ver cómo hacerte socio
               </a>
               .
             </p>

@@ -9,7 +9,7 @@ import { Contenedor } from './Contenedor';
  * El destino es una página de Stripe (Payment Link) que **admite donaciones
  * anónimas**: por eso el botón sale de la web en vez de abrir el flujo SEPA
  * interno, que exige cuenta, NIF y consentimiento del art. 9 RGPD. Quien dona
- * ahí no queda registrado como afiliado ni entra en el censo.
+ * ahí no queda registrado como socio ni entra en el censo.
  *
  * La URL vive en `NEXT_PUBLIC_STRIPE_DONACION_URL` y no en el código: así se
  * cambia el Payment Link desde Dokploy sin tocar ni redesplegar la app. Si la

@@ -70,7 +70,7 @@ export function ConstructorEncuesta({ territorios }: { territorios: { id: number
           <select name="audience" required className="w-full rounded-boton border border-linea px-4 py-2.5 text-[14px]">
             <option value="public">Público (cualquiera)</option>
             <option value="registered">Registrados</option>
-            <option value="member">Afiliados</option>
+            <option value="member">Socios</option>
           </select>
         </Campo>
         <Campo etiqueta="Territorio (opcional, filtra por comunidad)">

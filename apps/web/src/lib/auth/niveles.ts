@@ -62,7 +62,7 @@ export async function requireUsuario(rutaVuelta?: string) {
 /**
  * Exige un nivel mínimo en la escalera registered < member < verified.
  * Guard reutilizable para Server Components / Server Actions de otros
- * agentes (rc-06 participación, rc-07 afiliación...).
+ * agentes (rc-06 participación, rc-07 socios...).
  */
 export async function requireNivel(minimo: Nivel, rutaVuelta?: string) {
   const { user, perfil, supabase } = await requireUsuario(rutaVuelta);

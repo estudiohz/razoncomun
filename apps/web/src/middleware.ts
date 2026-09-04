@@ -11,7 +11,7 @@ import { entornoCerrado } from '@/lib/entorno';
  *    real por las mismas búsquedas.
  * 1. Refresca la sesión de Supabase en cada petición (patrón oficial @supabase/ssr).
  * 2. Protege /panel (y /perfil, que ya solo redirige allí): exige sesión.
- *    OJO: /panel NO exige 2FA. El panel del usuario es donde un afiliado ve su
+ *    OJO: /panel NO exige 2FA. El panel del usuario es donde un socio ve su
  *    cuota y sus datos; obligarle a 2FA para eso sería una barrera que nadie
  *    ha decidido. La 2FA sigue siendo obligatoria solo para /admin (abajo).
  * 3. Protege /admin: exige sesión Y, si el usuario tiene cargo vigente o rol

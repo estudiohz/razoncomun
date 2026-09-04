@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { formatearNumeroAfiliado, numeroDesdeBusqueda } from './numero';
 
-describe('número de afiliado', () => {
+describe('número de socio', () => {
   it('rellena a cinco dígitos y no recorta los que se pasan', () => {
     expect(formatearNumeroAfiliado(1)).toBe('00001');
     expect(formatearNumeroAfiliado(42)).toBe('00042');
@@ -9,7 +9,7 @@ describe('número de afiliado', () => {
     expect(formatearNumeroAfiliado(123456)).toBe('123456');
   });
 
-  it('devuelve null si no hay número (usuario no afiliado)', () => {
+  it('devuelve null si no hay número (usuario no socio)', () => {
     expect(formatearNumeroAfiliado(null)).toBeNull();
     expect(formatearNumeroAfiliado(undefined)).toBeNull();
   });
@@ -17,7 +17,7 @@ describe('número de afiliado', () => {
   it('el buscador entiende el número con y sin ceros delante', () => {
     expect(numeroDesdeBusqueda('42')).toBe(42);
     expect(numeroDesdeBusqueda('00042')).toBe(42);
-    expect(numeroDesdeBusqueda('Afiliado 42')).toBe(42);
+    expect(numeroDesdeBusqueda('Socio 42')).toBe(42);
   });
 
   it('devuelve null cuando se busca texto sin dígitos', () => {

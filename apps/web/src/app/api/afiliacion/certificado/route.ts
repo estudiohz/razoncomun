@@ -6,7 +6,7 @@ import { datosCertificado, generarCertificadoPDF } from '@/lib/afiliacion/certif
 
 /**
  * Descarga del certificado fiscal anual (`/perfil` enlaza aquí). Requiere
- * sesión — cada afiliado solo puede pedir el suyo (no hay parámetro de
+ * sesión — cada socio solo puede pedir el suyo (no hay parámetro de
  * userId: siempre se calcula sobre `auth.getUser()` de la petición actual).
  * `?year=2025` opcional, por defecto el año natural anterior completo (el
  * caso de uso normal: "quiero el certificado del año pasado para la

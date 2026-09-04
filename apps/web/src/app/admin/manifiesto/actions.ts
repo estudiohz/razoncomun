@@ -14,7 +14,7 @@ import { registrarAuditoria } from '@/lib/admin/audit';
  * Lo que SÍ es innegociable: cada cambio queda versionado en
  * `manifesto_point_versions` (tabla que rc-02 ya creó) con historial
  * PÚBLICO — sin eso se cae el relato de que el programa lo cambian los
- * afiliados. El snapshot de la versión ANTERIOR lo hace un trigger de BD
+ * socios. El snapshot de la versión ANTERIOR lo hace un trigger de BD
  * (0004_manifesto.sql, `manifesto_points_snapshot_trg`) automáticamente en
  * cada UPDATE que toque title/body; aquí solo nos aseguramos de incrementar
  * `version` explícitamente (el trigger no lo hace por nosotros).
