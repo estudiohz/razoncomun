@@ -170,43 +170,16 @@ export async function iniciarDomiciliacion(input: {
 
 export type ResultadoConfirmacion = { ok: true } | { ok: false; mensaje: string };
 
-function idDeCliente(c: string | { id: string }): string {
-  return typeof c === 'string' ? c : c.id;
-}
-
-/**
- * El Customer de Stripe de esta persona, resuelto SIEMPRE en el servidor.
- *
- * Dos fuentes, en este orden: la fila de `members` (si ya fue socia alguna
- * vez) y, si no, la búsqueda en Stripe por `metadata.user_id`, que es lo que
- * `iniciarDomiciliacion` graba al crear el Customer. La segunda hace falta
- * porque en el primer alta la fila de `members` todavía no existe — la crea
- * el webhook después.
- */
-async function customerDelUsuario(
-  stripe: Awaited<ReturnType<typeof stripeCliente>>,
-  supabase: Awaited<ReturnType<typeof requireUsuario>>['supabase'],
-  userId: string,
-): Promise<string | null> {
-  const { data: miembro } = await supabase
-    .from('members')
-    .select('stripe_customer_id')
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (miembro?.stripe_customer_id) return miembro.stripe_customer_id as string;
-
-  const encontrados = await stripe.customers.search({
-    query: `metadata['user_id']:'${userId}'`,
-    limit: 1,
-  });
-  return encontrados.data[0]?.id ?? null;
+function idDeStripe(x: string | { id: string } | null | undefined): string | null {
+  if (!x) return null;
+  return typeof x === 'string' ? x : x.id;
 }
 
 export async function confirmarAfiliacion(input: {
   plan: PlanCuota;
   periodo: Periodicidad;
-  paymentMethodId: string;
+  /** Id del SetupIntent ya confirmado. De él salen el cliente y el método. */
+  setupIntentId: string;
 }): Promise<ResultadoConfirmacion> {
   const { user, supabase } = await requireUsuario('/unete');
   const stripe = await stripeCliente();
@@ -222,36 +195,50 @@ export async function confirmarAfiliacion(input: {
     return { ok: false, mensaje: 'Elige una periodicidad de cuota antes de continuar.' };
   }
 
-  // SEGURIDAD (04/09/2026): el `customerId` venía del NAVEGADOR y se usaba tal
-  // cual. Cualquiera con cuenta podía mandar el customer de otra persona y
-  // crear su propia afiliación cobrándole a ella, con su `user_id` en el
-  // metadata. Ahora se deriva en el servidor a partir de la sesión y se
-  // comprueba que el Customer lleve el `user_id` de quien pide — nunca se
-  // acepta un identificador de pago que venga del cliente.
-  const customerId = await customerDelUsuario(stripe, supabase, user.id);
-  if (!customerId) {
-    return {
-      ok: false,
-      mensaje: 'No encontramos tu ficha de pago. Vuelve a empezar el alta.',
-    };
+  // SEGURIDAD (04/09/2026): antes llegaba el `customerId` DEL NAVEGADOR y se
+  // usaba tal cual — cualquiera con cuenta podía mandar el customer de otra
+  // persona y darse de alta cobrándole a ella. Ahora llega el id del
+  // SetupIntent y todo lo demás se lee de él en el servidor.
+  //
+  // Por qué del SetupIntent y no de una búsqueda por `metadata.user_id`:
+  //   1. La Search API de Stripe es EVENTUALMENTE CONSISTENTE — un Customer
+  //      recién creado tarda hasta un minuto en aparecer, que es exactamente
+  //      el caso de un primer alta. La búsqueda devolvía vacío justo cuando
+  //      más falta hacía.
+  //   2. Un abandono repetido deja varios Customers del mismo usuario (ya
+  //      pasa: hay tres de una sola persona en la cuenta de pruebas), así que
+  //      "coge el primero" era además ambiguo.
+  // `setupIntents.retrieve` es una lectura directa, sin latencia, y su
+  // metadata la escribimos NOSOTROS en `iniciarDomiciliacion`.
+  let setupIntent;
+  try {
+    setupIntent = await stripe.setupIntents.retrieve(input.setupIntentId);
+  } catch {
+    return { ok: false, mensaje: 'No hemos podido recuperar tu método de pago. Vuelve a intentarlo.' };
+  }
+
+  if (setupIntent.metadata?.user_id !== user.id) {
+    return { ok: false, mensaje: 'Ese método de pago no corresponde a tu cuenta.' };
+  }
+  if (setupIntent.status !== 'succeeded') {
+    return { ok: false, mensaje: 'Tu método de pago no llegó a confirmarse. Vuelve a intentarlo.' };
+  }
+
+  const customerId = idDeStripe(setupIntent.customer);
+  const paymentMethodId = idDeStripe(setupIntent.payment_method);
+  if (!customerId || !paymentMethodId) {
+    return { ok: false, mensaje: 'Tu método de pago no llegó a confirmarse. Vuelve a intentarlo.' };
   }
 
   try {
-    // El método de pago tiene que estar en ESE customer. Si no, Stripe falla
-    // al asignarlo como predeterminado y no se llega a crear la suscripción.
-    const pm = await stripe.paymentMethods.retrieve(input.paymentMethodId);
-    if (pm.customer && idDeCliente(pm.customer) !== customerId) {
-      return { ok: false, mensaje: 'Ese método de pago no corresponde a tu cuenta.' };
-    }
-
     await stripe.customers.update(customerId, {
-      invoice_settings: { default_payment_method: input.paymentMethodId },
+      invoice_settings: { default_payment_method: paymentMethodId },
     });
 
     await stripe.subscriptions.create({
       customer: customerId,
       items: [{ price: priceIdCuota(plan, input.periodo) }],
-      default_payment_method: input.paymentMethodId,
+      default_payment_method: paymentMethodId,
       collection_method: 'charge_automatically',
       // `plan` en el metadata para poder auditar desde Stripe qué tramo
       // eligió cada quien. `members.amount_cents` ya lo refleja (el webhook lo

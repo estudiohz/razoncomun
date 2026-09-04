@@ -90,7 +90,7 @@ export function AltaSepa({
       const resultado = await confirmarAfiliacion({
         plan: planVuelta as PlanCuota,
         periodo: periodoVuelta as Periodicidad,
-        paymentMethodId: pmId,
+        setupIntentId: setupIntent.id,
       });
 
       if (cancelado) return;
@@ -406,12 +406,12 @@ function PasoIban({
       return;
     }
 
-    // Sin `customerId`: lo deriva el servidor desde la sesión. Mandarlo desde
-    // aquí permitía cobrarle a otra persona (ver actions.ts).
+    // Solo viaja el id del SetupIntent: el cliente y el método de pago los lee
+    // el servidor de ahí, y comprueba que ese SetupIntent sea tuyo.
     const resultado = await confirmarAfiliacion({
       plan,
       periodo,
-      paymentMethodId: pmId,
+      setupIntentId: setupIntent.id,
     });
     if (!resultado.ok) {
       setError(resultado.mensaje);
