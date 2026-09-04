@@ -19,7 +19,8 @@ const ESTADO_INICIAL: EstadoActualizarPerfil = { ok: null, mensaje: '' };
  */
 export function PerfilDatosForm({
   displayNameInicial,
-  legalNameInicial,
+  firstNameInicial,
+  lastNameInicial,
   birthDateInicial,
   provinciaInicial,
   newsletterInicial,
@@ -27,7 +28,8 @@ export function PerfilDatosForm({
   provincias,
 }: {
   displayNameInicial: string;
-  legalNameInicial: string;
+  firstNameInicial: string;
+  lastNameInicial: string;
   birthDateInicial: string;
   provinciaInicial: number | null;
   newsletterInicial: boolean;
@@ -37,7 +39,8 @@ export function PerfilDatosForm({
   const [estado, formAction, enviando] = useActionState(actualizarPerfil, ESTADO_INICIAL);
 
   const [nombre, setNombre] = useState(displayNameInicial);
-  const [nombreLegal, setNombreLegal] = useState(legalNameInicial);
+  const [nombrePila, setNombrePila] = useState(firstNameInicial);
+  const [apellidos, setApellidos] = useState(lastNameInicial);
   const [nacimiento, setNacimiento] = useState(birthDateInicial);
   const [provincia, setProvincia] = useState(provinciaInicial ? String(provinciaInicial) : '');
   const [newsletter, setNewsletter] = useState(newsletterInicial);
@@ -88,24 +91,40 @@ export function PerfilDatosForm({
           className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
         />
       </div>
-      <div>
-        <label htmlFor="legal_name" className="mb-1.5 block text-[13.5px] font-semibold">
-          Nombre y apellidos
-        </label>
-        <input
-          id="legal_name"
-          name="legal_name"
-          value={nombreLegal}
-          onChange={(e) => setNombreLegal(e.target.value)}
-          autoComplete="name"
-          placeholder="Como en tu DNI"
-          className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
-        />
-        <p className="mt-1 text-[12px] text-gris">
-          Es el nombre que aparece en tu carnet de socio y en el certificado fiscal. Distinto del
-          nombre a mostrar, que es como te ven en la web.
-        </p>
+      {/* Nombre y apellidos SEPARADOS (0059): el Modelo 182 los pide en orden
+          "apellidos y nombre", y de un campo único no se pueden derivar. */}
+      <div className="grid gap-4 min-[560px]:grid-cols-2">
+        <div>
+          <label htmlFor="first_name" className="mb-1.5 block text-[13.5px] font-semibold">
+            Nombre
+          </label>
+          <input
+            id="first_name"
+            name="first_name"
+            value={nombrePila}
+            onChange={(e) => setNombrePila(e.target.value)}
+            autoComplete="given-name"
+            className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
+          />
+        </div>
+        <div>
+          <label htmlFor="last_name" className="mb-1.5 block text-[13.5px] font-semibold">
+            Apellidos
+          </label>
+          <input
+            id="last_name"
+            name="last_name"
+            value={apellidos}
+            onChange={(e) => setApellidos(e.target.value)}
+            autoComplete="family-name"
+            className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
+          />
+        </div>
       </div>
+      <p className="-mt-1 text-[12px] text-gris">
+        Como en tu DNI: es lo que aparece en tu carnet de socio y en el certificado fiscal. Distinto
+        del nombre a mostrar, que es como te ven en la web.
+      </p>
 
       <div>
         <label htmlFor="birth_date" className="mb-1.5 block text-[13.5px] font-semibold">

@@ -109,7 +109,8 @@ export default async function PanelPerfilPage() {
         <div className="mt-4">
           <PerfilDatosForm
             displayNameInicial={perfil.display_name ?? ''}
-            legalNameInicial={perfil.legal_name ?? ''}
+            firstNameInicial={perfil.first_name ?? ''}
+            lastNameInicial={perfil.last_name ?? ''}
             birthDateInicial={perfil.birth_date ?? ''}
             provinciaInicial={perfil.origin_province_id}
             newsletterInicial={perfil.newsletter_opt_in}

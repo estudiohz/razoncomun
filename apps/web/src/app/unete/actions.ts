@@ -9,7 +9,11 @@ import {
   type PlanCuota,
 } from '@/lib/stripe/config';
 import { stripeCliente } from '@/lib/stripe/servidor';
-import { TEXTO_CONSENTIMIENTO_AFILIACION, esNombreCompleto } from '@/lib/afiliacion/consentimiento';
+import {
+  TEXTO_CONSENTIMIENTO_AFILIACION,
+  esNombrePlausible,
+  nombreCompleto,
+} from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF, normalizarNIF } from '@/lib/afiliacion/nif';
 
@@ -175,6 +179,36 @@ function idDeStripe(x: string | { id: string } | null | undefined): string | nul
   return typeof x === 'string' ? x : x.id;
 }
 
+/**
+ * Guarda nombre y apellidos del socio ANTES de confirmar el método de pago.
+ *
+ * Antes se leían del `billing_details` que Stripe guarda con el método, pero
+ * eso solo vale para una cadena única: desde que van separados (0059) hay que
+ * recogerlos aquí. Y hacerlo antes de pasar por Stripe es lo que hace que
+ * sobrevivan al 3D Secure — al volver del banco el formulario ya no existe.
+ */
+export async function guardarNombreSocio(input: {
+  nombre: string;
+  apellidos: string;
+}): Promise<{ ok: boolean; mensaje?: string }> {
+  const { user, supabase } = await requireUsuario('/unete');
+
+  const first_name = input.nombre.trim().replace(/\s+/g, ' ');
+  const last_name = input.apellidos.trim().replace(/\s+/g, ' ');
+
+  if (!esNombrePlausible(first_name) || !esNombrePlausible(last_name)) {
+    return { ok: false, mensaje: 'Escribe tu nombre y tus apellidos.' };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ first_name, last_name })
+    .eq('id', user.id);
+
+  if (error) return { ok: false, mensaje: 'No hemos podido guardar tu nombre. Inténtalo de nuevo.' };
+  return { ok: true };
+}
+
 export async function confirmarAfiliacion(input: {
   plan: PlanCuota;
   periodo: Periodicidad;
@@ -227,19 +261,24 @@ export async function confirmarAfiliacion(input: {
     return { ok: false, mensaje: 'Tu método de pago no llegó a confirmarse. Vuelve a intentarlo.' };
   }
 
-  // El nombre y apellidos se leen del titular que Stripe guardó junto al método
-  // de pago, no de un campo que mande el navegador. Dos ventajas: no hay que
-  // fiarse del cliente, y funciona igual cuando la persona vuelve del 3D Secure
-  // — ahí el formulario ya no existe y el nombre se habría perdido.
-  const pmExpandido =
-    setupIntent.payment_method && typeof setupIntent.payment_method !== 'string'
-      ? setupIntent.payment_method
-      : null;
-  const nombreLegal = (pmExpandido?.billing_details?.name ?? '').trim().replace(/\s+/g, ' ');
-  if (!esNombreCompleto(nombreLegal)) {
+  // El nombre y los apellidos ya están en el perfil: los guarda
+  // `guardarNombreSocio` ANTES de confirmar el método de pago. Se leen de ahí
+  // y no del `billing_details` de Stripe porque ahora son dos campos y Stripe
+  // solo almacena una cadena, de la que no se pueden volver a separar.
+  //
+  // Guardarlos antes tiene además la ventaja de que sobreviven al 3D Secure:
+  // al volver del banco el formulario ya no existe.
+  const { data: perfilNombre } = await supabase
+    .from('profiles')
+    .select('first_name, last_name')
+    .eq('id', user.id)
+    .single();
+
+  if (!esNombrePlausible(perfilNombre?.first_name ?? '') ||
+      !esNombrePlausible(perfilNombre?.last_name ?? '')) {
     return {
       ok: false,
-      mensaje: 'Necesitamos tu nombre y apellidos completos como titular. Vuelve atrás y complétalos.',
+      mensaje: 'Necesitamos tu nombre y tus apellidos. Vuelve atrás y complétalos.',
     };
   }
 
@@ -267,10 +306,6 @@ export async function confirmarAfiliacion(input: {
   } catch (err) {
     return { ok: false, mensaje: (err as Error).message };
   }
-
-  // El nombre legal se guarda DESPUÉS de que la suscripción exista: si el
-  // cobro no llega a crearse, no tiene sentido haber escrito nada.
-  await supabase.from('profiles').update({ legal_name: nombreLegal }).eq('id', user.id);
 
   return { ok: true };
 }

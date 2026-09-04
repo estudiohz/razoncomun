@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { nombreCompleto } from './consentimiento';
 import type Stripe from 'stripe';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -101,7 +102,7 @@ export async function datosCertificado(
   year: number,
 ): Promise<DatosCertificado | null> {
   const [{ data: perfil }, { data: miembro }] = await Promise.all([
-    admin.from('profiles').select('display_name, legal_name, email').eq('id', userId).single(),
+    admin.from('profiles').select('display_name, first_name, last_name, email').eq('id', userId).single(),
     admin.from('members').select('stripe_customer_id').eq('user_id', userId).maybeSingle(),
   ]);
 
@@ -112,9 +113,13 @@ export async function datosCertificado(
 
   return {
     year,
-    // Nombre y apellidos (0057), no el apodo de la web: esto va en un papel
+    // Nombre y apellidos (0059), no el apodo de la web: esto va en un papel
     // para Hacienda, donde un nombre de pila a secas no identifica a nadie.
-    nombreAfiliado: perfil.legal_name ?? perfil.display_name ?? perfil.email ?? 'Afiliado/a',
+    nombreAfiliado:
+      nombreCompleto(perfil.first_name, perfil.last_name) ||
+      perfil.display_name ||
+      perfil.email ||
+      'Afiliado/a',
     emailAfiliado: perfil.email ?? '',
     totalCents,
     numeroCuotas,

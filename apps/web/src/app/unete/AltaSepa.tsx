@@ -9,11 +9,12 @@ import { CUOTA_REFERENCIA_CENTS, type Periodicidad, type PlanCuota } from '@/lib
 import {
   TEXTO_AVISO_MANDATO_SEPA,
   formatearCents,
-  esNombreCompleto,
+  esNombrePlausible,
+  nombreCompleto,
 } from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF } from '@/lib/afiliacion/nif';
-import { iniciarDomiciliacion, confirmarAfiliacion } from './actions';
+import { iniciarDomiciliacion, confirmarAfiliacion, guardarNombreSocio } from './actions';
 
 let stripePromise: Promise<StripeJs | null> | null = null;
 function getStripe() {
@@ -351,7 +352,11 @@ function PasoIban({
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
-  const [nombreTitular, setNombreTitular] = useState(nombreInicial ?? '');
+  const [nombrePila, setNombrePila] = useState(nombreInicial?.split(' ')[0] ?? '');
+  const [apellidos, setApellidos] = useState(
+    (nombreInicial?.split(' ').slice(1).join(' ') ?? '').trim(),
+  );
+  const nombreTitular = nombreCompleto(nombrePila, apellidos);
   const [error, setError] = useState<string | null>(null);
   const [procesando, setProcesando] = useState(false);
 
@@ -362,8 +367,15 @@ function PasoIban({
     // Se comprueba aquí además de en el servidor para decírselo ANTES de que
     // Stripe guarde nada: este nombre acaba en el carnet y en el certificado
     // fiscal, y corregirlo después es mucho más incómodo.
-    if (!esNombreCompleto(nombreTitular)) {
-      setError('Escribe tu nombre y tus apellidos completos: aparecerán en tu carnet de socio.');
+    if (!esNombrePlausible(nombrePila) || !esNombrePlausible(apellidos)) {
+      setError('Escribe tu nombre y tus apellidos: aparecerán en tu carnet de socio.');
+      return;
+    }
+
+    // Se guardan ANTES de pasar por Stripe: así sobreviven al 3D Secure.
+    const guardado = await guardarNombreSocio({ nombre: nombrePila, apellidos });
+    if (!guardado.ok) {
+      setError(guardado.mensaje ?? 'No hemos podido guardar tu nombre.');
       return;
     }
 
@@ -456,19 +468,42 @@ function PasoIban({
         {plan === 'verificado' ? 'Socio verificado' : 'Socio'}.
       </p>
 
-      <div>
-        <label htmlFor="titular" className="mb-1.5 block text-[12.5px] font-bold text-titular">
-          Nombre del titular de la cuenta
-        </label>
-        <input
-          id="titular"
-          type="text"
-          required
-          value={nombreTitular}
-          onChange={(e) => setNombreTitular(e.target.value)}
-          className="w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-titular outline-none focus:border-accion focus:ring-2 focus:ring-accion/20"
-        />
+      {/* Nombre y apellidos separados (0059): así van al perfil, al carnet y al
+          Modelo 182, que los pide en orden "apellidos y nombre". Unidos se
+          mandan a Stripe como titular del método de pago. */}
+      <div className="grid gap-4 min-[520px]:grid-cols-2">
+        <div>
+          <label htmlFor="titular_nombre" className="mb-1.5 block text-[12.5px] font-bold text-titular">
+            Nombre del titular
+          </label>
+          <input
+            id="titular_nombre"
+            type="text"
+            required
+            autoComplete="given-name"
+            value={nombrePila}
+            onChange={(e) => setNombrePila(e.target.value)}
+            className="w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-titular outline-none focus:border-accion focus:ring-2 focus:ring-accion/20"
+          />
+        </div>
+        <div>
+          <label htmlFor="titular_apellidos" className="mb-1.5 block text-[12.5px] font-bold text-titular">
+            Apellidos
+          </label>
+          <input
+            id="titular_apellidos"
+            type="text"
+            required
+            autoComplete="family-name"
+            value={apellidos}
+            onChange={(e) => setApellidos(e.target.value)}
+            className="w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-titular outline-none focus:border-accion focus:ring-2 focus:ring-accion/20"
+          />
+        </div>
       </div>
+      <p className="-mt-2 text-[12px] text-gris">
+        Aparecerán en tu carnet de socio y en el certificado fiscal.
+      </p>
 
       <div>
         <label className="mb-1.5 block text-[12.5px] font-bold text-titular">IBAN</label>

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { esNombreCompleto } from '@/lib/afiliacion/consentimiento';
+import { esNombrePlausible } from '@/lib/afiliacion/consentimiento';
 
 export type EstadoActualizarPerfil = {
   ok: boolean | null; // null = todavía no se ha enviado nada
@@ -18,7 +18,8 @@ export type EstadoActualizarPerfil = {
   // Navarra, aunque en BD y tras recargar la página sí quedaba Navarra).
   valores?: {
     display_name: string;
-    legal_name: string;
+    first_name: string;
+    last_name: string;
     birth_date: string;
     origin_province_id: number | null;
     newsletter_opt_in: boolean;
@@ -48,18 +49,21 @@ export async function actualizarPerfil(
 
   const display_name = (formData.get('display_name') as string)?.trim() || null;
 
-  // Nombre y apellidos (0057) y fecha de nacimiento (0058). Los dos son
-  // OPCIONALES aquí: quien solo está registrado no tiene por qué darlos. Pero
-  // si escribe algo, tiene que valer — un carnet o un certificado fiscal con
-  // medio nombre no sirven, y una fecha inventada tampoco.
-  const legal_name_raw = (formData.get('legal_name') as string)?.trim().replace(/\s+/g, ' ') || '';
-  if (legal_name_raw && !esNombreCompleto(legal_name_raw)) {
+  // Nombre, apellidos (0059) y fecha de nacimiento (0058). Opcionales aquí:
+  // quien solo está registrado no tiene por qué darlos. Pero o se dan LOS DOS
+  // o ninguno — medio nombre no sirve ni para el carnet ni para el certificado
+  // fiscal, y guardarlo a medias solo aplaza el problema.
+  const first_raw = (formData.get('first_name') as string)?.trim().replace(/\s+/g, ' ') || '';
+  const last_raw = (formData.get('last_name') as string)?.trim().replace(/\s+/g, ' ') || '';
+
+  if ((first_raw || last_raw) && !(esNombrePlausible(first_raw) && esNombrePlausible(last_raw))) {
     return {
       ok: false,
-      mensaje: 'Escribe tu nombre y tus apellidos completos, o deja el campo vacío.',
+      mensaje: 'Rellena el nombre y los apellidos, o deja los dos campos vacíos.',
     };
   }
-  const legal_name = legal_name_raw || null;
+  const first_name = first_raw || null;
+  const last_name = last_raw || null;
 
   const birth_date_raw = (formData.get('birth_date') as string)?.trim() || '';
   if (birth_date_raw) {
@@ -96,14 +100,15 @@ export async function actualizarPerfil(
     .from('profiles')
     .update({
       display_name,
-      legal_name,
+      first_name,
+      last_name,
       birth_date,
       origin_province_id,
       newsletter_opt_in,
       ...(cambioNewsletter ? { newsletter_opt_in_at } : {}),
     })
     .eq('id', user.id)
-    .select('display_name, legal_name, birth_date, origin_province_id, newsletter_opt_in, newsletter_opt_in_at')
+    .select('display_name, first_name, last_name, birth_date, origin_province_id, newsletter_opt_in, newsletter_opt_in_at')
     .single();
 
   if (errorUpdate || !filaActualizada) {

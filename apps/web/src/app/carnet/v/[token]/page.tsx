@@ -79,10 +79,10 @@ export default async function VerificarCarnetPage({
     <main className="mx-auto flex min-h-[100svh] w-full max-w-[420px] flex-col items-center justify-center px-6 py-12 text-center">
       {/* Sin la nav del sitio, esta pantalla tiene que decir de quién es: quien
           escanea no ha navegado hasta aquí, ha apuntado la cámara a un carnet. */}
-      <div className="mb-8 flex items-center gap-2">
+      <div className="mb-8 flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icono-rc.png" alt="" width={26} height={26} />
-        <span className="text-[14px] font-extrabold tracking-tight text-titular">Razón Común</span>
+        <img src="/icono-rc.png" alt="" width={52} height={52} />
+        <span className="text-[19px] font-extrabold tracking-tight text-titular">Razón Común</span>
       </div>
 
       <div

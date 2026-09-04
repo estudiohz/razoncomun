@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { crearTokenCarnet } from './token';
 import { urlSitio } from '@/lib/supabase/env';
+import { nombreCompleto } from '@/lib/afiliacion/consentimiento';
 
 /**
  * Los datos del carnet, en un formato neutro de plataforma (D-C1).
@@ -50,7 +51,7 @@ export async function cargarCarnet(
 ): Promise<{ carnet: DatosCarnet } | { motivo: MotivoSinCarnet }> {
   const { data: perfil } = await supabase
     .from('profiles')
-    .select('display_name, legal_name, email, member_number, level, member_since, carnet_uid, anonymized_at')
+    .select('display_name, first_name, last_name, email, member_number, level, member_since, carnet_uid, anonymized_at')
     .eq('id', userId)
     .single();
 
@@ -79,11 +80,11 @@ export async function cargarCarnet(
 
   return {
     carnet: {
-      // `legal_name` primero: el carnet acredita a una persona, así que lleva
-      // su nombre y apellidos, no el apodo que use en la web. Solo si no lo
-      // hay —socios de antes de la 0057— se cae al nombre visible.
+      // Nombre y apellidos primero: el carnet acredita a una persona, así que
+      // lleva su nombre real, no el apodo que use en la web. Solo si no consta
+      // —socios de antes de la 0059— se cae al nombre visible.
       nombre:
-        (perfil.legal_name as string | null)?.trim() ||
+        nombreCompleto(perfil.first_name as string | null, perfil.last_name as string | null) ||
         (perfil.display_name as string | null)?.trim() ||
         'Socio de Razón Común',
       numeroSocio: formatearNumeroSocio(perfil.member_number as number),
