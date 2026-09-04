@@ -78,8 +78,19 @@ export function leerTokenCarnet(token: string | undefined | null): string | null
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uid)) return null;
   if (!/^[0-9a-f]{64}$/i.test(firmaRecibida)) return null;
 
+  // `firmar()` lanza en producción si falta CARNET_SECRET, y este módulo
+  // promete no lanzar: el verificador es una página pública y una excepción
+  // aquí es un 500 en la cara de quien escanea. Sin secreto no se puede
+  // comprobar nada, así que el token no vale — fallar cerrado es lo correcto.
+  let esperada: string;
+  try {
+    esperada = firmar(uid);
+  } catch {
+    return null;
+  }
+
   const bufRecibida = Buffer.from(firmaRecibida, 'hex');
-  const bufEsperada = Buffer.from(firmar(uid), 'hex');
+  const bufEsperada = Buffer.from(esperada, 'hex');
 
   if (bufRecibida.length !== bufEsperada.length) return null;
   if (!timingSafeEqual(bufRecibida, bufEsperada)) return null;

@@ -68,8 +68,27 @@ describe('token del carnet', () => {
     expect(leerTokenCarnet(token)).toBe(UID);
   });
 
-  it('en producción SIN secreto lanza, en vez de caer a un fallback', async () => {
+  it('en producción SIN secreto lanza al FIRMAR, en vez de caer a un fallback', async () => {
     const { crearTokenCarnet } = await cargar(undefined, 'production');
     expect(() => crearTokenCarnet(UID)).toThrow(/CARNET_SECRET/);
+  });
+
+  // El verificador es una página pública: si leer un token lanzara, quien
+  // escanea vería un 500. Sin secreto no se puede comprobar nada, así que
+  // ningún token vale — pero se dice, no se revienta.
+  it('en producción SIN secreto, LEER un token devuelve null en vez de lanzar', async () => {
+    const { leerTokenCarnet } = await cargar('secreto-de-prueba');
+    const token = (await cargar('secreto-de-prueba')).crearTokenCarnet(UID);
+    const sinSecreto = await cargar(undefined, 'production');
+    expect(() => sinSecreto.leerTokenCarnet(token)).not.toThrow();
+    expect(sinSecreto.leerTokenCarnet(token)).toBeNull();
+    expect(leerTokenCarnet).toBeDefined();
+  });
+
+  it('carnetOperativo() dice si se puede firmar en este entorno', async () => {
+    const conSecreto = await cargar('secreto-de-prueba');
+    expect(conSecreto.carnetOperativo()).toBe(true);
+    const sinSecreto = await cargar(undefined, 'production');
+    expect(sinSecreto.carnetOperativo()).toBe(false);
   });
 });
