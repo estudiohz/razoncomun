@@ -24,6 +24,7 @@ export const gruposPanelUsuario: GrupoNavPanel[] = [
       { href: '/panel/perfil', label: 'Mi perfil' },
       { href: '/panel/propuestas', label: 'Mis propuestas' },
       { href: '/panel/afiliacion', label: 'Cuota' },
+      { href: '/panel/carnet', label: 'Mi carnet' },
     ],
   },
 ];
