@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { metadatosPagina } from '@/lib/seo';
 import { requireUsuario } from '@/lib/auth/niveles';
+import { ConfirmandoAlta } from './ConfirmandoAlta';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Cuota de socio',
@@ -19,7 +20,11 @@ export const metadata: Metadata = metadatosPagina({
  * El alta real sigue viviendo en `/unete` (flujo público con Stripe/SEPA,
  * propiedad de rc-07): aquí no se duplica, se enlaza.
  */
-export default async function PanelAfiliacionPage() {
+export default async function PanelAfiliacionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ alta?: string }>;
+}) {
   const { user, perfil, supabase } = await requireUsuario('/panel/afiliacion');
   if (!perfil) redirect('/entrar');
 
@@ -31,6 +36,12 @@ export default async function PanelAfiliacionPage() {
   const activa = miembros?.find((m) => m.status === 'active');
   const anyoActual = new Date().getFullYear();
 
+  // `?alta=ok` lo pone el alta DESPUÉS de crear la suscripción en Stripe. Si
+  // está y todavía no hay fila en `members`, no es que no seas socio: es que el
+  // webhook aún no ha escrito (tardó 19 segundos en la prueba del 04/09/2026).
+  const { alta } = await searchParams;
+  const reciénDadoDeAlta = alta === 'ok' && !activa;
+
   return (
     <div className="mx-auto w-full max-w-[760px] space-y-6">
       <header>
@@ -40,7 +51,9 @@ export default async function PanelAfiliacionPage() {
         </p>
       </header>
 
-      {activa ? (
+      {reciénDadoDeAlta ? (
+        <ConfirmandoAlta />
+      ) : activa ? (
         <>
           <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
             <h2 className="text-[15px] font-bold text-titular">Tu cuota</h2>
