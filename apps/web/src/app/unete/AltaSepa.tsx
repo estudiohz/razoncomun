@@ -6,7 +6,11 @@ import { loadStripe, type Stripe as StripeJs } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { stripePublishableKey } from '@/lib/stripe/publicKey';
 import { CUOTA_REFERENCIA_CENTS, type Periodicidad, type PlanCuota } from '@/lib/stripe/config';
-import { TEXTO_AVISO_MANDATO_SEPA, formatearCents } from '@/lib/afiliacion/consentimiento';
+import {
+  TEXTO_AVISO_MANDATO_SEPA,
+  formatearCents,
+  esNombreCompleto,
+} from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF } from '@/lib/afiliacion/nif';
 import { iniciarDomiciliacion, confirmarAfiliacion } from './actions';
@@ -354,6 +358,14 @@ function PasoIban({
   async function confirmar(e: React.FormEvent) {
     e.preventDefault();
     if (!stripe || !elements) return;
+
+    // Se comprueba aquí además de en el servidor para decírselo ANTES de que
+    // Stripe guarde nada: este nombre acaba en el carnet y en el certificado
+    // fiscal, y corregirlo después es mucho más incómodo.
+    if (!esNombreCompleto(nombreTitular)) {
+      setError('Escribe tu nombre y tus apellidos completos: aparecerán en tu carnet de socio.');
+      return;
+    }
 
     setProcesando(true);
     setError(null);

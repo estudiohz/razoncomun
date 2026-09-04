@@ -9,7 +9,7 @@ import {
   type PlanCuota,
 } from '@/lib/stripe/config';
 import { stripeCliente } from '@/lib/stripe/servidor';
-import { TEXTO_CONSENTIMIENTO_AFILIACION } from '@/lib/afiliacion/consentimiento';
+import { TEXTO_CONSENTIMIENTO_AFILIACION, esNombreCompleto } from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF, normalizarNIF } from '@/lib/afiliacion/nif';
 
@@ -195,6 +195,7 @@ export async function confirmarAfiliacion(input: {
     return { ok: false, mensaje: 'Elige una periodicidad de cuota antes de continuar.' };
   }
 
+
   // SEGURIDAD (04/09/2026): antes llegaba el `customerId` DEL NAVEGADOR y se
   // usaba tal cual — cualquiera con cuenta podía mandar el customer de otra
   // persona y darse de alta cobrándole a ella. Ahora llega el id del
@@ -212,7 +213,9 @@ export async function confirmarAfiliacion(input: {
   // metadata la escribimos NOSOTROS en `iniciarDomiciliacion`.
   let setupIntent;
   try {
-    setupIntent = await stripe.setupIntents.retrieve(input.setupIntentId);
+    setupIntent = await stripe.setupIntents.retrieve(input.setupIntentId, {
+      expand: ['payment_method'],
+    });
   } catch {
     return { ok: false, mensaje: 'No hemos podido recuperar tu método de pago. Vuelve a intentarlo.' };
   }
@@ -222,6 +225,22 @@ export async function confirmarAfiliacion(input: {
   }
   if (setupIntent.status !== 'succeeded') {
     return { ok: false, mensaje: 'Tu método de pago no llegó a confirmarse. Vuelve a intentarlo.' };
+  }
+
+  // El nombre y apellidos se leen del titular que Stripe guardó junto al método
+  // de pago, no de un campo que mande el navegador. Dos ventajas: no hay que
+  // fiarse del cliente, y funciona igual cuando la persona vuelve del 3D Secure
+  // — ahí el formulario ya no existe y el nombre se habría perdido.
+  const pmExpandido =
+    setupIntent.payment_method && typeof setupIntent.payment_method !== 'string'
+      ? setupIntent.payment_method
+      : null;
+  const nombreLegal = (pmExpandido?.billing_details?.name ?? '').trim().replace(/\s+/g, ' ');
+  if (!esNombreCompleto(nombreLegal)) {
+    return {
+      ok: false,
+      mensaje: 'Necesitamos tu nombre y apellidos completos como titular. Vuelve atrás y complétalos.',
+    };
   }
 
   const customerId = idDeStripe(setupIntent.customer);
@@ -248,6 +267,10 @@ export async function confirmarAfiliacion(input: {
   } catch (err) {
     return { ok: false, mensaje: (err as Error).message };
   }
+
+  // El nombre legal se guarda DESPUÉS de que la suscripción exista: si el
+  // cobro no llega a crearse, no tiene sentido haber escrito nada.
+  await supabase.from('profiles').update({ legal_name: nombreLegal }).eq('id', user.id);
 
   return { ok: true };
 }

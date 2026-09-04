@@ -66,12 +66,25 @@ export default async function VerificarCarnetPage({
     return `${MESES[d.getMonth()]} de ${d.getFullYear()}`;
   })();
 
+  // `timeZone` explícito: el contenedor va en UTC y sin esto la comprobación
+  // salía una hora antes de la que marcaba el móvil de quien escanea. En una
+  // pantalla cuyo único cometido es decir "comprobado a tal hora", la hora
+  // tiene que ser la de aquí.
   const comprobadoEl = new Intl.DateTimeFormat('es-ES', {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    timeZone: 'Europe/Madrid',
   }).format(new Date());
 
   return (
-    <main className="mx-auto flex min-h-[70vh] w-full max-w-[420px] flex-col items-center justify-center px-6 py-12 text-center">
+    <main className="mx-auto flex min-h-[100svh] w-full max-w-[420px] flex-col items-center justify-center px-6 py-12 text-center">
+      {/* Sin la nav del sitio, esta pantalla tiene que decir de quién es: quien
+          escanea no ha navegado hasta aquí, ha apuntado la cámara a un carnet. */}
+      <div className="mb-8 flex items-center gap-2">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icono-rc.png" alt="" width={26} height={26} />
+        <span className="text-[14px] font-extrabold tracking-tight text-titular">Razón Común</span>
+      </div>
+
       <div
         className={`flex h-16 w-16 items-center justify-center rounded-full ${
           valido ? 'bg-teal' : 'bg-[#ED1156]'

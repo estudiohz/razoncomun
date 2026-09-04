@@ -30,6 +30,18 @@ export const TEXTO_CONSENTIMIENTO_AFILIACION = `Voy a convertirme en socio/a de 
  */
 export const TEXTO_AVISO_MANDATO_SEPA = `Si eliges domiciliación bancaria: al confirmar autorizas a Razón Común a enviar instrucciones a tu entidad bancaria para adeudar tu cuenta, y a tu entidad bancaria a adeudar tu cuenta de acuerdo con esas instrucciones. Tienes derecho a que tu entidad te reembolse de acuerdo con los términos y condiciones de tu contrato con ella; la solicitud de reembolso debe efectuarse dentro de las 8 semanas que siguen a la fecha de adeudo de tu cuenta. Stripe Payments Europe, Ltd. gestiona el cobro como procesador de pagos en nombre de Razón Común.`;
 
+/**
+ * ¿Es un nombre completo? Al menos dos palabras de dos letras.
+ *
+ * Se usa en el alta porque este nombre acaba en el carnet de socio y en el
+ * certificado fiscal que va a Hacienda: "Sergio" a secas no sirve para
+ * ninguno de los dos. No pretende validar que el nombre sea REAL —eso no se
+ * puede desde aquí— solo que no falten los apellidos.
+ */
+export function esNombreCompleto(nombre: string): boolean {
+  return nombre.trim().split(/\s+/).filter((p) => p.length >= 2).length >= 2;
+}
+
 /** Importe legible para la UI ("5,00 €"). */
 export function formatearCents(cents: number): string {
   return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });

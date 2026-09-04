@@ -39,10 +39,16 @@ export function ChromePublico({
   // cabecera a pantalla completa, así que aquí no se pinta nav ni footer.
   const esPanel =
     (pathname?.startsWith('/admin') ?? false) || (pathname?.startsWith('/panel') ?? false);
+  // El verificador del carnet (`/carnet/v/<token>`) tampoco lleva chrome, y por
+  // una razón distinta a la de los paneles: lo abre un DESCONOCIDO apuntando la
+  // cámara a un carnet. Lo único que tiene que ver es si vale o no. Un menú de
+  // navegación ahí es ruido —y una invitación a irse a otra parte— en la única
+  // pantalla del sitio que debe responder a una sola pregunta.
+  const esVerificadorCarnet = pathname?.startsWith('/carnet/v/') ?? false;
   // /pregunta ya tiene el chat completo (PreguntaChat.tsx) — evitar duplicar la UI.
   const esPregunta = pathname?.startsWith('/pregunta') ?? false;
 
-  if (esPanel) {
+  if (esPanel || esVerificadorCarnet) {
     return <>{children}</>;
   }
 

@@ -50,7 +50,7 @@ export async function cargarCarnet(
 ): Promise<{ carnet: DatosCarnet } | { motivo: MotivoSinCarnet }> {
   const { data: perfil } = await supabase
     .from('profiles')
-    .select('display_name, email, member_number, level, member_since, carnet_uid, anonymized_at')
+    .select('display_name, legal_name, email, member_number, level, member_since, carnet_uid, anonymized_at')
     .eq('id', userId)
     .single();
 
@@ -79,7 +79,13 @@ export async function cargarCarnet(
 
   return {
     carnet: {
-      nombre: (perfil.display_name as string | null)?.trim() || 'Socio de Razón Común',
+      // `legal_name` primero: el carnet acredita a una persona, así que lleva
+      // su nombre y apellidos, no el apodo que use en la web. Solo si no lo
+      // hay —socios de antes de la 0057— se cae al nombre visible.
+      nombre:
+        (perfil.legal_name as string | null)?.trim() ||
+        (perfil.display_name as string | null)?.trim() ||
+        'Socio de Razón Común',
       numeroSocio: formatearNumeroSocio(perfil.member_number as number),
       socioDesde: mesYAnyo(perfil.member_since as string | null),
       verificado: perfil.level === 'verified',
