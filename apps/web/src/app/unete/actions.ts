@@ -99,8 +99,9 @@ export async function iniciarDomiciliacion(input: {
   }
 
   // 2. Consentimiento — Art. 9.2.a (D-001: el voto interno, si algún día es
-  // vinculante, es público y nominal) + el aviso previo de domiciliación
-  // SEPA. Se reutiliza literalmente TEXTO_CONSENTIMIENTO de rc-03 (mismo
+  // vinculante, es público y nominal) + el aviso previo del cobro recurrente.
+  // Se firma ANTES de elegir método de pago, así que el texto habla de los dos
+  // (domiciliación y tarjeta): ver `lib/afiliacion/consentimiento.ts`. Se reutiliza literalmente TEXTO_CONSENTIMIENTO de rc-03 (mismo
   // texto que ya se muestra en /registro/consentimiento) para que quede
   // sellado también en el momento exacto en que la persona pasa a ser
   // socia de cuota — el hecho que activa de verdad el tratamiento de
@@ -114,7 +115,7 @@ export async function iniciarDomiciliacion(input: {
       plan,
       periodo: input.periodo,
       texto_voto_publico_nominal_d001: TEXTO_CONSENTIMIENTO,
-      texto_domiciliacion_sepa: TEXTO_CONSENTIMIENTO_AFILIACION,
+      texto_cobro_recurrente: TEXTO_CONSENTIMIENTO_AFILIACION,
       given_at: new Date().toISOString(),
     },
   });
@@ -143,11 +144,20 @@ export async function iniciarDomiciliacion(input: {
     customerId = customer.id;
   }
 
-  // 4. SetupIntent — captura el IBAN y el mandato SEPA in situ (Stripe
-  // Elements en `AltaSepa.tsx`), sin redirigir a stripe.com.
+  // 4. SetupIntent — captura el método de pago in situ (Payment Element en
+  // `AltaSepa.tsx`), sin redirigir a stripe.com.
+  //
+  // LOS DOS MÉTODOS (04/09/2026, decisión de Sergio): la persona elige. El
+  // orden importa — `sepa_debit` primero porque es el que sale preseleccionado
+  // en el Payment Element, y es el que le interesa al partido: comisión fija
+  // más baja y sin tarjetas que caducan a los dos años. Pero pedir el IBAN a
+  // alguien en el móvil es mucha fricción, así que la tarjeta tiene que estar
+  // ahí para quien no lo tenga a mano.
   const setupIntent = await stripe.setupIntents.create({
     customer: customerId,
-    payment_method_types: ['sepa_debit'],
+    payment_method_types: ['sepa_debit', 'card'],
+    // `off_session`: el cobro recurrente se hará sin la persona delante.
+    usage: 'off_session',
     metadata: { user_id: user.id, plan, periodo: input.periodo },
   });
 
@@ -160,13 +170,45 @@ export async function iniciarDomiciliacion(input: {
 
 export type ResultadoConfirmacion = { ok: true } | { ok: false; mensaje: string };
 
+function idDeCliente(c: string | { id: string }): string {
+  return typeof c === 'string' ? c : c.id;
+}
+
+/**
+ * El Customer de Stripe de esta persona, resuelto SIEMPRE en el servidor.
+ *
+ * Dos fuentes, en este orden: la fila de `members` (si ya fue socia alguna
+ * vez) y, si no, la búsqueda en Stripe por `metadata.user_id`, que es lo que
+ * `iniciarDomiciliacion` graba al crear el Customer. La segunda hace falta
+ * porque en el primer alta la fila de `members` todavía no existe — la crea
+ * el webhook después.
+ */
+async function customerDelUsuario(
+  stripe: Awaited<ReturnType<typeof stripeCliente>>,
+  supabase: Awaited<ReturnType<typeof requireUsuario>>['supabase'],
+  userId: string,
+): Promise<string | null> {
+  const { data: miembro } = await supabase
+    .from('members')
+    .select('stripe_customer_id')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (miembro?.stripe_customer_id) return miembro.stripe_customer_id as string;
+
+  const encontrados = await stripe.customers.search({
+    query: `metadata['user_id']:'${userId}'`,
+    limit: 1,
+  });
+  return encontrados.data[0]?.id ?? null;
+}
+
 export async function confirmarAfiliacion(input: {
   plan: PlanCuota;
   periodo: Periodicidad;
-  customerId: string;
   paymentMethodId: string;
 }): Promise<ResultadoConfirmacion> {
-  const { user } = await requireUsuario('/unete');
+  const { user, supabase } = await requireUsuario('/unete');
   const stripe = await stripeCliente();
 
   // Se revalida aquí y no solo en `iniciarDomiciliacion`: son dos llamadas
@@ -180,13 +222,34 @@ export async function confirmarAfiliacion(input: {
     return { ok: false, mensaje: 'Elige una periodicidad de cuota antes de continuar.' };
   }
 
+  // SEGURIDAD (04/09/2026): el `customerId` venía del NAVEGADOR y se usaba tal
+  // cual. Cualquiera con cuenta podía mandar el customer de otra persona y
+  // crear su propia afiliación cobrándole a ella, con su `user_id` en el
+  // metadata. Ahora se deriva en el servidor a partir de la sesión y se
+  // comprueba que el Customer lleve el `user_id` de quien pide — nunca se
+  // acepta un identificador de pago que venga del cliente.
+  const customerId = await customerDelUsuario(stripe, supabase, user.id);
+  if (!customerId) {
+    return {
+      ok: false,
+      mensaje: 'No encontramos tu ficha de pago. Vuelve a empezar el alta.',
+    };
+  }
+
   try {
-    await stripe.customers.update(input.customerId, {
+    // El método de pago tiene que estar en ESE customer. Si no, Stripe falla
+    // al asignarlo como predeterminado y no se llega a crear la suscripción.
+    const pm = await stripe.paymentMethods.retrieve(input.paymentMethodId);
+    if (pm.customer && idDeCliente(pm.customer) !== customerId) {
+      return { ok: false, mensaje: 'Ese método de pago no corresponde a tu cuenta.' };
+    }
+
+    await stripe.customers.update(customerId, {
       invoice_settings: { default_payment_method: input.paymentMethodId },
     });
 
     await stripe.subscriptions.create({
-      customer: input.customerId,
+      customer: customerId,
       items: [{ price: priceIdCuota(plan, input.periodo) }],
       default_payment_method: input.paymentMethodId,
       collection_method: 'charge_automatically',
