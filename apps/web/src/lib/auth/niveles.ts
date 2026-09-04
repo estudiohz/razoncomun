@@ -10,6 +10,10 @@ export type Perfil = {
   id: string;
   email: string | null;
   display_name: string | null;
+  /** Nombre y apellidos reales (0057): carnet de socio y certificado fiscal. */
+  legal_name: string | null;
+  /** Fecha de nacimiento (0058): edad mínima de socio y libro de socios. */
+  birth_date: string | null;
   level: Nivel;
   origin_province_id: number | null;
   newsletter_opt_in: boolean;

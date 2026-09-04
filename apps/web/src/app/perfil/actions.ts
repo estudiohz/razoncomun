@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { esNombreCompleto } from '@/lib/afiliacion/consentimiento';
 
 export type EstadoActualizarPerfil = {
   ok: boolean | null; // null = todavía no se ha enviado nada
@@ -17,6 +18,8 @@ export type EstadoActualizarPerfil = {
   // Navarra, aunque en BD y tras recargar la página sí quedaba Navarra).
   valores?: {
     display_name: string;
+    legal_name: string;
+    birth_date: string;
     origin_province_id: number | null;
     newsletter_opt_in: boolean;
     newsletter_opt_in_at: string | null;
@@ -44,6 +47,30 @@ export async function actualizarPerfil(
   if (!user) redirect('/entrar');
 
   const display_name = (formData.get('display_name') as string)?.trim() || null;
+
+  // Nombre y apellidos (0057) y fecha de nacimiento (0058). Los dos son
+  // OPCIONALES aquí: quien solo está registrado no tiene por qué darlos. Pero
+  // si escribe algo, tiene que valer — un carnet o un certificado fiscal con
+  // medio nombre no sirven, y una fecha inventada tampoco.
+  const legal_name_raw = (formData.get('legal_name') as string)?.trim().replace(/\s+/g, ' ') || '';
+  if (legal_name_raw && !esNombreCompleto(legal_name_raw)) {
+    return {
+      ok: false,
+      mensaje: 'Escribe tu nombre y tus apellidos completos, o deja el campo vacío.',
+    };
+  }
+  const legal_name = legal_name_raw || null;
+
+  const birth_date_raw = (formData.get('birth_date') as string)?.trim() || '';
+  if (birth_date_raw) {
+    const fecha = new Date(`${birth_date_raw}T00:00:00Z`);
+    const hoy = new Date();
+    const hace120 = new Date(Date.UTC(hoy.getUTCFullYear() - 120, hoy.getUTCMonth(), hoy.getUTCDate()));
+    if (Number.isNaN(fecha.getTime()) || fecha >= hoy || fecha <= hace120) {
+      return { ok: false, mensaje: 'Esa fecha de nacimiento no es válida.' };
+    }
+  }
+  const birth_date = birth_date_raw || null;
   const origin_province_raw = formData.get('origin_province_id') as string;
   const origin_province_id = origin_province_raw ? Number(origin_province_raw) : null;
   const newsletter_opt_in = formData.get('newsletter_opt_in') === 'on';
@@ -69,12 +96,14 @@ export async function actualizarPerfil(
     .from('profiles')
     .update({
       display_name,
+      legal_name,
+      birth_date,
       origin_province_id,
       newsletter_opt_in,
       ...(cambioNewsletter ? { newsletter_opt_in_at } : {}),
     })
     .eq('id', user.id)
-    .select('display_name, origin_province_id, newsletter_opt_in, newsletter_opt_in_at')
+    .select('display_name, legal_name, birth_date, origin_province_id, newsletter_opt_in, newsletter_opt_in_at')
     .single();
 
   if (errorUpdate || !filaActualizada) {

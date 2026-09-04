@@ -19,12 +19,16 @@ const ESTADO_INICIAL: EstadoActualizarPerfil = { ok: null, mensaje: '' };
  */
 export function PerfilDatosForm({
   displayNameInicial,
+  legalNameInicial,
+  birthDateInicial,
   provinciaInicial,
   newsletterInicial,
   newsletterOptInAt,
   provincias,
 }: {
   displayNameInicial: string;
+  legalNameInicial: string;
+  birthDateInicial: string;
   provinciaInicial: number | null;
   newsletterInicial: boolean;
   newsletterOptInAt: string | null;
@@ -33,6 +37,8 @@ export function PerfilDatosForm({
   const [estado, formAction, enviando] = useActionState(actualizarPerfil, ESTADO_INICIAL);
 
   const [nombre, setNombre] = useState(displayNameInicial);
+  const [nombreLegal, setNombreLegal] = useState(legalNameInicial);
+  const [nacimiento, setNacimiento] = useState(birthDateInicial);
   const [provincia, setProvincia] = useState(provinciaInicial ? String(provinciaInicial) : '');
   const [newsletter, setNewsletter] = useState(newsletterInicial);
   const [optInAt, setOptInAt] = useState(newsletterOptInAt);
@@ -82,6 +88,42 @@ export function PerfilDatosForm({
           className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
         />
       </div>
+      <div>
+        <label htmlFor="legal_name" className="mb-1.5 block text-[13.5px] font-semibold">
+          Nombre y apellidos
+        </label>
+        <input
+          id="legal_name"
+          name="legal_name"
+          value={nombreLegal}
+          onChange={(e) => setNombreLegal(e.target.value)}
+          autoComplete="name"
+          placeholder="Como en tu DNI"
+          className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
+        />
+        <p className="mt-1 text-[12px] text-gris">
+          Es el nombre que aparece en tu carnet de socio y en el certificado fiscal. Distinto del
+          nombre a mostrar, que es como te ven en la web.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="birth_date" className="mb-1.5 block text-[13.5px] font-semibold">
+          Fecha de nacimiento
+        </label>
+        <input
+          id="birth_date"
+          name="birth_date"
+          type="date"
+          value={nacimiento}
+          onChange={(e) => setNacimiento(e.target.value)}
+          className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
+        />
+        <p className="mt-1 text-[12px] text-gris">
+          Solo para comprobar la edad mínima de socio y para el libro de socios. No se publica.
+        </p>
+      </div>
+
       <div>
         <label htmlFor="origin_province_id" className="mb-1.5 block text-[13.5px] font-semibold">
           Provincia de origen <span className="font-normal text-gris">(opcional, autodeclarado)</span>

@@ -47,11 +47,23 @@ export default async function PanelPerfilPage() {
   const { data: tieneContrasena } = await supabase.rpc('has_password');
 
   return (
-    <div className="mx-auto w-full max-w-[760px] space-y-6">
+    <div className="mx-auto w-full max-w-[1120px]">
       <header>
         <h1 className="text-[clamp(24px,3.4vw,32px)] font-extrabold leading-tight">Mi perfil</h1>
         <p className="mt-1 text-[14px] text-gris">{user.email}</p>
       </header>
+
+      {/*
+        Dos columnas a partir de 1000px. En una sola columna a 760px de ancho
+        maximo, esta pagina dejaba dos tercios de pantalla vacios en escritorio
+        y obligaba a bajar mucho para llegar a la contraseña (reporte de Sergio,
+        04/09/2026). El corte no es arbitrario: a la izquierda QUIÉN ERES
+        —nivel y datos—, a la derecha CÓMO ENTRAS Y QUÉ HACEMOS CON TUS DATOS
+        —contraseña, 2FA, avisos y privacidad—. `items-start` evita que una
+        columna estire sus tarjetas para igualar a la otra.
+      */}
+      <div className="mt-6 grid items-start gap-6 min-[1000px]:grid-cols-2">
+        <div className="space-y-6">
 
       {/* NIVEL */}
       <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
@@ -97,6 +109,8 @@ export default async function PanelPerfilPage() {
         <div className="mt-4">
           <PerfilDatosForm
             displayNameInicial={perfil.display_name ?? ''}
+            legalNameInicial={perfil.legal_name ?? ''}
+            birthDateInicial={perfil.birth_date ?? ''}
             provinciaInicial={perfil.origin_province_id}
             newsletterInicial={perfil.newsletter_opt_in}
             newsletterOptInAt={perfil.newsletter_opt_in_at}
@@ -104,6 +118,10 @@ export default async function PanelPerfilPage() {
           />
         </div>
       </section>
+
+        </div>
+
+        <div className="space-y-6">
 
       {/* NOTIFICACIONES PUSH (0046) */}
       <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
@@ -143,6 +161,9 @@ export default async function PanelPerfilPage() {
           <ExportarBorrarCuenta />
         </div>
       </section>
+
+        </div>
+      </div>
     </div>
   );
 }
