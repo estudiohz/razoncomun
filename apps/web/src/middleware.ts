@@ -58,6 +58,14 @@ export async function middleware(request: NextRequest) {
       // justo donde hay que probarlos antes de tocar producción. Sin firma
       // válida responden 400 igual que en producción.
       pathname.startsWith('/api/stripe') ||
+      // Verificador del carnet: mismo razonamiento que los webhooks. No se
+      // autentica con sesión sino con el token firmado de la propia URL, que
+      // se comprueba dentro de la ruta. Y sobre todo: lo escanea un móvil
+      // AJENO, que por definición no tiene sesión — dejarlo tras el login
+      // hace imposible probar el QR en dev, que es justo donde hay que
+      // probarlo. Un token inválido responde "no válido" igual que en
+      // producción, sin tocar la base de datos.
+      pathname.startsWith('/carnet/v/') ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';
