@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { BotonCambiarCookies } from '@/components/legal/BotonCambiarCookies';
 import { Contenedor } from './Contenedor';
 import { IconoRed } from './iconos-redes';
 import { navFooter, redesSociales, site } from '@/lib/site';
@@ -79,19 +80,21 @@ export async function Footer() {
           </Link>
         </div>
 
-        {enLegal.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5">
-            {enLegal.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/${p.slug}`}
-                className="text-[12.5px] text-white/65 no-underline hover:text-white/90"
-              >
-                {p.title}
-              </Link>
-            ))}
-          </div>
-        )}
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5">
+          {enLegal.map((p) => (
+            <Link
+              key={p.slug}
+              href={`/${p.slug}`}
+              className="text-[12.5px] text-white/65 no-underline hover:text-white/90"
+            >
+              {p.title}
+            </Link>
+          ))}
+          {/* Retirar el consentimiento tiene que ser tan fácil como darlo
+              (AEPD), así que vive aquí, al lado de las páginas legales y en
+              todas las páginas — no escondido dentro de la de cookies. */}
+          <BotonCambiarCookies />
+        </div>
 
         <p className="mt-7 text-[12.5px] text-white/60">
           © {new Date().getFullYear()} {site.nombre}. {site.registro} NIF: G26753582.
