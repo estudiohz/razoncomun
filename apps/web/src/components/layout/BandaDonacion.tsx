@@ -45,7 +45,7 @@ import { Contenedor } from './Contenedor';
  */
 
 /** Importes sugeridos, en euros. El orden es el de la banda. */
-const IMPORTES_SUGERIDOS = [5, 10, 20, 100, 200] as const;
+const IMPORTES_SUGERIDOS = [5, 10, 20, 100, 250] as const;
 
 /**
  * Lee el mapa `importe:url` de la variable de entorno.
