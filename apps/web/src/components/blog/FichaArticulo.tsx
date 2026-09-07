@@ -96,7 +96,9 @@ export function FichaArticulo({
       </div>
 
       {/* Rejilla 75/25: artículo + sidebar sticky (se conserva). */}
-      <div className="mx-auto mt-[40px] grid max-w-[1200px] grid-cols-1 gap-10 px-8 min-[981px]:grid-cols-[75%_25%] min-[981px]:gap-0">
+      {/* `pb-[60px]`: sin esto el artículo acababa pegado al footer (reporte de
+          Sergio, 07/09/2026). El margen superior ya estaba; faltaba el de abajo. */}
+      <div className="mx-auto mb-[60px] mt-[40px] grid max-w-[1200px] grid-cols-1 gap-10 px-8 min-[981px]:grid-cols-[75%_25%] min-[981px]:gap-0">
         <article className="min-[981px]:pr-14">
           <CuerpoArticulo html={html} />
           <SelloTrazabilidad sello={sello} />
