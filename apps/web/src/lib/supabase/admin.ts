@@ -1,5 +1,5 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import { serviceRoleKeySupabase, urlSupabase } from './env';
+import { serviceRoleKeySupabase, urlSupabaseServidor } from './env';
 
 /**
  * Cliente con la clave `service_role` — bypasa RLS por completo.
@@ -17,7 +17,7 @@ export function createAdminClient() {
       'createAdminClient() es solo de servidor. No lo importes desde código de cliente.',
     );
   }
-  return createSupabaseClient(urlSupabase(), serviceRoleKeySupabase(), {
+  return createSupabaseClient(urlSupabaseServidor(), serviceRoleKeySupabase(), {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }

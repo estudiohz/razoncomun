@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -28,8 +29,16 @@ export type Perfil = {
  * consulta directa a `profiles` en el momento de la petición, NUNCA de un
  * claim del JWT (que puede llevar hasta ~1h desactualizado tras una baja).
  * Es la fuente de verdad correcta para decidir acceso a rutas/acciones.
+ *
+ * Va envuelto en `cache()` de React: dentro de UNA misma petición, el layout,
+ * la página y cualquier guard que se llame por el camino comparten el
+ * resultado en vez de repetir `auth.getUser()` + la lectura de `profiles`.
+ * Eran dos idas y vueltas a Supabase por cada guard, y en el panel se
+ * encadenan varios. `cache()` tiene el ámbito de la petición, así que esto NO
+ * cachea nada entre usuarios ni entre peticiones: la comprobación de nivel
+ * sigue siendo fresca en cada carga, que es justo lo que exige C2.
  */
-export async function getUsuarioYPerfil(): Promise<{
+export const getUsuarioYPerfil = cache(async function getUsuarioYPerfil(): Promise<{
   supabase: SupabaseClient;
   user: { id: string; email?: string } | null;
   perfil: Perfil | null;
@@ -48,7 +57,7 @@ export async function getUsuarioYPerfil(): Promise<{
     .single();
 
   return { supabase, user, perfil: (perfil as Perfil) ?? null };
-}
+});
 
 /** Exige sesión iniciada; si no la hay, redirige a /entrar conservando la ruta de vuelta. */
 export async function requireUsuario(rutaVuelta?: string) {

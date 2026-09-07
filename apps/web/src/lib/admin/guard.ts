@@ -1,6 +1,29 @@
+import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import { requireUsuario } from '@/lib/auth/niveles';
+import { createClient } from '@/lib/supabase/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
+
+/**
+ * Roles de app del usuario, una sola vez por petición.
+ *
+ * `is_admin` e `is_editor` son dos RPC, y se preguntaban en cada guard: el
+ * layout de `/admin` los pedía, y cualquier página que además llamase a
+ * `requireAdmin` los volvía a pedir. Con `cache()` (ámbito: la petición en
+ * curso) se resuelven una vez y se reparten.
+ *
+ * La clave del memo es el `userId` — una cadena — a propósito: si se pasara
+ * el cliente de Supabase como argumento, cada llamada traería un objeto
+ * distinto y el memo no acertaría nunca.
+ */
+const rolesDe = cache(async (userId: string) => {
+  const supabase = await createClient();
+  const [{ data: esAdmin }, { data: esEditor }] = await Promise.all([
+    supabase.rpc('is_admin', { p_user: userId }),
+    supabase.rpc('is_editor', { p_user: userId }),
+  ]);
+  return { esAdmin: Boolean(esAdmin), esEditor: Boolean(esEditor) };
+});
 
 /**
  * Guard de acceso al panel `/admin` (rc-09). Complementa (no sustituye) al
@@ -20,29 +43,19 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  */
 export async function requireAdminOrEditor(rutaVuelta = '/admin') {
   const { user, perfil, supabase } = await requireUsuario(rutaVuelta);
-
-  const [{ data: esAdmin }, { data: esEditor }] = await Promise.all([
-    supabase.rpc('is_admin', { p_user: user.id }),
-    supabase.rpc('is_editor', { p_user: user.id }),
-  ]);
+  const { esAdmin, esEditor } = await rolesDe(user.id);
 
   if (!esAdmin && !esEditor) {
     redirect('/');
   }
 
-  return {
-    user,
-    perfil: perfil!,
-    supabase,
-    esAdmin: Boolean(esAdmin),
-    esEditor: Boolean(esEditor),
-  };
+  return { user, perfil: perfil!, supabase, esAdmin, esEditor };
 }
 
 /** Variante que exige admin (no basta editor) — para acciones exclusivas de admin. */
 export async function requireAdmin(rutaVuelta = '/admin') {
   const { user, perfil, supabase } = await requireUsuario(rutaVuelta);
-  const { data: esAdmin } = await supabase.rpc('is_admin', { p_user: user.id });
+  const { esAdmin } = await rolesDe(user.id);
   if (!esAdmin) redirect('/admin');
   return { user, perfil: perfil!, supabase };
 }

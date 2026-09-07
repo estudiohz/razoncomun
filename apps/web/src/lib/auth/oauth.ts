@@ -1,4 +1,4 @@
-import { anonKeySupabase, urlSupabase } from '@/lib/supabase/env';
+import { anonKeySupabase, urlSupabaseServidor } from '@/lib/supabase/env';
 
 /**
  * ¿Está Google OAuth activo? Se le pregunta a GoTrue EN RUNTIME
@@ -18,7 +18,7 @@ import { anonKeySupabase, urlSupabase } from '@/lib/supabase/env';
  */
 export async function googleOAuthActivo(): Promise<boolean> {
   try {
-    const res = await fetch(`${urlSupabase()}/auth/v1/settings`, {
+    const res = await fetch(`${urlSupabaseServidor()}/auth/v1/settings`, {
       headers: { apikey: anonKeySupabase() },
       next: { revalidate: 300 },
     });

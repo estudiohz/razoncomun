@@ -17,6 +17,55 @@ export function urlSupabase(): string {
   return requerida('NEXT_PUBLIC_SUPABASE_URL', process.env.NEXT_PUBLIC_SUPABASE_URL);
 }
 
+/**
+ * URL de Supabase para las llamadas que salen del SERVIDOR (Server
+ * Components, Server Actions, middleware, route handlers).
+ *
+ * POR QUÉ EXISTE. `NEXT_PUBLIC_SUPABASE_URL` es el dominio público
+ * (`https://api.razoncomun.com`), y ese dominio está **proxeado por
+ * Cloudflare**. Cuando el contenedor de Next lo usaba para hablar con su
+ * propia base de datos, cada consulta salía del servidor, cruzaba hasta el
+ * borde de Cloudflare y volvía a entrar por Traefik → Kong. Medido en
+ * producción, 10 llamadas idénticas desde el contenedor:
+ *
+ *     por Cloudflare      mediana 250 ms  (picos de 1.149 ms)
+ *     por la red interna  mediana  21 ms
+ *
+ * Una navegación del panel encadena ~7 idas y vueltas, así que el rodeo
+ * costaba entre 1,5 y 4 segundos por clic. Con `SUPABASE_INTERNAL_URL`
+ * apuntando al Kong del propio host (`http://rc-prod-supabase-kong:8000`)
+ * la llamada no sale de la máquina.
+ *
+ * Es HTTP sin cifrar a propósito: el tráfico no abandona la red de Docker.
+ *
+ * ⚠️ NO usar esto para nada que acabe en el navegador o guardado en la base
+ * de datos — una URL `http://rc-prod-supabase-kong:8000/...` no la puede
+ * abrir nadie desde fuera. Para eso está `aUrlPublica()`, justo debajo.
+ *
+ * Si la variable no está, se usa la pública: en local y en cualquier
+ * entorno sin red interna todo sigue funcionando igual que antes.
+ */
+export function urlSupabaseServidor(): string {
+  return process.env.SUPABASE_INTERNAL_URL || urlSupabase();
+}
+
+/**
+ * Devuelve una URL de Supabase en su forma PÚBLICA, alcanzable desde
+ * cualquier navegador.
+ *
+ * El SDK construye las URLs de Storage (`getPublicUrl`) pegando la ruta a la
+ * URL con la que se creó el cliente. Como el cliente del servidor ahora usa
+ * la interna, sin esto las portadas del blog y las imágenes del cuerpo se
+ * guardarían en la base de datos como `http://rc-prod-supabase-kong:8000/...`
+ * y quedarían rotas **para siempre**, también para quien las mire dentro de
+ * un año. Este rescribe el prefijo antes de que eso pase.
+ */
+export function aUrlPublica(url: string): string {
+  const interna = process.env.SUPABASE_INTERNAL_URL;
+  if (interna && url.startsWith(interna)) return urlSupabase() + url.slice(interna.length);
+  return url;
+}
+
 export function anonKeySupabase(): string {
   return requerida('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }

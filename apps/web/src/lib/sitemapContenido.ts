@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { anonKeySupabase, urlSupabase } from '@/lib/supabase/env';
+import { anonKeySupabase, urlSupabaseServidor } from '@/lib/supabase/env';
 
 /**
  * Contenido dinámico para el sitemap: páginas del CMS y puntos del manifiesto.
@@ -22,7 +22,7 @@ type Fila = { loc: string; lastmod: string | null };
 
 function cliente() {
   try {
-    return createClient(urlSupabase(), anonKeySupabase(), {
+    return createClient(urlSupabaseServidor(), anonKeySupabase(), {
       auth: { persistSession: false, autoRefreshToken: false },
     });
   } catch {

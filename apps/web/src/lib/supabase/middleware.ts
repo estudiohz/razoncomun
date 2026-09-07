@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { anonKeySupabase, urlSupabase } from './env';
+import { anonKeySupabase, urlSupabaseServidor } from './env';
 
 /**
  * Refresca la sesión de Supabase en cada petición (patrón oficial de
@@ -11,7 +11,7 @@ import { anonKeySupabase, urlSupabase } from './env';
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(urlSupabase(), anonKeySupabase(), {
+  const supabase = createServerClient(urlSupabaseServidor(), anonKeySupabase(), {
     cookies: {
       getAll() {
         return request.cookies.getAll();

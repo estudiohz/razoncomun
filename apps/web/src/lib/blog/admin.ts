@@ -5,6 +5,7 @@ import { emitirPublicacion } from './eventos';
 import { BUCKET_PORTADAS, requireEditor } from './guard';
 import { slugificar } from './markdown';
 import type { ArticuloConRelaciones } from './tipos';
+import { aUrlPublica } from '@/lib/supabase/env';
 
 // `requireEditor` y `BUCKET_PORTADAS` viven en `./guard` porque este módulo es
 // `'use server'`: solo puede exportar funciones async serializables, y aquellos
@@ -257,8 +258,11 @@ export async function subirPortada(
     .upload(ruta, archivo, { cacheControl: '31536000', upsert: false });
   if (error) return { error: `No se ha podido subir: ${error.message}` };
 
+  // `aUrlPublica`: el cliente del servidor habla con Supabase por la red
+  // interna, y esta URL se GUARDA en la base de datos. Sin rescribirla, la
+  // portada quedaria apuntando al host de Docker y no la veria nadie.
   const { data } = supabase.storage.from(BUCKET_PORTADAS).getPublicUrl(ruta);
-  return { url: data.publicUrl };
+  return { url: aUrlPublica(data.publicUrl) };
 }
 
 /** Tipos que admite el cuerpo del artículo. Debe caber en lo que acepta el
@@ -315,8 +319,9 @@ export async function subirMedia(
     .upload(ruta, archivo, { cacheControl: '31536000', upsert: false });
   if (error) return { error: `No se ha podido subir: ${error.message}` };
 
+  // Idem: esta URL acaba incrustada en el markdown del articulo.
   const { data } = supabase.storage.from(BUCKET_PORTADAS).getPublicUrl(ruta);
-  const url = data.publicUrl;
+  const url = aUrlPublica(data.publicUrl);
 
   const markdown =
     clase === 'imagen'
