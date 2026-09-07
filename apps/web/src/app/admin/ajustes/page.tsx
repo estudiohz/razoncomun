@@ -3,7 +3,7 @@ import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
 import { listarCredencialesIA, PROVEEDOR_LABEL } from '@/lib/admin/ia';
 import { nombresPorId } from '@/lib/admin/perfiles';
-import { actualizarAntiguedadMinima } from './actions';
+import { actualizarAntiguedadMinima, actualizarCodigoSeguimiento } from './actions';
 import { ProveedorIAPanel, type ActivaView } from './ProveedorIAPanel';
 
 const DIAS_OPCIONES = [0, 1, 3, 5, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365];
@@ -36,6 +36,17 @@ export default async function AjustesPage() {
   const opcionesDias = DIAS_OPCIONES.includes(diasActuales)
     ? DIAS_OPCIONES
     : [...DIAS_OPCIONES, diasActuales].sort((a, b) => a - b);
+
+  const { data: filasSeguimiento } = await supabase
+    .from('settings')
+    .select('key, value, updated_by, updated_at')
+    .in('key', ['tracking_head', 'tracking_body']);
+
+  const seguimiento = new Map((filasSeguimiento ?? []).map((f) => [f.key, f]));
+  const codigoHead = String(seguimiento.get('tracking_head')?.value ?? '');
+  const codigoBody = String(seguimiento.get('tracking_body')?.value ?? '');
+  const seguimientoTocado =
+    seguimiento.get('tracking_head')?.updated_at ?? seguimiento.get('tracking_body')?.updated_at ?? null;
 
   const nombres = await nombresPorId([...credenciales.map((c) => c.changed_by), ajusteAntiguedad?.updated_by ?? null]);
 
@@ -158,6 +169,74 @@ export default async function AjustesPage() {
           </table>
         </Tarjeta>
       )}
+
+      {/* ── SEGUIMIENTO ─────────────────────────────────────────────── */}
+      <h2 className="mt-10 text-[15px] font-extrabold text-titular">Analítica y seguimiento</h2>
+      <Tarjeta className="p-5">
+        <h3 className="mb-2 text-[14px] font-bold text-titular">Código de terceros</h3>
+        <p className="text-[13px] text-cuerpo">
+          Lo que pegues aquí se ejecuta en el navegador de cada visitante — Google Analytics, píxel
+          de Meta, Search Console… El primer campo va al <code>&lt;head&gt;</code> y el segundo al
+          principio del <code>&lt;body&gt;</code>.
+        </p>
+
+        <div className="mt-3 rounded-boton border-l-4 border-teal bg-teal/[.06] px-4 py-3 text-[12.5px] leading-relaxed text-cuerpo">
+          <strong className="text-titular">No se carga hasta que la persona acepta las cookies.</strong>{' '}
+          Quien rechace no descargará nada de Google ni de Meta. Es lo que hace que el aviso de
+          cookies signifique algo — si el código se ejecutara igual, el aviso sería decorativo y
+          tendríamos el problema legal completo, no medio.
+        </div>
+
+        <div className="mt-3 rounded-boton border-l-4 border-[#E8792F] bg-amber-50 px-4 py-3 text-[12.5px] leading-relaxed text-amber-900">
+          <strong>Esto es un campo de confianza total.</strong> El código puede leer la página,
+          hacer peticiones y acceder a la sesión de quien navega. Pega solo fragmentos que entiendas
+          y que vengan de donde crees que vienen. Cada cambio queda registrado con tu nombre.
+        </div>
+
+        <form action={actualizarCodigoSeguimiento} className="mt-4 space-y-3">
+          <div>
+            <label htmlFor="tracking_head" className="mb-1 block text-[12px] font-bold text-gris">
+              Código del &lt;head&gt;
+            </label>
+            <textarea
+              id="tracking_head"
+              name="tracking_head"
+              rows={8}
+              defaultValue={codigoHead}
+              spellCheck={false}
+              placeholder="<!-- Google tag (gtag.js), Search Console... -->"
+              className="w-full rounded-boton border border-linea px-3 py-3 font-mono text-[12.5px] leading-relaxed"
+            />
+          </div>
+          <div>
+            <label htmlFor="tracking_body" className="mb-1 block text-[12px] font-bold text-gris">
+              Código del &lt;body&gt;
+            </label>
+            <textarea
+              id="tracking_body"
+              name="tracking_body"
+              rows={8}
+              defaultValue={codigoBody}
+              spellCheck={false}
+              placeholder="<!-- noscript del pixel de Meta... -->"
+              className="w-full rounded-boton border border-linea px-3 py-3 font-mono text-[12.5px] leading-relaxed"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              className="rounded-boton bg-accion px-5 py-3 text-[14px] font-bold text-white shadow-boton"
+            >
+              Guardar código
+            </button>
+            {seguimientoTocado && (
+              <span className="text-[12px] text-gris">
+                Última modificación: {new Date(seguimientoTocado).toLocaleString('es-ES')}
+              </span>
+            )}
+          </div>
+        </form>
+      </Tarjeta>
 
       <h2 className="text-[15px] font-extrabold text-titular">Participación</h2>
 

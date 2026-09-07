@@ -253,6 +253,77 @@ export async function eliminarProveedorIA(formData: FormData) {
  * con el cliente de sesión del propio admin — a diferencia de las
  * credenciales de IA, esta tabla NO exige `service_role`.
  */
+/** Los dos huecos de código de seguimiento, en `settings`. */
+export const CLAVES_SEGUIMIENTO = ['tracking_head', 'tracking_body'] as const;
+
+/**
+ * Guarda el código de seguimiento (Analytics, píxel de Meta…).
+ *
+ * ⚠️ ESTO GUARDA CÓDIGO QUE SE EJECUTA EN EL NAVEGADOR DE CADA VISITANTE.
+ * Quien pueda escribir aquí puede leer el DOM, hacer peticiones en nombre de
+ * la web y robar sesiones. `requireAdmin` es la única barrera —un editor NO
+ * llega— y por eso cada cambio se guarda en auditoría con quién y cuándo.
+ *
+ * No se sanea el HTML a propósito: sanearlo rompería justo los `<script>`
+ * que este campo existe para meter. La protección es de permisos, no de
+ * filtrado, y conviene tenerlo escrito para que nadie "arregle" esto luego
+ * metiéndole un sanitizador.
+ *
+ * El código NO se carga hasta que la persona acepta las cookies: lo monta
+ * `CodigoSeguimiento.tsx` desde el cliente, nunca el servidor.
+ */
+export async function actualizarCodigoSeguimiento(formData: FormData) {
+  const head = String(formData.get('tracking_head') ?? '');
+  const body = String(formData.get('tracking_body') ?? '');
+  const { user, supabase } = await requireAdmin('/admin/ajustes');
+
+  // Tope de tamaño: un pegado accidental de media página no debería acabar
+  // ejecutándose en todas las visitas.
+  const LIMITE = 20000;
+  if (head.length > LIMITE || body.length > LIMITE) {
+    throw new Error('El código es demasiado largo (máximo 20.000 caracteres por campo).');
+  }
+
+  for (const [clave, valor] of [['tracking_head', head], ['tracking_body', body]] as const) {
+    const { data: actual } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', clave)
+      .maybeSingle();
+    const anterior = typeof actual?.value === 'string' ? actual.value : '';
+
+    if (anterior === valor) continue;
+
+    const { error } = await supabase.from('settings').upsert({
+      key: clave,
+      value: valor,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    });
+    if (error) throw new Error(`No se pudo guardar ${clave}: ${error.message}`);
+
+    // En la auditoría va el TAMAÑO y un extracto, no el código entero: el
+    // registro es inmutable y no tiene sentido dejar ahí copias completas de
+    // cada versión. Con esto se ve quién lo cambió, cuándo y aproximadamente
+    // a qué, que es lo que hace falta para investigar un incidente.
+    await registrarAuditoria(supabase, {
+      actorId: user.id,
+      action: 'tracking_code_changed',
+      entity: 'settings',
+      entityId: null,
+      meta: {
+        key: clave,
+        largo_antes: anterior.length,
+        largo_despues: valor.length,
+        extracto: valor.slice(0, 120),
+      },
+    });
+  }
+
+  revalidatePath('/admin/ajustes');
+  revalidatePath('/', 'layout');
+}
+
 export async function actualizarAntiguedadMinima(formData: FormData) {
   const dias = Number(formData.get('dias'));
   const motivo = String(formData.get('motivo') ?? '').trim();

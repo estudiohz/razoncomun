@@ -3,6 +3,9 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { Nav } from '@/components/layout/Nav';
 import { Footer } from '@/components/layout/Footer';
+import { AvisoCookies } from '@/components/legal/AvisoCookies';
+import { CodigoSeguimiento } from '@/components/legal/CodigoSeguimiento';
+import { codigoSeguimiento } from '@/lib/legal/seguimiento';
 import { ChromePublico } from '@/components/layout/ChromePublico';
 import { BandaDonacion } from '@/components/layout/BandaDonacion';
 import { RegistroPWA } from '@/components/layout/RegistroPWA';
@@ -39,9 +42,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const { head, body } = await codigoSeguimiento();
+
   return (
     <html lang="es" className={montserrat.variable}>
       <body>
@@ -57,6 +62,10 @@ export default function RootLayout({
             debe verse también en /panel; él mismo se oculta en /admin. */}
         <MenuInferior />
         <RegistroPWA />
+        {/* El aviso y el inyector, en este orden. El inyector NO carga nada
+            hasta que hay un "Aceptar" explícito: ver CodigoSeguimiento.tsx. */}
+        <AvisoCookies />
+        <CodigoSeguimiento codigoHead={head} codigoBody={body} />
       </body>
     </html>
   );
