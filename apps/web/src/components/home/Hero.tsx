@@ -55,7 +55,12 @@ export function Hero() {
               corrige — como debería haber sido siempre.
             </p>
             <div className="fade d1 mt-[30px] flex flex-wrap items-center gap-3.5">
-              <Boton href="/entrar" variante="grad">
+              {/* → /unete, no /entrar (Sergio, 07/09/2026). "Únete" significa
+                  lo mismo en toda la web: la escalera de /unete, cuyo primer
+                  peldaño ES la cuenta gratis. Antes llevaba al formulario de
+                  login, donde el registro era un enlace pequeño al pie: quien
+                  no tiene cuenta tenía que buscarlo. */}
+              <Boton href="/unete" variante="grad">
                 Únete
               </Boton>
               <Boton href="/manifiesto" variante="heroSuave">

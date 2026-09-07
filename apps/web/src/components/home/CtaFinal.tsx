@@ -20,16 +20,18 @@ export function CtaFinal() {
           <h2 className="relative mx-auto max-w-[26ch] text-[clamp(28px,3.4vw,44px)] font-extrabold leading-[1.18]">
             La alternativa que estabas esperando ya existe. Y es tuya.
           </h2>
-          {/* "Únete" y no "Afíliate" (Sergio, 02/08/2026), igual que en el nav:
-              la puerta grande es entrar gratis y participar; la cuota se pide
-              después, con la persona ya dentro. Pedir dinero en el primer clic
-              filtra justo a quien todavía no te conoce. La cuota sigue
-              nombrada aquí y tiene su sitio en footer, burger y panel. */}
+          {/* "Únete", nunca "Afíliate", y → /unete (Sergio, 02/08 y 07/09/2026).
+              Sigue sin pedirse dinero en el primer clic: /unete es la
+              ESCALERA, y su primer peldaño es "Crea tu cuenta gratis". Lo que
+              cambia respecto a agosto es el destino —antes /entrar, un
+              formulario de login—, no la estrategia: quien no quiere pagar
+              ve la opción gratis nada más llegar, en vez de tener que buscar
+              un enlace pequeño al pie del login. */}
           <p className="relative mx-auto mb-[34px] mt-[18px] max-w-[50ch] text-cuerpo">
             Únete gratis y participa en las propuestas, las votaciones y el programa. Si además
             quieres sostenerlo, hacerte socio está a un paso.
           </p>
-          <Boton href="/entrar" variante="marca" className="relative">
+          <Boton href="/unete" variante="marca" className="relative">
             Únete
           </Boton>
         </div>
