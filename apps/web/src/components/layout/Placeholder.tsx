@@ -36,7 +36,7 @@ export function Placeholder({
             Volver a la home
           </Boton>
           <Boton href="/unete" variante="grad">
-            Afíliate
+            Únete
           </Boton>
         </div>
         {dueño ? (

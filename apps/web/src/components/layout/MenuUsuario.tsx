@@ -131,7 +131,7 @@ export function MenuUsuario({ nombre, inicial, mostrarAdmin }: MenuUsuarioProps)
             onClick={() => setAbierto(false)}
           >
             <IconoAfiliate />
-            Afíliate
+            Únete
           </Link>
 
           {mostrarAdmin && (
