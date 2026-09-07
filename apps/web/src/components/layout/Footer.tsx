@@ -76,7 +76,7 @@ export async function Footer() {
             </Link>
           ))}
           <Link href="/entrar" className={claseEnlace}>
-            Entrar
+            Accede
           </Link>
         </div>
 

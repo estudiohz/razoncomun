@@ -20,7 +20,7 @@ function inicialDe(nombre: string, email: string | null): string {
  * Nav flotante translúcido con logo e ítems. Fiel a boceto-4-teal.html.
  *
  * Server component: lee la sesión de la petición (getUsuarioYPerfil de rc-03).
- * - Sin sesión → "Entrar" + "Afíliate" (como el boceto original).
+ * - Sin sesión → "Únete" (→ /unete) + botón "Accede" (→ /entrar).
  * - Con sesión → menú de usuario (avatar + nombre) con desplegable
  *   Perfil / Admin (solo admin o editor) / Cerrar sesión.
  */
@@ -101,15 +101,28 @@ export async function Nav() {
                     {/* Sin botón de Google aquí (Sergio, 02/08/2026): no cabía
                         —ocho enlaces + dos botones desbordaban el nav— y
                         duplicaba el que ya vive en /entrar, que es su sitio.
-                        "Únete" lleva justo ahí, así que el clic con Google
-                        sigue estando a un toque de distancia. */}
-                    {/* "Únete", nunca "Afíliate" (Sergio, 02/08 y 10/08/2026):
-                        la puerta grande es unirse gratis; la cuota se pide
-                        después, con el usuario ya dentro (tarjeta del panel).
-                        el termino "afiliado" es de la vieja politica y no se
-                        usa en ningun texto visible. */}
-                    <Boton href="/entrar" variante="grad" className="px-[22px] py-[9px] text-sm">
+                        Sigue estando a un toque, dentro de "Accede". */}
+
+                    {/* DOS PUERTAS DISTINTAS (Sergio, 07/09/2026). Antes había
+                        un solo botón que decía "Únete" y llevaba a /entrar: ni
+                        una cosa ni la otra: quien quería hacerse socio
+                        aterrizaba en un formulario de acceso, y quien ya
+                        tenía cuenta no veía dónde entrar.
+
+                        "Únete" → /unete (hacerse socio) y "Accede" → /entrar
+                        (iniciar sesión). El término es "Únete", nunca
+                        "Afíliate": afiliado es de la vieja política.
+
+                        Solo para quien NO tiene sesión. Con sesión, ambas
+                        sobran: el menú de usuario ya lleva a la cuota. */}
+                    <Link
+                      href="/unete"
+                      className="whitespace-nowrap text-sm font-bold text-cuerpo no-underline hover:text-titular"
+                    >
                       Únete
+                    </Link>
+                    <Boton href="/entrar" variante="grad" className="px-[22px] py-[9px] text-sm">
+                      Accede
                     </Boton>
                   </>
                 )}

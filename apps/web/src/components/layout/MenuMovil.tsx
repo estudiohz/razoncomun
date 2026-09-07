@@ -185,7 +185,7 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
                   onClick={cerrar}
                   className="flex-1 rounded-boton border border-linea bg-white py-3 text-center text-base font-bold text-titular no-underline hover:border-titular"
                 >
-                  Entrar
+                  Accede
                 </Link>
                 <Link
                   href="/unete"
