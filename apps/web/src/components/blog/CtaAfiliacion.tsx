@@ -12,13 +12,13 @@ export function CtaAfiliacion() {
         Súmate
       </h2>
       <p className="mb-4 text-[14.5px] text-white/[.92]">
-        Este análisis lo hace posible la comunidad. Afíliate y decide qué investigamos.
+        Este análisis lo hace posible la comunidad. Únete y decide qué investigamos.
       </p>
       <Link
         href="/unete"
         className="inline-block rounded-[11px] bg-white px-[22px] py-[11px] text-[14px] font-bold text-accion no-underline"
       >
-        Afíliate
+        Únete
       </Link>
     </section>
   );
