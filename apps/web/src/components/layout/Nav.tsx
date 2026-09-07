@@ -103,10 +103,11 @@ export async function Nav() {
                         duplicaba el que ya vive en /entrar, que es su sitio.
                         "Únete" lleva justo ahí, así que el clic con Google
                         sigue estando a un toque de distancia. */}
-                    {/* "Únete" y no "Afíliate" (decisión de Sergio, 02/08):
+                    {/* "Únete", nunca "Afíliate" (Sergio, 02/08 y 10/08/2026):
                         la puerta grande es unirse gratis; la cuota se pide
                         después, con el usuario ya dentro (tarjeta del panel).
-                        Afíliate sigue en footer, burger y menú de usuario. */}
+                        el termino "afiliado" es de la vieja politica y no se
+                        usa en ningun texto visible. */}
                     <Boton href="/entrar" variante="grad" className="px-[22px] py-[9px] text-sm">
                       Únete
                     </Boton>

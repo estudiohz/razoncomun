@@ -42,7 +42,7 @@ export default async function VotacionesPage() {
         <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">Democracia semidirecta</span>
         <h1 className="mt-3 text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.12]">Votaciones</h1>
         <p className="mx-auto mt-3 max-w-[62ch] text-[16px] text-cuerpo">
-          Censo congelado al abrir. Voto vinculante para afiliados activos con ≥3 meses de
+          Censo congelado al abrir. Voto vinculante para socios activos con ≥3 meses de
           antigüedad; consultivo para el resto de registrados. Resultados siempre públicos, con
           participación y quórum.
         </p>

@@ -19,8 +19,8 @@ export const metadata: Metadata = metadatosPagina({
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
-  member: 'Afiliado',
-  verified: 'Afiliado verificado',
+  member: 'Socio',
+  verified: 'Socio verificado',
 };
 
 /**
@@ -36,7 +36,7 @@ const NOMBRE_NIVEL: Record<string, string> = {
  * este layout solo evita renderizar el esqueleto a un anónimo.
  *
  * A diferencia de `/admin`, este panel NO exige 2FA: el middleware solo la
- * impone a quien tiene rol admin/editor o cargo vigente, y un afiliado de a
+ * impone a quien tiene rol admin/editor o cargo vigente, y un socio de a
  * pie no debe tropezarse con eso para ver su propia cuota.
  */
 export default async function PanelLayout({ children }: { children: ReactNode }) {

@@ -44,7 +44,7 @@ export function VotoForm({ voteId, esVinculante }: { voteId: string; esVinculant
         Tu voto será {esVinculante ? 'vinculante' : 'consultivo'}
         {!esVinculante && (
           <span className="ml-1.5 font-normal text-gris">
-            (no cumples los requisitos de afiliación para voto vinculante en esta votación)
+            (no cumples los requisitos de antigüedad como socio para voto vinculante en esta votación)
           </span>
         )}
       </p>

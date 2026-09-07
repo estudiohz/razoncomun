@@ -18,8 +18,8 @@ export const metadata: Metadata = metadatosPagina({
 
 const NOMBRE_NIVEL: Record<string, string> = {
   registered: 'Registrado',
-  member: 'Afiliado',
-  verified: 'Afiliado verificado',
+  member: 'Socio',
+  verified: 'Socio verificado',
 };
 
 /**
@@ -67,7 +67,7 @@ export default async function PanelPerfilPage() {
         <div id="verificacion" className="mt-4 scroll-mt-24 space-y-3 text-[13.5px] text-cuerpo">
           {perfil.level === 'registered' && (
             <p>
-              Hazte afiliado para votar en las propuestas de departamento.{' '}
+              Hazte socio para votar en las propuestas de departamento.{' '}
               <a href="/panel/afiliacion" className="font-semibold text-titular underline">
                 Ver cómo afiliarte
               </a>

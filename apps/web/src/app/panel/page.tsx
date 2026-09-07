@@ -6,7 +6,7 @@ import { contarBorradores } from '@/lib/participacion/drafts';
 import { progresoEncuestaDelMes } from '@/lib/participacion/encuesta-mes';
 
 /**
- * Dashboard del panel (D-U3). Los widgets son ADITIVOS por rol: un afiliado ve
+ * Dashboard del panel (D-U3). Los widgets son ADITIVOS por rol: un socio ve
  * lo del registrado más lo suyo, un editor lo de todos más su bloque de
  * moderación. Así nadie tiene que aprender una interfaz distinta al subir de
  * nivel — solo le aparecen tarjetas nuevas.
@@ -88,7 +88,7 @@ export default async function PanelInicioPage() {
           Hola{nombre ? `, ${nombre}` : ''}
         </h1>
         <p className="mt-1 text-[14px] text-gris">
-          Desde aquí gestionas tu cuenta, tu participación y tu afiliación.
+          Desde aquí gestionas tu cuenta, tu participación y tu cuota de socio.
         </p>
       </header>
 
@@ -170,16 +170,16 @@ export default async function PanelInicioPage() {
       )}
 
       {perfil.level === 'registered' && (
-        <Tarjeta titulo="Aún no eres afiliado" acento>
+        <Tarjeta titulo="Aún no eres socio" acento>
           <p>
             Afiliándote puedes votar las propuestas de departamento y sostienes el partido: Razón
-            Común se financia solo con las cuotas de sus afiliados.
+            Común se financia solo con las cuotas de sus socios.
           </p>
           <Link
             href="/panel/afiliacion"
             className="mt-3 inline-block rounded-boton bg-accion px-4 py-2.5 text-[13px] font-bold text-white no-underline shadow-boton"
           >
-            Ver cómo afiliarme
+            Ver cómo hacerme socio
           </Link>
         </Tarjeta>
       )}
@@ -207,7 +207,7 @@ export default async function PanelInicioPage() {
           <Dato valor={apoyadas ?? 0} etiqueta="Propuestas apoyadas" href="/panel/propuestas?tab=apoyadas" />
           <Dato
             valor={afiliacionActiva ? 1 : 0}
-            etiqueta={afiliacionActiva ? `Cuota ${afiliacionActiva.billing_period === 'annual' ? 'anual' : 'mensual'}` : 'Sin afiliación activa'}
+            etiqueta={afiliacionActiva ? `Cuota ${afiliacionActiva.billing_period === 'annual' ? 'anual' : 'mensual'}` : 'Sin cuota activa'}
             href="/panel/afiliacion"
           />
         </div>

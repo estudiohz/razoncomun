@@ -59,7 +59,7 @@ export default async function CuentasPage() {
           <h1 className="mt-2 text-[clamp(30px,5vw,44px)] font-extrabold">Nuestras cuentas, al céntimo</h1>
           <p className="mx-auto mt-3 max-w-[560px] text-[15px] text-cuerpo">
             Somos el primer partido español que enseña sus cuentas en abierto, actualizadas varias
-            veces al día. Ningún gasto oculto, ninguna donación opaca: solo cuotas de afiliados.
+            veces al día. Ningún gasto oculto, ninguna donación opaca: solo cuotas de socios.
           </p>
           {snapshot && (
             <p className="mt-2 text-[12px] text-gris">
@@ -85,7 +85,7 @@ export default async function CuentasPage() {
               <Tarjeta className="p-6 text-center">
                 <p className="text-[12px] font-bold uppercase tracking-wide text-gris">Ingresos del mes</p>
                 <p className="mt-2 text-[30px] font-extrabold text-titular">{euros(snapshot.income_month_cents)}</p>
-                <p className="mt-1 text-[12px] text-gris">{snapshot.members_count} afiliados de cuota activos</p>
+                <p className="mt-1 text-[12px] text-gris">{snapshot.members_count} socios de cuota activos</p>
               </Tarjeta>
               <Tarjeta className="p-6 text-center">
                 <p className="text-[12px] font-bold uppercase tracking-wide text-gris">Gastos del mes</p>
@@ -97,7 +97,7 @@ export default async function CuentasPage() {
             {/* TERMÓMETRO DE OBJETIVOS */}
             <Tarjeta className="p-6">
               <p className="text-[13px] font-bold text-titular">
-                Con {proximoHito - (snapshot.members_count ?? 0)} afiliados más → campaña de difusión provincial
+                Con {proximoHito - (snapshot.members_count ?? 0)} socios más → campaña de difusión provincial
               </p>
               <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-fondo">
                 <div
@@ -106,7 +106,7 @@ export default async function CuentasPage() {
                 />
               </div>
               <p className="mt-2 text-[12px] text-gris">
-                {snapshot.members_count} / {proximoHito} afiliados
+                {snapshot.members_count} / {proximoHito} socios
               </p>
             </Tarjeta>
 
@@ -208,7 +208,7 @@ export default async function CuentasPage() {
             )}
 
             <p className="text-center text-[12px] text-gris">
-              Los ingresos se muestran agregados (número de cuotas), nunca con nombres de afiliados.
+              Los ingresos se muestran agregados (número de cuotas), nunca con nombres de socios.
               Los gastos van línea a línea porque no contienen datos personales.
             </p>
           </>

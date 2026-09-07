@@ -26,7 +26,7 @@ export default async function NuevaPropuestaPage() {
         </h1>
         <p className="mx-auto mt-3 max-w-[60ch] text-[15.5px] text-cuerpo">
           Sé concreto: un problema, una solución, un coste estimado. La comunidad delibera y aporta
-          matices, el test de estrés comprueba si aguanta, y la afiliación decide si entra en el
+          matices, el test de estrés comprueba si aguanta, y los socios deciden si entra en el
           programa.
         </p>
       </header>

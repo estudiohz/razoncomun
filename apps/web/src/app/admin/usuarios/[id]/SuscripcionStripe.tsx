@@ -138,7 +138,7 @@ export function SuscripcionStripe({
       </div>
 
       <p className="text-[12px] text-gris">
-        Pausar no da de baja: la persona conserva su condición de afiliado y sus derechos de voto, y
+        Pausar no da de baja: la persona conserva su condición de socio y sus derechos de voto, y
         no se le acumulan cuotas atrasadas. Cancelar surte efecto al terminar el periodo ya pagado.
       </p>
     </div>
