@@ -253,8 +253,14 @@ export async function eliminarProveedorIA(formData: FormData) {
  * con el cliente de sesión del propio admin — a diferencia de las
  * credenciales de IA, esta tabla NO exige `service_role`.
  */
-/** Los dos huecos de código de seguimiento, en `settings`. */
-export const CLAVES_SEGUIMIENTO = ['tracking_head', 'tracking_body'] as const;
+/*
+ * Las dos claves de `settings` que usa esto son 'tracking_head' y
+ * 'tracking_body'. NO se sacan a una constante exportada aquí: un fichero
+ * 'use server' solo puede exportar funciones async, y exportar un array
+ * rompe el build de producción con "can only export async functions, found
+ * object" — un fallo que `tsc` no ve. Quien las necesite, en
+ * `lib/legal/seguimiento.ts`.
+ */
 
 /**
  * Guarda el código de seguimiento (Analytics, píxel de Meta…).
