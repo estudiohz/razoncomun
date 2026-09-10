@@ -13,6 +13,21 @@ import { useEffect, useState } from 'react';
  * solo para quien de verdad decide ver el vídeo. Coherente con la regla del
  * aviso de cookies — un iframe embed.js no dispara el mismo aviso que
  * Analytics/Meta, pero igualmente no hay razón para pagarlo si nadie lo pide.
+ *
+ * FORMATO 9:16 (Sergio, 10/09/2026): el vídeo destacado es un Short/Reel, no
+ * un vídeo horizontal. La tarjeta ya NO fija su ancho al de la columna del
+ * grid (como los artículos): fija su ALTO al de la fila —la misma altura que
+ * las tarjetas de blog vecinas, vía `align-items: stretch` del grid, que es
+ * el comportamiento por defecto— y deriva el ancho de `aspect-[9/16]`, con
+ * `justify-self-center` para que no intente además estirarse a lo ancho. El
+ * resultado es una tarjeta vertical y más estrecha que sus vecinas, pero de
+ * la MISMA altura — "el mismo tamaño que una tarjeta del blog" sin que el
+ * grid entero se dispare de alto (un 9:16 a todo el ancho de columna sería
+ * casi el doble de alto que una tarjeta de blog real).
+ *
+ * En móvil (`grid-cols-1`, una tarjeta por fila) no hay fila que compartir,
+ * así que se vuelve al patrón normal: ancho completo y alto derivado del
+ * ratio — que es exactamente como se ve un Short a pantalla completa.
  */
 export function ModalVideo({
   youtubeId,
@@ -40,7 +55,7 @@ export function ModalVideo({
         type="button"
         onClick={() => setAbierto(true)}
         aria-label={`Reproducir vídeo: ${titulo}`}
-        className="group relative flex aspect-[16/9] w-full flex-col overflow-hidden rounded-tarjeta border border-linea bg-titular text-left no-underline transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-tarjeta"
+        className="group relative flex aspect-[9/16] h-full w-auto justify-self-center flex-col overflow-hidden rounded-tarjeta border border-linea bg-titular text-left no-underline transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-tarjeta max-[960px]:h-auto max-[960px]:w-full max-[960px]:justify-self-stretch"
       >
         {caratula ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -69,7 +84,7 @@ export function ModalVideo({
           onClick={() => setAbierto(false)}
         >
           <div
-            className="aspect-video w-full max-w-[900px]"
+            className="aspect-[9/16] h-[85vh] max-h-[85vh] w-auto max-w-[92vw]"
             onClick={(e) => e.stopPropagation()}
           >
             <iframe

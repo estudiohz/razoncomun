@@ -67,7 +67,7 @@ export function FormularioVideoDestacado({
         <p className={etiqueta}>Carátula</p>
         {caratula ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={caratula} alt="Carátula actual" className="mb-4 aspect-video w-full rounded-boton object-cover" />
+          <img src={caratula} alt="Carátula actual" className="mb-4 aspect-[9/16] w-full max-w-[220px] rounded-boton object-cover" />
         ) : (
           <p className="mb-4 text-[13px] text-gris">Sin carátula todavía.</p>
         )}
@@ -78,7 +78,7 @@ export function FormularioVideoDestacado({
           form="subida-caratula"
           className="text-[13px]"
         />
-        <p className="mt-2 text-[13px] text-gris">JPG, PNG, WebP o AVIF, máx. 5 MB. Formato horizontal (16:9).</p>
+        <p className="mt-2 text-[13px] text-gris">JPG, PNG, WebP o AVIF, máx. 5 MB. Formato vertical (9:16), como un Short o un Reel.</p>
         <button
           type="submit"
           form="subida-caratula"
