@@ -1,32 +1,40 @@
 import Link from 'next/link';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { fechaCorta, listarArticulos } from '@/lib/blog/consultas';
+import { leerVideoDestacado } from '@/lib/home/video-destacado';
+import { ModalVideo } from './ModalVideo';
 
 /**
- * Feed "Lo último del blog" de la portada — las 3 últimas noticias PUBLICADAS.
+ * "Actualidad" de la portada (10/09/2026, encargo de Sergio; antes "Lo
+ * último del blog").
  *
- * Antes mostraba tres tarjetas del boceto con datos de `lib/mock` y un aviso
- * de "contenido de ejemplo" (Sergio, 29/08/2026: fuera). Ahora lee la base.
+ * Si hay un vídeo destacado configurado en `/admin/portada`, el tercer
+ * hueco de la rejilla deja de ser un artículo y pasa a ser su carátula con
+ * play (`ModalVideo`) — se piden solo 2 artículos en vez de 3. Sin vídeo
+ * configurado, el comportamiento es EXACTAMENTE el de antes: 3 artículos.
+ * Así nadie ve un hueco vacío el día que aún no se ha subido nada.
  *
- * Es un Server Component asíncrono: la consulta corre en el servidor, así que
- * no añade JavaScript al navegador ni una llamada extra desde el cliente. Y
- * pasa por las mismas políticas RLS que el resto, de modo que un borrador o un
- * artículo PROGRAMADO al futuro (migración 0050) no puede colarse en la
- * portada.
+ * Es un Server Component asíncrono: las dos consultas (artículos + vídeo)
+ * corren en el servidor, así que no añaden JavaScript al navegador ni una
+ * llamada extra desde el cliente. Los artículos pasan por las mismas
+ * políticas RLS que el resto, de modo que un borrador o un artículo
+ * PROGRAMADO al futuro (migración 0050) no puede colarse en la portada.
  *
- * Si no hay artículos todavía, la sección no se pinta: mejor eso que un hueco
- * con tarjetas vacías.
+ * Si no hay artículos NI vídeo, la sección no se pinta: mejor eso que un
+ * hueco con tarjetas vacías.
  */
 export async function FeedObservatorio() {
-  const articulos = await listarArticulos({ tipo: 'editorial', limite: 3 });
-  if (articulos.length === 0) return null;
+  const video = await leerVideoDestacado();
+  const articulos = await listarArticulos({ tipo: 'editorial', limite: video ? 2 : 3 });
+
+  if (articulos.length === 0 && !video) return null;
 
   return (
     <section className="pb-[90px] pt-[70px]">
       <Contenedor>
         <div className="mb-11 max-w-[60ch]">
           <h2 className="text-[clamp(28px,3.2vw,40px)] font-extrabold leading-[1.15]">
-            Lo último del blog
+            Actualidad
           </h2>
           <p className="mt-3.5 text-base">
             Análisis generado a partir de fuentes oficiales y revisado por el equipo antes de
@@ -67,6 +75,10 @@ export async function FeedObservatorio() {
               </div>
             </Link>
           ))}
+
+          {video ? (
+            <ModalVideo youtubeId={video.youtubeId} caratula={video.caratula} titulo="Vídeo destacado" />
+          ) : null}
         </div>
       </Contenedor>
     </section>
