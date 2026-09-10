@@ -1,7 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { anonKeySupabase, urlSupabase } from './env';
+import { anonKeySupabase, claveCookieSesion, urlSupabase } from './env';
 
 /**
  * Cliente Supabase para Componentes Cliente ('use client'). Usa la clave
@@ -9,5 +9,10 @@ import { anonKeySupabase, urlSupabase } from './env';
  * para que el servidor (middleware, Server Components) la pueda leer.
  */
 export function createClient() {
-  return createBrowserClient(urlSupabase(), anonKeySupabase());
+  // El nombre se fija explicitamente aunque aqui coincidiria con el que
+  // supabase-js calcularia solo: asi navegador y servidor lo sacan del MISMO
+  // sitio y no pueden volver a separarse. Ver claveCookieSesion().
+  return createBrowserClient(urlSupabase(), anonKeySupabase(), {
+    cookieOptions: { name: claveCookieSesion() },
+  });
 }

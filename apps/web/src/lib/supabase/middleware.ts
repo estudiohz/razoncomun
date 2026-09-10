@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { anonKeySupabase, urlSupabaseServidor } from './env';
+import { anonKeySupabase, claveCookieSesion, urlSupabaseServidor } from './env';
 
 /**
  * Refresca la sesión de Supabase en cada petición (patrón oficial de
@@ -12,6 +12,7 @@ export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(urlSupabaseServidor(), anonKeySupabase(), {
+    cookieOptions: { name: claveCookieSesion() },
     cookies: {
       getAll() {
         return request.cookies.getAll();

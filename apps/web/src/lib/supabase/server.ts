@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
-import { anonKeySupabase, urlSupabaseServidor } from './env';
+import { anonKeySupabase, claveCookieSesion, urlSupabaseServidor } from './env';
 
 /**
  * Cliente Supabase para Server Components, Server Actions y Route Handlers.
@@ -13,6 +13,9 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(urlSupabaseServidor(), anonKeySupabase(), {
+    // Sin esto, el nombre de la cookie saldria del host INTERNO y no
+    // coincidiria con el que escribe el navegador. Ver claveCookieSesion().
+    cookieOptions: { name: claveCookieSesion() },
     cookies: {
       getAll() {
         return cookieStore.getAll();

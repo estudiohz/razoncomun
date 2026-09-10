@@ -66,6 +66,33 @@ export function aUrlPublica(url: string): string {
   return url;
 }
 
+/**
+ * Nombre de la cookie de sesion. SIEMPRE derivado de la URL PUBLICA.
+ *
+ * POR QUE EXISTE, y es una cicatriz: supabase-js calcula la clave de sesion
+ * a partir del host de la URL con la que se crea el cliente —
+ * `sb-${hostname.split(".")[0]}-auth-token`. Al empezar a hablar por la red
+ * interna (`urlSupabaseServidor`), el servidor paso a leer y escribir
+ * `sb-rc-prod-supabase-kong-auth-token` mientras el navegador seguia usando
+ * `sb-api-auth-token`. Resultado: el servidor no veia NINGUNA sesion.
+ *
+ * Rompio todo el login en produccion, no solo OAuth — email, registro, 2FA y
+ * recuperar contrasena escriben la cookie desde el navegador. El sintoma que
+ * se veia era "No hemos podido completar el acceso con ese proveedor",
+ * porque el verificador PKCE tambien viaja en una cookie con este prefijo.
+ *
+ * Fijandola aqui, el nombre deja de depender de por donde se hable con
+ * Supabase. Se deriva de la URL publica y no de una constante escrita a mano
+ * para que siga siendo correcta si algun dia cambia el dominio, y para que
+ * coincida con las cookies que los navegadores ya tienen guardadas.
+ *
+ * Se pasa como `cookieOptions.name` a @supabase/ssr, que es su forma
+ * soportada de fijar el `storageKey`.
+ */
+export function claveCookieSesion(): string {
+  return `sb-${new URL(urlSupabase()).hostname.split('.')[0]}-auth-token`;
+}
+
 export function anonKeySupabase(): string {
   return requerida('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 }
