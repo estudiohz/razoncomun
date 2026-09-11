@@ -154,7 +154,7 @@ export default async function PropuestasPage({
               href={`/propuestas/${p.slug ?? p.id}`}
               className="block rounded-tarjeta border border-linea bg-panel p-6 no-underline transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-tarjeta"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-stretch justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <EstadoBadge status={p.status} />
@@ -169,18 +169,23 @@ export default async function PropuestasPage({
                     {p.report_url && <span>🧪 Informe de test de estrés disponible</span>}
                   </div>
                 </div>
-                <div className="flex shrink-0 flex-col gap-1.5">
+                {/* Dos pastillas apiladas, cada una al 50% del alto de la tarjeta
+                    (petición de Sergio): items-stretch en el padre + flex-1 en
+                    cada una reparte el alto real de la tarjeta, no un tamaño fijo. */}
+                <div className="flex w-16 shrink-0 flex-col gap-1.5">
                   <span
                     aria-label={`${p.support_count} a favor`}
-                    className="inline-flex items-center justify-center gap-1 rounded-full bg-accion px-3 py-1.5 text-[13px] font-extrabold text-white"
+                    className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-boton bg-accion text-white"
                   >
-                    👍 {p.support_count}
+                    <span aria-hidden className="text-[15px] leading-none">👍</span>
+                    <span className="text-[15px] font-extrabold leading-none">{p.support_count}</span>
                   </span>
                   <span
                     aria-label={`${p.oppose_count} en contra`}
-                    className="inline-flex items-center justify-center gap-1 rounded-full bg-accion px-3 py-1.5 text-[13px] font-extrabold text-white"
+                    className="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-boton bg-accion text-white"
                   >
-                    👎 {p.oppose_count}
+                    <span aria-hidden className="text-[15px] leading-none">👎</span>
+                    <span className="text-[15px] font-extrabold leading-none">{p.oppose_count}</span>
                   </span>
                 </div>
               </div>
