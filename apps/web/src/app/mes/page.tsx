@@ -257,11 +257,11 @@ export default async function MesPage({
               <Link
                 key={p.id}
                 href={`/propuestas/${p.slug ?? p.id}`}
-                className="flex items-center justify-between gap-3 rounded-tarjeta border border-linea bg-panel p-4 no-underline hover:border-titular"
+                className="flex items-start justify-between gap-3 rounded-tarjeta border border-linea bg-panel p-4 no-underline hover:border-titular"
               >
                 <span className="min-w-0">
                   <EstadoBadge status={p.status} className="mb-1.5" />
-                  <span className="block truncate text-[15px] font-bold text-titular">{p.title}</span>
+                  <span className="line-clamp-2 text-[15px] font-bold text-titular">{p.title}</span>
                 </span>
                 <span className="shrink-0 text-[12.5px] text-gris">👍 {p.support_count}</span>
               </Link>

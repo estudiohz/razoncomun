@@ -35,7 +35,7 @@
   /* Isla flotante: se despega de los lados y del borde inferior para que su
      contorno redondeado se vea entero. Sin fondo propio detrás. */
   .marco {
-    padding: 0 2px calc(2px + env(safe-area-inset-bottom));
+    padding: 0 2px calc(10px + env(safe-area-inset-bottom));
   }
 
   .dock {

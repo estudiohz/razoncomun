@@ -256,6 +256,12 @@ export function ModerarPropuestaClient({
           Notifica en la app a quienes apoyaron o siguen el hilo (D-P9). Protegido en BD: solo
           coordinator/admin.
         </p>
+        <dl className="mt-3 grid gap-1.5 text-[12.5px] text-gris">
+          <div><dt className="inline font-semibold text-cuerpo">Propuesta —</dt> <dd className="inline">recién creada: solo apoyos y comentarios, todavía sin herramienta de deliberación.</dd></div>
+          <div><dt className="inline font-semibold text-cuerpo">En deliberación —</dt> <dd className="inline">activa el panel Polis (afirmaciones a favor/en contra/paso) para refinar consenso antes del test de estrés.</dd></div>
+          <div><dt className="inline font-semibold text-cuerpo">Test de estrés —</dt> <dd className="inline">en revisión técnica/de viabilidad (informe adjunto opcional).</dd></div>
+          <div><dt className="inline font-semibold text-cuerpo">En votación —</dt> <dd className="inline">censo abierto a votar sí/no/abstención hasta la fecha límite.</dd></div>
+        </dl>
       </section>
 
       {/* Fecha límite */}
