@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { slugificar } from '@/lib/blog/markdown';
+import { textoPlanoAHtml } from '@/lib/blog/html';
 import type { EstadoPropuesta, Propuesta } from './types';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -150,7 +151,7 @@ export async function crearPropuesta(
     .from('proposals')
     .insert({
       title: input.title,
-      body: input.body,
+      body: textoPlanoAHtml(input.body),
       department: input.department,
       question: input.question?.trim() || null,
       estimated_cost_cents: input.estimated_cost_cents ?? null,

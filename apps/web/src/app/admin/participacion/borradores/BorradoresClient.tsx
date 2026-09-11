@@ -7,6 +7,16 @@ import { publicarBorradorAction, descartarBorradorAction } from './actions';
 import type { Propuesta } from '@/lib/participacion/types';
 
 /**
+ * Quita etiquetas para la vista previa de esta cola. No es un saneado de
+ * seguridad (el resultado se pinta como texto de React, nunca con
+ * `dangerouslySetInnerHTML`, así que no hay riesgo aunque quede alguna
+ * etiqueta suelta) — es solo para que no se vea el marcado crudo.
+ */
+function textoDeVistaPrevia(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+/**
  * Cola de borradores (D-U5). Publicar = draft → seed; descartar = draft →
  * archived. Ambos pasan por el trigger de BD que exige coordinator/admin, así
  * que un editor "a secas" verá el error real devuelto por Postgres en vez de
@@ -85,7 +95,7 @@ export function BorradoresClient({ borradores }: { borradores: Propuesta[] }) {
             </div>
           </div>
 
-          <p className="mt-3 whitespace-pre-line text-[14px] text-cuerpo">{p.body}</p>
+          <p className="mt-3 whitespace-pre-line text-[14px] text-cuerpo">{textoDeVistaPrevia(p.body)}</p>
 
           <Link
             href={`/propuestas/${p.slug ?? p.id}`}

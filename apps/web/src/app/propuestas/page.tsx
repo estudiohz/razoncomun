@@ -12,6 +12,7 @@ import { createClient } from '@/lib/supabase/server';
 import { listarPropuestas } from '@/lib/participacion/proposals';
 import { listarCategorias, contarPropuestasPorCategoria } from '@/lib/participacion/categories';
 import { ordenarTrending } from '@/lib/participacion/trending';
+import { htmlATexto } from '@/lib/blog/html';
 import { ORDEN_ESTADOS, ETIQUETA_ESTADO, type EstadoPropuesta, type Propuesta } from '@/lib/participacion/types';
 
 // D-P12: quita el noindex — este tablero posiciona long-tail y la difusión
@@ -156,7 +157,7 @@ export default async function PropuestasPage({
                 </span>
               </div>
               <h2 className="mt-3 text-[19px] font-extrabold text-titular">{p.title}</h2>
-              <p className="mt-1.5 line-clamp-2 text-[14.5px] text-cuerpo">{p.body}</p>
+              <p className="mt-1.5 line-clamp-2 text-[14.5px] text-cuerpo">{htmlATexto(p.body)}</p>
               <div className="mt-3 flex flex-wrap items-center gap-4 text-[13px] text-gris">
                 <span>👍 {p.support_count} apoyos</span>
                 <span>{euros(p.estimated_cost_cents)}</span>

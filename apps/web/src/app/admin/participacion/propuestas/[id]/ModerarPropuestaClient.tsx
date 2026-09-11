@@ -6,12 +6,14 @@ import {
   archivarAction,
   cambiarEstadoAction,
   editarClasificacionAction,
+  editarContenidoAction,
   eliminarAction,
   fijarDeadlineAction,
   fijarMesAction,
   fusionarAction,
   publicarRespuestaOficialAction,
 } from '../actions';
+import { EditorRico } from '@/components/blog/EditorRico';
 import { DEPARTAMENTOS, etiquetaDepartamento } from '@/lib/participacion/departments';
 import {
   ETIQUETA_ESTADO,
@@ -39,6 +41,9 @@ export function ModerarPropuestaClient({
 }) {
   const router = useRouter();
   const [pendiente, iniciar] = useTransition();
+  const [errorContenido, setErrorContenido] = useState<string | null>(null);
+  const [titulo, setTitulo] = useState(propuesta.title);
+  const [cuerpo, setCuerpo] = useState(propuesta.body);
   const [errorClasificacion, setErrorClasificacion] = useState<string | null>(null);
   const [errorEstado, setErrorEstado] = useState<string | null>(null);
   const [errorDeadline, setErrorDeadline] = useState<string | null>(null);
@@ -48,6 +53,17 @@ export function ModerarPropuestaClient({
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [motivoEliminar, setMotivoEliminar] = useState('');
+
+  function onEditarContenido(fd: FormData) {
+    setErrorContenido(null);
+    fd.set('title', titulo);
+    fd.set('body', cuerpo);
+    iniciar(async () => {
+      const r = await editarContenidoAction(propuesta.id, fd);
+      if (!r.ok) setErrorContenido(r.error ?? 'Error desconocido.');
+      else router.refresh();
+    });
+  }
 
   function onEditarClasificacion(fd: FormData) {
     setErrorClasificacion(null);
@@ -123,6 +139,39 @@ export function ModerarPropuestaClient({
 
   return (
     <div className="grid gap-6 min-[960px]:grid-cols-2">
+      {/* Título y contenido */}
+      <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
+        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">
+          Título y contenido
+        </h2>
+        <form action={onEditarContenido} className="flex flex-col gap-3">
+          <div>
+            <label htmlFor="title" className="mb-1 block text-[12.5px] font-semibold text-cuerpo">
+              Título
+            </label>
+            <input
+              id="title"
+              type="text"
+              value={titulo}
+              onChange={(e) => setTitulo(e.target.value)}
+              className="w-full rounded-boton border border-linea bg-white px-3 py-2 text-[14px] text-titular"
+            />
+          </div>
+          <div>
+            <p className="mb-1 text-[12.5px] font-semibold text-cuerpo">Contenido</p>
+            <EditorRico valor={cuerpo} onChange={setCuerpo} />
+          </div>
+          <button
+            type="submit"
+            disabled={pendiente}
+            className="self-start rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white disabled:opacity-60"
+          >
+            Guardar contenido
+          </button>
+        </form>
+        {errorContenido && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorContenido}</p>}
+      </section>
+
       {/* Departamento y categoría */}
       <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
         <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">
