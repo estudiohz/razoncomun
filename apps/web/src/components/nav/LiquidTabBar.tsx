@@ -28,7 +28,7 @@ import styles from './LiquidTabBar.module.css';
  * la sección más cercana.
  *
  * Es deliberadamente "tonta": recibe los items ya calculados (icono incluido),
- * no consulta roles ni sabe qué es un afiliado. Quien decide qué entra en la
+ * no consulta roles ni sabe qué es un socio. Quien decide qué entra en la
  * lista es el layout, igual que en PanelNav.
  *
  * Pensada para 3–5 items: con más, los huecos se estrechan y el socket no cabe.

@@ -6,7 +6,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 /**
  * Verificación del propio voto en /perfil: confirma, con los mismos datos
  * públicos de `ballots` (D-001), que lo que se emitió es lo que quedó
- * registrado — participación en /votaciones y afiliación en rc-07.
+ * registrado — participación en /votaciones y cuotas en rc-07.
  */
 export async function MisVotos({ supabase, userId }: { supabase: SupabaseClient; userId: string }) {
   const votos = await misBallots(supabase, userId);

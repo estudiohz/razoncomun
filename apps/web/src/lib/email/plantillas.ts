@@ -10,6 +10,7 @@
  * las genera el propio código (no GoTrue) con datos dinámicos por evento.
  */
 import { formatearCents } from '@/lib/afiliacion/consentimiento';
+import { urlSitio } from '@/lib/supabase/env';
 
 /**
  * Cabecera de marca — DEBE coincidir con la de las plantillas de GoTrue
@@ -79,12 +80,19 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
 export function correoBienvenida(opts: { nombre: string | null; periodo: 'monthly' | 'annual'; amountCents: number }) {
   const nombre = opts.nombre?.trim() || 'socio/a';
   const periodoTexto = opts.periodo === 'monthly' ? 'mensual' : 'anual';
+  const url = urlSitio();
   const asunto = 'Bienvenido/a a Razón Común — ya eres socio/a';
-  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha activado: eres socio/a de Razón Común con una cuota ${periodoTexto} de ${formatearCents(opts.amountCents)}.\n\nA partir de ahora puedes:\n- Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).\n- Proponer y debatir en el programa vivo.\n- Auditar en /cuentas cada euro que gestiona el partido.\n\nGestiona tu cuota, cambia de periodicidad o date de baja cuando quieras desde tu perfil.\n\nGracias por sostener con tu cuota una política basada en datos.\n\n— Razón Común`;
+  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha activado: eres socio/a de Razón Común con una cuota ${periodoTexto} de ${formatearCents(opts.amountCents)}.\n\nYa tienes tu CARNET DE SOCIO esperando en tu panel: descárgalo o añádelo a la wallet del móvil en ${url}/panel/carnet\n\nA partir de ahora puedes:\n- Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).\n- Proponer y debatir en el programa vivo.\n- Auditar en /cuentas cada euro que gestiona el partido.\n\nGestiona tu cuota, cambia de periodicidad o date de baja cuando quieras desde tu perfil.\n\nGracias por sostener con tu cuota una política basada en datos.\n\n— Razón Común`;
   const html = envoltorio(
     'Bienvenido/a',
     `Ya eres socio/a, ${nombre}`,
     `<p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#232A3B;">Tu domiciliación SEPA se ha activado: eres <strong>socio/a de Razón Común</strong> con una cuota <strong>${periodoTexto}</strong> de <strong>${formatearCents(opts.amountCents)}</strong>.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+      <tr><td style="border-radius:10px;background:#101C34;">
+        <a href="${url}/panel/carnet" style="display:inline-block;padding:13px 22px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;">Ver mi carnet de socio</a>
+      </td></tr>
+    </table>
+    <p style="margin:0 0 24px;font-size:13px;line-height:1.6;color:#5A6780;">Lo tienes en tu panel para descargarlo o llevarlo en la wallet del móvil. No lo adjuntamos aquí a propósito: un carnet reenviado por correo se lo quedaría cualquiera.</p>
     <p style="margin:0 0 8px;font-size:15px;color:#232A3B;">A partir de ahora puedes:</p>
     <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:1.7;color:#232A3B;">
       <li>Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).</li>

@@ -11,6 +11,12 @@ export type Perfil = {
   id: string;
   email: string | null;
   display_name: string | null;
+  /** Nombre de pila (0059): carnet de socio y certificado fiscal. */
+  first_name: string | null;
+  /** Apellidos (0059). Separados del nombre porque el Modelo 182 los pide así. */
+  last_name: string | null;
+  /** Fecha de nacimiento (0058): edad mínima de socio y libro de socios. */
+  birth_date: string | null;
   level: Nivel;
   origin_province_id: number | null;
   newsletter_opt_in: boolean;
@@ -71,7 +77,7 @@ export async function requireUsuario(rutaVuelta?: string) {
 /**
  * Exige un nivel mínimo en la escalera registered < member < verified.
  * Guard reutilizable para Server Components / Server Actions de otros
- * agentes (rc-06 participación, rc-07 afiliación...).
+ * agentes (rc-06 participación, rc-07 socios...).
  */
 export async function requireNivel(minimo: Nivel, rutaVuelta?: string) {
   const { user, perfil, supabase } = await requireUsuario(rutaVuelta);

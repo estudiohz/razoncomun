@@ -19,6 +19,7 @@ export default defineConfig({
       'src/lib/tienda/**/*.test.ts',
       'src/lib/blog/**/*.test.ts',
       'src/lib/home/**/*.test.ts',
+      'src/lib/carnet/**/*.test.ts',
     ],
     environment: 'node',
   },

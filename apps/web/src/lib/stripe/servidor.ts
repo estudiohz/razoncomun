@@ -16,7 +16,7 @@ import { credencialActiva } from '@/lib/pagos/credenciales';
  * `payment_provider_credentials`, que se pega desde /admin/tienda/pagos; si no
  * hay ninguna, la variable de entorno de siempre. Ese orden importa: mientras
  * nadie guarde nada en el panel, el comportamiento es EXACTAMENTE el de antes,
- * así que esto no puede tumbar por sí solo la afiliación ni el webhook.
+ * así que esto no puede tumbar por sí solo el cobro de cuotas ni el webhook.
  */
 
 /** Clave secreta: BD primero, entorno de reserva. */

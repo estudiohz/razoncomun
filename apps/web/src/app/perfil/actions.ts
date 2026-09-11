@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { esNombrePlausible } from '@/lib/afiliacion/consentimiento';
 
 export type EstadoActualizarPerfil = {
   ok: boolean | null; // null = todavía no se ha enviado nada
@@ -17,6 +18,9 @@ export type EstadoActualizarPerfil = {
   // Navarra, aunque en BD y tras recargar la página sí quedaba Navarra).
   valores?: {
     display_name: string;
+    first_name: string;
+    last_name: string;
+    birth_date: string;
     origin_province_id: number | null;
     newsletter_opt_in: boolean;
     newsletter_opt_in_at: string | null;
@@ -44,6 +48,33 @@ export async function actualizarPerfil(
   if (!user) redirect('/entrar');
 
   const display_name = (formData.get('display_name') as string)?.trim() || null;
+
+  // Nombre, apellidos (0059) y fecha de nacimiento (0058). Opcionales aquí:
+  // quien solo está registrado no tiene por qué darlos. Pero o se dan LOS DOS
+  // o ninguno — medio nombre no sirve ni para el carnet ni para el certificado
+  // fiscal, y guardarlo a medias solo aplaza el problema.
+  const first_raw = (formData.get('first_name') as string)?.trim().replace(/\s+/g, ' ') || '';
+  const last_raw = (formData.get('last_name') as string)?.trim().replace(/\s+/g, ' ') || '';
+
+  if ((first_raw || last_raw) && !(esNombrePlausible(first_raw) && esNombrePlausible(last_raw))) {
+    return {
+      ok: false,
+      mensaje: 'Rellena el nombre y los apellidos, o deja los dos campos vacíos.',
+    };
+  }
+  const first_name = first_raw || null;
+  const last_name = last_raw || null;
+
+  const birth_date_raw = (formData.get('birth_date') as string)?.trim() || '';
+  if (birth_date_raw) {
+    const fecha = new Date(`${birth_date_raw}T00:00:00Z`);
+    const hoy = new Date();
+    const hace120 = new Date(Date.UTC(hoy.getUTCFullYear() - 120, hoy.getUTCMonth(), hoy.getUTCDate()));
+    if (Number.isNaN(fecha.getTime()) || fecha >= hoy || fecha <= hace120) {
+      return { ok: false, mensaje: 'Esa fecha de nacimiento no es válida.' };
+    }
+  }
+  const birth_date = birth_date_raw || null;
   const origin_province_raw = formData.get('origin_province_id') as string;
   const origin_province_id = origin_province_raw ? Number(origin_province_raw) : null;
   const newsletter_opt_in = formData.get('newsletter_opt_in') === 'on';
@@ -69,12 +100,15 @@ export async function actualizarPerfil(
     .from('profiles')
     .update({
       display_name,
+      first_name,
+      last_name,
+      birth_date,
       origin_province_id,
       newsletter_opt_in,
       ...(cambioNewsletter ? { newsletter_opt_in_at } : {}),
     })
     .eq('id', user.id)
-    .select('display_name, origin_province_id, newsletter_opt_in, newsletter_opt_in_at')
+    .select('display_name, first_name, last_name, birth_date, origin_province_id, newsletter_opt_in, newsletter_opt_in_at')
     .single();
 
   if (errorUpdate || !filaActualizada) {

@@ -1,5 +1,5 @@
 /**
- * Configuración centralizada de Stripe para afiliación/transparencia (rc-07).
+ * Configuración centralizada de Stripe para cuotas de socio/transparencia (rc-07).
  *
  * DECISIÓN (docs/tecnico/afiliados-y-transparencia.md, cabecera): la cuota se
  * cobra por domiciliación SEPA (`sepa_debit`), no con tarjeta. Este archivo
@@ -53,7 +53,7 @@ export type PlanCuota = 'socio' | 'verificado';
  *
  * Los dos Price del plan `socio` conservan sus nombres de variable originales
  * (`STRIPE_PRICE_CUOTA_*`) a propósito: ya están puestas en Dokploy y
- * renombrarlas dejaría la afiliación caída en el mismo despliegue en que se
+ * renombrarlas dejaría el cobro de cuotas caído en el mismo despliegue en que se
  * subiera este cambio. Los del tramo verificado son variables nuevas.
  */
 const ENV_PRICE: Record<PlanCuota, Record<Periodicidad, string>> = {

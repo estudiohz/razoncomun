@@ -7,6 +7,7 @@ import { EstadoBadge } from '@/components/participacion/EstadoBadge';
 import { MisVotos } from '@/components/participacion/MisVotos';
 import { listarPropuestasSeguidas } from '@/lib/participacion/follows';
 import { cn } from '@/lib/cn';
+import { htmlATexto } from '@/lib/blog/html';
 import type { Propuesta } from '@/lib/participacion/types';
 
 export const metadata: Metadata = metadatosPagina({
@@ -137,7 +138,7 @@ export default async function PanelPropuestasPage({
             >
               <EstadoBadge status={p.status} />
               <h2 className="mt-2.5 text-[17px] font-extrabold text-titular">{p.title}</h2>
-              <p className="mt-1.5 line-clamp-2 text-[14px] text-cuerpo">{p.body}</p>
+              <p className="mt-1.5 line-clamp-2 text-[14px] text-cuerpo">{htmlATexto(p.body)}</p>
               <p className="mt-2.5 text-[12.5px] text-gris">👍 {p.support_count} apoyos</p>
             </Link>
           ))}

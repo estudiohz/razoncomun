@@ -101,6 +101,46 @@ export function sanearHtml(html: string): string {
   return sanitizeHtml(html, OPCIONES);
 }
 
+/**
+ * Convierte texto plano (un `<textarea>` normal, sin editor visual) en HTML
+ * seguro para guardarlo en una columna que se renderiza como HTML.
+ *
+ * Escapa entidades ANTES de partir en párrafos, para que un usuario que
+ * escriba literalmente "<script>" o "&" en un formulario público (p. ej. una
+ * propuesta ciudadana) acabe como texto visible, no como marcado. Las líneas
+ * en blanco separan párrafos; un solo salto de línea dentro de un párrafo se
+ * conserva como `<br>`.
+ */
+export function textoPlanoAHtml(texto: string): string {
+  const escapado = texto
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  return escapado
+    .split(/\n{2,}/)
+    .map((parrafo) => parrafo.trim())
+    .filter(Boolean)
+    .map((parrafo) => `<p>${parrafo.replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
+/**
+ * Extrae texto plano de HTML ya saneado, para metadescripciones, JSON-LD y
+ * extractos de lista (`line-clamp`). Nunca se usa para pintar: es SOLO texto.
+ */
+export function htmlATexto(html: string): string {
+  return sanearHtml(html)
+    .replace(/<(p|br|div|li|h[2-4])[^>]*>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /** Slug estable para los `id` de encabezado. Mismo algoritmo que `markdown.ts`. */
 export function slugificar(texto: string): string {
   return texto

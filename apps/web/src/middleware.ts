@@ -11,7 +11,7 @@ import { entornoCerrado } from '@/lib/entorno';
  *    real por las mismas búsquedas.
  * 1. Refresca la sesión de Supabase en cada petición (patrón oficial @supabase/ssr).
  * 2. Protege /panel (y /perfil, que ya solo redirige allí): exige sesión.
- *    OJO: /panel NO exige 2FA. El panel del usuario es donde un afiliado ve su
+ *    OJO: /panel NO exige 2FA. El panel del usuario es donde un socio ve su
  *    cuota y sus datos; obligarle a 2FA para eso sería una barrera que nadie
  *    ha decidido. La 2FA sigue siendo obligatoria solo para /admin (abajo).
  * 3. Protege /admin: exige sesión Y, si el usuario tiene cargo vigente o rol
@@ -58,6 +58,14 @@ export async function middleware(request: NextRequest) {
       // justo donde hay que probarlos antes de tocar producción. Sin firma
       // válida responden 400 igual que en producción.
       pathname.startsWith('/api/stripe') ||
+      // Verificador del carnet: mismo razonamiento que los webhooks. No se
+      // autentica con sesión sino con el token firmado de la propia URL, que
+      // se comprueba dentro de la ruta. Y sobre todo: lo escanea un móvil
+      // AJENO, que por definición no tiene sesión — dejarlo tras el login
+      // hace imposible probar el QR en dev, que es justo donde hay que
+      // probarlo. Un token inválido responde "no válido" igual que en
+      // producción, sin tocar la base de datos.
+      pathname.startsWith('/carnet/v/') ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';

@@ -132,6 +132,33 @@ export async function editarClasificacionAction(id: string, fd: FormData): Promi
   return { ok: true };
 }
 
+/**
+ * Edita el título y el cuerpo de la propuesta (HTML, mismo editor que el blog).
+ * El HTML NO se sanea aquí al guardar: se sanea siempre al renderizar
+ * (`sanearHtml`, ver `lib/blog/html.ts` — la regla no se afloja para esta
+ * tabla tampoco). Guardar sin sanear evita que un saneador desactualizado
+ * mutile contenido válido que sí sabrá pintar el de la próxima versión.
+ */
+export async function editarContenidoAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+
+  const title = String(fd.get('title') ?? '').trim();
+  const body = String(fd.get('body') ?? '').trim();
+
+  if (!title) return { ok: false, error: 'El título no puede estar vacío.' };
+  if (!body) return { ok: false, error: 'El contenido no puede estar vacío.' };
+
+  const propuesta = await obtenerPropuestaOrThrow(supabase, id);
+  const { error } = await supabase.from('proposals').update({ title, body }).eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/admin/participacion/propuestas/${id}`);
+  revalidatePath('/admin/participacion');
+  revalidatePath('/propuestas');
+  if (propuesta.slug) revalidatePath(`/propuestas/${propuesta.slug}`);
+  return { ok: true };
+}
+
 /** Publica la respuesta oficial fijada (D-P10). Solo coordinator/admin (mismo trigger que status). */
 export async function publicarRespuestaOficialAction(id: string, fd: FormData): Promise<ResultadoAccion> {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);

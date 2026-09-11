@@ -86,8 +86,6 @@ export default async function ModerarPropuestaPage({
         </a>
       </div>
 
-      <p className="mt-4 max-w-3xl whitespace-pre-wrap text-[14.5px] text-cuerpo">{propuesta.body}</p>
-
       <div className="mt-8">
         <ModerarPropuestaClient propuesta={propuesta} categorias={categorias} />
       </div>

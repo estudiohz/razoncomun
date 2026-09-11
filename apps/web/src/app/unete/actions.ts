@@ -9,12 +9,16 @@ import {
   type PlanCuota,
 } from '@/lib/stripe/config';
 import { stripeCliente } from '@/lib/stripe/servidor';
-import { TEXTO_CONSENTIMIENTO_AFILIACION } from '@/lib/afiliacion/consentimiento';
+import {
+  TEXTO_CONSENTIMIENTO_AFILIACION,
+  esNombrePlausible,
+  nombreCompleto,
+} from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF, normalizarNIF } from '@/lib/afiliacion/nif';
 
 /**
- * Alta de afiliado NATIVA (rc-07, encargo del orquestador): sin salir de la
+ * Alta de socio NATIVA (rc-07, encargo del orquestador): sin salir de la
  * web (a diferencia del Checkout hospedado que sustituye esta versión).
  * Reusa la base de la Ola 3 — mismo `stripeCliente()`/`priceIdCuota()` de
  * `lib/stripe/config.ts`, mismo webhook (`/api/stripe/webhook`) y misma
@@ -99,11 +103,12 @@ export async function iniciarDomiciliacion(input: {
   }
 
   // 2. Consentimiento — Art. 9.2.a (D-001: el voto interno, si algún día es
-  // vinculante, es público y nominal) + el aviso previo de domiciliación
-  // SEPA. Se reutiliza literalmente TEXTO_CONSENTIMIENTO de rc-03 (mismo
+  // vinculante, es público y nominal) + el aviso previo del cobro recurrente.
+  // Se firma ANTES de elegir método de pago, así que el texto habla de los dos
+  // (domiciliación y tarjeta): ver `lib/afiliacion/consentimiento.ts`. Se reutiliza literalmente TEXTO_CONSENTIMIENTO de rc-03 (mismo
   // texto que ya se muestra en /registro/consentimiento) para que quede
   // sellado también en el momento exacto en que la persona pasa a ser
-  // afiliada de cuota — el hecho que activa de verdad el tratamiento de
+  // socia de cuota — el hecho que activa de verdad el tratamiento de
   // categoría especial y la aparición en el censo de votaciones.
   await registrarAuditoria(supabase, {
     actorId: user.id,
@@ -114,7 +119,7 @@ export async function iniciarDomiciliacion(input: {
       plan,
       periodo: input.periodo,
       texto_voto_publico_nominal_d001: TEXTO_CONSENTIMIENTO,
-      texto_domiciliacion_sepa: TEXTO_CONSENTIMIENTO_AFILIACION,
+      texto_cobro_recurrente: TEXTO_CONSENTIMIENTO_AFILIACION,
       given_at: new Date().toISOString(),
     },
   });
@@ -143,11 +148,20 @@ export async function iniciarDomiciliacion(input: {
     customerId = customer.id;
   }
 
-  // 4. SetupIntent — captura el IBAN y el mandato SEPA in situ (Stripe
-  // Elements en `AltaSepa.tsx`), sin redirigir a stripe.com.
+  // 4. SetupIntent — captura el método de pago in situ (Payment Element en
+  // `AltaSepa.tsx`), sin redirigir a stripe.com.
+  //
+  // LOS DOS MÉTODOS (04/09/2026, decisión de Sergio): la persona elige. El
+  // orden importa — `sepa_debit` primero porque es el que sale preseleccionado
+  // en el Payment Element, y es el que le interesa al partido: comisión fija
+  // más baja y sin tarjetas que caducan a los dos años. Pero pedir el IBAN a
+  // alguien en el móvil es mucha fricción, así que la tarjeta tiene que estar
+  // ahí para quien no lo tenga a mano.
   const setupIntent = await stripe.setupIntents.create({
     customer: customerId,
-    payment_method_types: ['sepa_debit'],
+    payment_method_types: ['sepa_debit', 'card'],
+    // `off_session`: el cobro recurrente se hará sin la persona delante.
+    usage: 'off_session',
     metadata: { user_id: user.id, plan, periodo: input.periodo },
   });
 
@@ -160,13 +174,48 @@ export async function iniciarDomiciliacion(input: {
 
 export type ResultadoConfirmacion = { ok: true } | { ok: false; mensaje: string };
 
+function idDeStripe(x: string | { id: string } | null | undefined): string | null {
+  if (!x) return null;
+  return typeof x === 'string' ? x : x.id;
+}
+
+/**
+ * Guarda nombre y apellidos del socio ANTES de confirmar el método de pago.
+ *
+ * Antes se leían del `billing_details` que Stripe guarda con el método, pero
+ * eso solo vale para una cadena única: desde que van separados (0059) hay que
+ * recogerlos aquí. Y hacerlo antes de pasar por Stripe es lo que hace que
+ * sobrevivan al 3D Secure — al volver del banco el formulario ya no existe.
+ */
+export async function guardarNombreSocio(input: {
+  nombre: string;
+  apellidos: string;
+}): Promise<{ ok: boolean; mensaje?: string }> {
+  const { user, supabase } = await requireUsuario('/unete');
+
+  const first_name = input.nombre.trim().replace(/\s+/g, ' ');
+  const last_name = input.apellidos.trim().replace(/\s+/g, ' ');
+
+  if (!esNombrePlausible(first_name) || !esNombrePlausible(last_name)) {
+    return { ok: false, mensaje: 'Escribe tu nombre y tus apellidos.' };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ first_name, last_name })
+    .eq('id', user.id);
+
+  if (error) return { ok: false, mensaje: 'No hemos podido guardar tu nombre. Inténtalo de nuevo.' };
+  return { ok: true };
+}
+
 export async function confirmarAfiliacion(input: {
   plan: PlanCuota;
   periodo: Periodicidad;
-  customerId: string;
-  paymentMethodId: string;
+  /** Id del SetupIntent ya confirmado. De él salen el cliente y el método. */
+  setupIntentId: string;
 }): Promise<ResultadoConfirmacion> {
-  const { user } = await requireUsuario('/unete');
+  const { user, supabase } = await requireUsuario('/unete');
   const stripe = await stripeCliente();
 
   // Se revalida aquí y no solo en `iniciarDomiciliacion`: son dos llamadas
@@ -180,15 +229,74 @@ export async function confirmarAfiliacion(input: {
     return { ok: false, mensaje: 'Elige una periodicidad de cuota antes de continuar.' };
   }
 
+
+  // SEGURIDAD (04/09/2026): antes llegaba el `customerId` DEL NAVEGADOR y se
+  // usaba tal cual — cualquiera con cuenta podía mandar el customer de otra
+  // persona y darse de alta cobrándole a ella. Ahora llega el id del
+  // SetupIntent y todo lo demás se lee de él en el servidor.
+  //
+  // Por qué del SetupIntent y no de una búsqueda por `metadata.user_id`:
+  //   1. La Search API de Stripe es EVENTUALMENTE CONSISTENTE — un Customer
+  //      recién creado tarda hasta un minuto en aparecer, que es exactamente
+  //      el caso de un primer alta. La búsqueda devolvía vacío justo cuando
+  //      más falta hacía.
+  //   2. Un abandono repetido deja varios Customers del mismo usuario (ya
+  //      pasa: hay tres de una sola persona en la cuenta de pruebas), así que
+  //      "coge el primero" era además ambiguo.
+  // `setupIntents.retrieve` es una lectura directa, sin latencia, y su
+  // metadata la escribimos NOSOTROS en `iniciarDomiciliacion`.
+  let setupIntent;
   try {
-    await stripe.customers.update(input.customerId, {
-      invoice_settings: { default_payment_method: input.paymentMethodId },
+    setupIntent = await stripe.setupIntents.retrieve(input.setupIntentId, {
+      expand: ['payment_method'],
+    });
+  } catch {
+    return { ok: false, mensaje: 'No hemos podido recuperar tu método de pago. Vuelve a intentarlo.' };
+  }
+
+  if (setupIntent.metadata?.user_id !== user.id) {
+    return { ok: false, mensaje: 'Ese método de pago no corresponde a tu cuenta.' };
+  }
+  if (setupIntent.status !== 'succeeded') {
+    return { ok: false, mensaje: 'Tu método de pago no llegó a confirmarse. Vuelve a intentarlo.' };
+  }
+
+  // El nombre y los apellidos ya están en el perfil: los guarda
+  // `guardarNombreSocio` ANTES de confirmar el método de pago. Se leen de ahí
+  // y no del `billing_details` de Stripe porque ahora son dos campos y Stripe
+  // solo almacena una cadena, de la que no se pueden volver a separar.
+  //
+  // Guardarlos antes tiene además la ventaja de que sobreviven al 3D Secure:
+  // al volver del banco el formulario ya no existe.
+  const { data: perfilNombre } = await supabase
+    .from('profiles')
+    .select('first_name, last_name')
+    .eq('id', user.id)
+    .single();
+
+  if (!esNombrePlausible(perfilNombre?.first_name ?? '') ||
+      !esNombrePlausible(perfilNombre?.last_name ?? '')) {
+    return {
+      ok: false,
+      mensaje: 'Necesitamos tu nombre y tus apellidos. Vuelve atrás y complétalos.',
+    };
+  }
+
+  const customerId = idDeStripe(setupIntent.customer);
+  const paymentMethodId = idDeStripe(setupIntent.payment_method);
+  if (!customerId || !paymentMethodId) {
+    return { ok: false, mensaje: 'Tu método de pago no llegó a confirmarse. Vuelve a intentarlo.' };
+  }
+
+  try {
+    await stripe.customers.update(customerId, {
+      invoice_settings: { default_payment_method: paymentMethodId },
     });
 
     await stripe.subscriptions.create({
-      customer: input.customerId,
+      customer: customerId,
       items: [{ price: priceIdCuota(plan, input.periodo) }],
-      default_payment_method: input.paymentMethodId,
+      default_payment_method: paymentMethodId,
       collection_method: 'charge_automatically',
       // `plan` en el metadata para poder auditar desde Stripe qué tramo
       // eligió cada quien. `members.amount_cents` ya lo refleja (el webhook lo

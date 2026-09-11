@@ -10,7 +10,7 @@ import { enviarCorreo } from '@/lib/email/enviar';
 import { correoBienvenida, correoImpago, correoRecuperado, correoBaja } from '@/lib/email/plantillas';
 
 /**
- * Webhook principal de afiliación (rc-07). Reglas (I7, revision-seguridad.md
+ * Webhook principal de cuotas de socio (rc-07). Reglas (I7, revision-seguridad.md
  * — mismo patrón que /api/stripe/identity/webhook de rc-03):
  * 1. Firma verificada SIEMPRE antes de mirar el body.
  * 2. Idempotencia vía `audit_log` (Stripe puede — y en producción, hará —
@@ -229,7 +229,7 @@ export async function POST(request: Request) {
     case 'checkout.session.completed': {
       const sesionCruda = event.data.object as Stripe.Checkout.Session;
 
-      // El MISMO endpoint recibe los eventos de afiliación y los de la
+      // El MISMO endpoint recibe los eventos de cuota de socio y los de la
       // tienda. La marca de la metadata decide: sin ella, esto es una sesión
       // de otra cosa y no se toca.
       if (sesionCruda.metadata?.[META_TIPO] !== TIPO_TIENDA) {
@@ -374,7 +374,7 @@ async function mandatoSepaMasReciente(stripe: Stripe, customerId: string | null)
  * como ingreso previsto.
  *
  * Y `paused` en nuestro modelo NO es una baja (0037): es una pausa acordada y
- * conserva los derechos de afiliado. Antes esto mapeaba a `canceled`, de modo
+ * conserva los derechos de socio. Antes esto mapeaba a `canceled`, de modo
  * que pausar habría dado de baja a la persona y le habría quitado el voto en
  * silencio.
  */
@@ -483,7 +483,7 @@ async function espejarSuscripcion(
 
   // `paused` cuenta igual que `active` para el nivel: una cuota pausada de
   // mutuo acuerdo no degrada a la persona a "registrado" (0037). Si no se
-  // incluyera aquí, pausar le quitaría el distintivo de afiliado en la web.
+  // incluyera aquí, pausar le quitaría el distintivo de socio en la web.
   if (status === 'active' || status === 'paused') {
     const patch: Record<string, unknown> = {};
     if (perfil && perfil.level === 'registered') patch.level = 'member';

@@ -19,7 +19,7 @@ function euros(cents: number | null): string {
 }
 
 /**
- * Listado de afiliados (rc-07). Panel SOLO LECTURA de Stripe (docs/tecnico/
+ * Listado de socios (rc-07). Panel SOLO LECTURA de Stripe (docs/tecnico/
  * afiliados-y-transparencia.md): las operaciones de cobro/reembolso/cambio
  * de método de pago viven en el Customer Portal de Stripe, no aquí — este
  * panel espeja `members` (sincronizado por el webhook) para buscar,
@@ -71,7 +71,7 @@ export default async function AfiliadosPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-[24px] font-extrabold">Afiliados</h1>
+          <h1 className="text-[24px] font-extrabold">Socios</h1>
           <p className="mt-1 text-[13.5px] text-gris">
             {activos} activos · {impagos} en impago · {filas.length} en el listado. Espejo de Stripe —
             los cobros y cambios de método de pago se gestionan en Stripe, no aquí.
@@ -143,13 +143,13 @@ export default async function AfiliadosPage({
         </form>
       </Tarjeta>
 
-      {error && <p className="text-[13px] text-red-600">Error al cargar afiliados: {error.message}</p>}
+      {error && <p className="text-[13px] text-red-600">Error al cargar socios: {error.message}</p>}
 
       <Tarjeta className="overflow-x-auto">
         <table className="w-full min-w-[820px] text-left text-[13.5px]">
           <thead>
             <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
-              <th className="px-4 py-3">Afiliado</th>
+              <th className="px-4 py-3">Socio</th>
               <th className="px-4 py-3">Provincia</th>
               <th className="px-4 py-3">Estado</th>
               <th className="px-4 py-3">Periodo</th>

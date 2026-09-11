@@ -1,15 +1,20 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loadStripe, type Stripe as StripeJs } from '@stripe/stripe-js';
-import { Elements, IbanElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { stripePublishableKey } from '@/lib/stripe/publicKey';
 import { CUOTA_REFERENCIA_CENTS, type Periodicidad, type PlanCuota } from '@/lib/stripe/config';
-import { TEXTO_AVISO_MANDATO_SEPA, formatearCents } from '@/lib/afiliacion/consentimiento';
+import {
+  TEXTO_AVISO_MANDATO_SEPA,
+  formatearCents,
+  esNombrePlausible,
+  nombreCompleto,
+} from '@/lib/afiliacion/consentimiento';
 import { TEXTO_CONSENTIMIENTO } from '@/lib/auth/consentimiento';
 import { validarNIF } from '@/lib/afiliacion/nif';
-import { iniciarDomiciliacion, confirmarAfiliacion } from './actions';
+import { iniciarDomiciliacion, confirmarAfiliacion, guardarNombreSocio } from './actions';
 
 let stripePromise: Promise<StripeJs | null> | null = null;
 function getStripe() {
@@ -44,6 +49,84 @@ export function AltaSepa({
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
   const [datosPago, setDatosPago] = useState<{ clientSecret: string; customerId: string } | null>(null);
+  const [reanudando, setReanudando] = useState(false);
+  const router = useRouter();
+
+  /**
+   * Vuelta del 3D Secure.
+   *
+   * Una tarjeta europea puede exigir autenticación en el banco: Stripe navega
+   * fuera y devuelve a `return_url` con el SetupIntent ya confirmado. Al
+   * volver, este componente se monta DE CERO —se perdió todo el estado—, así
+   * que sin esto la persona habría autenticado la tarjeta y se quedaría sin
+   * suscripción, creyendo que ya es socia. La domiciliación no pasa por aquí
+   * (no hay 3DS en SEPA); esto es solo para tarjeta.
+   */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reanudar') !== '1') return;
+
+    const secreto = params.get('setup_intent_client_secret');
+    const planVuelta = params.get('plan');
+    const periodoVuelta = params.get('periodo');
+    if (!secreto || !planVuelta || !periodoVuelta) return;
+
+    let cancelado = false;
+    setReanudando(true);
+
+    (async () => {
+      const stripe = await getStripe();
+      if (!stripe) return;
+
+      const { setupIntent } = await stripe.retrieveSetupIntent(secreto);
+      const pmId =
+        typeof setupIntent?.payment_method === 'string'
+          ? setupIntent.payment_method
+          : setupIntent?.payment_method?.id;
+
+      if (cancelado) return;
+
+      if (setupIntent?.status !== 'succeeded' || !pmId) {
+        setReanudando(false);
+        setError('Tu banco no autorizó la tarjeta. Puedes intentarlo otra vez o usar domiciliación.');
+        return;
+      }
+
+      const resultado = await confirmarAfiliacion({
+        plan: planVuelta as PlanCuota,
+        periodo: periodoVuelta as Periodicidad,
+        setupIntentId: setupIntent.id,
+      });
+
+      if (cancelado) return;
+
+      if (!resultado.ok) {
+        setReanudando(false);
+        setError(resultado.mensaje);
+        return;
+      }
+
+      router.push('/panel/afiliacion?alta=ok');
+      router.refresh();
+    })();
+
+    return () => {
+      cancelado = true;
+    };
+    // Solo al montar: es la vuelta de una redirección, no reacciona a nada más.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (reanudando) {
+    return (
+      <div className="mt-6 rounded-tarjeta border border-linea bg-white p-6 text-center">
+        <p className="text-[15px] font-bold text-titular">Terminando tu alta…</p>
+        <p className="mt-2 text-[13.5px] text-cuerpo">
+          Tu banco ha autorizado el pago. No cierres esta página.
+        </p>
+      </div>
+    );
+  }
 
   async function continuar(e: React.FormEvent) {
     e.preventDefault();
@@ -72,14 +155,31 @@ export function AltaSepa({
 
   if (paso === 'pago' && datosPago) {
     return (
-      <Elements stripe={getStripe()} options={{ locale: 'es' }}>
+      <Elements
+        stripe={getStripe()}
+        options={{
+          // El Payment Element exige el `clientSecret` AQUÍ, al construir
+          // `Elements` — a diferencia del viejo `IbanElement`, que se
+          // conformaba con recibirlo al confirmar. Por eso este bloque solo se
+          // monta cuando ya existe (`paso === 'pago'`).
+          clientSecret: datosPago.clientSecret,
+          locale: 'es',
+          appearance: {
+            variables: {
+              colorPrimary: '#1B3D9C',
+              colorText: '#101C34',
+              fontFamily: 'Montserrat, system-ui, sans-serif',
+              borderRadius: '10px',
+            },
+          },
+        }}
+      >
         <PasoIban
           plan={plan}
           periodo={periodo}
           email={email}
           nombreInicial={nombreInicial}
           clientSecret={datosPago.clientSecret}
-          customerId={datosPago.customerId}
           onVolver={() => setPaso('datos')}
         />
       </Elements>
@@ -240,7 +340,6 @@ function PasoIban({
   email,
   nombreInicial,
   clientSecret,
-  customerId,
   onVolver,
 }: {
   plan: PlanCuota;
@@ -248,49 +347,74 @@ function PasoIban({
   email: string;
   nombreInicial: string | null;
   clientSecret: string;
-  customerId: string;
   onVolver: () => void;
 }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
-  const [nombreTitular, setNombreTitular] = useState(nombreInicial ?? '');
+  const [nombrePila, setNombrePila] = useState(nombreInicial?.split(' ')[0] ?? '');
+  const [apellidos, setApellidos] = useState(
+    (nombreInicial?.split(' ').slice(1).join(' ') ?? '').trim(),
+  );
+  const nombreTitular = nombreCompleto(nombrePila, apellidos);
   const [error, setError] = useState<string | null>(null);
   const [procesando, setProcesando] = useState(false);
-
-  const estiloIban = useMemo(
-    () => ({
-      style: {
-        base: {
-          fontSize: '15px',
-          color: '#1B3D9C',
-          '::placeholder': { color: '#9AA5B8' },
-        },
-      },
-      supportedCountries: ['SEPA'],
-      placeholderCountry: 'ES',
-    }),
-    [],
-  );
 
   async function confirmar(e: React.FormEvent) {
     e.preventDefault();
     if (!stripe || !elements) return;
-    const ibanElement = elements.getElement(IbanElement);
-    if (!ibanElement) return;
+
+    // Se comprueba aquí además de en el servidor para decírselo ANTES de que
+    // Stripe guarde nada: este nombre acaba en el carnet y en el certificado
+    // fiscal, y corregirlo después es mucho más incómodo.
+    if (!esNombrePlausible(nombrePila) || !esNombrePlausible(apellidos)) {
+      setError('Escribe tu nombre y tus apellidos: aparecerán en tu carnet de socio.');
+      return;
+    }
+
+    // Se guardan ANTES de pasar por Stripe: así sobreviven al 3D Secure.
+    const guardado = await guardarNombreSocio({ nombre: nombrePila, apellidos });
+    if (!guardado.ok) {
+      setError(guardado.mensaje ?? 'No hemos podido guardar tu nombre.');
+      return;
+    }
 
     setProcesando(true);
     setError(null);
 
-    const { setupIntent, error: stripeError } = await stripe.confirmSepaDebitSetup(clientSecret, {
-      payment_method: {
-        sepa_debit: ibanElement,
-        billing_details: { name: nombreTitular, email },
+    // Valida el formulario antes de llamar a Stripe: sin esto, un campo a
+    // medio rellenar se convierte en un error del servidor en vez de en el
+    // mensaje que el propio Payment Element sabe pintar bajo el campo.
+    const { error: errorEnvio } = await elements.submit();
+    if (errorEnvio) {
+      setError(errorEnvio.message ?? 'Revisa los datos de pago.');
+      setProcesando(false);
+      return;
+    }
+
+    // `redirect: 'if_required'`: la domiciliación se confirma sin salir de
+    // aquí, pero una tarjeta europea puede exigir 3D Secure y entonces Stripe
+    // navega al banco y vuelve a `return_url`. El plan y la periodicidad
+    // viajan en esa URL porque el componente se remonta desde cero al volver;
+    // el customer NO viaja — se deriva en el servidor desde la sesión.
+    const urlVuelta = new URL(window.location.href);
+    urlVuelta.searchParams.set('reanudar', '1');
+    urlVuelta.searchParams.set('plan', plan);
+    urlVuelta.searchParams.set('periodo', periodo);
+    urlVuelta.hash = 'alta';
+
+    const { setupIntent, error: stripeError } = await stripe.confirmSetup({
+      elements,
+      clientSecret,
+      confirmParams: {
+        return_url: urlVuelta.toString(),
+        payment_method_data: { billing_details: { name: nombreTitular, email } },
       },
+      redirect: 'if_required',
     });
 
     if (stripeError) {
-      setError(stripeError.message ?? 'No hemos podido validar tu IBAN. Revísalo e inténtalo de nuevo.');
+      setError(stripeError.message ?? 'No hemos podido validar tus datos de pago. Revísalos e inténtalo de nuevo.');
       setProcesando(false);
       return;
     }
@@ -301,16 +425,17 @@ function PasoIban({
         : setupIntent?.payment_method?.id;
 
     if (!setupIntent || setupIntent.status !== 'succeeded' || !pmId) {
-      setError('El mandato no se confirmó correctamente. Inténtalo de nuevo.');
+      setError('El método de pago no se confirmó correctamente. Inténtalo de nuevo.');
       setProcesando(false);
       return;
     }
 
+    // Solo viaja el id del SetupIntent: el cliente y el método de pago los lee
+    // el servidor de ahí, y comprueba que ese SetupIntent sea tuyo.
     const resultado = await confirmarAfiliacion({
       plan,
       periodo,
-      customerId,
-      paymentMethodId: pmId,
+      setupIntentId: setupIntent.id,
     });
     if (!resultado.ok) {
       setError(resultado.mensaje);
@@ -343,24 +468,55 @@ function PasoIban({
         {plan === 'verificado' ? 'Socio verificado' : 'Socio'}.
       </p>
 
-      <div>
-        <label htmlFor="titular" className="mb-1.5 block text-[12.5px] font-bold text-titular">
-          Nombre del titular de la cuenta
-        </label>
-        <input
-          id="titular"
-          type="text"
-          required
-          value={nombreTitular}
-          onChange={(e) => setNombreTitular(e.target.value)}
-          className="w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-titular outline-none focus:border-accion focus:ring-2 focus:ring-accion/20"
-        />
+      {/* Nombre y apellidos separados (0059): así van al perfil, al carnet y al
+          Modelo 182, que los pide en orden "apellidos y nombre". Unidos se
+          mandan a Stripe como titular del método de pago. */}
+      <div className="grid gap-4 min-[520px]:grid-cols-2">
+        <div>
+          <label htmlFor="titular_nombre" className="mb-1.5 block text-[12.5px] font-bold text-titular">
+            Nombre del titular
+          </label>
+          <input
+            id="titular_nombre"
+            type="text"
+            required
+            autoComplete="given-name"
+            value={nombrePila}
+            onChange={(e) => setNombrePila(e.target.value)}
+            className="w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-titular outline-none focus:border-accion focus:ring-2 focus:ring-accion/20"
+          />
+        </div>
+        <div>
+          <label htmlFor="titular_apellidos" className="mb-1.5 block text-[12.5px] font-bold text-titular">
+            Apellidos
+          </label>
+          <input
+            id="titular_apellidos"
+            type="text"
+            required
+            autoComplete="family-name"
+            value={apellidos}
+            onChange={(e) => setApellidos(e.target.value)}
+            className="w-full rounded-boton border border-linea bg-white px-4 py-3 text-[15px] text-titular outline-none focus:border-accion focus:ring-2 focus:ring-accion/20"
+          />
+        </div>
       </div>
+      <p className="-mt-2 text-[12px] text-gris">
+        Aparecerán en tu carnet de socio y en el certificado fiscal.
+      </p>
 
       <div>
         <label className="mb-1.5 block text-[12.5px] font-bold text-titular">IBAN</label>
         <div className="rounded-boton border border-linea bg-white px-4 py-3.5">
-          <IbanElement options={estiloIban} />
+          <PaymentElement
+            options={{
+              // El nombre y el email los pedimos nosotros (el campo de arriba
+              // y la sesión), así que se le dice a Stripe que no los repita.
+              fields: { billingDetails: { name: 'never', email: 'never' } },
+              // La domiciliación primero: es la que le interesa al partido.
+              paymentMethodOrder: ['sepa_debit', 'card'],
+            }}
+          />
         </div>
         <p className="mt-1.5 text-[12px] text-gris">
           Al confirmar, aceptas el mandato SEPA (esquema CORE) para que Razón Común, a través de
