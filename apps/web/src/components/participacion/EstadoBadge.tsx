@@ -29,7 +29,7 @@ export function EstadoBadge({ status, className }: { status: EstadoPropuesta; cl
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-[11.5px] font-extrabold uppercase tracking-[.06em]',
+        'inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-[9.5px] font-extrabold uppercase tracking-[.06em]',
         COLOR[status],
         className,
       )}

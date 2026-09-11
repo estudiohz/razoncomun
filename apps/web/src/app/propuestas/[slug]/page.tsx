@@ -4,6 +4,7 @@ import { notFound, permanentRedirect, redirect } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { Boton } from '@/components/ui/Boton';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
+import { AyudaEstados } from '@/components/participacion/AyudaEstados';
 import { Deliberacion } from '@/components/participacion/Deliberacion';
 import { VotoPropuesta } from '@/components/participacion/VotoPropuesta';
 import { ComentariosHilo } from '@/components/participacion/ComentariosHilo';
@@ -173,6 +174,7 @@ export default async function PropuestaDetallePage({
           <article className="rounded-tarjeta border border-linea bg-panel p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-2.5">
           <EstadoBadge status={propuesta.status} />
+          <AyudaEstados />
           <span className="rounded-lg bg-fondo px-2.5 py-1 text-[11.5px] font-bold uppercase tracking-[.05em] text-cuerpo">
             {propuesta.department.replace(/-/g, ' ')}
           </span>

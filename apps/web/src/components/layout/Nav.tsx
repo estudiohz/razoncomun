@@ -5,6 +5,7 @@ import { MenuUsuario } from '@/components/layout/MenuUsuario';
 import { MenuMovil } from '@/components/layout/MenuMovil';
 import { AvisoContrasena } from '@/components/layout/AvisoContrasena';
 import { Campanita } from '@/components/layout/Campanita';
+import { BotonRecargar } from '@/components/layout/BotonRecargar';
 import { getUsuarioYPerfil } from '@/lib/auth/niveles';
 import { contarNoLeidas, listarNotificaciones } from '@/lib/participacion/notifications';
 import type { Notificacion } from '@/lib/participacion/notifications';
@@ -90,6 +91,10 @@ export async function Nav() {
                   {item.label}
                 </Link>
               ))}
+              {/* Recargar: visible siempre (con o sin sesión) — la app instalada
+                  en iOS no tiene pull-to-refresh ni relanza desde cero al
+                  reabrirla, así que es la única vía de forzar una página al día. */}
+              <BotonRecargar />
               {/* Campanita: visible en cualquier ancho con sesión (no depende del burger). */}
               {user && <Campanita notificaciones={notificaciones} noLeidas={noLeidas} />}
               {/* Cluster de escritorio: sesión o CTAs. Oculto en móvil (lo cubre el burger). */}
