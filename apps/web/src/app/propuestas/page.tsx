@@ -6,6 +6,7 @@ import { Chip } from '@/components/ui/Chip';
 import { TiraDeslizable, ItemTira } from '@/components/ui/TiraDeslizable';
 import { BarraOrdenarBuscar } from '@/components/participacion/BarraOrdenarBuscar';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
+import { AyudaEstados } from '@/components/participacion/AyudaEstados';
 import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
@@ -104,20 +105,23 @@ export default async function PropuestasPage({
       {/* En móvil los 8 estados hacían wrap en 2-3 filas y estropeaban el
           arranque de la página (mismo problema que el blog): una fila
           deslizable con flechas ‹ › que invitan al gesto. */}
-      <TiraDeslizable alinear="centro" className="mt-10">
-        <ItemTira>
-          <Chip href={hrefFiltro({ status: '' })} activo={!status}>
-            Todos los estados
-          </Chip>
-        </ItemTira>
-        {ORDEN_ESTADOS.map((s) => (
-          <ItemTira key={s}>
-            <Chip href={hrefFiltro({ status: s })} activo={status === s}>
-              {ETIQUETA_ESTADO[s]}
+      <div className="mt-10 flex items-center justify-center gap-2">
+        <TiraDeslizable alinear="centro">
+          <ItemTira>
+            <Chip href={hrefFiltro({ status: '' })} activo={!status}>
+              Todos los estados
             </Chip>
           </ItemTira>
-        ))}
-      </TiraDeslizable>
+          {ORDEN_ESTADOS.map((s) => (
+            <ItemTira key={s}>
+              <Chip href={hrefFiltro({ status: s })} activo={status === s}>
+                {ETIQUETA_ESTADO[s]}
+              </Chip>
+            </ItemTira>
+          ))}
+        </TiraDeslizable>
+        <AyudaEstados />
+      </div>
 
       <div className="mx-auto mt-10 grid max-w-[1080px] gap-8 min-[860px]:grid-cols-[220px_1fr]">
         <aside>
