@@ -253,9 +253,6 @@ export async function eliminarProveedorIA(formData: FormData) {
  * con el cliente de sesión del propio admin — a diferencia de las
  * credenciales de IA, esta tabla NO exige `service_role`.
  */
-/** Los dos huecos de código de seguimiento, en `settings`. */
-export const CLAVES_SEGUIMIENTO = ['tracking_head', 'tracking_body'] as const;
-
 /**
  * Guarda el código de seguimiento (Analytics, píxel de Meta…).
  *
