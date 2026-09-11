@@ -11,24 +11,24 @@
   "theme_color": "#FFFFFF",
   "lang": "es",
   "icons": [
-    { "src": "/icono-rc-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icono-rc.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "/icono-rc-pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icono-rc-pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ],
   "shortcuts": [
     {
       "name": "Mi panel",
       "url": "/panel",
-      "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icono-rc-pwa-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Propuestas",
       "url": "/propuestas",
-      "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icono-rc-pwa-192.png", "sizes": "192x192" }]
     },
     {
       "name": "La encuesta del mes",
       "url": "/mes",
-      "icons": [{ "src": "/icono-rc-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/icono-rc-pwa-192.png", "sizes": "192x192" }]
     }
   ]
 }

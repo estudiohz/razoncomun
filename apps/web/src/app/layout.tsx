@@ -30,7 +30,14 @@ export const metadata: Metadata = {
   description: site.descripcion,
   applicationName: site.nombre,
   authors: [{ name: site.nombre }],
-  icons: { icon: '/icono-rc.png' },
+  // El icono de pestaña/favicon (`icon`) puede llevar transparencia — lo pinta
+  // el navegador sobre su propio fondo. El de "añadir a inicio" de iOS
+  // (`apple`) NO: Safari compone el alfa como NEGRO y no le pone ningún
+  // padding propio, así que necesita su archivo aparte, ya opaco (fondo
+  // blanco) y con el hexágono encogido para no tocar los bordes — el mismo
+  // icono transparente y a sangre que usa el carnet de socio (PDF/Wallet) se
+  // veía perfecto ahí, pero mal como icono de app (Sergio, 11/09/2026).
+  icons: { icon: '/icono-rc.png', apple: '/apple-touch-icon.png' },
   // PWA: hace la web instalable en el móvil (icono + pantalla completa).
   // El service worker lo registra <RegistroPWA /> más abajo.
   manifest: '/manifest.webmanifest',

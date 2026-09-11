@@ -206,12 +206,12 @@ export function EncuestaPlayer({
                   <button
                     type="button"
                     onClick={() => setIndice(i)}
-                    className="flex w-full items-baseline justify-between gap-3 rounded-boton border border-linea bg-white px-4 py-2.5 text-left hover:border-titular"
+                    className="flex w-full flex-col gap-1 rounded-boton border border-linea bg-white px-4 py-2.5 text-left hover:border-titular"
                   >
-                    <span className="min-w-0 truncate text-[13.5px] font-semibold text-cuerpo">
+                    <span className="text-[13.5px] font-semibold leading-snug text-cuerpo">
                       {i + 1}. {p.text}
                     </span>
-                    <span className={cn('shrink-0 text-[12.5px] font-bold', r === undefined ? 'text-magenta' : 'text-titular')}>
+                    <span className={cn('text-[12.5px] font-bold', r === undefined ? 'text-magenta' : 'text-titular')}>
                       {r === undefined ? 'Sin responder' : Array.isArray(r) ? (r as string[]).join(', ') || 'Sin responder' : String(r)}
                     </span>
                   </button>
