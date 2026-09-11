@@ -353,11 +353,14 @@ function ResultadoPregunta({
           const pct = totalPregunta > 0 ? Math.round((total / totalPregunta) * 100) : 0;
           return (
             <div key={opcion}>
-              <div className="flex items-baseline justify-between gap-2 text-[13.5px]">
-                <span className="min-w-0 font-semibold text-cuerpo">
-                  {opcion}
+              <div className="flex items-start justify-between gap-2 text-[13.5px]">
+                {/* flex-wrap: si no cabe, "Tu respuesta" baja entera a su propia
+                    línea (whitespace-nowrap evita que se parta a media palabra,
+                    como pasaba antes) — el % de al lado no se mueve de sitio. */}
+                <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-cuerpo">
+                  <span>{opcion}</span>
                   {esMia(opcion) && (
-                    <span className="ml-2 rounded-full bg-accion px-2 py-0.5 text-[10.5px] font-bold text-white">
+                    <span className="whitespace-nowrap rounded-full bg-accion px-2 py-0.5 text-[10.5px] font-bold text-white">
                       Tu respuesta
                     </span>
                   )}
