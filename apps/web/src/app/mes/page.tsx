@@ -59,7 +59,7 @@ export default async function MesPage({
     obtenerEncuestaDelMes(supabase, mes, user?.id ?? null),
     supabase
       .from('proposals')
-      .select('id, title, slug, status, support_count')
+      .select('id, title, slug, status, support_count, oppose_count')
       .eq('featured_month', `${mes}-01`)
       .order('support_count', { ascending: false }),
     supabase
@@ -84,7 +84,10 @@ export default async function MesPage({
 
   const mesesConEncuesta = new Set((delAnyo ?? []).map((s) => s.featured_month?.slice(0, 7)));
   const esActual = mes === mesActual;
-  const pinned = (fijadas ?? []) as Pick<Propuesta, 'id' | 'title' | 'slug' | 'status' | 'support_count'>[];
+  const pinned = (fijadas ?? []) as Pick<
+    Propuesta,
+    'id' | 'title' | 'slug' | 'status' | 'support_count' | 'oppose_count'
+  >[];
 
   // Modo asistente = estás respondiendo. Ahí la pantalla es para la pregunta
   // (petición de Sergio, 02/08): fuera el titular grande y fuera la cinta de
@@ -143,14 +146,17 @@ export default async function MesPage({
       ) : (
         <>
           <header className="mx-auto max-w-[720px] text-center">
-            <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">
-              {esActual ? 'Participa ahora' : 'Histórico'}
-            </span>
-            <h1 className="mt-2 text-[clamp(26px,4.4vw,40px)] font-extrabold leading-[1.12]">
-              {encuesta ? encuesta.title : `La encuesta de ${MESES[numMes - 1]} ${anyo}`}
+            <p className="text-[12px] font-semibold text-gris">
+              {esActual ? 'Participa ahora en la encuesta' : 'Histórico'}
+            </p>
+            <h1 className="mt-1 text-[clamp(24px,4.4vw,38px)] font-extrabold leading-[1.12] text-titular">
+              {MESES[numMes - 1].charAt(0).toUpperCase() + MESES[numMes - 1].slice(1)} {anyo}
             </h1>
+            {encuesta?.title && (
+              <p className="mx-auto mt-2 max-w-[560px] text-[15px] font-bold text-cuerpo">{encuesta.title}</p>
+            )}
             {encuesta?.description && (
-              <p className="mx-auto mt-3 max-w-[560px] text-[14.5px] text-cuerpo">{encuesta.description}</p>
+              <p className="mx-auto mt-1.5 max-w-[560px] text-[14.5px] text-cuerpo">{encuesta.description}</p>
             )}
           </header>
 
@@ -263,7 +269,20 @@ export default async function MesPage({
                   <EstadoBadge status={p.status} className="mb-1.5" />
                   <span className="line-clamp-2 text-[15px] font-bold text-titular">{p.title}</span>
                 </span>
-                <span className="shrink-0 text-[12.5px] text-gris">👍 {p.support_count}</span>
+                <span className="flex shrink-0 items-center gap-1">
+                  <span
+                    aria-label={`${p.support_count} a favor`}
+                    className="inline-flex items-center gap-1 rounded-full bg-accion px-2.5 py-1 text-[12px] font-extrabold text-white"
+                  >
+                    👍 {p.support_count}
+                  </span>
+                  <span
+                    aria-label={`${p.oppose_count} en contra`}
+                    className="inline-flex items-center gap-1 rounded-full bg-accion px-2.5 py-1 text-[12px] font-extrabold text-white"
+                  >
+                    👎 {p.oppose_count}
+                  </span>
+                </span>
               </Link>
             ))}
           </div>

@@ -33,14 +33,24 @@
   }
 
   /* Isla flotante: se despega de los lados y del borde inferior para que su
-     contorno redondeado se vea entero. Sin fondo propio detrás. */
+     contorno redondeado se vea entero. Sin fondo propio detrás — por eso este
+     padding tiene que ser mínimo: es hueco TRANSPARENTE, y cualquier px de
+     más aquí deja ver el fondo de la página en vez de la píldora blanca
+     (así se detectó: al subirlo a 10px para dar más margen de toque, se veía
+     el fondo por debajo del menú). El margen de toque real se añade en
+     `.dock` (alto), que SÍ está pintado por el SVG. */
   .marco {
-    padding: 0 2px calc(10px + env(safe-area-inset-bottom));
+    padding: 0 2px calc(2px + env(safe-area-inset-bottom));
   }
 
   .dock {
     position: relative;
-    height: 64px;
+    /* +8px sobre el alto original (64px) para un área de toque más cómoda,
+       ganados aquí y no en el `.marco` porque este alto SÍ lo pinta el SVG
+       (ver comentario de `.marco` arriba). La geometría del socket se mide
+       en vivo desde el rect renderizado (LiquidTabBar.tsx), así que crece
+       sin tocar el cálculo del path. */
+    height: 72px;
     touch-action: pan-y;               /* el scroll vertical sigue siendo de la página */
     -webkit-tap-highlight-color: transparent;
     /* JS sobrescribe las dos en cada medida */
