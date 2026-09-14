@@ -1,11 +1,10 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Boton } from '@/components/ui/Boton';
 import { MenuUsuario } from '@/components/layout/MenuUsuario';
 import { MenuMovil } from '@/components/layout/MenuMovil';
 import { AvisoContrasena } from '@/components/layout/AvisoContrasena';
 import { Campanita } from '@/components/layout/Campanita';
-import { BotonRecargar } from '@/components/layout/BotonRecargar';
+import { LogoNav } from '@/components/layout/LogoNav';
 import { getUsuarioYPerfil } from '@/lib/auth/niveles';
 import { contarNoLeidas, listarNotificaciones } from '@/lib/participacion/notifications';
 import type { Notificacion } from '@/lib/participacion/notifications';
@@ -70,17 +69,7 @@ export async function Nav() {
       <nav className="sticky top-3.5 z-50 my-3.5">
         <div className="mx-auto w-full max-w-wrap px-4 min-[720px]:px-8">
           <div className="flex h-16 items-center justify-between rounded-[18px] border border-linea bg-white px-4 shadow-nav min-[720px]:px-[22px]">
-            <Link href="/" className="flex items-center gap-3 no-underline" aria-label={site.nombre}>
-              <Image
-                src="/logo-rc.svg"
-                alt={site.nombre}
-                width={210}
-                height={47}
-                priority
-                unoptimized
-                className="h-[47px] w-auto"
-              />
-            </Link>
+            <LogoNav nombre={site.nombre} />
             <div className="flex items-center gap-[26px]">
               {navPrincipal.map((item) => (
                 <Link
@@ -91,10 +80,6 @@ export async function Nav() {
                   {item.label}
                 </Link>
               ))}
-              {/* Recargar: visible siempre (con o sin sesión) — la app instalada
-                  en iOS no tiene pull-to-refresh ni relanza desde cero al
-                  reabrirla, así que es la única vía de forzar una página al día. */}
-              <BotonRecargar />
               {/* Campanita: visible en cualquier ancho con sesión (no depende del burger). */}
               {user && <Campanita notificaciones={notificaciones} noLeidas={noLeidas} />}
               {/* Cluster de escritorio: sesión o CTAs. Oculto en móvil (lo cubre el burger). */}
