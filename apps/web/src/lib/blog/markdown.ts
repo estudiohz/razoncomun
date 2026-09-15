@@ -31,7 +31,18 @@ function urlSegura(url: string): string {
   return '#';
 }
 
-/** Slug estable para el `id` de los encabezados (y los anclas del índice). */
+/**
+ * Slug estable para el `id` de los encabezados (y los anclas del índice), y
+ * también el que genera el slug de artículos y propuestas (`lib/blog/admin.ts`,
+ * `lib/participacion/proposals.ts`).
+ *
+ * El recorte de guiones sobrantes se hace DOS VECES, antes y después de
+ * `.slice(100)` — solo antes no basta: si el corte cae justo detrás de un
+ * guion (un título largo con ":" u otro separador ahí cerca), ese guion
+ * final se queda sin recortar (Sergio, 15/09/2026: título de 99 caracteres
+ * con ":" en la posición justa daba "...delincuentes-graves-", con el
+ * guion colgando, cuando el límite era 60).
+ */
 export function slugificar(texto: string): string {
   return texto
     .normalize('NFD')
@@ -39,7 +50,8 @@ export function slugificar(texto: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
+    .slice(0, 100)
+    .replace(/^-+|-+$/g, '');
 }
 
 /** Marcas de línea: negrita, cursiva, código, enlaces. Se aplica sobre texto YA escapado. */

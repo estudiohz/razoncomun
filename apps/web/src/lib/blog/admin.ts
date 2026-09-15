@@ -179,6 +179,14 @@ export async function guardarArticulo(
   revalidatePath(base);
   revalidatePath(`${base}/${slug}`);
   revalidatePath('/sitemap.xml');
+  // Sin esto, la propia ficha de edición del admin quedaba con la versión
+  // cacheada de ANTES de guardar: se cambiaba el slug (o cualquier otro
+  // campo), la base de datos sí se actualizaba, pero al volver a la ficha
+  // se veía el valor viejo — parecía que el cambio "no se guardaba" o
+  // "volvía al original", cuando en realidad solo faltaba invalidar esta
+  // ruta (Sergio, 15/09/2026).
+  revalidatePath('/admin/articulos');
+  if (data.id) revalidatePath(`/admin/articulos/${data.id}`);
 
   return { ok: true, slug, aviso };
 }
