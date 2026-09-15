@@ -11,7 +11,27 @@ import { metadatosPagina } from '@/lib/seo';
 const DESCRIPCION =
   'Artículos técnicos y basados en datos sobre las áreas de gestión del país. Cada afirmación, con su fuente. Cada dato, verificado antes de publicarse.';
 
-export const revalidate = 300;
+/**
+ * BUG URGENTE (Sergio, 15/09/2026): cualquier ficha de artículo daba 500
+ * ("Application error"), general a todo el blog, viejos y nuevos por igual.
+ *
+ * CAUSA: esta ruta combinaba `generateStaticParams` + `export const
+ * revalidate` (caché ISR) con el `Nav` del layout raíz, que lee las cookies
+ * de sesión en CADA página para saber si pintar "Únete/Accede" o el menú de
+ * usuario. Esa combinación es incompatible en Next: pedirle a la vez una
+ * caché estática revalidable Y una API dinámica (cookies) en el árbol hace
+ * que aborte con el digest `DYNAMIC_SERVER_USAGE` en cuanto la página no
+ * tiene ya una copia servible de un build anterior — que es exactamente el
+ * caso de un artículo recién publicado, o de CUALQUIERA tras un redeploy que
+ * limpia la caché (el contenedor es nuevo). Por eso "pasaba con todo el
+ * blog": no era el contenido de ningún artículo, era la ruta.
+ *
+ * ARREGLO: fuera `revalidate`, la ruta pasa a renderizar en cada petición
+ * (mismo patrón que `/mes`, que ya usa `force-dynamic` por este mismo
+ * motivo). Se pierde el beneficio de ISR en los artículos; se gana que
+ * cargan siempre.
+ */
+export const dynamic = 'force-dynamic';
 /** Un slug que no se prerenderizó (artículo nuevo) se genera bajo demanda. */
 export const dynamicParams = true;
 

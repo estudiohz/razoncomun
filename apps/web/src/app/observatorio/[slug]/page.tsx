@@ -11,7 +11,14 @@ import { metadatosPagina } from '@/lib/seo';
 const DESCRIPCION =
   'Análisis diario a partir de fuentes oficiales (INE, Eurostat, BOE, Banco de España), traducido a lenguaje claro y verificado antes de publicarse.';
 
-export const revalidate = 300;
+/**
+ * Sin `revalidate` (ISR): la misma combinación con `generateStaticParams` y
+ * el `Nav` del layout raíz (lee cookies en cada página) tumbaba con 500
+ * ("DYNAMIC_SERVER_USAGE") las fichas de /blog/[slug] — ver el comentario
+ * completo ahí. Se corrige aquí también porque comparte plantilla y el
+ * mismo riesgo.
+ */
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
