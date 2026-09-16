@@ -1,4 +1,5 @@
 import { site } from '@/lib/site';
+import { leerEnlaceDiscord } from '@/lib/home/discord';
 import { DiscordWidgetEnVivo } from './DiscordWidgetEnVivo';
 
 const discordPath =
@@ -13,7 +14,8 @@ const discordPath =
  * El widget en sí (iframe de discord.com) es un Client Component aparte,
  * `DiscordWidgetEnVivo`: carga diferida al hacer scroll — ver el porqué ahí.
  */
-export function DiscordParallax() {
+export async function DiscordParallax() {
+  const enlaceDiscord = await leerEnlaceDiscord();
   return (
     <section className="parallax-bg relative overflow-hidden px-6 py-[100px]">
       <div className="relative mx-auto grid max-w-[1040px] items-center gap-10 min-[860px]:grid-cols-[1.05fr_.95fr] min-[860px]:gap-14">
@@ -30,7 +32,7 @@ export function DiscordParallax() {
             punto con la comunidad — así nace la política basada en datos.
           </p>
           <a
-            href={site.discord}
+            href={enlaceDiscord}
             className="inline-flex items-center gap-[11px] rounded-boton bg-[#5865F2] px-8 py-[15px] text-base font-bold text-white no-underline shadow-[0_10px_28px_rgba(0,0,0,.28)] transition-transform duration-200 hover:-translate-y-0.5"
           >
             <svg viewBox="0 0 24 24" className="h-6 w-6 fill-white" aria-hidden>

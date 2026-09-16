@@ -66,6 +66,40 @@ export async function guardarVideoDestacado(
   return { ok: true };
 }
 
+/**
+ * Enlace de invitación a Discord (16/09/2026): un campo aparte en vez de
+ * pegarlo en el código, después del segundo enlace caducado en una semana
+ * (los invites de Discord expiran a los 7 días o a N usos salvo que se
+ * creen explícitamente "Nunca"/"Sin límite"). Ver `lib/home/discord.ts`.
+ */
+export async function guardarEnlaceDiscord(
+  _previo: ResultadoPortada | null,
+  formData: FormData,
+): Promise<ResultadoPortada> {
+  const { user, supabase } = await requireAdmin('/admin/portada');
+  const url = String(formData.get('discord_url') ?? '').trim();
+
+  if (url && !/^https:\/\/(discord\.gg|discord\.com\/invite)\/[\w-]+$/.test(url)) {
+    return {
+      ok: false,
+      error: 'Eso no parece un enlace de invitación de Discord (discord.gg/... o discord.com/invite/...).',
+    };
+  }
+
+  await upsertSetting(supabase, user.id, 'discord_invite_url', url);
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'setting_changed',
+    entity: 'settings',
+    entityId: null,
+    meta: { key: 'discord_invite_url', to: url || null },
+  });
+
+  revalidatePath('/admin/portada');
+  revalidatePath('/');
+  return { ok: true };
+}
+
 export interface ResultadoCaratula {
   url?: string;
   error?: string;

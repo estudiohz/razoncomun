@@ -9,7 +9,11 @@ export const site = {
     'Partido político español basado en datos y evidencia. Cada propuesta se mide, se simula y se corrige. Sin ideología: coherencia y resultados.',
   registro:
     'Partido político inscrito en el Registro del Ministerio del Interior.',
-  discord: 'https://discord.gg/yxPNMsSy',
+  // Enlace de reserva (footer, menú, SEO) — "Caduca: Nunca" / "Sin límite"
+  // de usos, confirmado con la API de Discord (16/09/2026). El botón de la
+  // home usa el editable en /admin/portada (lib/home/discord.ts) y cae en
+  // este mismo valor si esa fila está vacía.
+  discord: 'https://discord.gg/F289cbCg6h',
   /** id del servidor, para el widget embebido (discord.com/widget?id=...). */
   discordServerId: '1306953689390514237',
 } as const;
