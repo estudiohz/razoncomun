@@ -2,7 +2,15 @@
 
 export const site = {
   nombre: 'Razón Común',
-  urlBase: 'https://www.razoncomun.com',
+  // SIN "www" (Óscar, 16/09/2026: "las noticias no salen posicionadas ni
+  // salen en Google"). El servidor real redirige www -> sin-www con 301,
+  // pero `urlBase` seguía apuntando a www: cada canonical, og:url, JSON-LD y
+  // entrada del sitemap del sitio ENTERO apuntaba a una URL que redirige a
+  // otra distinta. Google no indexa bien una canónica que a su vez
+  // redirige — es exactamente la señal contradictoria que hunde el
+  // posicionamiento, no solo del blog, de todas las páginas. Un solo sitio:
+  // el que de verdad sirve 200 gana la canonicalización.
+  urlBase: 'https://razoncomun.com',
   lema: 'La coherencia no tiene ideología',
   subtitulo: 'La alternativa que estabas esperando',
   descripcion:
