@@ -7,7 +7,7 @@ const celdaBase =
   'transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-tarjeta ' +
   'max-[960px]:!col-span-1 max-[960px]:!row-span-1 max-[960px]:min-h-[150px]';
 
-/** Cuadrícula bento: manifiesto, dato, imagen humana, foro, observatorio. */
+/** Cuadrícula bento: manifiesto, dato, imagen humana, propuestas, observatorio. */
 export function Bento() {
   return (
     <section className="pb-[60px] pt-10">
@@ -96,16 +96,17 @@ export function Bento() {
           </span>
         </Link>
 
-        {/* Foro — 4×1 */}
-        <div className={`${celdaBase} col-span-4 row-span-1`}>
+        {/* Propuestas — 4×1 (antes "Foro": no existe tal cosa, es el tablero
+            de propuestas — Sergio, 16/09/2026) */}
+        <Link href="/propuestas" className={`${celdaBase} col-span-4 row-span-1`}>
           <div>
             <div className="mb-2.5 rounded-xl bg-fondo px-4 py-3 text-[13.5px] text-cuerpo">
-              <b className="font-bold text-titular">Foro:</b> ¿cómo auditarías tú el gasto público?
+              <b className="font-bold text-titular">Propuestas:</b> ¿cómo auditarías tú el gasto público?
             </div>
             <h3 className="text-[17px] font-bold">La comunidad decide</h3>
-            <p className="text-sm">Foro abierto y Discord activo.</p>
+            <p className="text-sm">Panel de propuestas abierto. Participa.</p>
           </div>
-        </div>
+        </Link>
 
         {/* Observatorio — 8×1 */}
         <div
