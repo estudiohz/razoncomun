@@ -10,6 +10,8 @@ export const site = {
   registro:
     'Partido político inscrito en el Registro del Ministerio del Interior.',
   discord: 'https://discord.gg/yxPNMsSy',
+  /** id del servidor, para el widget embebido (discord.com/widget?id=...). */
+  discordServerId: '1306953689390514237',
 } as const;
 
 /**
