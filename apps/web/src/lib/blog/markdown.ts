@@ -36,17 +36,16 @@ function urlSegura(url: string): string {
  * también el que genera el slug de artículos y propuestas (`lib/blog/admin.ts`,
  * `lib/participacion/proposals.ts`).
  *
- * El límite de 100 caracteres NO corta a lo bruto por posición: eso partía
- * palabras a la mitad (Sergio, 18/09/2026: un slug de exactamente 100
- * caracteres cortaba "...vivienda-del-gobierno" justo después de "go",
- * dejando "...del-go" — nada que ver con el guion colgante de la vez
- * anterior, esta vez cayó a mitad de palabra). Si hace falta acortar, se
- * corta en el ÚLTIMO GUION dentro del límite, así el resultado siempre
- * termina en una palabra completa aunque quede algo más corto de 100.
- * Único caso sin guion posible: una sola "palabra" kilométrica sin
- * separadores — ahí no hay forma de no partirla, se deja el corte duro.
+ * El límite (150 caracteres, Sergio 18/09/2026 — antes 100) NO corta a lo
+ * bruto por posición: eso partía palabras a la mitad ("...vivienda-del-
+ * gobierno" -> "...del-go"). Si hace falta acortar, se corta en el ÚLTIMO
+ * GUION dentro del límite, así el resultado siempre termina en una palabra
+ * completa aunque quede algo más corto del límite. Único caso sin guion
+ * posible: una sola "palabra" kilométrica sin separadores — ahí no hay
+ * forma de no partirla, se deja el corte duro.
  */
 export function slugificar(texto: string): string {
+  const LIMITE = 150;
   const limpio = texto
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
@@ -54,9 +53,9 @@ export function slugificar(texto: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-  if (limpio.length <= 100) return limpio;
+  if (limpio.length <= LIMITE) return limpio;
 
-  const cortado = limpio.slice(0, 100);
+  const cortado = limpio.slice(0, LIMITE);
   const ultimoGuion = cortado.lastIndexOf('-');
   return (ultimoGuion > 0 ? cortado.slice(0, ultimoGuion) : cortado).replace(/^-+|-+$/g, '');
 }
