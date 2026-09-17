@@ -36,22 +36,29 @@ function urlSegura(url: string): string {
  * también el que genera el slug de artículos y propuestas (`lib/blog/admin.ts`,
  * `lib/participacion/proposals.ts`).
  *
- * El recorte de guiones sobrantes se hace DOS VECES, antes y después de
- * `.slice(100)` — solo antes no basta: si el corte cae justo detrás de un
- * guion (un título largo con ":" u otro separador ahí cerca), ese guion
- * final se queda sin recortar (Sergio, 15/09/2026: título de 99 caracteres
- * con ":" en la posición justa daba "...delincuentes-graves-", con el
- * guion colgando, cuando el límite era 60).
+ * El límite de 100 caracteres NO corta a lo bruto por posición: eso partía
+ * palabras a la mitad (Sergio, 18/09/2026: un slug de exactamente 100
+ * caracteres cortaba "...vivienda-del-gobierno" justo después de "go",
+ * dejando "...del-go" — nada que ver con el guion colgante de la vez
+ * anterior, esta vez cayó a mitad de palabra). Si hace falta acortar, se
+ * corta en el ÚLTIMO GUION dentro del límite, así el resultado siempre
+ * termina en una palabra completa aunque quede algo más corto de 100.
+ * Único caso sin guion posible: una sola "palabra" kilométrica sin
+ * separadores — ahí no hay forma de no partirla, se deja el corte duro.
  */
 export function slugificar(texto: string): string {
-  return texto
+  const limpio = texto
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 100)
     .replace(/^-+|-+$/g, '');
+
+  if (limpio.length <= 100) return limpio;
+
+  const cortado = limpio.slice(0, 100);
+  const ultimoGuion = cortado.lastIndexOf('-');
+  return (ultimoGuion > 0 ? cortado.slice(0, ultimoGuion) : cortado).replace(/^-+|-+$/g, '');
 }
 
 /** Marcas de línea: negrita, cursiva, código, enlaces. Se aplica sobre texto YA escapado. */
