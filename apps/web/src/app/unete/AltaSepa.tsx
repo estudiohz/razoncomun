@@ -22,6 +22,28 @@ function getStripe() {
   return stripePromise;
 }
 
+/**
+ * Si el banco exige autenticar también el PRIMER COBRO (no solo al guardar la
+ * tarjeta), lanza ese 3D Secure. Devuelve un mensaje de error o null si todo
+ * fue bien. Sin esto la suscripción se quedaba `incomplete` en Stripe
+ * ("Impagada" en /admin) y la persona creía estar dada de alta (14/10/2026).
+ */
+async function autenticarPrimerCobro(
+  stripe: StripeJs,
+  clientSecretPago: string | undefined,
+): Promise<string | null> {
+  if (!clientSecretPago) return null;
+  const { paymentIntent, error } = await stripe.handleNextAction({ clientSecret: clientSecretPago });
+  if (error) {
+    return error.message ?? 'Tu banco no ha autorizado el primer cobro. Inténtalo de nuevo.';
+  }
+  // `processing` es válido en domiciliación: el cobro SEPA se confirma días después.
+  if (paymentIntent && paymentIntent.status !== 'succeeded' && paymentIntent.status !== 'processing') {
+    return 'Tu banco no ha autorizado el primer cobro. Inténtalo de nuevo o usa domiciliación.';
+  }
+  return null;
+}
+
 type Paso = 'datos' | 'pago';
 
 export function AltaSepa({
@@ -103,6 +125,14 @@ export function AltaSepa({
       if (!resultado.ok) {
         setReanudando(false);
         setError(resultado.mensaje);
+        return;
+      }
+
+      const errorCobro = await autenticarPrimerCobro(stripe, resultado.clientSecretPago);
+      if (cancelado) return;
+      if (errorCobro) {
+        setReanudando(false);
+        setError(errorCobro);
         return;
       }
 
@@ -439,6 +469,13 @@ function PasoIban({
     });
     if (!resultado.ok) {
       setError(resultado.mensaje);
+      setProcesando(false);
+      return;
+    }
+
+    const errorCobro = await autenticarPrimerCobro(stripe, resultado.clientSecretPago);
+    if (errorCobro) {
+      setError(errorCobro);
       setProcesando(false);
       return;
     }

@@ -172,7 +172,12 @@ export async function iniciarDomiciliacion(input: {
   return { ok: true, clientSecret: setupIntent.client_secret, customerId };
 }
 
-export type ResultadoConfirmacion = { ok: true } | { ok: false; mensaje: string };
+export type ResultadoConfirmacion =
+  /** `clientSecretPago`: el banco exige autenticar TAMBIÉN el primer cobro
+      (3D Secure). El cliente debe llamar a `stripe.handleNextAction` con él;
+      sin eso la suscripción se queda `incomplete` y caduca a las 23 h. */
+  | { ok: true; clientSecretPago?: string }
+  | { ok: false; mensaje: string };
 
 function idDeStripe(x: string | { id: string } | null | undefined): string | null {
   if (!x) return null;
@@ -293,7 +298,7 @@ export async function confirmarAfiliacion(input: {
       invoice_settings: { default_payment_method: paymentMethodId },
     });
 
-    await stripe.subscriptions.create({
+    const suscripcion = await stripe.subscriptions.create({
       customer: customerId,
       items: [{ price: priceIdCuota(plan, input.periodo) }],
       default_payment_method: paymentMethodId,
@@ -302,7 +307,25 @@ export async function confirmarAfiliacion(input: {
       // eligió cada quien. `members.amount_cents` ya lo refleja (el webhook lo
       // lee del Price real), pero el metadata lo deja explícito.
       metadata: { user_id: user.id, plan },
+      expand: ['latest_invoice.confirmation_secret'],
     });
+
+    // Autenticar la tarjeta al guardarla (SetupIntent) NO garantiza que el
+    // banco no pida autenticar también el primer cobro. Pasó el 14/10/2026 en
+    // producción (Mastercard débito española): la suscripción quedó
+    // `incomplete`, el PaymentIntent en `requires_action`, y aquí se devolvía
+    // `ok` igualmente — en /admin salía "Impagada" y la persona no sabía que
+    // le faltaba un paso. Ahora el cliente recibe el secreto y lanza el 3DS.
+    if (suscripcion.status === 'incomplete') {
+      const factura = suscripcion.latest_invoice;
+      const secreto =
+        factura && typeof factura !== 'string' ? factura.confirmation_secret?.client_secret : null;
+      if (secreto) return { ok: true, clientSecretPago: secreto };
+      return {
+        ok: false,
+        mensaje: 'Tu banco no ha aceptado el primer cobro. Prueba con otra tarjeta o con domiciliación.',
+      };
+    }
   } catch (err) {
     return { ok: false, mensaje: (err as Error).message };
   }
