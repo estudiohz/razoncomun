@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { metadatosPagina } from '@/lib/seo';
 import { requireUsuario } from '@/lib/auth/niveles';
+import { stripeCliente } from '@/lib/stripe/servidor';
+import { listarCuotasDelAnio, type CuotaCobrada } from '@/lib/afiliacion/certificado';
+import { formatearCents } from '@/lib/afiliacion/consentimiento';
 import { ConfirmandoAlta } from './ConfirmandoAlta';
 
 export const metadata: Metadata = metadatosPagina({
@@ -30,11 +33,23 @@ export default async function PanelAfiliacionPage({
 
   const { data: miembros } = await supabase
     .from('members')
-    .select('status, billing_period, started_at')
+    .select('status, billing_period, started_at, stripe_customer_id')
     .eq('user_id', user.id);
 
   const activa = miembros?.find((m) => m.status === 'active');
   const anyoActual = new Date().getFullYear();
+
+  // Cuotas cobradas este año, leídas de Stripe (fuente de verdad, la misma que
+  // el certificado). Si Stripe falla, la tabla se omite con un aviso: la página
+  // de la cuota no puede caerse porque una API externa tarde.
+  let cuotas: CuotaCobrada[] | null = null;
+  if (activa?.stripe_customer_id) {
+    try {
+      cuotas = await listarCuotasDelAnio(await stripeCliente(), activa.stripe_customer_id, anyoActual);
+    } catch (e) {
+      console.error('[panel/afiliacion] no se pudieron leer las cuotas de Stripe', e);
+    }
+  }
 
   // `?alta=ok` lo pone el alta DESPUÉS de crear la suscripción en Stripe. Si
   // está y todavía no hay fila en `members`, no es que no seas socio: es que el
@@ -85,6 +100,66 @@ export default async function PanelAfiliacionPage({
               {formatearFecha(activa.started_at)}. Gestiona el método de pago o date de baja desde
               el Customer Portal de Stripe (enlace en el correo de recibo).
             </p>
+          </section>
+
+          <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
+            <h2 className="text-[15px] font-bold text-titular">Cuotas pagadas en {anyoActual}</h2>
+            {cuotas === null ? (
+              <p className="mt-2 text-[13.5px] text-cuerpo">
+                Ahora mismo no podemos consultar tus pagos. Vuelve a intentarlo en unos minutos.
+              </p>
+            ) : cuotas.length === 0 ? (
+              <p className="mt-2 text-[13.5px] text-cuerpo">
+                Todavía no hay cuotas cobradas este año. Una domiciliación SEPA puede tardar unos días
+                en aparecer como pagada.
+              </p>
+            ) : (
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-[420px] text-left text-[13.5px] text-cuerpo">
+                  <thead>
+                    <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
+                      <th scope="col" className="py-2 pr-4 font-bold">Fecha</th>
+                      <th scope="col" className="py-2 pr-4 font-bold">Recibo</th>
+                      <th scope="col" className="py-2 text-right font-bold">Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cuotas.map((c) => (
+                      <tr key={c.id} className="border-b border-linea/60">
+                        <td className="py-2.5 pr-4">{formatearFecha(c.fecha.toISOString())}</td>
+                        <td className="py-2.5 pr-4">
+                          {c.urlRecibo ? (
+                            <a
+                              href={c.urlRecibo}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-semibold text-titular underline underline-offset-2"
+                            >
+                              {c.numero ?? 'Ver recibo'}
+                            </a>
+                          ) : (
+                            (c.numero ?? '—')
+                          )}
+                        </td>
+                        <td className="py-2.5 text-right font-semibold text-titular">
+                          {formatearCents(c.importeCents)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan={2} className="pt-3 pr-4 font-bold text-titular">
+                        Total {anyoActual} ({cuotas.length} {cuotas.length === 1 ? 'cuota' : 'cuotas'})
+                      </td>
+                      <td className="pt-3 text-right font-extrabold text-titular">
+                        {formatearCents(cuotas.reduce((s, c) => s + c.importeCents, 0))}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            )}
           </section>
 
           <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">

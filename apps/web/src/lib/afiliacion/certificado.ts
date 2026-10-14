@@ -65,11 +65,37 @@ export async function calcularCuotasDelAnio(
   stripeCustomerId: string,
   year: number,
 ): Promise<{ totalCents: number; numeroCuotas: number }> {
+  const cuotas = await listarCuotasDelAnio(stripe, stripeCustomerId, year);
+  return {
+    totalCents: cuotas.reduce((s, c) => s + c.importeCents, 0),
+    numeroCuotas: cuotas.length,
+  };
+}
+
+export type CuotaCobrada = {
+  id: string;
+  numero: string | null;
+  /** Cuándo se cobró (o, si Stripe no lo da, cuándo se emitió la factura). */
+  fecha: Date;
+  importeCents: number;
+  /** Recibo de Stripe, para que la persona lo descargue sin pasar por soporte. */
+  urlRecibo: string | null;
+};
+
+/**
+ * Las cuotas cobradas de un año, una a una. Es la MISMA selección que suma el
+ * certificado (`calcularCuotasDelAnio` se apoya en esta): la tabla del panel y
+ * el papel para Hacienda no pueden dar cifras distintas.
+ */
+export async function listarCuotasDelAnio(
+  stripe: Stripe,
+  stripeCustomerId: string,
+  year: number,
+): Promise<CuotaCobrada[]> {
   const desde = Math.floor(new Date(Date.UTC(year, 0, 1)).getTime() / 1000);
   const hasta = Math.floor(new Date(Date.UTC(year + 1, 0, 1)).getTime() / 1000);
 
-  let totalCents = 0;
-  let numeroCuotas = 0;
+  const cuotas: CuotaCobrada[] = [];
   let startingAfter: string | undefined;
 
   // Paginación defensiva (un afiliado de cuota mensual tiene como mucho 12
@@ -81,9 +107,14 @@ export async function calcularCuotasDelAnio(
       .then((r) => r.data);
 
     for (const inv of pagina_datos) {
-      if (inv.created >= desde && inv.created < hasta) {
-        totalCents += inv.amount_paid;
-        numeroCuotas += 1;
+      if (inv.created >= desde && inv.created < hasta && inv.id) {
+        cuotas.push({
+          id: inv.id,
+          numero: inv.number ?? null,
+          fecha: new Date((inv.status_transitions?.paid_at ?? inv.created) * 1000),
+          importeCents: inv.amount_paid,
+          urlRecibo: inv.hosted_invoice_url ?? null,
+        });
       }
     }
 
@@ -92,7 +123,9 @@ export async function calcularCuotasDelAnio(
     if (!startingAfter) break;
   }
 
-  return { totalCents, numeroCuotas };
+  // Stripe las devuelve de la más nueva a la más vieja; en una tabla anual se
+  // lee mejor en orden de calendario.
+  return cuotas.sort((a, b) => a.fecha.getTime() - b.fecha.getTime());
 }
 
 export async function datosCertificado(
