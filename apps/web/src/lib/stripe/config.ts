@@ -76,6 +76,29 @@ export function priceIdCuota(plan: PlanCuota, periodo: Periodicidad): string {
   return valor;
 }
 
+/**
+ * Variables sin las que el alta NO puede funcionar y que faltan en este
+ * entorno. Vacío = todo bien.
+ *
+ * Existe porque el 14/10/2026 producción no tenía la clave publicable ni los
+ * Price: la página cargaba, la persona rellenaba su NIF y al pulsar continuar
+ * el navegador mostraba "Application error" — una web caída a ojos de alguien
+ * que venía a darnos dinero. Con esto, `/unete` enseña un aviso en su lugar.
+ *
+ * La clave publicable se lee de forma textual (Next la hornea en build): si
+ * falta aquí, también falta en el bundle del navegador.
+ */
+export function faltasConfigAlta(): string[] {
+  const faltas: string[] = [];
+  if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim()) {
+    faltas.push('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY');
+  }
+  for (const envVar of Object.values(ENV_PRICE.socio)) {
+    if (!process.env[envVar]?.trim()) faltas.push(envVar);
+  }
+  return faltas;
+}
+
 /** ¿Están configurados los dos Price del tramo verificado? Si no, la UI no
  *  ofrece ese plan: es preferible enseñar solo el de siempre a enseñar una
  *  opción que reventaría con "Falta STRIPE_PRICE_VERIFICADO_MENSUAL" justo

@@ -324,7 +324,7 @@ export function AltaSepa({
         disabled={cargando}
         className="w-full rounded-boton bg-accion px-5 py-3.5 text-[15px] font-bold text-white shadow-boton hover:-translate-y-0.5 disabled:opacity-60"
       >
-        {cargando ? 'Preparando la domiciliación…' : 'Continuar con tu IBAN'}
+        {cargando ? 'Preparando el pago…' : 'Continuar al pago'}
       </button>
 
       <p className="text-center text-[12px] text-gris">
@@ -458,9 +458,12 @@ function PasoIban({
       </button>
 
       {/* Resumen de lo que se va a cobrar. Este paso es el que firma el
-          mandato: la persona debe ver el importe exacto sin volver atrás. */}
+          mandato: la persona debe ver el importe exacto sin volver atrás.
+          "Hazte socio" y no "vas a domiciliar": también se puede pagar con
+          tarjeta, y hablar de domiciliación confundía a quien pagaba así
+          (Sergio, 14/10/2026). */}
       <p className="rounded-boton border border-linea bg-fondo px-4 py-3 text-[13px] text-cuerpo">
-        Vas a domiciliar{' '}
+        Hazte socio por{' '}
         <b className="font-bold text-titular">
           {formatearCents(CUOTA_REFERENCIA_CENTS[plan][periodo])}
         </b>{' '}
@@ -506,7 +509,7 @@ function PasoIban({
       </p>
 
       <div>
-        <label className="mb-1.5 block text-[12.5px] font-bold text-titular">IBAN</label>
+        <label className="mb-1.5 block text-[12.5px] font-bold text-titular">Forma de pago</label>
         <div className="rounded-boton border border-linea bg-white px-4 py-3.5">
           <PaymentElement
             options={{
@@ -519,8 +522,9 @@ function PasoIban({
           />
         </div>
         <p className="mt-1.5 text-[12px] text-gris">
-          Al confirmar, aceptas el mandato SEPA (esquema CORE) para que Razón Común, a través de
-          Stripe, adeude tu cuenta con la periodicidad elegida.
+          Si eliges domiciliación, al confirmar aceptas el mandato SEPA (esquema CORE) para que
+          Razón Común, a través de Stripe, adeude tu cuenta con la periodicidad elegida. Si eliges
+          tarjeta, la cuota se cargará en ella con esa misma periodicidad.
         </p>
       </div>
 
@@ -535,7 +539,7 @@ function PasoIban({
         disabled={procesando || !stripe}
         className="w-full rounded-boton bg-accion px-5 py-3.5 text-[15px] font-bold text-white shadow-boton hover:-translate-y-0.5 disabled:opacity-60"
       >
-        {procesando ? 'Confirmando el mandato…' : 'Confirmar la domiciliación'}
+        {procesando ? 'Procesando tu alta…' : 'Hazte socio'}
       </button>
     </form>
   );

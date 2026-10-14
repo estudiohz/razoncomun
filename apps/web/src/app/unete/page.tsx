@@ -7,6 +7,7 @@ import { getUsuarioYPerfil } from '@/lib/auth/niveles';
 import {
   CUOTA_REFERENCIA_CENTS,
   planVerificadoDisponible,
+  faltasConfigAlta,
   type PlanCuota,
 } from '@/lib/stripe/config';
 import { formatearCents } from '@/lib/afiliacion/consentimiento';
@@ -146,6 +147,14 @@ export default async function UnetePage({
   const { plan: planQuery } = await searchParams;
   const planInicial: PlanCuota =
     planQuery === 'verificado' && verificadoDisponible ? 'verificado' : 'socio';
+
+  // Si falta configuración de Stripe, aviso en vez de formulario: el formulario
+  // reventaría en el navegador al pasar al pago. Se registra en el log del
+  // servidor para que quien despliega lo vea sin tener que reproducirlo.
+  const faltasAlta = faltasConfigAlta();
+  if (faltasAlta.length > 0) {
+    console.error(`[unete] alta deshabilitada, falta configuración: ${faltasAlta.join(', ')}`);
+  }
 
   let yaSocio = false;
   if (user) {
@@ -385,7 +394,22 @@ export default async function UnetePage({
                 {user ? 'Elige tu cuota' : 'Da el paso'}
               </h2>
 
-              {user ? (
+              {user && faltasAlta.length > 0 ? (
+                <div
+                  role="status"
+                  className="mx-auto mt-5 max-w-[560px] rounded-boton border border-naranja/40 bg-naranja/10 px-5 py-4 text-center text-[14px] leading-relaxed text-cuerpo"
+                >
+                  <p className="font-bold text-titular">El alta no está disponible ahora mismo</p>
+                  <p className="mt-1">
+                    Estamos haciendo ajustes en el sistema de pago. Vuelve a intentarlo en un rato o
+                    escríbenos a{' '}
+                    <a href="mailto:hola@razoncomun.com" className="font-semibold text-titular underline">
+                      hola@razoncomun.com
+                    </a>{' '}
+                    y te avisamos en cuanto esté listo.
+                  </p>
+                </div>
+              ) : user ? (
                 <AltaSepa
                   email={user.email ?? ''}
                   nombreInicial={perfil?.display_name ?? null}
@@ -397,7 +421,7 @@ export default async function UnetePage({
                   <p className="text-[14.5px] leading-relaxed text-cuerpo">
                     Para hacerte socio necesitas una cuenta (registro sin fricción: Google,
                     Facebook o email, sin verificación previa). Una vez dentro, vuelves aquí y
-                    completas tu domiciliación sin salir de la web.
+                    completas tu alta sin salir de la web.
                   </p>
                   <Link
                     href="/entrar?next=/unete"
