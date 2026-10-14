@@ -277,8 +277,13 @@ export default async function UnetePage({
               // anunciar su precio ni preseleccionarlo: la tarjeta vuelve al
               // texto genérico y su botón baja al alta sin `?plan`. Mejor eso
               // que ofrecer 6 €/mes que nadie puede contratar.
+              //
+              // DECISIÓN (Sergio, 14/10/2026): hay UNA sola cuota, 5 €/mes o
+              // 50 €/año, y verificarse no cuesta más. En producción los
+              // STRIPE_PRICE_VERIFICADO_* NO se configuran a propósito, así
+              // que esta es la rama que se ve.
               const ocultarPrecioVerificado = peldaño.activo === 'verified' && !verificadoDisponible;
-              const punto = ocultarPrecioVerificado ? 'Cuota + identidad verificada' : peldaño.punto;
+              const punto = ocultarPrecioVerificado ? 'Misma cuota · verificación sin coste extra' : peldaño.punto;
               const hrefCta = ocultarPrecioVerificado ? '#alta' : peldaño.cta.href;
               return (
                 <div
