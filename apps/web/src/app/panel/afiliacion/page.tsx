@@ -41,6 +41,10 @@ export default async function PanelAfiliacionPage({
   // webhook aún no ha escrito (tardó 19 segundos en la prueba del 04/09/2026).
   const { alta } = await searchParams;
   const reciénDadoDeAlta = alta === 'ok' && !activa;
+  // Y cuando la fila ya está, se celebra: sin esto la persona aterrizaba en la
+  // ficha de cuota a secas y no sabía si el alta había terminado (Sergio,
+  // 14/10/2026, primera alta real en producción).
+  const altaConfirmada = alta === 'ok' && !!activa;
 
   return (
     <div className="mx-auto w-full max-w-[760px] space-y-6">
@@ -55,6 +59,25 @@ export default async function PanelAfiliacionPage({
         <ConfirmandoAlta />
       ) : activa ? (
         <>
+          {altaConfirmada && (
+            <section
+              role="status"
+              className="rounded-tarjeta border border-teal/40 bg-teal/[.06] p-6"
+            >
+              <h2 className="text-[17px] font-extrabold text-titular">¡Ya eres socio de Razón Común!</h2>
+              <p className="mt-2 text-[13.5px] text-cuerpo">
+                Tu alta se ha completado correctamente y tu primera cuota está cobrada. Recibirás el
+                recibo por correo. Gracias por sostener una política basada en datos.
+              </p>
+              <Link
+                href="/panel/carnet"
+                className="mt-4 inline-block rounded-boton bg-accion px-5 py-3 text-[14px] font-bold text-white no-underline shadow-boton"
+              >
+                Ver mi carnet de socio
+              </Link>
+            </section>
+          )}
+
           <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
             <h2 className="text-[15px] font-bold text-titular">Tu cuota</h2>
             <p className="mt-2 text-[13.5px] text-cuerpo">
