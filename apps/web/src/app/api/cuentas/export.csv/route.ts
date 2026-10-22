@@ -11,9 +11,10 @@ import { createClient } from '@/lib/supabase/server';
 export async function GET() {
   const supabase = await createClient();
 
-  const [{ data: snapshots }, { data: gastos }] = await Promise.all([
+  const [{ data: snapshots }, { data: gastos }, { data: stripeMeses }] = await Promise.all([
     supabase.from('finance_snapshots').select('taken_at, balance_cents, income_month_cents, members_count').order('taken_at', { ascending: false }),
     supabase.from('finance_expenses').select('dated, concept, amount_cents, category').order('dated', { ascending: false }),
+    supabase.from('finance_stripe_monthly').select('month, gross_cents, fee_cents, refund_cents, charges_count').order('month', { ascending: false }),
   ]);
 
   const lineas: string[] = [];
@@ -25,6 +26,12 @@ export async function GET() {
     lineas.push(`snapshot,${s.taken_at},saldo_wise,,${s.balance_cents}`);
     lineas.push(`snapshot,${s.taken_at},ingresos_mes,,${s.income_month_cents}`);
     lineas.push(`snapshot,${s.taken_at},num_afiliados_cuota,,${s.members_count}`);
+  }
+  for (const m of stripeMeses ?? []) {
+    lineas.push(`stripe,${m.month},cobrado,,${m.gross_cents}`);
+    lineas.push(`stripe,${m.month},comision,,${m.fee_cents}`);
+    lineas.push(`stripe,${m.month},devuelto,,${m.refund_cents}`);
+    lineas.push(`stripe,${m.month},num_cobros,,${m.charges_count}`);
   }
   for (const g of gastos ?? []) {
     const concepto = `"${g.concept.replace(/"/g, '""')}"`;
