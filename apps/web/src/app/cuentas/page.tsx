@@ -129,14 +129,7 @@ export default async function CuentasPage() {
           </section>
         )}
 
-        {!snapshot ? (
-          <Tarjeta className="p-8 text-center text-[14px] text-cuerpo">
-            {/* Sin jerga interna: esto lo lee cualquier ciudadano. Antes decía "el primer
-                volcado del workflow n8n «finanzas-sync» aparecerá aquí". */}
-            Aún no hay datos financieros publicados. Cuando haya movimientos reales los
-            publicaremos aquí, línea a línea.
-          </Tarjeta>
-        ) : (
+        {!snapshot ? null : (
           <>
             {/* MÉTRICAS PRINCIPALES */}
             <section className="grid gap-4 sm:grid-cols-3">
