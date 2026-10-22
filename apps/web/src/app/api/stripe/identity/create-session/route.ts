@@ -43,12 +43,23 @@ export async function POST() {
 
   const stripe = new Stripe(secretKey);
 
-  const session = await stripe.identity.verificationSessions.create({
-    type: 'document',
-    metadata: { user_id: user.id },
-    options: { document: { require_matching_selfie: true } },
-    return_url: `${urlSitio()}/panel/perfil?identidad=pendiente#verificacion`,
-  });
+  let session: Stripe.Identity.VerificationSession;
+  try {
+    session = await stripe.identity.verificationSessions.create({
+      type: 'document',
+      metadata: { user_id: user.id },
+      options: { document: { require_matching_selfie: true } },
+      return_url: `${urlSitio()}/panel/perfil?identidad=pendiente#verificacion`,
+    });
+  } catch (err) {
+    // Sin este catch un fallo de Stripe (p. ej. Identity sin activar en la
+    // cuenta LIVE) salía como un 500 sin cuerpo y el cliente no podía explicarlo.
+    console.error('[identity] no se pudo crear la sesión', (err as Error).message);
+    return NextResponse.json(
+      { error: 'La verificación de identidad no está disponible ahora mismo. Inténtalo más tarde.' },
+      { status: 502 },
+    );
+  }
 
   // Marca "en revisión" para /panel/perfil. Un fallo aquí no debe impedir
   // que la persona verifique: solo se pierde el aviso.
