@@ -72,7 +72,13 @@ export function objetoPase(issuerId: string, uid: string, datos: DatosCarnet) {
     state: 'ACTIVE',
     hexBackgroundColor: '#FFFFFF',
     logo: {
-      sourceUri: { uri: `${urlSitio()}/icono-rc.png` },
+      // `logo-rc-wallet.png`, NO `icono-rc.png`: Google exige un cuadrado de al
+      // menos 660x660 (este mide 1024) y lo RECORTA EN CIRCULO, asi que el
+      // hexagono va centrado con margen para no perder las puntas. El prefijo
+      // `logo-rc-` tampoco es casual: el `matcher` del middleware ya excluye
+      // `logo-rc.*`, y Google descarga esta URL al guardar el pase — si pasara
+      // por la comprobacion de sesion, en un entorno cerrado (dev) fallaria.
+      sourceUri: { uri: `${urlSitio()}/logo-rc-wallet.png` },
       contentDescription: { defaultValue: { language: 'es', value: 'Razón Común' } },
     },
     cardTitle: { defaultValue: { language: 'es', value: 'Razón Común' } },
