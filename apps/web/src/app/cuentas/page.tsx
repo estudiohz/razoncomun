@@ -11,7 +11,7 @@ export const metadata: Metadata = metadatosPagina({
   ruta: '/cuentas',
 });
 
-export const revalidate = 3600; // datos alimentados por n8n (finanzas-sync) varias veces al día
+export const revalidate = 3600; // Stripe se sincroniza una vez al día (/api/cuentas/sync); /cuentas se revalida al terminar
 
 function euros(cents: number): string {
   return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
@@ -48,6 +48,17 @@ export default async function CuentasPage() {
     .order('dated', { ascending: false })
     .limit(200);
 
+  // Ingresos reales de Stripe por mes (0060). Solo agregados, sin socios.
+  const { data: stripeMeses } = await supabase
+    .from('finance_stripe_monthly')
+    .select('month, gross_cents, fee_cents, refund_cents, charges_count, members_active, synced_at')
+    .order('month', { ascending: false })
+    .limit(13);
+  const ultimaSyncStripe = (stripeMeses ?? []).reduce<string | null>(
+    (max, m) => (!max || m.synced_at > max ? m.synced_at : max),
+    null,
+  );
+
   const totalGastosMes = (gastos ?? []).reduce((acc, g) => acc + g.amount_cents, 0);
   const proximoHito = snapshot ? Math.ceil(((snapshot.members_count ?? 0) + 1) / 100) * 100 : 100;
 
@@ -58,8 +69,8 @@ export default async function CuentasPage() {
           <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">Transparencia</span>
           <h1 className="mt-2 text-[clamp(30px,5vw,44px)] font-extrabold">Nuestras cuentas, al céntimo</h1>
           <p className="mx-auto mt-3 max-w-[560px] text-[15px] text-cuerpo">
-            Somos el primer partido español que enseña sus cuentas en abierto, actualizadas varias
-            veces al día. Ningún gasto oculto, ninguna donación opaca: solo cuotas de socios.
+            Somos el primer partido español que enseña sus cuentas en abierto, actualizadas a diario.
+            Ningún gasto oculto, ninguna donación opaca: solo cuotas de socios.
           </p>
           {snapshot && (
             <p className="mt-2 text-[12px] text-gris">
@@ -68,6 +79,55 @@ export default async function CuentasPage() {
             </p>
           )}
         </header>
+
+        {(stripeMeses ?? []).length > 0 && (
+          <section>
+            <h2 className="mb-1 text-[20px] font-extrabold text-titular">Lo que ha cobrado Stripe, mes a mes</h2>
+            <p className="mb-4 max-w-[640px] text-[13.5px] text-cuerpo">
+              Cuotas de socios y ventas de la tienda, tal y como las registra Stripe: lo cobrado, la
+              comisión que se queda Stripe, las devoluciones y lo que nos llega de verdad (neto).
+              {ultimaSyncStripe && (
+                <>
+                  {' '}
+                  Sincronizado el{' '}
+                  {new Date(ultimaSyncStripe).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' })}.
+                </>
+              )}
+            </p>
+            <Tarjeta className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-left text-[13.5px]">
+                <thead>
+                  <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
+                    <th className="px-4 py-3">Mes</th>
+                    <th className="px-4 py-3 text-right">Cobros</th>
+                    <th className="px-4 py-3 text-right">Cobrado</th>
+                    <th className="px-4 py-3 text-right">Comisión</th>
+                    <th className="px-4 py-3 text-right">Devuelto</th>
+                    <th className="px-4 py-3 text-right">Neto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(stripeMeses ?? []).map((m) => (
+                    <tr key={m.month} className="border-b border-linea last:border-0">
+                      <td className="whitespace-nowrap px-4 py-3 font-semibold capitalize text-titular">
+                        {new Date(`${m.month}T12:00:00`).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                      </td>
+                      <td className="px-4 py-3 text-right text-cuerpo">{m.charges_count}</td>
+                      <td className="px-4 py-3 text-right text-cuerpo">{euros(m.gross_cents)}</td>
+                      <td className="px-4 py-3 text-right text-cuerpo">−{euros(m.fee_cents)}</td>
+                      <td className="px-4 py-3 text-right text-cuerpo">
+                        {m.refund_cents > 0 ? `−${euros(m.refund_cents)}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-titular">
+                        {euros(m.gross_cents - m.fee_cents - m.refund_cents)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Tarjeta>
+          </section>
+        )}
 
         {!snapshot ? (
           <Tarjeta className="p-8 text-center text-[14px] text-cuerpo">
