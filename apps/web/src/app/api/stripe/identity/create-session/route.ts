@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { urlSitio } from '@/lib/supabase/env';
 
 /**
@@ -29,14 +30,37 @@ export async function POST() {
     return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
   }
 
+  // Solo un socio con cuota activa puede verificarse: la comprobación se hace
+  // en BD (nunca por el botón oculto ni por el claim del JWT) para que una
+  // llamada directa a esta ruta no salte el requisito.
+  const { data: esSocio } = await supabase.rpc('is_active_member', { p_user: user.id });
+  if (!esSocio) {
+    return NextResponse.json(
+      { error: 'Para verificar tu identidad necesitas una cuota de socio activa.' },
+      { status: 403 },
+    );
+  }
+
   const stripe = new Stripe(secretKey);
 
   const session = await stripe.identity.verificationSessions.create({
     type: 'document',
     metadata: { user_id: user.id },
     options: { document: { require_matching_selfie: true } },
-    return_url: `${urlSitio()}/perfil?identidad=pendiente`,
+    return_url: `${urlSitio()}/panel/perfil?identidad=pendiente#verificacion`,
   });
+
+  // Marca "en revisión" para /panel/perfil. Un fallo aquí no debe impedir
+  // que la persona verifique: solo se pierde el aviso.
+  await createAdminClient()
+    .from('audit_log')
+    .insert({
+      actor_id: user.id,
+      action: 'stripe_identity_session_creada',
+      entity: 'stripe_identity_event',
+      entity_id: null,
+      meta: { session_id: session.id, user_id: user.id },
+    });
 
   return NextResponse.json({ url: session.url });
 }

@@ -7,6 +7,7 @@ import { ContrasenaForm } from '@/components/perfil/ContrasenaForm';
 import { Seguridad2FA } from '@/components/perfil/Seguridad2FA';
 import { ExportarBorrarCuenta } from '@/components/perfil/ExportarBorrarCuenta';
 import { VerificarIdentidad } from '@/components/perfil/VerificarIdentidad';
+import { estadoIdentidad } from '@/lib/stripe/identidad';
 import { NotificacionesPushForm } from '@/components/perfil/NotificacionesPushForm';
 
 export const metadata: Metadata = metadatosPagina({
@@ -45,6 +46,10 @@ export default async function PanelPerfilPage() {
     ]);
 
   const { data: tieneContrasena } = await supabase.rpc('has_password');
+  const identidad =
+    perfil.level === 'member'
+      ? await estadoIdentidad(user.id)
+      : { estado: 'ninguno' as const, motivo: null };
 
   return (
     <div className="mx-auto w-full max-w-[1120px]">
@@ -92,7 +97,7 @@ export default async function PanelPerfilPage() {
                 Verifica tu identidad con Stripe Identity para votar cambios del manifiesto y ser
                 elegible para listas/cargos internos.
               </p>
-              <VerificarIdentidad />
+              <VerificarIdentidad estado={identidad.estado} motivo={identidad.motivo} />
             </div>
           )}
           {perfil.level === 'verified' && (

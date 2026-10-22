@@ -56,16 +56,30 @@ export async function POST(request: Request) {
     const session = event.data.object as Stripe.Identity.VerificationSession;
     const userId = session.metadata?.user_id;
 
+    // Solo se sube de nivel a quien tiene cuota activa en este momento. Si la
+    // persona verificó pero ya no es socia (p. ej. canceló mientras tanto),
+    // el veredicto queda registrado pero el nivel no cambia.
+    let concedido = false;
     if (userId) {
-      await admin
-        .from('profiles')
-        .update({ identity_verified_at: new Date().toISOString(), level: 'verified' })
-        .eq('id', userId);
+      const { data: socio } = await admin
+        .from('members')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .limit(1)
+        .maybeSingle();
+      if (socio) {
+        await admin
+          .from('profiles')
+          .update({ identity_verified_at: new Date().toISOString(), level: 'verified' })
+          .eq('id', userId);
+        concedido = true;
+      }
     }
 
     await admin.from('audit_log').insert({
       actor_id: null,
-      action: 'stripe_identity_verified',
+      action: concedido ? 'stripe_identity_verified' : 'stripe_identity_verified_sin_socio',
       entity: 'stripe_identity_event',
       entity_id: null,
       meta: { stripe_event_id: event.id, session_id: session.id, user_id: userId ?? null },
