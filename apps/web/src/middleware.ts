@@ -66,6 +66,10 @@ export async function middleware(request: NextRequest) {
       // probarlo. Un token inválido responde "no válido" igual que en
       // producción, sin tocar la base de datos.
       pathname.startsWith('/carnet/v/') ||
+      // Sync diario de /cuentas: lo llama un cron (n8n) sin sesión y se
+      // autentica con `Authorization: Bearer CUENTAS_SYNC_SECRET` dentro de la
+      // ruta. Sin ese secreto responde 401. Solo esa ruta, no todo /api/cuentas.
+      pathname === '/api/cuentas/sync' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';
