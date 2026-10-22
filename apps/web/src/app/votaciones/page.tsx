@@ -4,6 +4,7 @@ import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
 import { listarVotaciones, estadoVentana } from '@/lib/participacion/votes';
+import { fraseAntiguedad, leerAntiguedadMinima } from '@/lib/participacion/antiguedad';
 import type { Propuesta, Vote } from '@/lib/participacion/types';
 import { cn } from '@/lib/cn';
 
@@ -32,6 +33,7 @@ const COLOR_VENTANA: Record<ReturnType<typeof estadoVentana>, string> = {
 export default async function VotacionesPage() {
   const supabase = await createClient();
   const votaciones = await listarVotaciones(supabase);
+  const frasePlazo = fraseAntiguedad(await leerAntiguedadMinima(supabase));
 
   const abiertas = votaciones.filter((v) => estadoVentana(v) === 'abierta');
   const otras = votaciones.filter((v) => estadoVentana(v) !== 'abierta');
@@ -42,8 +44,7 @@ export default async function VotacionesPage() {
         <span className="text-[13px] font-bold uppercase tracking-[.14em] text-titular">Democracia semidirecta</span>
         <h1 className="mt-3 text-[clamp(30px,4vw,44px)] font-extrabold leading-[1.12]">Votaciones</h1>
         <p className="mx-auto mt-3 max-w-[62ch] text-[16px] text-cuerpo">
-          Censo congelado al abrir. Voto vinculante para socios activos con ≥3 meses de
-          antigüedad; consultivo para el resto de registrados. Resultados siempre públicos, con
+          Censo congelado al abrir. Voto vinculante para socios activos {frasePlazo}; consultivo para el resto de registrados. Resultados siempre públicos, con
           participación y quórum.
         </p>
       </header>

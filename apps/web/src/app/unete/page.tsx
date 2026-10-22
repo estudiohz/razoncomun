@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import { getUsuarioYPerfil } from '@/lib/auth/niveles';
+import { fraseAntiguedad, leerAntiguedadMinima } from '@/lib/participacion/antiguedad';
 import {
   CUOTA_REFERENCIA_CENTS,
   planVerificadoDisponible,
@@ -59,7 +60,7 @@ const ESCALERA = [
     nivel: 'Socio',
     activo: 'member',
     descripcion:
-      'Tu cuota está activa. Votas en las propuestas de tu departamento (a partir de los 3 meses de antigüedad), propones y debates en el programa vivo, y auditas /cuentas.',
+      'Tu cuota está activa. Votas en las propuestas de tu departamento ({ANTIGUEDAD}), propones y debates en el programa vivo, y auditas /cuentas.',
     punto: `Desde ${formatearCents(CUOTA_REFERENCIA_CENTS.socio.monthly)}/mes`,
     cta: { texto: 'Hazte socio', href: '/unete?plan=socio#alta' },
     aro: 'bg-morado',
@@ -140,6 +141,8 @@ export default async function UnetePage({
   searchParams: Promise<{ plan?: string }>;
 }) {
   const { user, perfil, supabase } = await getUsuarioYPerfil();
+  // El texto de la escalera NO lleva el número escrito: sale del ajuste real.
+  const frasePlazo = fraseAntiguedad(await leerAntiguedadMinima(supabase));
 
   // Tramo preseleccionado por los botones de la escalera (`?plan=verificado`).
   // Cualquier otro valor cae en 'socio' — nunca se confía en la query string.
@@ -314,7 +317,7 @@ export default async function UnetePage({
                     {punto}
                   </span>
                   <p className="mb-5 mt-3 text-[13.5px] leading-relaxed text-cuerpo">
-                    {peldaño.descripcion}
+                    {peldaño.descripcion.replace('{ANTIGUEDAD}', frasePlazo)}
                   </p>
                   {/* `mt-auto` empuja el botón al fondo: las tres descripciones
                       no miden lo mismo y sin esto los botones quedaban a tres

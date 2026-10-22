@@ -8,6 +8,7 @@ import { urlSitio } from '@/lib/supabase/env';
 import { yaProcesado, registrarEvento } from '@/lib/stripe/eventos';
 import { enviarCorreo } from '@/lib/email/enviar';
 import { correoBienvenida, correoImpago, correoRecuperado, correoBaja } from '@/lib/email/plantillas';
+import { fraseAntiguedad, leerAntiguedadMinima } from '@/lib/participacion/antiguedad';
 
 /**
  * Webhook principal de cuotas de socio (rc-07). Reglas (I7, revision-seguridad.md
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
             nombre: perfil.display_name,
             periodo: resultado.billingPeriod ?? 'monthly',
             amountCents: resultado.amountCents ?? 0,
+            plazoVoto: fraseAntiguedad(await leerAntiguedadMinima(admin)),
           });
           await enviarCorreo({ para: perfil.email, ...plantilla });
         }

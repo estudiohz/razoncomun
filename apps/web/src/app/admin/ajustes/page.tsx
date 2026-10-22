@@ -6,7 +6,7 @@ import { nombresPorId } from '@/lib/admin/perfiles';
 import { actualizarAntiguedadMinima, actualizarCodigoSeguimiento } from './actions';
 import { ProveedorIAPanel, type ActivaView } from './ProveedorIAPanel';
 
-const DIAS_OPCIONES = [0, 1, 3, 5, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365];
+const DIAS_OPCIONES = [0, 1, 2, 3, 5, 7, 10, 14, 21, 30, 45, 60, 90, 120, 180, 270, 365];
 
 /**
  * `/admin/ajustes` — dos apartados independientes que comparten pantalla

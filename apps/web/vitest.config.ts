@@ -20,6 +20,7 @@ export default defineConfig({
       'src/lib/blog/**/*.test.ts',
       'src/lib/home/**/*.test.ts',
       'src/lib/carnet/**/*.test.ts',
+      'src/lib/email/**/*.test.ts',
     ],
     environment: 'node',
   },

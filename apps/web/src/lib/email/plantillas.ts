@@ -10,6 +10,7 @@
  * las genera el propio código (no GoTrue) con datos dinámicos por evento.
  */
 import { formatearCents } from '@/lib/afiliacion/consentimiento';
+import { ANTIGUEDAD_POR_DEFECTO, fraseAntiguedad } from '@/lib/participacion/antiguedad';
 import { urlSitio } from '@/lib/supabase/env';
 
 /**
@@ -77,12 +78,19 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
 </html>`;
 }
 
-export function correoBienvenida(opts: { nombre: string | null; periodo: 'monthly' | 'annual'; amountCents: number }) {
+export function correoBienvenida(opts: {
+  nombre: string | null;
+  periodo: 'monthly' | 'annual';
+  amountCents: number;
+  /** "a partir de 2 días de antigüedad": sale del ajuste real, ver `fraseAntiguedad`. */
+  plazoVoto?: string;
+}) {
+  const plazoVoto = opts.plazoVoto ?? fraseAntiguedad(ANTIGUEDAD_POR_DEFECTO);
   const nombre = opts.nombre?.trim() || 'socio/a';
   const periodoTexto = opts.periodo === 'monthly' ? 'mensual' : 'anual';
   const url = urlSitio();
   const asunto = 'Bienvenido/a a Razón Común — ya eres socio/a';
-  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha activado: eres socio/a de Razón Común con una cuota ${periodoTexto} de ${formatearCents(opts.amountCents)}.\n\nYa tienes tu CARNET DE SOCIO esperando en tu panel: descárgalo o añádelo a la wallet del móvil en ${url}/panel/carnet\n\nA partir de ahora puedes:\n- Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).\n- Proponer y debatir en el programa vivo.\n- Auditar en /cuentas cada euro que gestiona el partido.\n\nGestiona tu cuota, cambia de periodicidad o date de baja cuando quieras desde tu perfil.\n\nGracias por sostener con tu cuota una política basada en datos.\n\n— Razón Común`;
+  const texto = `Hola ${nombre},\n\nTu domiciliación SEPA se ha activado: eres socio/a de Razón Común con una cuota ${periodoTexto} de ${formatearCents(opts.amountCents)}.\n\nYa tienes tu CARNET DE SOCIO esperando en tu panel: descárgalo o añádelo a la wallet del móvil en ${url}/panel/carnet\n\nA partir de ahora puedes:\n- Votar en las propuestas de tu departamento (${plazoVoto}).\n- Proponer y debatir en el programa vivo.\n- Auditar en /cuentas cada euro que gestiona el partido.\n\nGestiona tu cuota, cambia de periodicidad o date de baja cuando quieras desde tu perfil.\n\nGracias por sostener con tu cuota una política basada en datos.\n\n— Razón Común`;
   const html = envoltorio(
     'Bienvenido/a',
     `Ya eres socio/a, ${nombre}`,
@@ -95,7 +103,7 @@ export function correoBienvenida(opts: { nombre: string | null; periodo: 'monthl
     <p style="margin:0 0 24px;font-size:13px;line-height:1.6;color:#5A6780;">Lo tienes en tu panel para descargarlo o llevarlo en la wallet del móvil. No lo adjuntamos aquí a propósito: un carnet reenviado por correo se lo quedaría cualquiera.</p>
     <p style="margin:0 0 8px;font-size:15px;color:#232A3B;">A partir de ahora puedes:</p>
     <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:1.7;color:#232A3B;">
-      <li>Votar en las propuestas de tu departamento (a los 3 meses de antigüedad).</li>
+      <li>Votar en las propuestas de tu departamento (${plazoVoto}).</li>
       <li>Proponer y debatir en el programa vivo.</li>
       <li>Auditar en <a href="https://www.razoncomun.com/cuentas" style="color:#1B3D9C;font-weight:700;">/cuentas</a> cada euro que gestiona el partido.</li>
     </ul>
