@@ -65,6 +65,10 @@ export interface Propuesta {
   author_id: string | null;
   report_url: string | null;
   adopted_point_id: number | null;
+  /** 0061: primera vez que pasó a adopted/planned (lo rellena un trigger). */
+  adopted_at: string | null;
+  /** 0061: esta propuesta sustituye a la indicada cuando está aprobada/planeada. */
+  supersedes_id: string | null;
   created_at: string;
   updated_at: string;
 }

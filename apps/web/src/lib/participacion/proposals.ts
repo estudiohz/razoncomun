@@ -232,3 +232,34 @@ export async function alternarPostura(
     if (error) throw error;
   }
 }
+
+export interface RelacionSustitucion {
+  /** Medida vigente que reemplaza a esta (si esta fue sustituida). */
+  sustituidaPor: { id: string; slug: string | null; title: string } | null;
+  /** Medida anterior a la que esta reemplaza. */
+  sustituye: { id: string; slug: string | null; title: string } | null;
+}
+
+/**
+ * 0061: la antigua no guarda ningún estado "sustituida"; se deduce de que
+ * exista una propuesta adopted/planned con supersedes_id apuntándole.
+ */
+export async function relacionSustitucion(
+  supabase: SupabaseClient,
+  propuesta: Pick<Propuesta, 'id' | 'supersedes_id'>,
+): Promise<RelacionSustitucion> {
+  const [{ data: nueva }, { data: antigua }] = await Promise.all([
+    supabase
+      .from('proposals')
+      .select('id, slug, title')
+      .eq('supersedes_id', propuesta.id)
+      .in('status', ['adopted', 'planned'])
+      .order('adopted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    propuesta.supersedes_id
+      ? supabase.from('proposals').select('id, slug, title').eq('id', propuesta.supersedes_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+  return { sustituidaPor: nueva ?? null, sustituye: antigua ?? null };
+}

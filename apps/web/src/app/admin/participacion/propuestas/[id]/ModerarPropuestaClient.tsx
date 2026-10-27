@@ -10,6 +10,7 @@ import {
   eliminarAction,
   fijarDeadlineAction,
   fijarMesAction,
+  fijarSustitucionAction,
   fusionarAction,
   publicarRespuestaOficialAction,
 } from '../actions';
@@ -35,9 +36,11 @@ function paraInputLocal(iso: string | null): string {
 export function ModerarPropuestaClient({
   propuesta,
   categorias,
+  aprobadas,
 }: {
   propuesta: Propuesta;
   categorias: ProposalCategory[];
+  aprobadas: { id: string; title: string }[];
 }) {
   const router = useRouter();
   const [pendiente, iniciar] = useTransition();
@@ -50,6 +53,7 @@ export function ModerarPropuestaClient({
   const [errorRespuesta, setErrorRespuesta] = useState<string | null>(null);
   const [errorFusion, setErrorFusion] = useState<string | null>(null);
   const [errorMes, setErrorMes] = useState<string | null>(null);
+  const [errorSustitucion, setErrorSustitucion] = useState<string | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [motivoEliminar, setMotivoEliminar] = useState('');
@@ -97,6 +101,15 @@ export function ModerarPropuestaClient({
     iniciar(async () => {
       const r = await fijarMesAction(propuesta.id, fd);
       if (!r.ok) setErrorMes(r.error ?? 'Error desconocido.');
+      else router.refresh();
+    });
+  }
+
+  function onFijarSustitucion(fd: FormData) {
+    setErrorSustitucion(null);
+    iniciar(async () => {
+      const r = await fijarSustitucionAction(propuesta.id, fd);
+      if (!r.ok) setErrorSustitucion(r.error ?? 'Error desconocido.');
       else router.refresh();
     });
   }
@@ -311,6 +324,38 @@ export function ModerarPropuestaClient({
           La propuesta aparecerá destacada en la página pública del mes elegido (el centro de la
           app móvil) y en el histórico anual. Deja el mes vacío y guarda para quitarla. Protegido
           en BD: solo coordinator/admin.
+        </p>
+      </section>
+
+      {/* Sustitución de una medida aprobada (0061) */}
+      <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
+        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">Sustituye a</h2>
+        <form action={onFijarSustitucion} className="flex flex-wrap items-center gap-3">
+          <select
+            name="supersedes_id"
+            defaultValue={propuesta.supersedes_id ?? ''}
+            className="min-w-[260px] rounded-boton border border-linea bg-white px-3 py-2 text-[14px] text-titular"
+          >
+            <option value="">— No sustituye a ninguna —</option>
+            {aprobadas.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.title}
+              </option>
+            ))}
+          </select>
+          <button
+            type="submit"
+            disabled={pendiente}
+            className="rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white disabled:opacity-60"
+          >
+            Guardar
+          </button>
+        </form>
+        {errorSustitucion && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorSustitucion}</p>}
+        <p className="mt-3 text-[12.5px] text-gris">
+          Para mejorar una medida ya aprobada: crea una propuesta nueva, indica aquí cuál reemplaza y
+          llévala por el recorrido normal. La antigua sigue vigente hasta que esta se apruebe; entonces
+          sale de «El programa, hoy» y conserva su debate y sus votos.
         </p>
       </section>
 

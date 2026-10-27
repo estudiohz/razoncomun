@@ -5,6 +5,8 @@ import { Boton } from '@/components/ui/Boton';
 import { CaminoIdea, type PasoCamino } from '@/components/programa/CaminoIdea';
 import { Contador } from '@/components/programa/Contador';
 import { ExplorarIdeas, type IdeaResumen } from '@/components/programa/ExplorarIdeas';
+import { CuerpoArticulo } from '@/components/blog/CuerpoArticulo';
+import { sanearHtml } from '@/lib/blog/html';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
 import { listarCategorias } from '@/lib/participacion/categories';
@@ -17,22 +19,53 @@ export const metadata: Metadata = metadatosPagina({
   ruta: '/programa',
 });
 
+interface Aprobada {
+  id: string;
+  slug: string | null;
+  title: string;
+  body: string;
+  status: EstadoPropuesta;
+  category_id: string | null;
+  adopted_at: string | null;
+  updated_at: string;
+  supersedes_id: string | null;
+}
+
+function fechaLarga(iso: string): string {
+  return new Date(iso).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 export default async function ProgramaPage() {
   const supabase = await createClient();
 
-  const [{ data: filas }, { data: puntos }, categorias] = await Promise.all([
+  const [{ data: filas }, { data: puntos }, categorias, { data: aprobadasDb }] = await Promise.all([
     supabase
       .from('proposals')
       .select('id, slug, title, status, category_id, support_count')
       .order('support_count', { ascending: false }),
     supabase.from('manifesto_points').select('id, title').order('id', { ascending: true }),
     listarCategorias(supabase),
+    supabase
+      .from('proposals')
+      .select('id, slug, title, body, status, category_id, adopted_at, updated_at, supersedes_id')
+      .in('status', ['adopted', 'planned'])
+      .order('adopted_at', { ascending: false }),
   ]);
 
   const propuestas = ((filas ?? []) as IdeaResumen[]).filter((p) => p.status !== 'draft');
   const cuenta = (...estados: EstadoPropuesta[]) =>
     propuestas.filter((p) => estados.includes(p.status)).length;
   const vivas = propuestas.filter((p) => p.status !== 'discarded' && p.status !== 'archived');
+  const todasAprobadas = (aprobadasDb ?? []) as Aprobada[];
+  // 0061: una medida sustituida por otra aprobada/planeada deja de ser vigente.
+  const sustituidas = new Set(todasAprobadas.map((p) => p.supersedes_id).filter(Boolean));
+  const aprobadas = todasAprobadas.filter((p) => !sustituidas.has(p.id));
+  const anteriorDe = (p: Aprobada) => todasAprobadas.find((a) => a.id === p.supersedes_id);
+  const grupos = categorias
+    .map((c) => ({ id: c.id, nombre: c.nombre, color: c.color, items: aprobadas.filter((p) => p.category_id === c.id) }))
+    .filter((g) => g.items.length > 0);
+  const sinCategoria = aprobadas.filter((p) => !categorias.some((c) => c.id === p.category_id));
+  if (sinCategoria.length > 0) grupos.push({ id: 'otras', nombre: 'Otras medidas', color: '#6F6F6F', items: sinCategoria });
   const manifiesto = puntos ?? [];
 
   const pasos: PasoCamino[] = [
@@ -147,6 +180,69 @@ export default async function ProgramaPage() {
         </Contenedor>
       </section>
 
+      {/* EL PROGRAMA: acordeones por categoría */}
+      {aprobadas.length > 0 && (
+        <section id="programa" className="py-14">
+          <Contenedor>
+            <div className="mx-auto mb-8 max-w-[640px] text-center">
+              <h2 className="text-[clamp(26px,3.4vw,40px)] font-extrabold leading-[1.15]">El programa, hoy</h2>
+              <p className="mt-3 text-cuerpo">
+                Todo lo que los socios han propuesto, debatido y aprobado. Abre un tema para leerlo.
+              </p>
+            </div>
+            <div className="mx-auto grid max-w-[900px] gap-3">
+              {grupos.map((g, n) => (
+                <details
+                  key={g.id}
+                  open={n === 0}
+                  className="group overflow-hidden rounded-tarjeta border border-linea bg-panel shadow-tarjeta"
+                  style={{ borderLeft: `6px solid ${g.color}` }}
+                >
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+                    <span className="flex-1 text-[18px] font-extrabold text-titular">{g.nombre}</span>
+                    <span className="rounded-full bg-fondo px-3 py-1 text-[12.5px] font-bold text-cuerpo">
+                      {g.items.length} {g.items.length === 1 ? 'medida' : 'medidas'}
+                    </span>
+                    <span aria-hidden className="text-[18px] text-gris transition-transform duration-300 group-open:rotate-180">⌄</span>
+                  </summary>
+                  <div className="grid gap-6 border-t border-linea px-5 py-6">
+                    {g.items.map((p) => (
+                      <article key={p.id}>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <h3 className="text-[19px] font-extrabold text-titular">{p.title}</h3>
+                          <span className="text-[12.5px] font-semibold text-gris">
+                            {p.status === 'planned' ? 'Planeada' : 'Aprobada'} el {fechaLarga(p.adopted_at ?? p.updated_at)}
+                          </span>
+                        </div>
+                        {anteriorDe(p) && (
+                          <p className="mt-1 text-[13px] text-gris">
+                            Sustituye a{' '}
+                            <Link
+                              href={`/propuestas/${anteriorDe(p)!.slug ?? anteriorDe(p)!.id}`}
+                              className="font-semibold text-titular underline underline-offset-2"
+                            >
+                              {anteriorDe(p)!.title}
+                            </Link>{' '}
+                            (aprobada el {fechaLarga(anteriorDe(p)!.adopted_at ?? anteriorDe(p)!.updated_at)})
+                          </p>
+                        )}
+                        <CuerpoArticulo html={sanearHtml(p.body)} className="mt-3 text-[15.5px]" />
+                        <Link
+                          href={`/propuestas/${p.slug ?? p.id}`}
+                          className="text-[13.5px] font-bold text-titular underline-offset-4 hover:underline"
+                        >
+                          Ver el debate y la votación →
+                        </Link>
+                      </article>
+                    ))}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </Contenedor>
+        </section>
+      )}
+
       {/* EXPLORAR */}
       <section className="py-14">
         <Contenedor>
@@ -159,7 +255,7 @@ export default async function ProgramaPage() {
           </div>
           {vivas.length > 0 ? (
             <ExplorarIdeas
-              ideas={vivas}
+              ideas={vivas.filter((p) => p.status !== 'adopted' && p.status !== 'planned')}
               categorias={categorias.map((c) => ({ id: c.id, nombre: c.nombre, color: c.color }))}
             />
           ) : (

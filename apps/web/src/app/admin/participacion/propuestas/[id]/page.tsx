@@ -33,11 +33,17 @@ export default async function ModerarPropuestaPage({
 
   const propuesta = data as Propuesta;
 
-  const [{ data: categoria }, categorias] = await Promise.all([
+  const [{ data: categoria }, categorias, { data: aprobadas }] = await Promise.all([
     propuesta.category_id
       ? supabase.from('proposal_categories').select('nombre, color').eq('id', propuesta.category_id).single()
       : Promise.resolve({ data: null }),
     listarCategorias(supabase),
+    supabase
+      .from('proposals')
+      .select('id, title')
+      .in('status', ['adopted', 'planned'])
+      .neq('id', id)
+      .order('title', { ascending: true }),
   ]);
 
   return (
@@ -87,7 +93,11 @@ export default async function ModerarPropuestaPage({
       </div>
 
       <div className="mt-8">
-        <ModerarPropuestaClient propuesta={propuesta} categorias={categorias} />
+        <ModerarPropuestaClient
+          propuesta={propuesta}
+          categorias={categorias}
+          aprobadas={(aprobadas ?? []) as { id: string; title: string }[]}
+        />
       </div>
     </div>
   );

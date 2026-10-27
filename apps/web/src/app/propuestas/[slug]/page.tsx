@@ -16,6 +16,7 @@ import { createClient } from '@/lib/supabase/server';
 import {
   obtenerPropuesta,
   obtenerPropuestaPorSlug,
+  relacionSustitucion,
   pareceUuid,
   posturaUsuario,
 } from '@/lib/participacion/proposals';
@@ -83,6 +84,7 @@ export default async function PropuestaDetallePage({
   } = await supabase.auth.getUser();
 
   const abierta = votacionAbierta(propuesta);
+  const sustitucion = await relacionSustitucion(supabase, propuesta);
 
   const [filas, postura, siguiendo, comentarios, { data: votaciones }, categorias, conteos] =
     await Promise.all([
@@ -183,6 +185,32 @@ export default async function PropuestaDetallePage({
         <h1 className="mt-4 text-[clamp(26px,4vw,38px)] font-extrabold leading-[1.15]">
           {propuesta.title}
         </h1>
+
+        {/* 0061: medida sustituida por otra más completa, o que sustituye a una anterior. */}
+        {sustitucion.sustituidaPor && (
+          <p className="mt-5 rounded-tarjeta border border-naranja bg-naranja/10 p-4 text-[14.5px] text-cuerpo">
+            Esta medida ha sido <strong>sustituida</strong> por una versión más completa:{' '}
+            <Link
+              href={`/propuestas/${sustitucion.sustituidaPor.slug ?? sustitucion.sustituidaPor.id}`}
+              className="font-bold text-titular underline underline-offset-2"
+            >
+              {sustitucion.sustituidaPor.title}
+            </Link>
+            . Se conserva aquí con todo su debate y sus votos.
+          </p>
+        )}
+        {sustitucion.sustituye && (
+          <p className="mt-5 rounded-tarjeta border border-linea bg-fondo p-4 text-[14.5px] text-cuerpo">
+            Esta propuesta mejora y sustituye a{' '}
+            <Link
+              href={`/propuestas/${sustitucion.sustituye.slug ?? sustitucion.sustituye.id}`}
+              className="font-bold text-titular underline underline-offset-2"
+            >
+              {sustitucion.sustituye.title}
+            </Link>
+            .
+          </p>
+        )}
 
         {/* D-P10: respuesta oficial fijada, destacada arriba. */}
         {propuesta.official_response && (

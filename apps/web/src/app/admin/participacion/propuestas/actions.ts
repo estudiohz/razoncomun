@@ -104,6 +104,40 @@ export async function fijarDeadlineAction(id: string, fd: FormData): Promise<Res
 }
 
 /**
+ * 0061: indica que esta propuesta sustituye a otra ya aprobada/planeada.
+ * Vacío = quitar la relación. La antigua no se toca: pasa a considerarse
+ * sustituida solo cuando ESTA esté aprobada/planeada.
+ */
+export async function fijarSustitucionAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+
+  const destino = String(fd.get('supersedes_id') ?? '').trim();
+  if (destino === id) return { ok: false, error: 'Una propuesta no puede sustituirse a sí misma.' };
+
+  if (destino) {
+    const { data, error } = await supabase
+      .from('proposals')
+      .select('id, status')
+      .eq('id', destino)
+      .maybeSingle();
+    if (error || !data) return { ok: false, error: 'La propuesta a sustituir no existe.' };
+    if (data.status !== 'adopted' && data.status !== 'planned') {
+      return { ok: false, error: 'Solo se puede sustituir una medida aprobada o planeada.' };
+    }
+  }
+
+  const { error } = await supabase
+    .from('proposals')
+    .update({ supersedes_id: destino || null })
+    .eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/admin/participacion/propuestas/${id}`);
+  revalidatePath('/programa');
+  return { ok: true };
+}
+
+/**
  * Corrige el departamento y/o la categoría (D-P2) de una propuesta ya publicada.
  * Sergio (07/08/2026): en el alta se puede olvidar elegir el desplegable de
  * departamento y queda con el primero de la lista sin que nadie lo note; hasta
