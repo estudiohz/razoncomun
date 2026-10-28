@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound, permanentRedirect, redirect } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { Boton } from '@/components/ui/Boton';
+import { CuerpoArticulo } from '@/components/blog/CuerpoArticulo';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
 import { AyudaEstados } from '@/components/participacion/AyudaEstados';
 import { Deliberacion } from '@/components/participacion/Deliberacion';
@@ -237,9 +238,12 @@ export default async function PropuestaDetallePage({
           </div>
         )}
 
-        <div
-          className="prose-rc mt-4 text-[16px] leading-relaxed text-cuerpo"
-          dangerouslySetInnerHTML={{ __html: cuerpoPropuestaHtml(propuesta) }}
+        {/* `prose-rc` no tiene estilos propios: sin los de CuerpoArticulo los párrafos
+            salían pegados (Tailwind los deja sin margen) y los párrafos vacíos del
+            editor, que son los "intros" del autor, no ocupaban nada. */}
+        <CuerpoArticulo
+          html={cuerpoPropuestaHtml(propuesta)}
+          className="mt-4 leading-relaxed [&_h4]:mb-3 [&_h4]:mt-6 [&_h4]:text-[17px] [&_h4]:font-bold [&_h4]:text-tinta [&_li_p]:mb-0 [&_td_p]:mb-0 [&_th_p]:mb-0 [&_table]:my-4 [&_p:empty]:mb-0 [&_p:empty]:h-[22px] [&_strong]:font-bold"
         />
 
         <CasillaSimulacion propuesta={propuesta} />
