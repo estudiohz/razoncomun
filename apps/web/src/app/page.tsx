@@ -20,9 +20,9 @@ export default function HomePage() {
     <>
       <Hero />
       <Bento />
-      <DiscordParallax />
-      <FeedObservatorio />
       <AppBanner />
+      <FeedObservatorio />
+      <DiscordParallax />
       <IASection />
       <CtaFinal />
     </>
