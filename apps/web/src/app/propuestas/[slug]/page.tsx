@@ -166,7 +166,7 @@ export default async function PropuestaDetallePage({
   return (
     <Contenedor as="section" className="py-14">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="mx-auto max-w-[1080px]">
+      <div>
         <Link href="/propuestas" className="text-[13.5px] font-semibold text-cuerpo underline">
           ← Volver al tablero de propuestas
         </Link>
