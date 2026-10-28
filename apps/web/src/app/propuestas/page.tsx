@@ -39,7 +39,10 @@ export default async function PropuestasPage({
   searchParams: Promise<{ status?: string; categoryId?: string; tab?: string; q?: string }>;
 }) {
   const { status, categoryId, tab, q } = await searchParams;
-  const pestana: Pestana = tab === 'top' || tab === 'nuevos' ? tab : 'trending';
+  // Trending solo recoge hilos con votación abierta: con un filtro de estado ya
+  // cerrado (Aprobado/Rechazado) dejaba la lista siempre vacía. Ahí se ordena por apoyos.
+  const estadoCerrado = status === 'adopted' || status === 'discarded';
+  const pestana: Pestana = tab === 'top' || tab === 'nuevos' ? tab : estadoCerrado ? 'top' : 'trending';
   const supabase = await createClient();
 
   const [propuestas, categorias, conteos] = await Promise.all([

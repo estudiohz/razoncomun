@@ -5,8 +5,6 @@ import { Boton } from '@/components/ui/Boton';
 import { CaminoIdea, type PasoCamino } from '@/components/programa/CaminoIdea';
 import { Contador } from '@/components/programa/Contador';
 import { ExplorarIdeas, type IdeaResumen } from '@/components/programa/ExplorarIdeas';
-import { CuerpoArticulo } from '@/components/blog/CuerpoArticulo';
-import { sanearHtml } from '@/lib/blog/html';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
 import { listarCategorias } from '@/lib/participacion/categories';
@@ -23,7 +21,6 @@ interface Aprobada {
   id: string;
   slug: string | null;
   title: string;
-  body: string;
   status: EstadoPropuesta;
   category_id: string | null;
   adopted_at: string | null;
@@ -47,7 +44,7 @@ export default async function ProgramaPage() {
     listarCategorias(supabase),
     supabase
       .from('proposals')
-      .select('id, slug, title, body, status, category_id, adopted_at, updated_at, supersedes_id')
+      .select('id, slug, title, status, category_id, adopted_at, updated_at, supersedes_id')
       .in('status', ['adopted', 'planned'])
       .order('adopted_at', { ascending: false }),
   ]);
@@ -205,37 +202,35 @@ export default async function ProgramaPage() {
                     </span>
                     <span aria-hidden className="text-[18px] text-gris transition-transform duration-300 group-open:rotate-180">⌄</span>
                   </summary>
-                  <div className="grid gap-6 border-t border-linea px-5 py-6">
+                  <ul className="divide-y divide-linea border-t border-linea">
                     {g.items.map((p) => (
-                      <article key={p.id}>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                          <h3 className="text-[19px] font-extrabold text-titular">{p.title}</h3>
-                          <span className="text-[12.5px] font-semibold text-gris">
+                      <li key={p.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
+                        <div className="min-w-0 flex-1 basis-[260px]">
+                          <h3 className="text-[16.5px] font-extrabold leading-snug text-titular">{p.title}</h3>
+                          <p className="mt-1 text-[12.5px] font-semibold text-gris">
                             {p.status === 'planned' ? 'Planeada' : 'Aprobada'} el {fechaLarga(p.adopted_at ?? p.updated_at)}
-                          </span>
-                        </div>
-                        {anteriorDe(p) && (
-                          <p className="mt-1 text-[13px] text-gris">
-                            Sustituye a{' '}
-                            <Link
-                              href={`/propuestas/${anteriorDe(p)!.slug ?? anteriorDe(p)!.id}`}
-                              className="font-semibold text-titular underline underline-offset-2"
-                            >
-                              {anteriorDe(p)!.title}
-                            </Link>{' '}
-                            (aprobada el {fechaLarga(anteriorDe(p)!.adopted_at ?? anteriorDe(p)!.updated_at)})
+                            {anteriorDe(p) && (
+                              <>
+                                {' · Sustituye a '}
+                                <Link
+                                  href={`/propuestas/${anteriorDe(p)!.slug ?? anteriorDe(p)!.id}`}
+                                  className="text-titular underline underline-offset-2"
+                                >
+                                  {anteriorDe(p)!.title}
+                                </Link>
+                              </>
+                            )}
                           </p>
-                        )}
-                        <CuerpoArticulo html={sanearHtml(p.body)} className="mt-3 text-[15.5px]" />
+                        </div>
                         <Link
                           href={`/propuestas/${p.slug ?? p.id}`}
-                          className="text-[13.5px] font-bold text-titular underline-offset-4 hover:underline"
+                          className="shrink-0 rounded-boton border border-linea bg-white px-4 py-2 text-[13.5px] font-bold text-titular no-underline transition-colors hover:border-titular"
                         >
-                          Ver el debate y la votación →
+                          Ver detalles
                         </Link>
-                      </article>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </details>
               ))}
             </div>
