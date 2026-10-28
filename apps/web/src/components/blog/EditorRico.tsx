@@ -61,6 +61,9 @@ export function EditorRico({
 
   const editor = useEditor({
     immediatelyRender: false, // evita el desajuste de hidratación en Next
+    // TipTap 3 ya no repinta al cambiar la selección: sin esto la barra no se entera
+    // de qué botones están activos (código, negrita…) y parece que no hacen nada.
+    shouldRerenderOnTransaction: true,
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3, 4] },
@@ -82,7 +85,7 @@ export function EditorRico({
     ],
     content: inicial,
     editorProps: {
-      attributes: { class: 'prose-rc px-5 py-4 focus:outline-none', style: `min-height:${minAltura}px` },
+      attributes: { class: 'prose-rc px-5 py-4 focus:outline-none [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-morado [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-slate-900 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-[13px] [&_pre]:text-slate-100 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-100', style: `min-height:${minAltura}px` },
       // Markdown pegado como texto (de un chat de IA, de un .md…) → se convierte
       // en títulos, listas, tablas e imágenes en vez de quedar con `##` y `**`
       // literales. El markdown pasa por `renderizarMarkdown`, que escapa todo el
@@ -168,6 +171,8 @@ export function EditorRico({
           onClick={() => editor.chain().focus().toggleSuperscript().run()}>X²</button>
         <button type="button" className={b(editor.isActive('code'))} title="Código"
           onClick={() => editor.chain().focus().toggleCode().run()}>{'</>'}</button>
+        <button type="button" className={b(editor.isActive('codeBlock'))} title="Bloque de código"
+          onClick={() => editor.chain().focus().toggleCodeBlock().run()}>{'{ }'}</button>
         {sep}
 
         <select

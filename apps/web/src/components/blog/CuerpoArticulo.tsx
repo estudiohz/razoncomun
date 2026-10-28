@@ -33,6 +33,7 @@ export function CuerpoArticulo({ html, className }: { html: string; className?: 
         // Enlaces y código en línea
         '[&_a]:text-tinta [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-titular',
         '[&_code]:rounded [&_code]:bg-fondo [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[15px]',
+        '[&_pre]:my-5 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-slate-900 [&_pre]:p-4 [&_pre]:text-[14px] [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-100',
         // Cita destacada
         '[&_blockquote]:my-7 [&_blockquote]:border-l-4 [&_blockquote]:border-morado [&_blockquote]:py-1.5 [&_blockquote]:pl-6 [&_blockquote]:text-[20px] [&_blockquote]:font-semibold [&_blockquote]:leading-[1.4] [&_blockquote]:text-tinta',
         // Figuras
