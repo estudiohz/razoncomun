@@ -4,6 +4,7 @@ import { registrarAuditoria } from '@/lib/admin/audit';
 import { ETIQUETA_ESTADO, votacionAbierta } from './types';
 import type { EstadoPropuesta, Propuesta } from './types';
 import { notificarCambioEstado, notificarRespuestaOficial } from './notifications-admin';
+import { publicarPropuestaEnCerebro } from './cerebro';
 
 /**
  * Moderación de propuestas (P2 admin, rc-09). Cada función recibe el cliente
@@ -20,8 +21,8 @@ export async function cambiarEstadoPropuesta(
   actorId: string,
   propuesta: Pick<Propuesta, 'id' | 'title' | 'slug' | 'status'>,
   nuevoEstado: EstadoPropuesta,
-): Promise<void> {
-  if (propuesta.status === nuevoEstado) return;
+): Promise<{ avisoCerebro?: string }> {
+  if (propuesta.status === nuevoEstado) return {};
 
   const { error } = await sesion.from('proposals').update({ status: nuevoEstado }).eq('id', propuesta.id);
   if (error) throw error;
@@ -35,6 +36,25 @@ export async function cambiarEstadoPropuesta(
   });
 
   await notificarCambioEstado(sesion, propuesta.id, propuesta.title, ETIQUETA_ESTADO[nuevoEstado], propuesta.slug);
+
+  // Al APROBAR, la propuesta pasa al cerebro en markdown. Un fallo aquí no debe
+  // deshacer la aprobación (ya votada y publicada): se audita y se avisa.
+  if (nuevoEstado === 'adopted') {
+    try {
+      await publicarPropuestaEnCerebro(createAdminClient(), propuesta.id, actorId);
+    } catch (e) {
+      const mensaje = e instanceof Error ? e.message : 'error desconocido';
+      await registrarAuditoria(sesion, {
+        actorId,
+        action: 'proposal_brain_sync_failed',
+        entity: 'proposals',
+        entityId: propuesta.id,
+        meta: { error: mensaje },
+      });
+      return { avisoCerebro: `Aprobada, pero no se ha podido pasar al cerebro: ${mensaje}` };
+    }
+  }
+  return {};
 }
 
 /** Fija/quita la fecha límite de votación (D-P6). */

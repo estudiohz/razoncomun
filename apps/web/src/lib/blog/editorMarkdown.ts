@@ -160,12 +160,28 @@ export function markdownAEditor(md: string): string {
   return salida.join('');
 }
 
+/** Tabla HTML (thead/tbody/tr/th/td) → tabla markdown. La primera fila hace de cabecera. */
+function tablaAMd(dentro: string): string {
+  const filas = [...dentro.matchAll(/<tr(?:\s[^>]*)?>([\s\S]*?)<\/tr>/g)].map((r) =>
+    [...r[1].matchAll(/<(?:th|td)(?:\s[^>]*)?>([\s\S]*?)<\/(?:th|td)>/g)].map((c) =>
+      lineaAMd(c[1].replace(/<\/?p[^>]*>/g, ' '))
+        .replace(/\|/g, '\\|')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    ),
+  );
+  if (filas.length === 0 || filas[0].length === 0) return '';
+  const cols = filas[0].length;
+  const fila = (c: string[]) => `| ${Array.from({ length: cols }, (_, i) => c[i] ?? '').join(' | ')} |`;
+  return [fila(filas[0]), `| ${Array(cols).fill('---').join(' | ')} |`, ...filas.slice(1).map(fila)].join('\n');
+}
+
 /** HTML del editor → markdown para guardar. */
 export function editorAMarkdown(html: string): string {
   const bloques: string[] = [];
   // TipTap devuelve los bloques de primer nivel sin saltos entre ellos.
   const re =
-    /<(h2|h3|p|ul|ol|blockquote)(?:\s[^>]*)?>([\s\S]*?)<\/\1>|<hr\s*\/?>|<img[^>]*>/g;
+    /<(h2|h3|h4|p|ul|ol|blockquote|table)(?:\s[^>]*)?>([\s\S]*?)<\/\1>|<hr\s*\/?>|<img[^>]*>/g;
   let m: RegExpExecArray | null;
 
   while ((m = re.exec(html)) !== null) {
@@ -187,6 +203,10 @@ export function editorAMarkdown(html: string): string {
     else if (etiqueta === 'h3') bloques.push(`### ${lineaAMd(dentro)}`);
     else if (etiqueta === 'p') {
       const t = lineaAMd(dentro);
+      if (t) bloques.push(t);
+    } else if (etiqueta === 'h4') bloques.push(`#### ${lineaAMd(dentro)}`);
+    else if (etiqueta === 'table') {
+      const t = tablaAMd(dentro);
       if (t) bloques.push(t);
     } else if (etiqueta === 'blockquote') bloques.push(`> ${lineaAMd(dentro)}`);
     else if (etiqueta === 'ul' || etiqueta === 'ol') {

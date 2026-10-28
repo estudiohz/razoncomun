@@ -23,6 +23,7 @@ import {
 import { alternarSuscripcion, usuarioSigue } from '@/lib/participacion/follows';
 import { notificarComentarioNuevo } from '@/lib/participacion/notifications-admin';
 import { verificarCaptcha } from '@/lib/antibot/captcha';
+import { htmlATexto, sanearHtml } from '@/lib/blog/html';
 import type { ValorVotoAfirmacion } from '@/lib/participacion/types';
 
 const LIMITE_HILOS_DIA = 3;
@@ -42,13 +43,18 @@ export async function crearPropuestaAction(formData: FormData) {
   if (!user) redirect('/entrar?next=/propuestas/nueva');
 
   const title = (formData.get('title') as string)?.trim();
-  const body = (formData.get('body') as string)?.trim();
+  // El formulario usa el editor visual: llega HTML. Se sanea ya al guardar (entrada
+  // de usuarios sin privilegios) y, como siempre, otra vez al renderizar.
+  const body = sanearHtml(((formData.get('body') as string) ?? '').trim());
   const question = (formData.get('question') as string)?.trim();
   const department = (formData.get('department') as string)?.trim();
   const costeRaw = (formData.get('estimated_cost_euros') as string)?.trim();
   const captchaToken = (formData.get('captcha_token') as string) ?? '';
   const captchaRespuesta = (formData.get('captcha_respuesta') as string) ?? '';
 
+  if (htmlATexto(body).trim().length < 40) {
+    throw new Error('El desarrollo de la propuesta es demasiado corto (mínimo 40 caracteres).');
+  }
   if (!title || !body || !department || !question) {
     throw new Error('Faltan campos obligatorios (título, pregunta, texto y departamento).');
   }
@@ -73,6 +79,7 @@ export async function crearPropuestaAction(formData: FormData) {
     department,
     question,
     estimated_cost_cents,
+    bodyEsHtml: true,
   });
 
   // D-P9: auto-suscripción del autor.

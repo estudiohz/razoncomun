@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { buscarSimilaresAction, crearPropuestaAction } from '@/app/propuestas/actions';
 import { CaptchaCampo } from '@/components/participacion/CaptchaCampo';
+import { EditorRico } from '@/components/blog/EditorRico';
 import { DEPARTAMENTOS, etiquetaDepartamento } from '@/lib/participacion/departments';
 import type { Propuesta } from '@/lib/participacion/types';
 
@@ -15,6 +16,7 @@ import type { Propuesta } from '@/lib/participacion/types';
  */
 export function FormularioPropuesta({ captcha }: { captcha: { pregunta: string; token: string } }) {
   const [titulo, setTitulo] = useState('');
+  const [cuerpo, setCuerpo] = useState('');
   const [similares, setSimilares] = useState<Propuesta[]>([]);
   const [buscando, iniciarBusqueda] = useTransition();
   const [enviando, iniciarEnvio] = useTransition();
@@ -123,15 +125,12 @@ export function FormularioPropuesta({ captcha }: { captcha: { pregunta: string; 
         <label htmlFor="body" className="mb-1.5 block text-[13.5px] font-semibold">
           Desarrollo
         </label>
-        <textarea
-          id="body"
-          name="body"
-          required
-          minLength={40}
-          rows={6}
-          placeholder="Explica el problema, la propuesta concreta y por qué debería adoptarse."
-          className="w-full rounded-boton border border-linea bg-white px-4 py-2.5 text-[15px]"
-        />
+        <p className="mb-2 text-[12.5px] text-gris">
+          Explica el problema, la propuesta concreta y por qué debería adoptarse. Puedes dar formato (títulos,
+          listas, negritas, tablas) o pegar texto en markdown y se convertirá solo.
+        </p>
+        <EditorRico valor="" onChange={setCuerpo} sinMedia minAltura={260} />
+        <input type="hidden" name="body" value={cuerpo} />
       </div>
 
       <div>

@@ -83,7 +83,10 @@ export function ModerarPropuestaClient({
     iniciar(async () => {
       const r = await cambiarEstadoAction(propuesta.id, fd);
       if (!r.ok) setErrorEstado(r.error ?? 'Error desconocido.');
-      else router.refresh();
+      else {
+        if (r.aviso) setErrorEstado(r.aviso);
+        router.refresh();
+      }
     });
   }
 

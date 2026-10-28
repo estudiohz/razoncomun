@@ -17,6 +17,8 @@ import type { EstadoPropuesta, Propuesta } from '@/lib/participacion/types';
 export interface ResultadoAccion {
   ok: boolean;
   error?: string;
+  /** El cambio se hizo, pero algo secundario falló (p. ej. el paso al cerebro). */
+  aviso?: string;
 }
 
 const ESTADOS_VALIDOS: EstadoPropuesta[] = [
@@ -52,14 +54,14 @@ export async function cambiarEstadoAction(id: string, fd: FormData): Promise<Res
 
   try {
     const propuesta = await obtenerPropuestaOrThrow(supabase, id);
-    await cambiarEstadoPropuesta(supabase, user.id, propuesta, nuevoEstado);
+    const { avisoCerebro } = await cambiarEstadoPropuesta(supabase, user.id, propuesta, nuevoEstado);
+    revalidatePath(`/admin/participacion/propuestas/${id}`);
+    revalidatePath('/admin/participacion');
+    revalidatePath('/programa');
+    return { ok: true, aviso: avisoCerebro };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido cambiar el estado.' };
   }
-
-  revalidatePath(`/admin/participacion/propuestas/${id}`);
-  revalidatePath('/admin/participacion');
-  return { ok: true };
 }
 
 /**

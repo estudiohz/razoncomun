@@ -138,6 +138,8 @@ export interface NuevaPropuestaInput {
   /** 0045: formulación como pregunta cerrada, para que el voto a favor/en contra sea inequívoco. */
   question?: string | null;
   estimated_cost_cents?: number | null;
+  /** El cuerpo ya es HTML del editor visual. Si no, es texto plano y se escapa (RC-bot, etc.). */
+  bodyEsHtml?: boolean;
 }
 
 /** Crea una propuesta como el usuario autenticado (RLS: author_id = auth.uid()). Genera slug (D-P12). */
@@ -151,7 +153,8 @@ export async function crearPropuesta(
     .from('proposals')
     .insert({
       title: input.title,
-      body: textoPlanoAHtml(input.body),
+      body: input.bodyEsHtml ? input.body : textoPlanoAHtml(input.body),
+      body_format: 'html',
       department: input.department,
       question: input.question?.trim() || null,
       estimated_cost_cents: input.estimated_cost_cents ?? null,

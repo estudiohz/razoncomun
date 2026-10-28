@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
+import type { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
@@ -12,6 +13,8 @@ import TextAlign from '@tiptap/extension-text-align';
 import { Color, FontFamily, TextStyle } from '@tiptap/extension-text-style';
 import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table';
 import { subirMedia } from '@/lib/blog/admin';
+import { renderizarMarkdown } from '@/lib/blog/markdown';
+import { htmlPegadoTieneEstructura, pareceMarkdown } from '@/lib/blog/pegado';
 
 /**
  * Editor visual del cuerpo. Trabaja y devuelve **HTML** (migración 0049).
@@ -36,9 +39,14 @@ const COLORES = ['#1B3D9C', '#8B30D9', '#C3369E', '#E8792F', '#16B8A0', '#2BC7E8
 export function EditorRico({
   valor,
   onChange,
+  sinMedia = false,
+  minAltura = 420,
 }: {
   valor: string;
   onChange: (html: string) => void;
+  /** Oculta la subida de ficheros: la acción de subida exige ser editor. */
+  sinMedia?: boolean;
+  minAltura?: number;
 }) {
   const [subida, accionSubida, subiendo] = useActionState<
     { markdown?: string; html?: string; url?: string; error?: string } | null,
@@ -49,6 +57,7 @@ export function EditorRico({
   // reiniciaría el editor y movería el cursor en cada tecla.
   const inicial = useRef(valor).current;
   const ultimo = useRef<string | null>(null);
+  const editorRef = useRef<Editor | null>(null);
 
   const editor = useEditor({
     immediatelyRender: false, // evita el desajuste de hidratación en Next
@@ -73,10 +82,26 @@ export function EditorRico({
     ],
     content: inicial,
     editorProps: {
-      attributes: { class: 'prose-rc min-h-[420px] px-5 py-4 focus:outline-none' },
+      attributes: { class: 'prose-rc px-5 py-4 focus:outline-none', style: `min-height:${minAltura}px` },
+      // Markdown pegado como texto (de un chat de IA, de un .md…) → se convierte
+      // en títulos, listas, tablas e imágenes en vez de quedar con `##` y `**`
+      // literales. El markdown pasa por `renderizarMarkdown`, que escapa todo el
+      // texto; lo que entra en el editor nunca es HTML del portapapeles.
+      handlePaste: (_vista, evento) => {
+        const texto = evento.clipboardData?.getData('text/plain') ?? '';
+        const html = evento.clipboardData?.getData('text/html') ?? '';
+        if (html.trim() && htmlPegadoTieneEstructura(html)) return false;
+        if (!pareceMarkdown(texto)) return false;
+        const ed = editorRef.current;
+        if (!ed) return false;
+        evento.preventDefault();
+        ed.chain().focus().insertContent(renderizarMarkdown(texto).html).run();
+        return true;
+      },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
+  editorRef.current = editor;
 
   // Al terminar una subida, inserta el nodo correspondiente.
   useEffect(() => {
@@ -107,7 +132,10 @@ export function EditorRico({
 
   if (!editor) {
     return (
-      <div className="min-h-[420px] rounded-boton border border-linea bg-white px-5 py-4 text-gris">
+      <div
+        className="rounded-boton border border-linea bg-white px-5 py-4 text-gris"
+        style={{ minHeight: minAltura }}
+      >
         Cargando editor…
       </div>
     );
@@ -255,6 +283,8 @@ export function EditorRico({
           🔗
         </button>
 
+        {!sinMedia && (
+          <>
         {/* No puede ser un <form> propio: vive dentro del <form> del artículo y
             anidarlos es HTML inválido. Se dispara la acción desde onChange. */}
         <label
@@ -280,6 +310,8 @@ export function EditorRico({
           />
           {subiendo ? 'Subiendo…' : '+ Imagen / Vídeo / PDF'}
         </label>
+          </>
+        )}
       </div>
 
       {subida?.error ? (
