@@ -28,8 +28,8 @@ export function AppBanner() {
           </h2>
           <p className="mx-auto mb-6 mt-4 max-w-[48ch] text-[16px] text-white/90 min-[860px]:mx-0">
             Ahora puedes usar Razón Común como una aplicación: sin tiendas, sin descargas y sin ocupar
-            espacio. Abre la web, inicia sesión y guárdala en tu pantalla de inicio: propón ideas, vota y
-            sigue cada propuesta con avisos cuando algo que sigues cambie.
+            espacio. Abre la web, inicia sesión, entra en tu perfil y guárdala en tu pantalla de inicio:
+            propón ideas, vota y sigue cada propuesta con avisos cuando algo que sigues cambie.
           </p>
           <ul className="mb-8 flex flex-col items-center gap-2 text-[14.5px] font-semibold text-white min-[860px]:items-start">
             <li>✓ Gratis y en menos de 10 segundos</li>

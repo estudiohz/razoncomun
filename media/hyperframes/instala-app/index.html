@@ -85,6 +85,23 @@
       #toolbar svg { width: 30px; height: 30px; stroke: #3a77d9; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
       #share-btn { position: relative; width: 44px; height: 44px; margin-top: -6px; display: flex; align-items: center; justify-content: center; border-radius: 22px; }
 
+      #url { position: absolute; }
+      #url span { position: absolute; left: 0; right: 0; text-align: center; top: 12px; }
+      #url-b { opacity: 0; }
+
+      /* menú del avatar y panel de usuario (captura real de /panel en móvil) */
+      #menu {
+        position: absolute; right: 16px; top: 174px; width: 196px; border-radius: 16px; background: #fff; z-index: 12;
+        box-shadow: 0 14px 34px rgba(20, 24, 60, .28); overflow: hidden; transform-origin: 100% 0;
+      }
+      #menu div { height: 44px; display: flex; align-items: center; padding: 0 16px; font-size: 15px; font-weight: 600; color: #1d2340; border-bottom: 1px solid #eef0f6; }
+      #menu div:last-child { border-bottom: 0; color: #8a90a8; }
+      #menu #m-panel { position: relative; }
+      #m-hl { position: absolute; inset: 0; background: rgba(22, 184, 160, .2); }
+      #m-panel span { position: relative; }
+      #panel { position: absolute; left: 0; top: 118px; width: 412px; height: 668px; z-index: 4; overflow: hidden; background: #f0f4fd; }
+      #panel img { width: 412px; height: 668px; display: block; }
+
       /* barra de la web (logo + Accede / avatar) */
       #nav {
         position: absolute; left: 14px; right: 14px; top: 116px; height: 52px; border-radius: 16px; z-index: 6;
@@ -195,10 +212,10 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="14.1" data-width="1080" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="17.1" data-width="1080" data-height="1080">
 
       <!-- Móvil -->
-      <div id="phone-clip" class="clip abs" data-start="0" data-duration="14.1" data-track-index="0" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow data-layout-ignore>
+      <div id="phone-clip" class="clip abs" data-start="0" data-duration="17.1" data-track-index="0" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow data-layout-ignore>
         <div id="phone">
           <div id="screen">
             <div id="notch"></div>
@@ -206,7 +223,7 @@
 
             <!-- Safari con la web -->
             <div id="safari" class="layer">
-              <div id="url">🔒 razoncomun.com</div>
+              <div id="url"><span id="url-a">🔒 razoncomun.com</span><span id="url-b">🔒 razoncomun.com/panel</span></div>
               <div id="nav">
                 <img src="assets/logo-rc.png" alt="" />
                 <div class="acc"><div id="accede">Accede</div><div id="avatar">S</div></div>
@@ -221,6 +238,12 @@
                   <div class="card"><i></i><i></i><i></i></div>
                   <div class="card"><i></i><i></i><i></i></div>
                 </div>
+              </div>
+              <div id="panel"><img src="assets/panel.png" alt="" /></div>
+              <div id="menu">
+                <div id="m-panel"><div id="m-hl"></div><span>Mi panel</span></div>
+                <div>Mi perfil</div>
+                <div>Cerrar sesión</div>
               </div>
               <div id="toolbar">
                 <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" /></svg>
@@ -300,13 +323,16 @@
       <div id="paso2" class="clip abs paso" data-start="2.5" data-duration="3.5" data-track-index="1">
         <div class="in"><div class="n">2</div><h2>Inicia <em>sesión</em></h2><p>con tu cuenta de Razón Común</p></div>
       </div>
-      <div id="paso3" class="clip abs paso" data-start="6.0" data-duration="1.8" data-track-index="1">
-        <div class="in"><div class="n">3</div><h2>Pulsa <em>Compartir</em></h2></div>
+      <div id="paso3" class="clip abs paso" data-start="6.0" data-duration="3.0" data-track-index="1">
+        <div class="in"><div class="n">3</div><h2>Accede a <em>tu perfil</em></h2><p>y desde ahí, instálala</p></div>
       </div>
-      <div id="paso4" class="clip abs paso" data-start="7.8" data-duration="2.5" data-track-index="1">
-        <div class="in"><div class="n">4</div><h2>Elige <em>Añadir a pantalla de inicio</em></h2></div>
+      <div id="paso4" class="clip abs paso" data-start="9.0" data-duration="1.8" data-track-index="1">
+        <div class="in"><div class="n">4</div><h2>Pulsa <em>Compartir</em></h2></div>
       </div>
-      <div id="paso5" class="clip abs paso" data-start="10.3" data-duration="3.8" data-track-index="1">
+      <div id="paso5" class="clip abs paso" data-start="10.8" data-duration="2.5" data-track-index="1">
+        <div class="in"><div class="n">5</div><h2>Elige <em>Añadir a pantalla de inicio</em></h2></div>
+      </div>
+      <div id="paso6" class="clip abs paso" data-start="13.3" data-duration="3.8" data-track-index="1">
         <div class="in"><div class="n">✓</div><h2>¡Listo! <em>Ya la tienes como una app</em></h2></div>
       </div>
     </div>
@@ -358,37 +384,55 @@
         .to("#avatar", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 5.7);
       sale("#paso2", 5.7);
 
-      /* Paso 3 (6.0 – 7.8): Compartir */
+      /* Paso 3 (6.0 – 9.0): accede a tu perfil */
       entra("#paso3", 6.0);
-      tl.to("#tap", { x: 256, y: 826, duration: 0.6, ease: "power2.out" }, 5.9);
-      toque(6.7);
-      tl.to("#dim", { opacity: 1, duration: 0.35, ease: "power1.out" }, 6.9)
-        .to("#sheet", { y: 0, duration: 0.6, ease: "power3.out" }, 6.9);
-      sale("#paso3", 7.5);
+      tl.set("#menu", { opacity: 0, scale: 0.9 }, 0);
+      tl.set("#panel", { opacity: 0 }, 0);
+      tl.set("#m-hl", { opacity: 0 }, 0);
+      tl.to("#tap", { x: 369, y: 142, duration: 0.6, ease: "power2.out" }, 5.95);
+      toque(6.65);
+      tl.to("#menu", { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, 6.85);
+      tl.to("#tap", { x: 300, y: 198, duration: 0.5, ease: "power2.inOut" }, 7.1);
+      toque(7.75);
+      tl.to("#m-hl", { opacity: 1, duration: 0.15 }, 7.8);
+      tl.to("#menu", { opacity: 0, duration: 0.2 }, 8.0);
+      tl.to("#nav", { opacity: 0, duration: 0.2 }, 8.0);
+      tl.to("#panel", { opacity: 1, duration: 0.35, ease: "power1.inOut" }, 8.0)
+        .to("#url-a", { opacity: 0, duration: 0.2 }, 8.0)
+        .to("#url-b", { opacity: 1, duration: 0.2 }, 8.05);
+      sale("#paso3", 8.7);
 
-      /* Paso 4 (7.8 – 10.3): Añadir a pantalla de inicio */
-      entra("#paso4", 7.8);
-      tl.to("#tap", { x: 200, y: 572, duration: 0.7, ease: "power2.inOut" }, 7.9);
-      toque(8.75);
-      tl.to("#add-hl", { opacity: 1, duration: 0.15 }, 8.8);
-      tl.to("#sheet", { y: 620, duration: 0.45, ease: "power2.in" }, 9.25)
-        .to("#dim", { opacity: 0, duration: 0.3 }, 9.25)
-        .to("#dialog", { y: 0, duration: 0.55, ease: "power3.out" }, 9.3);
-      tl.to("#tap", { x: 360, y: 100, duration: 0.6, ease: "power2.inOut" }, 9.65);
-      toque(10.35);
-      sale("#paso4", 10.0);
+      /* Paso 4 (9.0 – 10.8): Compartir */
+      entra("#paso4", 9.0);
+      tl.to("#tap", { x: 256, y: 826, duration: 0.6, ease: "power2.out" }, 8.6);
+      toque(9.7);
+      tl.to("#dim", { opacity: 1, duration: 0.35, ease: "power1.out" }, 9.9)
+        .to("#sheet", { y: 0, duration: 0.6, ease: "power3.out" }, 9.9);
+      sale("#paso4", 10.5);
 
-      /* Paso 5 (10.3 – 14.1): listo, ya es una app */
-      entra("#paso5", 10.3);
-      tl.to("#home", { opacity: 1, duration: 0.45, ease: "power1.inOut" }, 10.65)
-        .to("#tap", { opacity: 0, duration: 0.3 }, 10.65);
-      tl.to("#rc-icon", { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 11.2)
-        .to("#rc-label", { opacity: 1, duration: 0.3 }, 11.5)
-        .fromTo("#rc-ring", { opacity: 0.9, scale: 0.8 }, { opacity: 0, scale: 1.7, duration: 0.8, ease: "power2.out", immediateRender: false }, 11.3);
+      /* Paso 5 (10.8 – 13.3): Añadir a pantalla de inicio */
+      entra("#paso5", 10.8);
+      tl.to("#tap", { x: 200, y: 572, duration: 0.7, ease: "power2.inOut" }, 10.9);
+      toque(11.75);
+      tl.to("#add-hl", { opacity: 1, duration: 0.15 }, 11.8);
+      tl.to("#sheet", { y: 620, duration: 0.45, ease: "power2.in" }, 12.25)
+        .to("#dim", { opacity: 0, duration: 0.3 }, 12.25)
+        .to("#dialog", { y: 0, duration: 0.55, ease: "power3.out" }, 12.3);
+      tl.to("#tap", { x: 360, y: 100, duration: 0.6, ease: "power2.inOut" }, 12.65);
+      toque(13.35);
+      sale("#paso5", 13.0);
+
+      /* Paso 6 (13.3 – 17.1): listo, ya es una app */
+      entra("#paso6", 13.3);
+      tl.to("#home", { opacity: 1, duration: 0.45, ease: "power1.inOut" }, 13.65)
+        .to("#tap", { opacity: 0, duration: 0.3 }, 13.65);
+      tl.to("#rc-icon", { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 14.2)
+        .to("#rc-label", { opacity: 1, duration: 0.3 }, 14.5)
+        .fromTo("#rc-ring", { opacity: 0.9, scale: 0.8 }, { opacity: 0, scale: 1.7, duration: 0.8, ease: "power2.out", immediateRender: false }, 14.3);
 
       /* Cierre: vuelve al estado del primer fotograma para enlazar al repetir */
-      tl.to("#phone", { opacity: 0, duration: 0.35, ease: "power2.in" }, 13.7)
-        .to("#paso5 .in", { opacity: 0, duration: 0.3 }, 13.75);
+      tl.to("#phone", { opacity: 0, duration: 0.35, ease: "power2.in" }, 16.7)
+        .to("#paso6 .in", { opacity: 0, duration: 0.3 }, 16.75);
 
       window.__timelines["main"] = tl;
       tl.seek(0);
