@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Hero } from '@/components/home/Hero';
 import { Bento } from '@/components/home/Bento';
 import { DiscordParallax } from '@/components/home/DiscordParallax';
+import { AppBanner } from '@/components/home/AppBanner';
 import { FeedObservatorio } from '@/components/home/FeedObservatorio';
 import { IASection } from '@/components/home/IASection';
 import { CtaFinal } from '@/components/home/CtaFinal';
@@ -21,6 +22,7 @@ export default function HomePage() {
       <Bento />
       <DiscordParallax />
       <FeedObservatorio />
+      <AppBanner />
       <IASection />
       <CtaFinal />
     </>

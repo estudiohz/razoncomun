@@ -9,6 +9,7 @@ import { codigoSeguimiento } from '@/lib/legal/seguimiento';
 import { ChromePublico } from '@/components/layout/ChromePublico';
 import { BandaDonacion } from '@/components/layout/BandaDonacion';
 import { RegistroPWA } from '@/components/layout/RegistroPWA';
+import { RegistroInstalacionApp } from '@/components/layout/RegistroInstalacionApp';
 import { MenuInferior } from '@/components/layout/MenuInferior';
 import { jsonLdOrganizacion } from '@/lib/seo';
 import { site } from '@/lib/site';
@@ -69,6 +70,7 @@ export default async function RootLayout({
             debe verse también en /panel; él mismo se oculta en /admin. */}
         <MenuInferior />
         <RegistroPWA />
+        <RegistroInstalacionApp />
         {/* El aviso y el inyector, en este orden. El inyector NO carga nada
             hasta que hay un "Aceptar" explícito: ver CodigoSeguimiento.tsx. */}
         <AvisoCookies />

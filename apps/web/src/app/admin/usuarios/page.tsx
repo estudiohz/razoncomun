@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Input } from '@/components/ui/Input';
 import { EliminarUsuarioBoton } from './EliminarUsuarioBoton';
@@ -88,7 +89,7 @@ export default async function UsuariosPage({
   let query = supabase
     .from('profiles')
     .select(
-      'id, email, display_name, level, origin_province_id, member_since, created_at, user_number, member_number',
+      'id, email, display_name, level, origin_province_id, member_since, created_at, user_number, member_number, app_installed_at, app_last_seen_at',
     )
     .order('created_at', { ascending: false })
     .limit(200);
@@ -106,6 +107,13 @@ export default async function UsuariosPage({
   }
 
   const { data: perfiles, error } = await query;
+
+  // Quién tiene el push activo: existe al menos una suscripción suya. La tabla es
+  // 100 % propia por RLS (cada usuario solo ve las suyas), así que se lee con el
+  // cliente de servicio — solo se extrae un booleano por usuario, nunca los
+  // endpoints ni las claves. La página ya exige admin o editor (layout).
+  const { data: subsPush } = await createAdminClient().from('push_subscriptions').select('user_id');
+  const conPush = new Set((subsPush ?? []).map((s) => s.user_id as string));
 
   const provinciaPorId = new Map((provincias ?? []).map((p) => [p.id, p.name]));
   const cargosPorUsuario = new Map<string, string[]>();
@@ -130,6 +138,9 @@ export default async function UsuariosPage({
     });
   }
 
+  const totalConApp = perfilesFiltrados.filter((p) => p.app_installed_at).length;
+  const totalConPush = perfilesFiltrados.filter((p) => conPush.has(p.id)).length;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -137,6 +148,9 @@ export default async function UsuariosPage({
           <h1 className="text-[24px] font-extrabold">Usuarios</h1>
           <p className="mt-1 text-[13.5px] text-gris">
             Todas las personas registradas. Un socio es un usuario con cuota activa: se filtra aquí, no es una lista aparte. El dinero está en Tesorería.
+          </p>
+          <p className="mt-1 text-[13px] text-gris">
+            📱 {totalConApp} con la app instalada · 🔔 {totalConPush} con avisos push activados (en esta lista).
           </p>
         </div>
         <Link
@@ -225,6 +239,8 @@ export default async function UsuariosPage({
               <th className="px-4 py-3">Socio</th>
               <th className="px-4 py-3">Provincia</th>
               <th className="px-4 py-3">Cargo vigente</th>
+              <th className="px-4 py-3 text-center" title="Ha abierto la web como app instalada en su móvil">App</th>
+              <th className="px-4 py-3 text-center" title="Tiene los avisos push activados en algún dispositivo">Push</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -288,6 +304,30 @@ export default async function UsuariosPage({
                 <td className="px-4 py-3 text-cuerpo">
                   {(cargosPorUsuario.get(p.id) ?? []).join(', ') || '—'}
                 </td>
+                <td className="px-4 py-3 text-center">
+                  {p.app_installed_at ? (
+                    <span
+                      role="img"
+                      aria-label="Tiene la app instalada"
+                      title={`App instalada desde el ${new Date(p.app_installed_at).toLocaleDateString('es-ES')}${
+                        p.app_last_seen_at ? ` · vista por última vez el ${new Date(p.app_last_seen_at).toLocaleDateString('es-ES')}` : ''
+                      }`}
+                    >
+                      📱
+                    </span>
+                  ) : (
+                    <span className="text-gris/50">—</span>
+                  )}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {conPush.has(p.id) ? (
+                    <span role="img" aria-label="Avisos push activados" title="Avisos push activados">
+                      🔔
+                    </span>
+                  ) : (
+                    <span className="text-gris/50">—</span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-3">
                     <Link href={`/admin/usuarios/${p.id}`} className="font-semibold text-titular no-underline hover:underline">
@@ -306,7 +346,7 @@ export default async function UsuariosPage({
             ))}
             {perfilesFiltrados.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-gris">
+                <td colSpan={9} className="px-4 py-8 text-center text-gris">
                   Sin resultados para este filtro.
                 </td>
               </tr>
