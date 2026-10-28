@@ -51,7 +51,7 @@ function paginasVisibles(actual: number, total: number): (number | '…')[] {
 function AreaChip({ area }: { area: { name: string; color: string } }) {
   return (
     <span
-      className="rounded-full px-2.5 py-0.5 text-[11.5px] font-bold text-white"
+      className="inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11.5px] font-bold text-white"
       style={{ backgroundColor: area.color }}
     >
       {area.name}
