@@ -64,6 +64,10 @@ export interface Propuesta {
   estimated_cost_cents: number | null;
   author_id: string | null;
   report_url: string | null;
+  /** 0066: informe PDF de la simulación con IA, su fecha (YYYY-MM-DD) y el resultado resumido. */
+  simulation_pdf_url: string | null;
+  simulation_at: string | null;
+  simulation_result: string | null;
   adopted_point_id: number | null;
   /** Formato del cuerpo: 'html' (editor visual) o 'markdown' (borradores del RC-bot). */
   body_format: 'markdown' | 'html' | null;

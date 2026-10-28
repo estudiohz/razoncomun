@@ -17,11 +17,14 @@ export function BarraOrdenarBuscar({
   q,
   status,
   categoryId,
+  sim,
 }: {
   tab: 'trending' | 'top' | 'nuevos';
   q: string;
   status: string;
   categoryId: string;
+  /** Filtro «Con simulación IA» (?sim=1). */
+  sim: boolean;
 }) {
   const router = useRouter();
   const [texto, setTexto] = useState(q);
@@ -31,7 +34,7 @@ export function BarraOrdenarBuscar({
   // resetea), el input se realinea con lo que diga el servidor.
   useEffect(() => setTexto(q), [q]);
 
-  function navegar(next: { tab?: string; q?: string }) {
+  function navegar(next: { tab?: string; q?: string; sim?: boolean }) {
     const params = new URLSearchParams();
     const t = next.tab !== undefined ? next.tab : tab;
     const busqueda = next.q !== undefined ? next.q : texto;
@@ -39,6 +42,7 @@ export function BarraOrdenarBuscar({
     if (categoryId) params.set('categoryId', categoryId);
     if (t && t !== 'trending') params.set('tab', t);
     if (busqueda.trim()) params.set('q', busqueda.trim());
+    if (next.sim !== undefined ? next.sim : sim) params.set('sim', '1');
     const qs = params.toString();
     router.push(qs ? `/propuestas?${qs}` : '/propuestas', { scroll: false });
   }
@@ -66,6 +70,16 @@ export function BarraOrdenarBuscar({
           <option value="top">🏆 Top</option>
           <option value="nuevos">🆕 Nuevos</option>
         </select>
+      </label>
+
+      <label className="flex items-center gap-2 text-[13px] font-bold text-gris">
+        <input
+          type="checkbox"
+          checked={sim}
+          onChange={(e) => navegar({ sim: e.target.checked })}
+          className="h-4 w-4 accent-morado"
+        />
+        Con simulación IA
       </label>
 
       <div className="relative min-w-[200px] flex-1 sm:max-w-[320px]">
