@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
@@ -48,9 +47,12 @@ export default async function ModerarPropuestaPage({
 
   return (
     <div className="py-2">
-      <Link href="/admin/participacion" className="text-[14px] text-gris no-underline hover:underline">
+      {/* <a> a propósito, no <Link>: en producción las peticiones RSC de la navegación
+          cliente de /admin responden 503 y, desde esta ficha, Next se quedaba sin
+          navegar ("no regresa"). Una navegación completa no depende de ellas. */}
+      <a href="/admin/participacion" className="text-[14px] text-gris no-underline hover:underline">
         ← Volver al listado
-      </Link>
+      </a>
 
       {fusionada && (
         <p className="mt-3 rounded-boton border border-linea bg-fondo px-4 py-2 text-[13.5px] font-semibold text-titular">
