@@ -13,7 +13,7 @@ import {
 } from '@/lib/participacion/types';
 
 export const metadata: Metadata = metadatosPagina({
-  titulo: 'Admin — Participación',
+  titulo: 'Admin — Propuestas',
   descripcion: 'Tablero de propuestas: moderación, estados y fusión de duplicados.',
   ruta: '/admin/participacion',
   noindex: true,
@@ -76,7 +76,7 @@ export default async function AdminParticipacionPage({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[24px] font-bold leading-tight text-titular min-[720px]:text-[32px]">
-            Participación
+            Propuestas
           </h1>
           <p className="mt-2 max-w-2xl text-[13.5px] text-gris">
             Todas las propuestas, incluidos archivados, borradores y fusionadas (la RLS pública los

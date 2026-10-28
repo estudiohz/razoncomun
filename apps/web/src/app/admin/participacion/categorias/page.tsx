@@ -40,7 +40,7 @@ export default async function CategoriasPropuestasPage() {
   return (
     <div className="py-2">
       <Link href="/admin/participacion" className="text-[14px] text-gris no-underline hover:underline">
-        ← Volver a Participación
+        ← Volver a Propuestas
       </Link>
       <h1 className="mb-2 mt-3 text-[24px] font-bold leading-tight text-titular min-[720px]:text-[32px]">
         Categorías del tablero de propuestas

@@ -25,7 +25,7 @@ export default async function AdminBorradoresPage() {
     <div className="mx-auto w-full max-w-[900px] space-y-6">
       <header>
         <Link href="/admin/participacion" className="text-[13.5px] text-gris no-underline hover:underline">
-          ← Volver a Participación
+          ← Volver a Propuestas
         </Link>
         <h1 className="text-[clamp(24px,3.4vw,32px)] font-extrabold leading-tight">Borradores</h1>
         <p className="mt-1 text-[14px] text-gris">

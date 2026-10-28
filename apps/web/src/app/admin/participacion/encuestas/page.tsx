@@ -22,7 +22,7 @@ export default async function AdminEncuestasPage() {
         href="/admin/participacion"
         className="text-[13.5px] text-gris no-underline hover:underline"
       >
-        ← Volver a Participación
+        ← Volver a Propuestas
       </Link>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-[28px] font-extrabold text-titular">Encuestas</h1>
