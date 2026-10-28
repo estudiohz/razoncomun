@@ -55,10 +55,10 @@
         background: #e5e9f4; display: flex; align-items: center; justify-content: center; gap: 8px;
         font-size: 16px; font-weight: 600; color: #273252; z-index: 5;
       }
-      #page { position: absolute; left: 0; top: 118px; width: 412px; height: 668px; overflow: hidden; }
+      #page { position: absolute; left: 0; top: 172px; width: 412px; height: 614px; overflow: hidden; }
       #page-inner { position: absolute; left: 0; top: 0; width: 412px; }
       #hero {
-        height: 330px; padding: 30px 28px; color: #fff;
+        height: 350px; padding: 74px 28px 30px; color: #fff;
         background: linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8e 52%, #ed1156 66%, #f05726 88%, #ed7547);
       }
       #hero img { height: 30px; display: block; margin-bottom: 40px; }
@@ -84,6 +84,36 @@
       }
       #toolbar svg { width: 30px; height: 30px; stroke: #3a77d9; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
       #share-btn { position: relative; width: 44px; height: 44px; margin-top: -6px; display: flex; align-items: center; justify-content: center; border-radius: 22px; }
+
+      /* barra de la web (logo + Accede / avatar) */
+      #nav {
+        position: absolute; left: 14px; right: 14px; top: 116px; height: 52px; border-radius: 16px; z-index: 6;
+        background: #fff; box-shadow: 0 4px 14px rgba(27, 61, 156, .12); display: flex; align-items: center;
+        justify-content: space-between; padding: 0 12px 0 14px;
+      }
+      #nav img { height: 22px; display: block; }
+      #nav .acc { position: relative; width: 84px; height: 34px; }
+      #nav .acc > * { position: absolute; right: 0; top: 0; }
+      #accede { height: 34px; padding: 0 18px; border-radius: 12px; background: #157f70; color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; }
+      #avatar { width: 34px; height: 34px; border-radius: 17px; background: linear-gradient(135deg, #8b30d9, #c3369e); color: #fff; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+
+      /* pantalla de inicio de sesión */
+      #login { background: #f4f6fc; z-index: 18; }
+      #login .cab { position: absolute; left: 0; right: 0; top: 150px; text-align: center; }
+      #login .cab img { height: 34px; }
+      #login h3 { position: absolute; left: 0; right: 0; top: 214px; text-align: center; font-size: 24px; font-weight: 800; color: #1d2340; }
+      #login .campo {
+        position: absolute; left: 30px; right: 30px; height: 52px; border-radius: 14px; background: #fff;
+        border: 1.5px solid #dde3f1; display: flex; align-items: center; padding: 0 16px; font-size: 16px; color: #1d2340; overflow: hidden;
+      }
+      #login .campo small { position: absolute; left: 16px; top: -1px; }
+      #login .rel { clip-path: inset(0 100% 0 0); white-space: nowrap; font-weight: 600; }
+      #f-email { top: 290px; }
+      #f-pass { top: 356px; }
+      #entrar {
+        position: absolute; left: 30px; right: 30px; top: 440px; height: 54px; border-radius: 14px; background: #157f70;
+        color: #fff; font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center;
+      }
 
       /* hoja Compartir */
       #dim { background: rgba(10, 14, 30, .42); z-index: 20; }
@@ -165,10 +195,10 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="10.6" data-width="1080" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="14.1" data-width="1080" data-height="1080">
 
       <!-- Móvil -->
-      <div id="phone-clip" class="clip abs" data-start="0" data-duration="10.6" data-track-index="0" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow data-layout-ignore>
+      <div id="phone-clip" class="clip abs" data-start="0" data-duration="14.1" data-track-index="0" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow data-layout-ignore>
         <div id="phone">
           <div id="screen">
             <div id="notch"></div>
@@ -177,10 +207,13 @@
             <!-- Safari con la web -->
             <div id="safari" class="layer">
               <div id="url">🔒 razoncomun.com</div>
+              <div id="nav">
+                <img src="assets/logo-rc.png" alt="" />
+                <div class="acc"><div id="accede">Accede</div><div id="avatar">S</div></div>
+              </div>
               <div id="page">
                 <div id="page-inner">
                   <div id="hero">
-                    <img src="assets/logo-rc-blanco.png" alt="" />
                     <h1>Razón Común <span>es participación real.</span></h1>
                     <p>La alternativa que estabas esperando. Cada propuesta se mide, se simula y se corrige.</p>
                     <div class="btn">Únete</div>
@@ -198,6 +231,15 @@
                 <svg viewBox="0 0 24 24"><path d="M5 4h11a2 2 0 0 1 2 2v14l-7-4-7 4V6a2 2 0 0 1 2-2z" /></svg>
                 <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" /></svg>
               </div>
+            </div>
+
+            <!-- Inicio de sesión -->
+            <div id="login" class="layer">
+              <div class="cab"><img src="assets/logo-rc.png" alt="" /></div>
+              <h3>Accede a tu cuenta</h3>
+              <div id="f-email" class="campo"><span class="rel" id="t-email">tu@correo.com</span></div>
+              <div id="f-pass" class="campo"><span class="rel" id="t-pass">••••••••••</span></div>
+              <div id="entrar">Entrar</div>
             </div>
 
             <!-- Hoja Compartir -->
@@ -255,13 +297,16 @@
       <div id="paso1" class="clip abs paso" data-start="0" data-duration="2.5" data-track-index="1">
         <div class="in"><div class="n">1</div><h2>Abre <em>razoncomun.com</em></h2><p>en el navegador de tu móvil</p></div>
       </div>
-      <div id="paso2" class="clip abs paso" data-start="2.5" data-duration="1.8" data-track-index="1">
-        <div class="in"><div class="n">2</div><h2>Pulsa <em>Compartir</em></h2></div>
+      <div id="paso2" class="clip abs paso" data-start="2.5" data-duration="3.5" data-track-index="1">
+        <div class="in"><div class="n">2</div><h2>Inicia <em>sesión</em></h2><p>con tu cuenta de Razón Común</p></div>
       </div>
-      <div id="paso3" class="clip abs paso" data-start="4.3" data-duration="2.5" data-track-index="1">
-        <div class="in"><div class="n">3</div><h2>Elige <em>Añadir a pantalla de inicio</em></h2></div>
+      <div id="paso3" class="clip abs paso" data-start="6.0" data-duration="1.8" data-track-index="1">
+        <div class="in"><div class="n">3</div><h2>Pulsa <em>Compartir</em></h2></div>
       </div>
-      <div id="paso4" class="clip abs paso" data-start="6.8" data-duration="3.8" data-track-index="1">
+      <div id="paso4" class="clip abs paso" data-start="7.8" data-duration="2.5" data-track-index="1">
+        <div class="in"><div class="n">4</div><h2>Elige <em>Añadir a pantalla de inicio</em></h2></div>
+      </div>
+      <div id="paso5" class="clip abs paso" data-start="10.3" data-duration="3.8" data-track-index="1">
         <div class="in"><div class="n">✓</div><h2>¡Listo! <em>Ya la tienes como una app</em></h2></div>
       </div>
     </div>
@@ -273,6 +318,8 @@
       /* Estado inicial: el primer fotograma ya muestra el móvil y el paso 1 */
       gsap.set(".paso .in", { opacity: 0, y: 26 });
       gsap.set("#paso1 .in", { opacity: 1, y: 0 });
+      gsap.set("#login", { x: 412 });
+      gsap.set("#avatar", { opacity: 0, scale: 0.6 });
       gsap.set("#dim", { opacity: 0 });
       gsap.set("#sheet", { y: 620 });
       gsap.set("#dialog", { y: 872 });
@@ -297,37 +344,51 @@
       tl.to("#page-inner", { y: -46, duration: 1.4, ease: "power1.inOut" }, 0.6);
       sale("#paso1", 2.2);
 
-      /* Paso 2 (2.5 – 4.3): Compartir */
+      /* Paso 2 (2.5 – 6.0): inicia sesión */
       entra("#paso2", 2.5);
-      tl.to("#tap", { opacity: 1, x: 256, y: 826, duration: 0.6, ease: "power2.out" }, 2.3);
+      tl.to("#tap", { opacity: 1, x: 352, y: 145, duration: 0.6, ease: "power2.out" }, 2.4);
       toque(3.1);
-      tl.to("#dim", { opacity: 1, duration: 0.35, ease: "power1.out" }, 3.3)
-        .to("#sheet", { y: 0, duration: 0.6, ease: "power3.out" }, 3.3);
-      sale("#paso2", 4.0);
+      tl.to("#login", { x: 0, duration: 0.5, ease: "power3.out" }, 3.4);
+      tl.to("#t-email", { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "none" }, 4.0)
+        .to("#t-pass", { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "none" }, 4.65);
+      tl.to("#tap", { x: 206, y: 467, duration: 0.7, ease: "power2.inOut" }, 4.3);
+      toque(5.2);
+      tl.to("#login", { opacity: 0, duration: 0.3, ease: "power1.in" }, 5.55);
+      tl.to("#accede", { opacity: 0, duration: 0.2 }, 5.65)
+        .to("#avatar", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 5.7);
+      sale("#paso2", 5.7);
 
-      /* Paso 3 (4.3 – 6.8): Añadir a pantalla de inicio */
-      entra("#paso3", 4.3);
-      tl.to("#tap", { x: 200, y: 572, duration: 0.7, ease: "power2.inOut" }, 4.4);
-      toque(5.25);
-      tl.to("#add-hl", { opacity: 1, duration: 0.15 }, 5.3);
-      tl.to("#sheet", { y: 620, duration: 0.45, ease: "power2.in" }, 5.75)
-        .to("#dim", { opacity: 0, duration: 0.3 }, 5.75)
-        .to("#dialog", { y: 0, duration: 0.55, ease: "power3.out" }, 5.8);
-      tl.to("#tap", { x: 360, y: 100, duration: 0.6, ease: "power2.inOut" }, 6.15);
-      toque(6.85);
-      sale("#paso3", 6.5);
+      /* Paso 3 (6.0 – 7.8): Compartir */
+      entra("#paso3", 6.0);
+      tl.to("#tap", { x: 256, y: 826, duration: 0.6, ease: "power2.out" }, 5.9);
+      toque(6.7);
+      tl.to("#dim", { opacity: 1, duration: 0.35, ease: "power1.out" }, 6.9)
+        .to("#sheet", { y: 0, duration: 0.6, ease: "power3.out" }, 6.9);
+      sale("#paso3", 7.5);
 
-      /* Paso 4 (6.8 – 10.6): listo, ya es una app */
-      entra("#paso4", 6.8);
-      tl.to("#home", { opacity: 1, duration: 0.45, ease: "power1.inOut" }, 7.15)
-        .to("#tap", { opacity: 0, duration: 0.3 }, 7.15);
-      tl.to("#rc-icon", { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 7.7)
-        .to("#rc-label", { opacity: 1, duration: 0.3 }, 8.0)
-        .fromTo("#rc-ring", { opacity: 0.9, scale: 0.8 }, { opacity: 0, scale: 1.7, duration: 0.8, ease: "power2.out", immediateRender: false }, 7.8);
+      /* Paso 4 (7.8 – 10.3): Añadir a pantalla de inicio */
+      entra("#paso4", 7.8);
+      tl.to("#tap", { x: 200, y: 572, duration: 0.7, ease: "power2.inOut" }, 7.9);
+      toque(8.75);
+      tl.to("#add-hl", { opacity: 1, duration: 0.15 }, 8.8);
+      tl.to("#sheet", { y: 620, duration: 0.45, ease: "power2.in" }, 9.25)
+        .to("#dim", { opacity: 0, duration: 0.3 }, 9.25)
+        .to("#dialog", { y: 0, duration: 0.55, ease: "power3.out" }, 9.3);
+      tl.to("#tap", { x: 360, y: 100, duration: 0.6, ease: "power2.inOut" }, 9.65);
+      toque(10.35);
+      sale("#paso4", 10.0);
+
+      /* Paso 5 (10.3 – 14.1): listo, ya es una app */
+      entra("#paso5", 10.3);
+      tl.to("#home", { opacity: 1, duration: 0.45, ease: "power1.inOut" }, 10.65)
+        .to("#tap", { opacity: 0, duration: 0.3 }, 10.65);
+      tl.to("#rc-icon", { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 11.2)
+        .to("#rc-label", { opacity: 1, duration: 0.3 }, 11.5)
+        .fromTo("#rc-ring", { opacity: 0.9, scale: 0.8 }, { opacity: 0, scale: 1.7, duration: 0.8, ease: "power2.out", immediateRender: false }, 11.3);
 
       /* Cierre: vuelve al estado del primer fotograma para enlazar al repetir */
-      tl.to("#phone", { opacity: 0, duration: 0.35, ease: "power2.in" }, 10.2)
-        .to("#paso4 .in", { opacity: 0, duration: 0.3 }, 10.25);
+      tl.to("#phone", { opacity: 0, duration: 0.35, ease: "power2.in" }, 13.7)
+        .to("#paso5 .in", { opacity: 0, duration: 0.3 }, 13.75);
 
       window.__timelines["main"] = tl;
       tl.seek(0);
