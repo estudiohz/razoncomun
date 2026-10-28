@@ -185,7 +185,7 @@ export async function editarContenidoAction(id: string, fd: FormData): Promise<R
   if (!body) return { ok: false, error: 'El contenido no puede estar vacío.' };
 
   const propuesta = await obtenerPropuestaOrThrow(supabase, id);
-  const { error } = await supabase.from('proposals').update({ title, body }).eq('id', id);
+  const { error } = await supabase.from('proposals').update({ title, body, body_format: 'html' }).eq('id', id);
   if (error) return { ok: false, error: error.message };
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);

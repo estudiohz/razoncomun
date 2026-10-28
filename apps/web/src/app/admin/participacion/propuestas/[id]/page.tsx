@@ -5,6 +5,8 @@ import { metadatosPagina } from '@/lib/seo';
 import { ETIQUETA_ESTADO, type Propuesta } from '@/lib/participacion/types';
 import { etiquetaDepartamento } from '@/lib/participacion/departments';
 import { listarCategorias } from '@/lib/participacion/categories';
+import { formatoCuerpo } from '@/lib/participacion/cuerpo';
+import { renderizarMarkdown } from '@/lib/blog/markdown';
 import { ModerarPropuestaClient } from './ModerarPropuestaClient';
 
 export const metadata: Metadata = metadatosPagina({
@@ -31,6 +33,10 @@ export default async function ModerarPropuestaPage({
   if (error || !data) notFound();
 
   const propuesta = data as Propuesta;
+  // Los borradores del RC-bot están en markdown y el editor trabaja en HTML:
+  // se convierten al abrir (al guardar la propuesta queda como html).
+  const cuerpoInicial =
+    formatoCuerpo(propuesta) === 'markdown' ? renderizarMarkdown(propuesta.body).html : propuesta.body;
 
   const [{ data: categoria }, categorias, { data: aprobadas }] = await Promise.all([
     propuesta.category_id
@@ -97,6 +103,7 @@ export default async function ModerarPropuestaPage({
       <div className="mt-8">
         <ModerarPropuestaClient
           propuesta={propuesta}
+          cuerpoInicial={cuerpoInicial}
           categorias={categorias}
           aprobadas={(aprobadas ?? []) as { id: string; title: string }[]}
         />

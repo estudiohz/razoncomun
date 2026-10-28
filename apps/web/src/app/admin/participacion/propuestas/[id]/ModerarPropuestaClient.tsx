@@ -37,8 +37,11 @@ export function ModerarPropuestaClient({
   propuesta,
   categorias,
   aprobadas,
+  cuerpoInicial,
 }: {
   propuesta: Propuesta;
+  /** Cuerpo ya en HTML (si venía en markdown, convertido en el servidor). */
+  cuerpoInicial: string;
   categorias: ProposalCategory[];
   aprobadas: { id: string; title: string }[];
 }) {
@@ -46,7 +49,7 @@ export function ModerarPropuestaClient({
   const [pendiente, iniciar] = useTransition();
   const [errorContenido, setErrorContenido] = useState<string | null>(null);
   const [titulo, setTitulo] = useState(propuesta.title);
-  const [cuerpo, setCuerpo] = useState(propuesta.body);
+  const [cuerpo, setCuerpo] = useState(cuerpoInicial);
   const [errorClasificacion, setErrorClasificacion] = useState<string | null>(null);
   const [errorEstado, setErrorEstado] = useState<string | null>(null);
   const [errorDeadline, setErrorDeadline] = useState<string | null>(null);

@@ -24,7 +24,7 @@ import { listarAfirmaciones, misVotosAfirmaciones } from '@/lib/participacion/st
 import { listarComentarios, usuarioDioLike } from '@/lib/participacion/comments';
 import { listarCategorias, contarPropuestasPorCategoria } from '@/lib/participacion/categories';
 import { usuarioSigue } from '@/lib/participacion/follows';
-import { sanearHtml, htmlATexto } from '@/lib/blog/html';
+import { cuerpoPropuestaHtml, cuerpoPropuestaTexto } from '@/lib/participacion/cuerpo';
 import { votacionAbierta, type Vote } from '@/lib/participacion/types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -48,7 +48,7 @@ export async function generateMetadata({
   const propuesta = pareceUuid(slug) ? null : await obtenerPropuestaPorSlug(supabase, slug);
   return metadatosPagina({
     titulo: propuesta?.title ?? 'Propuesta',
-    descripcion: propuesta ? htmlATexto(propuesta.body).slice(0, 160) : 'Propuesta del programa vivo de Razón Común.',
+    descripcion: propuesta ? cuerpoPropuestaTexto(propuesta).slice(0, 160) : 'Propuesta del programa vivo de Razón Común.',
     ruta: `/propuestas/${slug}`,
   });
 }
@@ -131,7 +131,7 @@ export default async function PropuestaDetallePage({
     '@context': 'https://schema.org',
     '@type': 'DiscussionForumPosting',
     headline: propuesta.title,
-    text: htmlATexto(propuesta.body),
+    text: cuerpoPropuestaTexto(propuesta),
     url: `${site.urlBase}/propuestas/${propuesta.slug ?? propuesta.id}`,
     datePublished: propuesta.created_at,
     dateModified: propuesta.updated_at,
@@ -229,7 +229,7 @@ export default async function PropuestaDetallePage({
 
         <div
           className="prose-rc mt-4 text-[16px] leading-relaxed text-cuerpo"
-          dangerouslySetInnerHTML={{ __html: sanearHtml(propuesta.body) }}
+          dangerouslySetInnerHTML={{ __html: cuerpoPropuestaHtml(propuesta) }}
         />
 
         <div className="mt-6 flex flex-wrap items-center gap-4 rounded-tarjeta border border-linea bg-panel px-5 py-4 text-[14px] text-cuerpo">
