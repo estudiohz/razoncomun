@@ -12,6 +12,9 @@ import {
   publicarRespuestaOficial,
 } from '@/lib/participacion/moderation';
 import { DEPARTAMENTOS } from '@/lib/participacion/departments';
+import { subirInformePdf, validarEnlaceInforme } from '@/lib/participacion/informe';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { registrarAuditoria } from '@/lib/admin/audit';
 import type { EstadoPropuesta, Propuesta } from '@/lib/participacion/types';
 
 export interface ResultadoAccion {
@@ -103,6 +106,51 @@ export async function fijarDeadlineAction(id: string, fd: FormData): Promise<Res
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   return { ok: true };
+}
+
+/**
+ * Informe del test de estrés: sube un PDF o enlaza uno externo (comprobado), o
+ * lo quita. Orden de prioridad: quitar > PDF subido > enlace escrito.
+ */
+export async function guardarInformeAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+
+  try {
+    const propuesta = await obtenerPropuestaOrThrow(supabase, id);
+    const archivo = fd.get('informe');
+    const enlace = String(fd.get('report_url') ?? '').trim();
+
+    let nueva: string | null;
+    if (fd.get('quitar') === '1') {
+      nueva = null;
+    } else if (archivo instanceof File && archivo.size > 0) {
+      // Quien llega aquí ya está autorizado (coordinador/admin); Storage exige
+      // is_editor, que un coordinador no siempre es: se sube con service role.
+      nueva = await subirInformePdf(createAdminClient(), id, archivo);
+    } else if (enlace) {
+      nueva = await validarEnlaceInforme(enlace);
+    } else {
+      return { ok: false, error: 'Sube un PDF, escribe un enlace o pulsa «Quitar informe».' };
+    }
+
+    const { error } = await supabase.from('proposals').update({ report_url: nueva }).eq('id', id);
+    if (error) return { ok: false, error: error.message };
+
+    await registrarAuditoria(supabase, {
+      actorId: user.id,
+      action: nueva ? 'proposal_report_set' : 'proposal_report_removed',
+      entity: 'proposals',
+      entityId: id,
+      meta: { report_url: nueva },
+    });
+
+    revalidatePath(`/admin/participacion/propuestas/${id}`);
+    revalidatePath('/propuestas');
+    if (propuesta.slug) revalidatePath(`/propuestas/${propuesta.slug}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido guardar el informe.' };
+  }
 }
 
 /** 0064: muestra u oculta el nombre del autor en la ficha pública. */

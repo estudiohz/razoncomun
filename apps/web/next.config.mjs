@@ -4,6 +4,12 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   poweredByHeader: false,
+  // Las Server Actions rechazan por defecto cuerpos de más de 1 MB: un PDF de
+  // informe (o un vídeo en el editor) no llegaba nunca. 25 MB cubre el PDF de
+  // 20 MB del test de estrés con margen para el resto de campos.
+  experimental: {
+    serverActions: { bodySizeLimit: '25mb' },
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     // Tienda (docs/tecnico/tienda-printful.md): las fotos de producto las

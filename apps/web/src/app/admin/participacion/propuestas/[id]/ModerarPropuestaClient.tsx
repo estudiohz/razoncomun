@@ -11,6 +11,7 @@ import {
   fijarDeadlineAction,
   fijarMesAction,
   fijarMostrarAutorAction,
+  guardarInformeAction,
   fijarSustitucionAction,
   fusionarAction,
   publicarRespuestaOficialAction,
@@ -59,6 +60,7 @@ export function ModerarPropuestaClient({
   const [errorMes, setErrorMes] = useState<string | null>(null);
   const [errorSustitucion, setErrorSustitucion] = useState<string | null>(null);
   const [errorAutor, setErrorAutor] = useState<string | null>(null);
+  const [errorInforme, setErrorInforme] = useState<string | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [motivoEliminar, setMotivoEliminar] = useState('');
@@ -118,6 +120,15 @@ export function ModerarPropuestaClient({
     iniciar(async () => {
       const r = await fijarSustitucionAction(propuesta.id, fd);
       if (!r.ok) setErrorSustitucion(r.error ?? 'Error desconocido.');
+      else router.refresh();
+    });
+  }
+
+  function onGuardarInforme(fd: FormData) {
+    setErrorInforme(null);
+    iniciar(async () => {
+      const r = await guardarInformeAction(propuesta.id, fd);
+      if (!r.ok) setErrorInforme(r.error ?? 'Error desconocido.');
       else router.refresh();
     });
   }
@@ -341,6 +352,64 @@ export function ModerarPropuestaClient({
           La propuesta aparecerá destacada en la página pública del mes elegido (el centro de la
           app móvil) y en el histórico anual. Deja el mes vacío y guarda para quitarla. Protegido
           en BD: solo coordinator/admin.
+        </p>
+      </section>
+
+      {/* Informe del test de estrés */}
+      <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
+        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">
+          Informe del test de estrés
+        </h2>
+        {propuesta.report_url ? (
+          <p className="mb-3 text-[13.5px] text-cuerpo">
+            Informe actual:{' '}
+            <a href={propuesta.report_url} target="_blank" rel="noreferrer" className="break-all font-bold text-titular underline">
+              {propuesta.report_url}
+            </a>
+          </p>
+        ) : (
+          <p className="mb-3 text-[13.5px] text-gris">Sin informe: la ficha pública no muestra ningún enlace.</p>
+        )}
+        <form action={onGuardarInforme} className="grid gap-3">
+          <label className="grid gap-1 text-[13px] font-semibold text-titular">
+            Subir un PDF (hasta 20 MB)
+            <input type="file" name="informe" accept="application/pdf,.pdf" className="text-[13.5px] font-normal text-cuerpo" />
+          </label>
+          <label className="grid gap-1 text-[13px] font-semibold text-titular">
+            …o enlazar uno ya publicado (https://)
+            <input
+              type="url"
+              name="report_url"
+              placeholder="https://…"
+              className="rounded-boton border border-linea bg-white px-3 py-2 text-[14px] font-normal text-titular"
+            />
+          </label>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="submit"
+              disabled={pendiente}
+              className="rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white disabled:opacity-60"
+            >
+              Guardar informe
+            </button>
+            {propuesta.report_url && (
+              <button
+                type="submit"
+                name="quitar"
+                value="1"
+                disabled={pendiente}
+                className="rounded-boton border border-linea bg-white px-4 py-2 text-[13.5px] font-bold text-magenta disabled:opacity-60"
+              >
+                Quitar informe
+              </button>
+            )}
+          </div>
+        </form>
+        {errorInforme && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorInforme}</p>}
+        <p className="mt-3 text-[12.5px] text-gris">
+          Un enlace externo se comprueba al guardar: si no responde, no se acepta (así no vuelve a haber
+          enlaces rotos). Si el PDF se sube aquí, se guarda en el almacenamiento de la web. «Quitar informe»
+          oculta el enlace de la ficha pública.
         </p>
       </section>
 
