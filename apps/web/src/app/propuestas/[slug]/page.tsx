@@ -17,6 +17,7 @@ import {
   obtenerPropuesta,
   obtenerPropuestaPorSlug,
   relacionSustitucion,
+  autoriaPublica,
   pareceUuid,
   posturaUsuario,
 } from '@/lib/participacion/proposals';
@@ -62,6 +63,10 @@ function euros(cents: number | null): string {
   );
 }
 
+function fechaLarga(iso: string): string {
+  return new Date(iso).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 export default async function PropuestaDetallePage({
   params,
 }: {
@@ -84,7 +89,10 @@ export default async function PropuestaDetallePage({
   } = await supabase.auth.getUser();
 
   const abierta = votacionAbierta(propuesta);
-  const sustitucion = await relacionSustitucion(supabase, propuesta);
+  const [sustitucion, autoria] = await Promise.all([
+    relacionSustitucion(supabase, propuesta),
+    autoriaPublica(supabase, propuesta),
+  ]);
 
   const [filas, postura, siguiendo, comentarios, { data: votaciones }, categorias, conteos] =
     await Promise.all([
@@ -231,6 +239,18 @@ export default async function PropuestaDetallePage({
           className="prose-rc mt-4 text-[16px] leading-relaxed text-cuerpo"
           dangerouslySetInnerHTML={{ __html: cuerpoPropuestaHtml(propuesta) }}
         />
+
+        {/* Autoría y fechas: trazabilidad a la vista. El nombre solo si el autor lo decidió (0064). */}
+        <p className="mt-6 border-t border-linea pt-4 text-[13.5px] text-gris">
+          Propuesta de <strong className="text-cuerpo">{autoria}</strong> · Publicada el{' '}
+          {fechaLarga(propuesta.created_at)}
+          {propuesta.adopted_at && (propuesta.status === 'adopted' || propuesta.status === 'planned') && (
+            <>
+              {' · '}
+              {propuesta.status === 'planned' ? 'Planeada' : 'Aprobada'} el {fechaLarga(propuesta.adopted_at)}
+            </>
+          )}
+        </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-4 rounded-tarjeta border border-linea bg-panel px-5 py-4 text-[14px] text-cuerpo">
           <span className="font-bold text-titular">💶 {euros(propuesta.estimated_cost_cents)}</span>

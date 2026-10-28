@@ -105,6 +105,22 @@ export async function fijarDeadlineAction(id: string, fd: FormData): Promise<Res
   return { ok: true };
 }
 
+/** 0064: muestra u oculta el nombre del autor en la ficha pública. */
+export async function fijarMostrarAutorAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+
+  const propuesta = await obtenerPropuestaOrThrow(supabase, id);
+  const { error } = await supabase
+    .from('proposals')
+    .update({ show_author: fd.get('show_author') === 'on' })
+    .eq('id', id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/admin/participacion/propuestas/${id}`);
+  if (propuesta.slug) revalidatePath(`/propuestas/${propuesta.slug}`);
+  return { ok: true };
+}
+
 /**
  * 0061: indica que esta propuesta sustituye a otra ya aprobada/planeada.
  * Vacío = quitar la relación. La antigua no se toca: pasa a considerarse

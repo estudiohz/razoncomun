@@ -133,6 +133,19 @@ export function FormularioPropuesta({ captcha }: { captcha: { pregunta: string; 
         <input type="hidden" name="body" value={cuerpo} />
       </div>
 
+      <div className="rounded-boton border border-linea bg-fondo px-4 py-3">
+        <label className="flex cursor-pointer items-start gap-3 text-[14px]">
+          <input type="checkbox" name="show_author" className="mt-1 h-4 w-4 shrink-0" />
+          <span>
+            <strong className="text-titular">Publicar con mi nombre</strong>
+            <span className="block text-[12.5px] text-gris">
+              Si no lo marcas, la propuesta se publica como «Propuesta de un socio». Tu opinión política es un
+              dato sensible: tú decides si lleva tu nombre.
+            </span>
+          </span>
+        </label>
+      </div>
+
       <div>
         <label htmlFor="estimated_cost_euros" className="mb-1.5 block text-[13.5px] font-semibold">
           Coste/ahorro estimado en € <span className="font-normal text-gris">(opcional, se pulirá en el test de estrés)</span>

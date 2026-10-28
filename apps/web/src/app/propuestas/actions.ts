@@ -80,6 +80,7 @@ export async function crearPropuestaAction(formData: FormData) {
     question,
     estimated_cost_cents,
     bodyEsHtml: true,
+    showAuthor: formData.get('show_author') === 'on',
   });
 
   // D-P9: auto-suscripción del autor.

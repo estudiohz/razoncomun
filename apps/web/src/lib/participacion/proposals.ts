@@ -140,6 +140,8 @@ export interface NuevaPropuestaInput {
   estimated_cost_cents?: number | null;
   /** El cuerpo ya es HTML del editor visual. Si no, es texto plano y se escapa (RC-bot, etc.). */
   bodyEsHtml?: boolean;
+  /** El autor acepta que se publique su nombre (0064). */
+  showAuthor?: boolean;
 }
 
 /** Crea una propuesta como el usuario autenticado (RLS: author_id = auth.uid()). Genera slug (D-P12). */
@@ -155,6 +157,7 @@ export async function crearPropuesta(
       title: input.title,
       body: input.bodyEsHtml ? input.body : textoPlanoAHtml(input.body),
       body_format: 'html',
+      show_author: input.showAuthor ?? false,
       department: input.department,
       question: input.question?.trim() || null,
       estimated_cost_cents: input.estimated_cost_cents ?? null,
@@ -265,4 +268,22 @@ export async function relacionSustitucion(
       : Promise.resolve({ data: null }),
   ]);
   return { sustituidaPor: nueva ?? null, sustituye: antigua ?? null };
+}
+
+/**
+ * Quién figura como autor en la ficha pública (0064). Sin consentimiento
+ * explícito (`show_author`) no se publica ningún nombre.
+ */
+export async function autoriaPublica(
+  supabase: SupabaseClient,
+  propuesta: Pick<Propuesta, 'author_id' | 'show_author'>,
+): Promise<string> {
+  if (!propuesta.author_id) return 'un socio';
+  if (propuesta.show_author) {
+    const { data } = await supabase.from('profiles').select('display_name').eq('id', propuesta.author_id).maybeSingle();
+    return data?.display_name?.trim() || 'un socio';
+  }
+  // El RC-bot firma como el partido. Si la función no es accesible, se queda en "un socio".
+  const { data: esBot } = await supabase.rpc('is_bot', { p_user: propuesta.author_id });
+  return esBot === true ? 'Razón Común' : 'un socio';
 }

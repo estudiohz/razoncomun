@@ -67,6 +67,8 @@ export interface Propuesta {
   adopted_point_id: number | null;
   /** Formato del cuerpo: 'html' (editor visual) o 'markdown' (borradores del RC-bot). */
   body_format: 'markdown' | 'html' | null;
+  /** 0064: la ficha pública muestra el nombre del autor (solo si él lo decide). */
+  show_author: boolean;
   /** 0061: primera vez que pasó a adopted/planned (lo rellena un trigger). */
   adopted_at: string | null;
   /** 0061: esta propuesta sustituye a la indicada cuando está aprobada/planeada. */
