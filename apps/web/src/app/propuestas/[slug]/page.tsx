@@ -9,6 +9,7 @@ import { Deliberacion } from '@/components/participacion/Deliberacion';
 import { VotoPropuesta } from '@/components/participacion/VotoPropuesta';
 import { ComentariosHilo } from '@/components/participacion/ComentariosHilo';
 import { SuscripcionBoton } from '@/components/participacion/SuscripcionBoton';
+import { EtiquetaSimulacion, CasillaSimulacion } from '@/components/participacion/SimulacionIA';
 import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
 import { metadatosPagina } from '@/lib/seo';
 import { site } from '@/lib/site';
@@ -188,6 +189,7 @@ export default async function PropuestaDetallePage({
           <span className="rounded-lg bg-fondo px-2.5 py-1 text-[11.5px] font-bold uppercase tracking-[.05em] text-cuerpo">
             {propuesta.department.replace(/-/g, ' ')}
           </span>
+          <EtiquetaSimulacion propuesta={propuesta} />
         </div>
 
         <h1 className="mt-4 text-[clamp(26px,4vw,38px)] font-extrabold leading-[1.15]">
@@ -239,6 +241,8 @@ export default async function PropuestaDetallePage({
           className="prose-rc mt-4 text-[16px] leading-relaxed text-cuerpo"
           dangerouslySetInnerHTML={{ __html: cuerpoPropuestaHtml(propuesta) }}
         />
+
+        <CasillaSimulacion propuesta={propuesta} />
 
         {/* Autoría y fechas: trazabilidad a la vista. El nombre solo si el autor lo decidió (0064). */}
         <p className="mt-6 border-t border-linea pt-4 text-[13.5px] text-gris">

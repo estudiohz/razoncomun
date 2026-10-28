@@ -153,6 +153,65 @@ export async function guardarInformeAction(id: string, fd: FormData): Promise<Re
   }
 }
 
+/**
+ * 0066: simulación con IA (MiroFish). Solo admin: PDF + fecha + resultado, o
+ * quitarla. Si no se sube PDF nuevo se conserva el que ya hay, de modo que se
+ * puede corregir la fecha o el resultado sin volver a subirlo.
+ */
+export async function guardarSimulacionAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  const { user, supabase, esAdmin } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
+  if (!esAdmin) return { ok: false, error: 'Solo un administrador puede gestionar la simulación.' };
+
+  try {
+    const propuesta = await obtenerPropuestaOrThrow(supabase, id);
+    let cambios: Pick<Propuesta, 'simulation_pdf_url' | 'simulation_at' | 'simulation_result'>;
+
+    if (fd.get('quitar') === '1') {
+      cambios = { simulation_pdf_url: null, simulation_at: null, simulation_result: null };
+    } else {
+      const archivo = fd.get('simulacion');
+      const fecha = String(fd.get('simulation_at') ?? '').trim();
+      const resultado = String(fd.get('simulation_result') ?? '').trim();
+
+      // Columna de 0066 consultada aquí y no en obtenerPropuestaOrThrow, para que el resto de acciones no dependan de la migración.
+      const { data: previa } = await supabase.from('proposals').select('simulation_pdf_url').eq('id', id).single();
+      let pdf: string | null = previa?.simulation_pdf_url ?? null;
+      if (archivo instanceof File && archivo.size > 0) {
+        pdf = await subirInformePdf(createAdminClient(), id, archivo, 'simulaciones');
+      }
+      if (!pdf) return { ok: false, error: 'Sube el PDF del informe de la simulación.' };
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || Number.isNaN(Date.parse(fecha))) {
+        return { ok: false, error: 'Indica la fecha en que se hizo la simulación.' };
+      }
+      if (new Date(fecha).getTime() > Date.now() + 86_400_000) {
+        return { ok: false, error: 'La fecha de la simulación no puede ser futura.' };
+      }
+      if (!resultado) return { ok: false, error: 'Resume el resultado de la simulación en 2-3 líneas.' };
+      if (resultado.length > 600) return { ok: false, error: 'El resultado es demasiado largo (máximo 600 caracteres).' };
+
+      cambios = { simulation_pdf_url: pdf, simulation_at: fecha, simulation_result: resultado };
+    }
+
+    const { error } = await supabase.from('proposals').update(cambios).eq('id', id);
+    if (error) return { ok: false, error: error.message };
+
+    await registrarAuditoria(supabase, {
+      actorId: user.id,
+      action: cambios.simulation_pdf_url ? 'proposal_simulation_set' : 'proposal_simulation_removed',
+      entity: 'proposals',
+      entityId: id,
+      meta: { simulation_at: cambios.simulation_at },
+    });
+
+    revalidatePath(`/admin/participacion/propuestas/${id}`);
+    revalidatePath('/propuestas');
+    if (propuesta.slug) revalidatePath(`/propuestas/${propuesta.slug}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido guardar la simulación.' };
+  }
+}
+
 /** 0064: muestra u oculta el nombre del autor en la ficha pública. */
 export async function fijarMostrarAutorAction(id: string, fd: FormData): Promise<ResultadoAccion> {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);

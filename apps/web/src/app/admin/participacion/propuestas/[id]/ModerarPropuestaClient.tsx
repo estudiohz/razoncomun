@@ -12,6 +12,7 @@ import {
   fijarMesAction,
   fijarMostrarAutorAction,
   guardarInformeAction,
+  guardarSimulacionAction,
   fijarSustitucionAction,
   fusionarAction,
   publicarRespuestaOficialAction,
@@ -40,8 +41,11 @@ export function ModerarPropuestaClient({
   categorias,
   aprobadas,
   cuerpoInicial,
+  esAdmin,
 }: {
   propuesta: Propuesta;
+  /** La simulación con IA solo la gestiona un admin (un coordinador no ve la sección). */
+  esAdmin: boolean;
   /** Cuerpo ya en HTML (si venía en markdown, convertido en el servidor). */
   cuerpoInicial: string;
   categorias: ProposalCategory[];
@@ -61,6 +65,7 @@ export function ModerarPropuestaClient({
   const [errorSustitucion, setErrorSustitucion] = useState<string | null>(null);
   const [errorAutor, setErrorAutor] = useState<string | null>(null);
   const [errorInforme, setErrorInforme] = useState<string | null>(null);
+  const [errorSimulacion, setErrorSimulacion] = useState<string | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
   const [motivoEliminar, setMotivoEliminar] = useState('');
@@ -129,6 +134,15 @@ export function ModerarPropuestaClient({
     iniciar(async () => {
       const r = await guardarInformeAction(propuesta.id, fd);
       if (!r.ok) setErrorInforme(r.error ?? 'Error desconocido.');
+      else router.refresh();
+    });
+  }
+
+  function onGuardarSimulacion(fd: FormData) {
+    setErrorSimulacion(null);
+    iniciar(async () => {
+      const r = await guardarSimulacionAction(propuesta.id, fd);
+      if (!r.ok) setErrorSimulacion(r.error ?? 'Error desconocido.');
       else router.refresh();
     });
   }
@@ -412,6 +426,78 @@ export function ModerarPropuestaClient({
           oculta el enlace de la ficha pública.
         </p>
       </section>
+
+      {/* Simulación con IA (0066): solo admin */}
+      {esAdmin && (
+        <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">
+          <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[.08em] text-gris">Simulación con IA</h2>
+          {propuesta.simulation_pdf_url ? (
+            <p className="mb-3 text-[13.5px] text-cuerpo">
+              Informe actual:{' '}
+              <a href={propuesta.simulation_pdf_url} target="_blank" rel="noreferrer" className="break-all font-bold text-titular underline">
+                {propuesta.simulation_pdf_url}
+              </a>
+            </p>
+          ) : (
+            <p className="mb-3 text-[13.5px] text-gris">
+              Sin simulación: la ficha pública no muestra ni la etiqueta ni la casilla.
+            </p>
+          )}
+          <form action={onGuardarSimulacion} className="grid gap-3">
+            <label className="grid gap-1 text-[13px] font-semibold text-titular">
+              {propuesta.simulation_pdf_url ? 'Sustituir el PDF (opcional, hasta 20 MB)' : 'Informe en PDF (hasta 20 MB)'}
+              <input type="file" name="simulacion" accept="application/pdf,.pdf" className="text-[13.5px] font-normal text-cuerpo" />
+            </label>
+            <label className="grid gap-1 text-[13px] font-semibold text-titular">
+              Fecha de la simulación
+              <input
+                type="date"
+                name="simulation_at"
+                required
+                defaultValue={propuesta.simulation_at ?? ''}
+                className="w-fit rounded-boton border border-linea bg-white px-3 py-2 text-[14px] font-normal text-titular"
+              />
+            </label>
+            <label className="grid gap-1 text-[13px] font-semibold text-titular">
+              Resultado en 2-3 líneas (máx. 600 caracteres)
+              <textarea
+                name="simulation_result"
+                required
+                rows={3}
+                maxLength={600}
+                defaultValue={propuesta.simulation_result ?? ''}
+                className="rounded-boton border border-linea bg-white px-3 py-2 text-[14px] font-normal text-titular"
+              />
+            </label>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="submit"
+                disabled={pendiente}
+                className="rounded-boton bg-accion px-4 py-2 text-[13.5px] font-bold text-white disabled:opacity-60"
+              >
+                Guardar simulación
+              </button>
+              {propuesta.simulation_pdf_url && (
+                <button
+                  type="submit"
+                  name="quitar"
+                  value="1"
+                  formNoValidate
+                  disabled={pendiente}
+                  className="rounded-boton border border-linea bg-white px-4 py-2 text-[13.5px] font-bold text-magenta disabled:opacity-60"
+                >
+                  Quitar simulación
+                </button>
+              )}
+            </div>
+          </form>
+          {errorSimulacion && <p className="mt-3 text-[13px] font-semibold text-magenta">{errorSimulacion}</p>}
+          <p className="mt-3 text-[12.5px] text-gris">
+            Es el informe de MiroFish. Revísalo antes de subirlo: una vez público queda cacheado e indexado. Si la
+            propuesta se edita después de la fecha indicada, la ficha avisa de que se simuló una versión anterior.
+          </p>
+        </section>
+      )}
 
       {/* Autoría visible (0064) */}
       <section className="rounded-tarjeta border border-linea bg-white p-5 min-[960px]:col-span-2">

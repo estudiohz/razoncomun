@@ -6,6 +6,7 @@ import { Chip } from '@/components/ui/Chip';
 import { TiraDeslizable, ItemTira } from '@/components/ui/TiraDeslizable';
 import { BarraOrdenarBuscar } from '@/components/participacion/BarraOrdenarBuscar';
 import { EstadoBadge } from '@/components/participacion/EstadoBadge';
+import { EtiquetaSimulacion } from '@/components/participacion/SimulacionIA';
 import { AyudaEstados } from '@/components/participacion/AyudaEstados';
 import { SidebarCategorias } from '@/components/participacion/SidebarCategorias';
 import { metadatosPagina } from '@/lib/seo';
@@ -36,9 +37,10 @@ function euros(cents: number | null): string {
 export default async function PropuestasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; categoryId?: string; tab?: string; q?: string }>;
+  searchParams: Promise<{ status?: string; categoryId?: string; tab?: string; q?: string; sim?: string }>;
 }) {
-  const { status, categoryId, tab, q } = await searchParams;
+  const { status, categoryId, tab, q, sim } = await searchParams;
+  const soloSimuladas = sim === '1';
   // Trending solo recoge hilos con votación abierta: con un filtro de estado ya
   // cerrado (Aprobado/Rechazado) dejaba la lista siempre vacía. Ahí se ordena por apoyos.
   const estadoCerrado = status === 'adopted' || status === 'discarded';
@@ -55,12 +57,13 @@ export default async function PropuestasPage({
     contarPropuestasPorCategoria(supabase),
   ]);
 
+  const visibles = soloSimuladas ? propuestas.filter((p) => p.simulation_pdf_url) : propuestas;
   const ordenadas: Propuesta[] =
     pestana === 'trending'
-      ? ordenarTrending(propuestas)
+      ? ordenarTrending(visibles)
       : pestana === 'nuevos'
-        ? [...propuestas].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        : [...propuestas].sort((a, b) => b.support_count - a.support_count);
+        ? [...visibles].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        : [...visibles].sort((a, b) => b.support_count - a.support_count);
 
   function hrefFiltro(next: { status?: string; categoryId?: string; tab?: string }) {
     const params = new URLSearchParams();
@@ -71,6 +74,7 @@ export default async function PropuestasPage({
     if (c) params.set('categoryId', c);
     if (t && t !== 'trending') params.set('tab', t);
     if (q?.trim()) params.set('q', q.trim());
+    if (soloSimuladas) params.set('sim', '1');
     const qs = params.toString();
     return qs ? `/propuestas?${qs}` : '/propuestas';
   }
@@ -138,7 +142,7 @@ export default async function PropuestasPage({
         </aside>
 
         <div className="grid gap-5">
-          <BarraOrdenarBuscar tab={pestana} q={q ?? ''} status={status ?? ''} categoryId={categoryId ?? ''} />
+          <BarraOrdenarBuscar tab={pestana} q={q ?? ''} status={status ?? ''} categoryId={categoryId ?? ''} sim={soloSimuladas} />
           {pestana === 'trending' && (
             <p className="text-center text-[12.5px] text-gris">
               Trending solo muestra hilos con votación abierta.
@@ -164,6 +168,7 @@ export default async function PropuestasPage({
                     <span className="rounded-lg bg-fondo px-2.5 py-1 text-[11.5px] font-bold uppercase tracking-[.05em] text-cuerpo">
                       {p.department.replace(/-/g, ' ')}
                     </span>
+                    <EtiquetaSimulacion propuesta={p} />
                   </div>
                   <h2 className="mt-3 text-[19px] font-extrabold text-titular">{p.title}</h2>
                   <p className="mt-1.5 line-clamp-2 text-[14.5px] text-cuerpo">{cuerpoPropuestaTexto(p)}</p>

@@ -27,7 +27,7 @@ export default async function ModerarPropuestaPage({
 }) {
   const { id } = await params;
   const { fusionada } = await searchParams;
-  const { supabase } = await requireAdminOrEditor(`/admin/participacion/propuestas/${id}`);
+  const { supabase, esAdmin } = await requireAdminOrEditor(`/admin/participacion/propuestas/${id}`);
 
   const { data, error } = await supabase.from('proposals').select('*').eq('id', id).single();
   if (error || !data) notFound();
@@ -104,6 +104,7 @@ export default async function ModerarPropuestaPage({
         <ModerarPropuestaClient
           propuesta={propuesta}
           cuerpoInicial={cuerpoInicial}
+          esAdmin={esAdmin}
           categorias={categorias}
           aprobadas={(aprobadas ?? []) as { id: string; title: string }[]}
         />

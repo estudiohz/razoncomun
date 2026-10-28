@@ -18,6 +18,7 @@ export async function subirInformePdf(
   admin: SupabaseClient,
   propuestaId: string,
   archivo: File,
+  carpeta: 'informes' | 'simulaciones' = 'informes',
 ): Promise<string> {
   if (archivo.type !== 'application/pdf' && !archivo.name.toLowerCase().endsWith('.pdf')) {
     throw new Error('El informe debe ser un PDF.');
@@ -25,7 +26,7 @@ export async function subirInformePdf(
   if (archivo.size > MAX_INFORME_BYTES) throw new Error('El PDF supera los 20 MB.');
 
   const base = slugificar(archivo.name.replace(/\.[^.]+$/, '')) || 'informe';
-  const ruta = `informes/${propuestaId}-${Date.now()}-${base}.pdf`;
+  const ruta = `${carpeta}/${propuestaId}-${Date.now()}-${base}.pdf`;
   const { error } = await admin.storage
     .from(BUCKET_PORTADAS)
     .upload(ruta, archivo, { cacheControl: '31536000', upsert: false, contentType: 'application/pdf' });
