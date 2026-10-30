@@ -16,7 +16,7 @@ function descripcion(articulo: ArticuloConRelaciones): string {
 }
 
 function imagen(articulo: ArticuloConRelaciones): string {
-  if (!articulo.cover_image) return `${site.urlBase}/personas-poster-teal.jpg`;
+  if (!articulo.cover_image) return `${site.urlBase}/og-logo.jpg`;
   return articulo.cover_image.startsWith('http')
     ? articulo.cover_image
     : `${site.urlBase}${articulo.cover_image}`;

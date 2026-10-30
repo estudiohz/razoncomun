@@ -3,13 +3,13 @@ import { site } from './site';
 
 /**
  * Genera metadatos por ruta con Open Graph coherente.
- * La imagen OG por defecto es el poster de personas del hero.
+ * La imagen OG por defecto es el logotipo con siglas RC.
  */
 export function metadatosPagina({
   titulo,
   descripcion,
   ruta,
-  imagen = '/personas-poster-teal.jpg',
+  imagen = '/og-logo.jpg',
   noindex = false,
 }: {
   titulo: string;
@@ -36,7 +36,7 @@ export function metadatosPagina({
       url,
       title: tituloCompleto,
       description: descripcion,
-      images: [{ url: imagen, width: 1200, height: 630, alt: site.nombre }],
+      images: [{ url: imagen, width: 1142, height: 1238, alt: site.nombre }],
     },
     twitter: {
       card: 'summary_large_image',
