@@ -23,6 +23,10 @@ function euros(cents: number): string {
   return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
 }
 
+function eurosExactos(cents: number): string {
+  return (cents / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+}
+
 function Cifra({ etiqueta, valor, tono }: { etiqueta: string; valor: string; tono?: 'in' | 'out' }) {
   return (
     <div className="rounded-tarjeta border border-linea bg-panel p-5 shadow-nav">
@@ -83,7 +87,7 @@ export default async function TesoreriaPage({
   const sp = await searchParams;
   const pagina = Math.max(1, Number(sp.pagina ?? '1') || 1);
 
-  const [{ filas, total }, categorias, r] = await Promise.all([
+  const [{ filas, total }, categorias, r, { data: stripeMeses }] = await Promise.all([
     listarMovimientos(supabase, {
       q: sp.q,
       direccion: sp.direccion === 'in' || sp.direccion === 'out' ? sp.direccion : undefined,
@@ -94,7 +98,27 @@ export default async function TesoreriaPage({
     }),
     categoriasUsadas(supabase),
     resumen(supabase),
+    // Lo mismo que enseña /cuentas: cobros reales de Stripe por mes (0060).
+    supabase
+      .from('finance_stripe_monthly')
+      .select('month, gross_cents, fee_cents, refund_cents, charges_count, members_active, synced_at')
+      .order('month', { ascending: false })
+      .limit(13),
   ]);
+
+  const stripe = stripeMeses ?? [];
+  const netoDe = (m: { gross_cents: number; fee_cents: number; refund_cents: number }) =>
+    m.gross_cents - m.fee_cents - m.refund_cents;
+  const ahora = new Date();
+  const mesActualClave = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}`;
+  const stripeMes = stripe.find((m) => String(m.month).startsWith(mesActualClave));
+  const stripeAnyo = stripe.filter((m) => String(m.month).startsWith(String(ahora.getFullYear())));
+  const stripeAnyoNeto = stripeAnyo.reduce((a, m) => a + netoDe(m), 0);
+  const stripeCobrosAnyo = stripeAnyo.reduce((a, m) => a + m.charges_count, 0);
+  const ultimaSyncStripe = stripe.reduce<string | null>(
+    (max, m) => (!max || m.synced_at > max ? m.synced_at : max),
+    null,
+  );
 
   const paginas = Math.max(1, Math.ceil(total / POR_PAGINA));
   const qs = (p: number) => {
@@ -135,6 +159,43 @@ export default async function TesoreriaPage({
             Ver cuentas públicas
           </Link>
         </div>
+      </div>
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-[16px] font-bold text-titular">Cobrado por Stripe (dato real)</h2>
+          <p className="mt-1 max-w-2xl text-[12.5px] text-gris">
+            Cuotas de socios y ventas de la tienda, tal y como las registra Stripe. Es la misma cifra
+            que ve el público en la página de cuentas.
+            {ultimaSyncStripe && (
+              <>
+                {' '}
+                Sincronizado el{' '}
+                {new Date(ultimaSyncStripe).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' })}.
+              </>
+            )}
+          </p>
+        </div>
+        {stripe.length === 0 ? (
+          <p className="rounded-boton bg-fondo px-3 py-2 text-[12.5px] text-cuerpo">
+            Todavía no hay datos de Stripe sincronizados.
+          </p>
+        ) : (
+          <div className="grid gap-3 min-[520px]:grid-cols-2 min-[960px]:grid-cols-4">
+            <Cifra etiqueta="Cobrado este mes" valor={eurosExactos(stripeMes?.gross_cents ?? 0)} />
+            <Cifra etiqueta="Neto este mes" valor={eurosExactos(stripeMes ? netoDe(stripeMes) : 0)} />
+            <Cifra etiqueta="Neto del año" valor={eurosExactos(stripeAnyoNeto)} />
+            <Cifra etiqueta="Cobros del año" valor={String(stripeCobrosAnyo)} />
+          </div>
+        )}
+      </section>
+
+      <div>
+        <h2 className="text-[16px] font-bold text-titular">Libro bancario (extracto importado)</h2>
+        <p className="mt-1 max-w-2xl text-[12.5px] text-gris">
+          Solo lo que se ha importado o anotado a mano del banco. No incluye lo cobrado por Stripe
+          hasta que llegue al extracto.
+        </p>
       </div>
 
       <div className="grid gap-3 min-[520px]:grid-cols-2 min-[960px]:grid-cols-4">
