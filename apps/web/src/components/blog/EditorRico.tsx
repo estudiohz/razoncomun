@@ -85,7 +85,7 @@ export function EditorRico({
     ],
     content: inicial,
     editorProps: {
-      attributes: { class: 'prose-rc px-5 py-4 focus:outline-none [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-morado [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-slate-900 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-[13px] [&_pre]:text-slate-100 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-100', style: `min-height:${minAltura}px` },
+      attributes: { class: 'prose-rc px-5 py-4 focus:outline-none [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:my-1 [&_li_p]:m-0 [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-morado [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-slate-900 [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-[13px] [&_pre]:text-slate-100 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-100', style: `min-height:${minAltura}px` },
       // Markdown pegado como texto (de un chat de IA, de un .md…) → se convierte
       // en títulos, listas, tablas e imágenes en vez de quedar con `##` y `**`
       // literales. El markdown pasa por `renderizarMarkdown`, que escapa todo el

@@ -143,7 +143,7 @@ export default async function PropuestaDetallePage({
     headline: propuesta.title,
     text: cuerpoPropuestaTexto(propuesta),
     url: `${site.urlBase}/propuestas/${propuesta.slug ?? propuesta.id}`,
-    datePublished: propuesta.created_at,
+    datePublished: propuesta.published_at ?? propuesta.created_at,
     dateModified: propuesta.updated_at,
     interactionStatistic: {
       '@type': 'InteractionCounter',
@@ -251,7 +251,7 @@ export default async function PropuestaDetallePage({
         {/* Autoría y fechas: trazabilidad a la vista. El nombre solo si el autor lo decidió (0064). */}
         <p className="mt-6 border-t border-linea pt-4 text-[13.5px] text-gris">
           Propuesta de <strong className="text-cuerpo">{autoria}</strong> · Publicada el{' '}
-          {fechaLarga(propuesta.created_at)}
+          {fechaLarga(propuesta.published_at ?? propuesta.created_at)}
           {propuesta.adopted_at && (propuesta.status === 'adopted' || propuesta.status === 'planned') && (
             <>
               {' · '}

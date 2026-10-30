@@ -77,6 +77,8 @@ export interface Propuesta {
   adopted_at: string | null;
   /** 0061: esta propuesta sustituye a la indicada cuando está aprobada/planeada. */
   supersedes_id: string | null;
+  /** 0067: primera vez que salió de borrador. Es la fecha que se muestra como "Publicada el". */
+  published_at: string | null;
   created_at: string;
   updated_at: string;
 }
