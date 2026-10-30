@@ -422,3 +422,76 @@ export async function cambiarNivelManual(formData: FormData) {
 
   revalidatePath(`/admin/usuarios/${targetUserId}`);
 }
+
+export interface ResultadoRecuperacion {
+  ok: boolean;
+  error?: string;
+  emailEnviado?: boolean;
+  /** Solo si el correo no salió: enlace para pasárselo a la persona por otro canal. */
+  enlace?: string;
+  email?: string;
+}
+
+/**
+ * Reenvía a una cuenta el correo para elegir contraseña. Solo admin.
+ *
+ * Sirve cuando alguien dice "no me llega la recuperación": genera el enlace con
+ * el admin API y lo manda por el SMTP propio de la app (lib/email/enviar), el
+ * mismo camino que la invitación — no depende del SMTP de GoTrue, que es otro
+ * canal y puede fallar por separado. Si el correo no sale, se devuelve el
+ * enlace para que el admin lo comparta a mano; si sale, el enlace NO se muestra
+ * (quien lo ve podría restablecer la contraseña de esa cuenta). Queda en audit_log.
+ */
+export async function reenviarRecuperacion(targetUserId: string): Promise<ResultadoRecuperacion> {
+  const { user, supabase } = await requireAdmin(`/admin/usuarios/${targetUserId}`);
+
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '');
+  if (!siteUrl) {
+    return { ok: false, error: 'Falta NEXT_PUBLIC_SITE_URL en el entorno del servidor.' };
+  }
+
+  const admin = createAdminClient();
+  const { data: cuenta, error: errCuenta } = await admin.auth.admin.getUserById(targetUserId);
+  const email = cuenta?.user?.email;
+  if (errCuenta || !email) return { ok: false, error: 'No se encontró el email de esa cuenta.' };
+
+  const { data: link, error: errLink } = await admin.auth.admin.generateLink({
+    type: 'recovery',
+    email,
+    options: { redirectTo: `${siteUrl}/auth/confirm` },
+  });
+  if (errLink || !link?.properties?.hashed_token) {
+    return { ok: false, error: `No se pudo generar el enlace: ${errLink?.message ?? 'respuesta inesperada'}` };
+  }
+
+  const enlace = `${siteUrl}/auth/confirm?token_hash=${encodeURIComponent(
+    link.properties.hashed_token,
+  )}&type=recovery&next=${encodeURIComponent('/panel/perfil')}`;
+
+  const envio = await enviarCorreo({
+    para: email,
+    asunto: 'Elige tu contraseña de Razón Común',
+    texto:
+      `Hola:\n\nPulsa este enlace para elegir una contraseña nueva en Razón Común:\n\n${enlace}\n\n` +
+      `Si no lo has pedido, puedes ignorar este correo.`,
+    html:
+      `<div style="font-family:Arial,sans-serif;font-size:15px;color:#222;line-height:1.5">` +
+      `<p>Hola:</p>` +
+      `<p>Pulsa el botón para elegir una contraseña nueva en <strong>Razón Común</strong>.</p>` +
+      `<p><a href="${enlace}" style="display:inline-block;background:#16B8A0;color:#fff;` +
+      `text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:10px">Elegir contraseña</a></p>` +
+      `<p style="font-size:12px;color:#777">Si el botón no funciona, copia y pega esta dirección:<br>${enlace}</p>` +
+      `<p style="font-size:12px;color:#777">Si no lo has pedido, puedes ignorar este correo.</p>` +
+      `</div>`,
+  });
+
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'recovery_email_resent',
+    entity: 'profiles',
+    entityId: targetUserId,
+    meta: { email_enviado: envio.enviado, motivo: envio.motivo ?? null },
+  });
+
+  return { ok: true, emailEnviado: envio.enviado, email, enlace: envio.enviado ? undefined : enlace };
+}

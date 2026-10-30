@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { asignarRolApp, revocarRolApp, cambiarNivelManual } from '../actions';
 import { SuscripcionStripe } from './SuscripcionStripe';
+import { ReenviarRecuperacionBoton } from '../ReenviarRecuperacionBoton';
 import { formatearNumeroAfiliado } from '@/lib/afiliacion/numero';
 
 const NOMBRE_NIVEL: Record<string, string> = {
@@ -24,6 +25,10 @@ const NOMBRE_CARGO: Record<string, string> = {
 export default async function FichaUsuarioPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
+  const {
+    data: { user: usuarioActual },
+  } = await supabase.auth.getUser();
+  const { data: esAdmin } = await supabase.rpc('is_admin', { p_user: usuarioActual?.id });
 
   const [{ data: perfil }, { data: miembros }, { data: cargos }, { data: rolesAsignados }, { data: catalogoRoles }, { data: territorio }] =
     await Promise.all([
@@ -68,8 +73,13 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
       <div className="grid gap-4 lg:grid-cols-3">
         {/* EJE 1: Nivel de cuenta */}
         <Tarjeta className="p-5">
-          <h2 className="text-[13px] font-bold uppercase tracking-wide text-titular">Nivel de cuenta</h2>
-          <p className="mt-2 text-[20px] font-extrabold">{NOMBRE_NIVEL[perfil.level] ?? perfil.level}</p>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-[13px] font-bold uppercase tracking-wide text-titular">Nivel de cuenta</h2>
+              <p className="mt-2 text-[20px] font-extrabold">{NOMBRE_NIVEL[perfil.level] ?? perfil.level}</p>
+            </div>
+            {Boolean(esAdmin) && <ReenviarRecuperacionBoton userId={id} />}
+          </div>
           <p className="mt-1 text-[12.5px] text-gris">Provincia de origen: {provinciaNombre}</p>
           {perfil.member_since && (
             <p className="text-[12.5px] text-gris">
