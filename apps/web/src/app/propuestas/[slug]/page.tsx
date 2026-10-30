@@ -243,7 +243,7 @@ export default async function PropuestaDetallePage({
             editor, que son los "intros" del autor, no ocupaban nada. */}
         <CuerpoArticulo
           html={cuerpoPropuestaHtml(propuesta)}
-          className="mt-4 leading-relaxed [&_h4]:mb-3 [&_h4]:mt-6 [&_h4]:text-[17px] [&_h4]:font-bold [&_h4]:text-tinta [&_li_p]:mb-0 [&_td_p]:mb-0 [&_th_p]:mb-0 [&_table]:my-4 [&_p:empty]:mb-0 [&_p:empty]:h-[22px] [&_strong]:font-bold"
+          className="mt-4 leading-relaxed [&_h4]:mb-3 [&_h4]:mt-6 [&_h4]:text-[17px] [&_h4]:font-bold [&_h4]:text-tinta [&_li_p]:mb-0 [&_td_p]:mb-0 [&_th_p]:mb-0 [&_table]:my-4 [&_li:has(>p:empty:only-child)]:hidden [&_p:empty]:mb-0 [&_p:empty]:h-[22px] [&_strong]:font-bold"
         />
 
         <CasillaSimulacion propuesta={propuesta} />
