@@ -56,6 +56,7 @@ function Enlaces({ grupos, onNavegar }: { grupos: GrupoNavPanel[]; onNavegar?: (
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 onClick={onNavegar}
                 aria-current={activo ? 'page' : undefined}
                 className={cn(

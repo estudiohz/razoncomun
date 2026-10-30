@@ -145,6 +145,7 @@ export default async function AdminParticipacionPage({
               <Link
                 key={p.id}
                 href={`/admin/participacion/propuestas/${p.id}`}
+                          prefetch={false}
                 className="block rounded-tarjeta border border-linea bg-white p-4 no-underline"
               >
                 <div className="flex items-center justify-between gap-2">
@@ -197,6 +198,7 @@ export default async function AdminParticipacionPage({
                       <td className="max-w-[320px] truncate px-4 py-3 font-semibold text-titular">
                         <Link
                           href={`/admin/participacion/propuestas/${p.id}`}
+                          prefetch={false}
                           className="hover:underline"
                         >
                           {p.title}
@@ -230,6 +232,7 @@ export default async function AdminParticipacionPage({
                       <td className="px-4 py-3 text-right">
                         <Link
                           href={`/admin/participacion/propuestas/${p.id}`}
+                          prefetch={false}
                           className="rounded-boton border border-linea bg-white px-3 py-1.5 text-[12.5px] font-bold text-titular no-underline hover:border-titular"
                         >
                           Moderar →

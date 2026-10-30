@@ -68,17 +68,19 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 la salida a la cuenta personal. */}
             <Link
               href="/panel"
+              prefetch={false}
               className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular"
             >
               Mi panel
             </Link>
             <Link
               href="/panel/perfil"
+              prefetch={false}
               className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular"
             >
               Mi perfil
             </Link>
-            <Link href="/?web=1" className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular">
+            <Link href="/?web=1" prefetch={false} className="text-[13px] font-semibold text-cuerpo no-underline hover:text-titular">
               Ver la web
             </Link>
             <form action={cerrarSesion}>
