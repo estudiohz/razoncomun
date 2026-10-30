@@ -18,8 +18,9 @@ discurso de transparencia y control del gasto.
 
 Al cerrar la fase, un visitante de `razoncomun.com/auditoria` debe poder:
 
-1. Ver un **contador** de gasto cuestionado verificado (importe acumulado y
-   número de casos), con enlace a la **metodología**.
+1. Ver un **contador** "Gasto público señalado" (importe acumulado y número
+   de casos, verificado contra fuentes oficiales), con enlace a la
+   **metodología**.
 2. Recorrer la **lista de fichas**, filtrar por organismo, año, categoría y
    nivel de verificación.
 3. Abrir una **ficha** y ver: el reel original incrustado, los **hechos
@@ -40,7 +41,7 @@ Y el equipo debe poder:
 
 | Bloque | Incluido |
 |---|---|
-| Fuentes de entrada | `@elrastrodeldinero` por API oficial de Meta; alta manual por URL o formulario. Diseño preparado para más cuentas y para denuncias de afiliados (no se implementan). |
+| Fuentes de entrada | Cuentas vigiladas configurables desde admin (`watchdog_accounts`; la primera es `@elrastrodeldinero`) por API oficial de Meta; **envío de vídeo o enlace por Telegram** (bot del equipo); alta manual por URL o formulario. Denuncias de afiliados: no en esta fase. |
 | Análisis IA | Transcripción del audio, lectura de fotogramas (texto en pantalla), extracción a JSON estructurado con nivel de confianza por campo, resumen propio. |
 | Contraste | Índice propio de PLACSP (alojados + menores + agregados autonómicos), BOE sección V-A, BDNS en vivo, BORME para identificar la empresa. Coincidencia por expediente, NIF, órgano, importe y fecha. |
 | Revisión | Cola en admin, rol `auditor`, estados, trazabilidad en `audit_log`, derecho de réplica previo (campo + plazo). |
@@ -87,9 +88,11 @@ Y el equipo debe poder:
 
 ## Supuestos
 
-- Razón Común dispone (o puede disponer en días) de una cuenta profesional de
-  Instagram vinculada a una página de Facebook. Si no, la detección arranca con
-  alta manual por URL (fase 3 antes que fase 4).
+- Razón Común **tiene cuenta de Instagram**; queda por confirmar que es
+  profesional y está vinculada a una página de Facebook (requisito de la
+  Graph API). Mientras tanto, la entrada por Telegram y la alta manual cubren
+  todo el flujo.
+- Se pedirá permiso y colaboración a `@elrastrodeldinero` (D-A03).
 - El proveedor de IA activo en el panel admin tendrá capacidad de visión
   (Anthropic, OpenAI y Google la tienen).
 - Hay presupuesto para ~15 €/mes de APIs.

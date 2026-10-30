@@ -68,9 +68,23 @@
 | Acuerdo con el creador | 0 € | **La mejor vía:** el creador autoriza la app de Razón Común sobre su cuenta (webhooks + `media_url` siempre disponible) o envía el vídeo a un buzón. Ver decisión D-A03. |
 
 **Decisión técnica:** detección por Business Discovery. Para el **vídeo**:
-(1) `media_url` si viene; (2) si no, vídeo aportado por el creador (acuerdo);
-(3) si no, subida manual del archivo por el auditor desde admin. La descarga
-automatizada por terceros queda **fuera** del producto (ver 03, §3).
+(1) `media_url` si viene; (2) si no, **vídeo enviado por Telegram** (por el
+creador con acuerdo, o por un auditor que lo reenvía desde la app de
+Instagram → "Compartir" → Telegram); (3) subida manual desde admin. La
+descarga automatizada por terceros queda **fuera** del producto (ver 03, §3).
+
+### 1.4 Telegram Bot API (vía de entrada de vídeos)
+
+- Un bot recibe mensajes con **vídeo adjunto** (`message.video`, hasta 20 MB
+  por `getFile`; los reels de 1 min pesan 3–10 MB) o con **enlace** de
+  Instagram en el texto. Con `getUpdates` (long polling) no hace falta webhook
+  ni dominio: encaja en el worker sin dependencias.
+- El reenvío directo del reel desde Instagram a Telegram llega como vídeo
+  adjunto con el texto del enlace: se obtienen vídeo y permalink a la vez.
+- Restringir el bot a un **grupo privado de auditores** (`chat_id` en lista
+  blanca) y, si hay acuerdo, al chat del creador. Cualquier otro origen se
+  ignora y se registra.
+- Doc: <https://core.telegram.org/bots/api#getupdates>, `#getfile`.
 
 ## 2. Obtención del contenido: transcripción y fotogramas
 

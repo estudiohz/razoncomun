@@ -5,9 +5,10 @@
 ```
                  ┌──────────────────────────────────────────────────────────┐
                  │  VIGÍA WORKER  (lib/vigia/worker, Node 20, cero deps)     │
-  Meta Graph API │  ① cada 15 min: Business Discovery → ¿reel nuevo?        │
-  ──────────────▶│  ② guarda watchdog_sources (caption, permalink, fecha)    │
-                 │  ③ vídeo: media_url | buzón del creador | manual          │
+  Meta Graph API │  ① cada 15 min: Business Discovery por cada cuenta activa │
+  ──────────────▶│     de watchdog_accounts → ¿reel nuevo?                   │
+  Telegram Bot   │  ② guarda watchdog_sources (caption, permalink, fecha)    │
+  ──────────────▶│  ③ vídeo: media_url | Telegram (creador/auditor) | manual │
                  │  ④ ffmpeg → audio + fotogramas → bucket privado `vigia`   │
                  │  ⑤ transcripción (API) → watchdog_sources.transcript      │
                  └───────────────┬──────────────────────────────────────────┘
@@ -85,13 +86,39 @@ neutralidad. Solo falta que los adaptadores acepten imágenes (hoy mandan
 Se **extiende** la 0015 (no se reemplaza). Nombres en inglés como el resto del
 esquema; comentarios en castellano.
 
+### 3.0 `watchdog_accounts` (nuevo) — cuentas vigiladas (D-A16)
+
+```sql
+create table public.watchdog_accounts (
+  id              uuid primary key default extensions.gen_random_uuid(),
+  platform        text not null default 'instagram' check (platform in ('instagram','tiktok','youtube','x','otro')),
+  handle          text not null,                -- 'elrastrodeldinero'
+  display_name    text,
+  active          boolean not null default false,  -- solo se vigila si está activa
+  poll_minutes    int not null default 15,
+  agreement       text not null default 'none' check (agreement in ('none','requested','granted','declined')),
+  agreement_notes text,
+  telegram_chat_id text,                        -- chat del creador si envía vídeos por Telegram
+  last_seen_external_id text,                   -- cursor de detección
+  last_polled_at  timestamptz,
+  created_by      uuid references public.profiles(id),
+  created_at      timestamptz not null default now(),
+  unique (platform, handle)
+);
+```
+RLS: lectura equipo (`is_auditor()`), escritura admin, `service_role` solo
+actualiza cursor y `last_polled_at`. Seed: la fila de `@elrastrodeldinero`
+con `active=false` hasta que haya acuerdo o decisión expresa.
+
 ### 3.1 `watchdog_sources` (nuevo) — el origen
 
 ```sql
 create table public.watchdog_sources (
   id              uuid primary key default extensions.gen_random_uuid(),
-  kind            text not null check (kind in ('instagram_reel','manual_url','manual_form','creator_upload')),
-  account         text,                         -- 'elrastrodeldinero'
+  kind            text not null check (kind in ('instagram_reel','telegram','manual_url','manual_form','creator_upload')),
+  account_id      uuid references public.watchdog_accounts(id),
+  account         text,                         -- handle en el momento de la detección
+  telegram_from   text,                         -- chat_id/usuario que lo envió (solo lista blanca)
   external_id     text,                         -- id de media en Graph API
   permalink       text,                         -- URL pública del reel
   caption         text,
@@ -234,6 +261,7 @@ $$;
 
 | Tabla | anon/auth (público) | `auditor`/`moderator`/`admin` | `service_role` |
 |---|---|---|---|
+| `watchdog_accounts` | — | select; admin: all | update cursor |
 | `watchdog_sources` | — | select | all |
 | `watchdog_alerts` | select si `published` y `published_at <= now()` | select all; update (transiciones); insert manual | insert/update hasta `analyzed` |
 | `watchdog_evidence` | select si su alerta es pública y `selected` | all | insert |
@@ -298,6 +326,26 @@ Bearer `VIGIA_INTERNAL_TOKEN`. `/run` lanza un ciclo de detección ahora;
 (botón "Analizar URL" en admin; si no hay vídeo disponible, el auditor sube el
 archivo al bucket privado desde el formulario y el worker lo toma de ahí).
 
+### 4.6 Telegram → Worker
+
+Dos modos, no excluyentes (D-A15, D-A17):
+
+1. **Bot existente (n8n o servicio propio) reenvía:** `POST /ingest/telegram`
+   con Bearer `VIGIA_INTERNAL_TOKEN` y body `{chat_id, from, text, video?:
+   {file_id | url}, message_id, date}`. El worker descarga el archivo por
+   `getFile` (necesita el token del bot existente en env) o por la URL dada.
+2. **Bot propio en el worker:** `telegram.mjs` hace `getUpdates` con offset
+   persistido, filtra por `VIGIA_TELEGRAM_ALLOWED_CHATS`, extrae enlaces de
+   Instagram del texto y vídeos adjuntos, y crea `watchdog_sources(kind=
+   'telegram')`. Responde en el chat con "Recibido, caso #… en la cola" y el
+   enlace a admin. Si el mensaje trae solo enlace y la cuenta está en
+   `watchdog_accounts`, intenta `media_url` por Graph API antes de pedir el
+   vídeo.
+
+En ambos modos: mensajes de chats fuera de la lista blanca se ignoran y se
+cuentan en métricas; el texto del mensaje es **dato** (guardrail) y nunca
+dispara acciones distintas de "crear fuente".
+
 ### 4.5 Transiciones de estado (server actions en admin)
 
 | Acción | De → a | Requisitos | Registro |
@@ -319,6 +367,7 @@ archivo al bucket privado desde el formulario y el worker lo toma de ahí).
 | `VIGIA_INTERNAL_TOKEN` | Dokploy (worker + web) | admin → worker |
 | `VIGIA_NOTIFY_SECRET` | Dokploy (worker + web) | worker → web |
 | `DISCORD_VIGIA_WEBHOOK_URL` | Dokploy (web) | avisos |
+| `VIGIA_TELEGRAM_BOT_TOKEN`, `VIGIA_TELEGRAM_ALLOWED_CHATS` | Dokploy (worker) | entrada por Telegram (modo bot propio o `getFile` del bot existente) |
 | `SUPABASE_SERVICE_ROLE_KEY` | ya existe | worker, fuentes |
 
 - Buckets: `vigia` (privado, vídeo/audio/fotogramas, política de borrado a 7
@@ -335,8 +384,8 @@ archivo al bucket privado desde el formulario y el worker lo toma de ahí).
 
 ## 6. Rendimiento y operación
 
-- Sondeo cada 15 min (configurable `VIGIA_POLL_MINUTES`); 1 llamada a Graph
-  por ciclo.
+- Sondeo por cuenta activa según `watchdog_accounts.poll_minutes`; 1 llamada
+  a Graph por cuenta y ciclo. Telegram: `getUpdates` con timeout largo (25 s).
 - Índice PLACSP: primera carga histórica (ZIP de 3 años) en job aparte,
   reanudable; después, 1 pasada diaria por los 3 feeds hasta encontrar
   entradas ya vistas (`entry_id` + `updated_in_feed`).

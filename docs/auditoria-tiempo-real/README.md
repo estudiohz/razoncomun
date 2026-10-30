@@ -12,8 +12,9 @@ agentes que la construyan necesitan el brief junto al código que van a tocar.
 
 ## Qué es
 
-Un módulo que **detecta** los reels nuevos de la cuenta de Instagram
-`@elrastrodeldinero` (denuncia gastos sospechosos del Gobierno), los
+Un módulo que **detecta** los reels nuevos de cuentas vigiladas de Instagram
+(la primera, `@elrastrodeldinero`, que denuncia gastos sospechosos del
+Gobierno; más cuentas después) o los **recibe por Telegram**, los
 **analiza** con IA (transcripción + lectura de los fotogramas), **contrasta**
 los datos (organismo, adjudicatario, NIF, importe, expediente) contra las
 fuentes oficiales (PLACSP, BOE, BDNS, BORME), los pasa por una **revisión
@@ -40,7 +41,8 @@ humana obligatoria** y, solo entonces, los **publica** en una sección pública
 2. **Cada ficha pública enlaza a la fuente oficial** con identificador de
    expediente y copia sellada del documento. Sin prueba oficial no hay ficha.
 3. **Hechos y valoración van separados** en la ficha y en el lenguaje. El
-   contador suma "gasto cuestionado y verificado", no "dinero derrochado".
+   contador se llama "Gasto público señalado" (verificado contra fuentes
+   oficiales), no "dinero derrochado".
 4. **Nada de scraping ni de resubir vídeos.** Detección por API oficial de Meta,
    incrustación con oEmbed, resumen propio con citas breves.
 5. **Cero secretos en el repo** (regla C5, repo público). Tokens de Meta, claves

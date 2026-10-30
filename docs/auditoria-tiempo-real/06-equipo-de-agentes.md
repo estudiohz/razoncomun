@@ -64,6 +64,8 @@ rol `auditor` y `is_auditor()`.
 > manteniendo compatibilidad con las filas existentes (no las hay en prod, pero
 > no asumas); (3) crear `is_auditor()` siguiendo `is_editor()` de 0003 y
 > añadir `('auditor','Auditor de gasto público')` a `seeds/0004_app_roles.sql`;
+> crear `watchdog_accounts` (doc 04 §3.0) con seed de `@elrastrodeldinero`
+> `active=false, agreement='requested'` y `kind='telegram'` en `watchdog_sources`;
 > (4) reemplazar las políticas de 0015 sobre `watchdog_alerts` por las de la
 > tabla RLS del doc 04 §3.6; (5) triggers que impidan `verified/published` sin
 > `verified_by`, y `published` sin evidencia oficial con `snapshot_sha256` y
@@ -144,10 +146,12 @@ alta manual, análisis por URL, bandeja de rectificaciones, ajustes.
 
 **Brief (Fase 3/4):** añade "Analizar URL" (llama a `POST /run`/`/process-url`
 del worker con `VIGIA_INTERNAL_TOKEN`, permite subir vídeo al bucket privado),
-vista de extracción con confidences y fotogramas, `POST /api/vigia/notify`
+vista de extracción con confidences y fotogramas, origen visible (Instagram /
+Telegram / manual) con quién lo envió, `POST /api/vigia/notify`
 (copia el patrón de `api/cuentas/sync/route.ts`; Discord webhook + `enviarPush`
 a usuarios con rol auditor; pide a rc-01 la whitelist del middleware), página
-de ajustes (cuentas vigiladas, intervalo, `AUDITORIA_PAUSA`).
+de ajustes (CRUD de `watchdog_accounts`: activar, intervalo, estado del
+acuerdo con el creador; `AUDITORIA_PAUSA`).
 
 **Hecho cuando:** flujo completo manual probado en dev con un fixture, E2E
 de rc-13 en verde, nada publicable sin cumplir M1–M6.
@@ -163,8 +167,8 @@ de rc-13 en verde, nada publicable sin cumplir M1–M6.
 > 04 §3.6). Estudia `/cuentas` (lectura con `revalidate`), `/presupuestos`
 > (`opengraph-image.tsx`) y `components/ui/*`, `layout/Contenedor`,
 > `lib/seo.ts`. Construye `/auditoria` (contador de `watchdog_totals()` con
-> el texto exacto "Gasto público cuestionado y verificado" + enlace a
-> metodología; lista de fichas publicadas con filtros por organismo, año,
+> el texto exacto "Gasto público señalado", subtítulo "verificado contra
+> fuentes oficiales" + enlace a metodología; lista de fichas publicadas con filtros por organismo, año,
 > categoría y verificación; `feed.xml` y `index.json`), `/auditoria/[slug]`
 > (componente `ReelEmbed` con oEmbed oficial de Instagram o blockquote
 > `instagram-media` con carga diferida y aviso de terceros; cabeceras fijas
@@ -233,14 +237,20 @@ transcripción, orquestación extract → matching → alerta → aviso.
 > (interfaz `transcribe(audioPath) → {text, segments?}` con adaptador para
 > API OpenAI y stub documentado para faster-whisper), `storage.mjs` (bucket
 > privado `vigia`, borrado del vídeo tras 7 días), `pgClient.mjs` (copia de
-> brain/ingest). Obtención del vídeo **solo** por: `media_url` de Graph API,
-> ruta subida por el auditor al bucket, o ruta del buzón del creador. **No
-> implementes ni dejes preparada descarga por scraping/yt-dlp** (doc 03 §3).
+> brain/ingest), `telegram.mjs` (doc 04 §4.6: `POST /ingest/telegram` para el
+> bot existente y modo `getUpdates` con offset persistido y lista blanca
+> `VIGIA_TELEGRAM_ALLOWED_CHATS`; extrae enlaces de Instagram y vídeos
+> adjuntos; responde en el chat con el enlace al caso; ignora y cuenta todo
+> lo que venga de otros chats). Obtención del vídeo **solo** por: `media_url`
+> de Graph API, vídeo recibido por Telegram, ruta subida por el auditor al
+> bucket. **No implementes ni dejes preparada descarga por scraping/yt-dlp**
+> (doc 03 §3).
 > `Dockerfile` con `ffmpeg`. `vigia.env.example` documentado. Errores siempre
 > a `watchdog_sources.error`. Tests `node --test` con un reel fixture local.
 
 **Brief (Fase 4):** `detect.mjs` con Business Discovery (`v26.0`, campos del
-doc 02 §1.1), bucle cada `VIGIA_POLL_MINUTES`, dedupe por `(kind,
+doc 02 §1.1) para **cada fila activa de `watchdog_accounts`** (cursor
+`last_seen_external_id`, intervalo por cuenta), dedupe por `(kind,
 external_id)`, renovación del token de larga duración antes de caducar, si
 `media_audio_type='MUSIC'` o falta `media_url` → crea la fuente con
 `video_available=false` y avisa igualmente (el auditor subirá el vídeo).

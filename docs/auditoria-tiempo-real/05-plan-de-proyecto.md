@@ -19,8 +19,9 @@ en paralelo cuando no comparten archivos.
 
 | # | Tarea | Dueño | Bloquea |
 |---|---|---|---|
-| T0.1 | Crear/confirmar cuenta profesional de Instagram de RC vinculada a página de Facebook; crear app de Meta; obtener token de página de larga duración; probar Business Discovery con la cuenta objetivo y anotar % de reels con `media_url` | Sergio + rc-10 | F4 |
-| T0.2 | Contactar con `@elrastrodeldinero`: explicar el proyecto, proponer acuerdo (licencia de embed+cita, aporte de vídeos o autorización de cuenta). Documentar respuesta | Sergio | F4 (vía preferente) |
+| T0.1 | Confirmar que la cuenta de Instagram de RC es profesional y está vinculada a página de Facebook (convertirla si no); crear app de Meta; obtener token de página de larga duración; probar Business Discovery con la cuenta objetivo y anotar % de reels con `media_url` | Sergio + rc-10 | F4 |
+| T0.2 | Contactar con `@elrastrodeldinero` (decisión tomada, D-A03): explicar el proyecto, proponer acuerdo escrito (licencia de embed+cita+resumen, envío de vídeos por Telegram o autorización de cuenta). Documentar como donación en especie | Sergio | F4 (vía preferente); abogado |
+| T0.2b | Localizar el bot de Telegram actual (D-A17): dónde corre, token, cómo reenviar al worker; crear grupo privado de auditores | Sergio + rc-10 | F3 (Telegram) |
 | T0.3 | Enviar doc 03 al abogado y al DPD; abrir EIPD y registro de actividades; contrato de encargado con proveedores de IA/transcripción | Sergio | Lanzamiento público |
 | T0.4 | Decidir D-A01…D-A10 (doc 07) | Sergio + orquestador | F1 |
 | T0.5 | Elegir 5 reels reales ya publicados y contrastarlos **a mano** (expediente, URL oficial, importe): serán los fixtures de pruebas de todo el pipeline | Sergio + rc-13 | F1 |
@@ -34,7 +35,7 @@ en paralelo cuando no comparten archivos.
 
 | # | Entrega | Agente | Sesiones |
 |---|---|---|---|
-| T1.1 | Migración 0068 completa (doc 04 §3), seed rol `auditor`, `is_auditor()`, triggers de invariantes, `watchdog_totals()`; smoke RLS | rc-02-datos | 2 |
+| T1.1 | Migración 0068 completa (doc 04 §3, incluida `watchdog_accounts` con seed de `@elrastrodeldinero` inactiva), seed rol `auditor`, `is_auditor()`, triggers de invariantes, `watchdog_totals()`; smoke RLS | rc-02-datos | 2 |
 | T1.2 | `lib/vigia/fuentes`: parser ATOM/CODICE, carga histórica reanudable, job diario, índice BOE V-A en `boe_items`, cliente BDNS, `matchCandidates()` con tests sobre fixtures T0.5, snapshot + sha256 de documentos | rc-09-vigia-fuentes | 4 |
 | T1.3 | `/admin/auditoria`: lista/cola con filtros por estado, ficha con formulario completo (hechos/valoración, pruebas, réplica), alta manual por formulario, transiciones con `registrarAuditoria`, checklist M5 | rc-11-vigia-admin | 3 |
 | T1.4 | Despliegue del contenedor `vigia` en Dokploy (solo job de fuentes por ahora), cron diario, documentación en GUIA-DOKPLOY | rc-01-infra | 1 |
@@ -67,14 +68,15 @@ admin y, resuelta, muestra la nota pública y la versión anterior.
 | # | Entrega | Agente | Sesiones |
 |---|---|---|---|
 | T3.1 | Adaptadores de brain con soporte de imágenes (anthropic, openai, google), `POST /vigia/extract`, prompt en `constitution.mjs`, validación JSON, lista de términos de riesgo, tests con fixtures | rc-08-brain | 2 |
-| T3.2 | Worker: `POST /process-url` + subida manual de vídeo, ffmpeg (audio/fotogramas), adaptador de transcripción (API; interfaz para faster-whisper), persistencia en `watchdog_sources`, llamada a extract, llamada a matching, creación de `watchdog_alerts(analyzed)` + evidence | rc-10-vigia-ingesta | 3 |
+| T3.2 | Worker: `POST /process-url` + subida manual de vídeo, **entrada por Telegram** (`POST /ingest/telegram` y modo `getUpdates` con lista blanca de chats), ffmpeg (audio/fotogramas), adaptador de transcripción (API; interfaz para faster-whisper), persistencia en `watchdog_sources`, llamada a extract, llamada a matching, creación de `watchdog_alerts(analyzed)` + evidence | rc-10-vigia-ingesta | 4 |
 | T3.3 | Admin: botón "Analizar URL", vista de la extracción con confidences y fotogramas, "reanalizar" | rc-11 | 1 |
 | T3.4 | Infra: imagen del worker con ffmpeg, secretos de transcripción, healthcheck | rc-01 | 1 |
 | T3.5 | Pruebas de pipeline con los 5 fixtures: extracción correcta en ≥ 4 campos clave de 5 por reel | rc-13 | 1 |
 
 **Criterio de aceptación:** pegar la URL de un reel (y subir el vídeo si hace
-falta) produce en < 3 min un caso `analyzed` con extracción, candidatos y
-resumen neutro listo para revisar.
+falta) **o reenviar el reel al bot de Telegram** produce en < 3 min un caso
+`analyzed` con extracción, candidatos y resumen neutro listo para revisar, y
+el bot contesta con el enlace al caso.
 **Duración:** 1,5 semanas.
 
 ### Fase 4 — Detección automática ("tiempo real")
@@ -83,7 +85,7 @@ resumen neutro listo para revisar.
 |---|---|---|---|
 | T4.1 | Sondeo Business Discovery, deduplicación, renovación del token, manejo de `media_url` ausente (buzón del creador / marcar "pendiente de vídeo") | rc-10 | 2 |
 | T4.2 | `POST /api/vigia/notify` → Discord + push a auditores; whitelist middleware | rc-11 | 1 |
-| T4.3 | Página de ajustes en admin: cuentas vigiladas, intervalo, pausa electoral (`AUDITORIA_PAUSA`) | rc-11 | 1 |
+| T4.3 | Página de ajustes en admin: CRUD de `watchdog_accounts` (activar/desactivar, intervalo, estado del acuerdo), pausa electoral (`AUDITORIA_PAUSA`) | rc-11 | 1 |
 | T4.4 | Infra: worker en marcha continua, alertas si falla el token | rc-01 | 1 |
 | T4.5 | E2E: simulación con feed fixture → aviso → caso en cola | rc-13 | 1 |
 
@@ -111,7 +113,7 @@ Semana 7   F4                                          ████████
 Semana 8   F5                                                  ████
 ```
 
-Total: **~8 semanas**, ~38 sesiones de agente. F2 y F3 pueden solaparse (no
+Total: **~8 semanas**, ~39 sesiones de agente. F2 y F3 pueden solaparse (no
 comparten archivos). Si T0.1/T0.2 se retrasan, F4 se pospone sin bloquear nada.
 
 ## 4. Dependencias críticas
@@ -119,7 +121,7 @@ comparten archivos). Si T0.1/T0.2 se retrasan, F4 se pospone sin bloquear nada.
 | Dependencia | Riesgo si falta | Mitigación |
 |---|---|---|
 | Cuenta IG profesional + app Meta | Sin detección automática | F1–F3 funcionan con alta manual |
-| Acuerdo con el creador | Sin vídeo en reels con música | Subida manual desde admin; oEmbed sigue funcionando |
+| Acuerdo con el creador | Sin vídeo automático en reels con música | Reenvío por Telegram desde la app de Instagram (auditor) o subida manual; oEmbed sigue funcionando |
 | Feeds PLACSP accesibles y estables | Sin contraste automático | Carga histórica por ZIP; búsqueda manual con enlace |
 | Proveedor de IA con visión | Extracción solo de audio | Los 3 proveedores soportados tienen visión |
 | Abogado/DPD | Lanzamiento público bloqueado | Todo F1–F4 puede probarse en `dev` (cerrado) |
