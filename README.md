@@ -20,6 +20,9 @@ razoncomun/
 └── bot/                # Bot de Discord del RC-Brain.
 ```
 
+Excepción: `docs/auditoria-tiempo-real/` vive en este repo porque es el brief de
+una fase que toca todas las capas y los agentes lo necesitan junto al código.
+
 ## Cero secretos en este repo
 
 Ningún `.env`, clave, token o contraseña debe llegar nunca a un commit — es un repo público. Cada carpeta con necesidad de secretos trae su propio `*.env.example` documentado; los valores reales viven en `infra/.env` local (ignorado por git) o en la configuración de cada servicio en Dokploy.
