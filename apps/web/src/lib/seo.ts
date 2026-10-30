@@ -36,7 +36,7 @@ export function metadatosPagina({
       url,
       title: tituloCompleto,
       description: descripcion,
-      images: [{ url: imagen, width: 1142, height: 1238, alt: site.nombre }],
+      images: [{ url: imagen, width: 1200, height: 630, alt: site.nombre }],
     },
     twitter: {
       card: 'summary_large_image',
