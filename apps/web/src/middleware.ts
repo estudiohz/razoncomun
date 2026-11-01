@@ -70,6 +70,9 @@ export async function middleware(request: NextRequest) {
       // autentica con `Authorization: Bearer CUENTAS_SYNC_SECRET` dentro de la
       // ruta. Sin ese secreto responde 401. Solo esa ruta, no todo /api/cuentas.
       pathname === '/api/cuentas/sync' ||
+      // Entrada del bot de Telegram (auditorías, D-A17): mismo caso, la llama
+      // n8n sin sesión con `Bearer VIGIA_INGEST_SECRET`. Sin él, 401.
+      pathname === '/api/auditoria/ingest' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';
