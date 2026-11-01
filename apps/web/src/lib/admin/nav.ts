@@ -4,6 +4,8 @@ export type AdminNavItem = {
   disponible: boolean;
   dueño?: string;
   soloAdmin?: boolean;
+  /** Solo para auditores (D-A06): es lo único que ve quien no es editor ni admin. */
+  auditoria?: boolean;
 };
 
 /**
@@ -27,7 +29,7 @@ export const adminNav: AdminNavItem[] = [
   { href: '/admin/cerebro', label: 'Cerebro IA', disponible: true },
   { href: '/admin/presupuesto', label: 'Presupuestos', disponible: true, dueño: 'rc-06-participacion' },
   // Acceso directo a la bandeja del bot de Telegram (D-A17); es una pestaña de Presupuestos.
-  { href: '/admin/presupuesto/auditorias', label: 'Auditorías', disponible: true },
+  { href: '/admin/presupuesto/auditorias', label: 'Auditorías', disponible: true, auditoria: true },
   { href: '/admin/paginas', label: 'Páginas', disponible: true },
   { href: '/admin/tesoreria', label: 'Tesorería', disponible: true, dueño: 'rc-07-afiliacion' },
   { href: '/admin/tienda', label: 'Tienda', disponible: true },

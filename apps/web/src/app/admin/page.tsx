@@ -1,4 +1,6 @@
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { requirePanelAdmin } from '@/lib/admin/guard';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 
 const NOMBRE_ESTADO: Record<string, string> = {
@@ -16,6 +18,11 @@ const NOMBRE_ESTADO: Record<string, string> = {
  * se lee (RLS pública o de equipo), nunca se escribe.
  */
 export default async function AdminInicioPage() {
+  // Quien solo es auditor (D-A06) no tiene nada que hacer en este resumen:
+  // va directo a su bandeja.
+  const { esAdmin, esEditor } = await requirePanelAdmin();
+  if (!esAdmin && !esEditor) redirect('/admin/presupuesto/auditorias');
+
   const supabase = await createClient();
 
   const [{ count: afiliadosActivos }, { data: propuestas }, { data: votaciones }, { data: noticias }] =

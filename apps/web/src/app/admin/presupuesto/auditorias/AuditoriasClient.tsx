@@ -2,7 +2,10 @@
 
 import { useState, useTransition } from 'react';
 import { cn } from '@/lib/cn';
+import Link from 'next/link';
+import { ETIQUETA_ESTADO, type EstadoCaso } from '@/lib/vigia/casos';
 import { actualizarAuditoria, type EstadoAuditoria } from './actions';
+import { abrirCaso } from './casos';
 
 export interface EnvioAuditoria {
   id: string;
@@ -13,6 +16,7 @@ export interface EnvioAuditoria {
   status: EstadoAuditoria;
   notes: string | null;
   received_at: string;
+  caso: { id: string; status: EstadoCaso } | null;
 }
 
 const ETIQUETAS: Record<EstadoAuditoria, { texto: string; clase: string }> = {
@@ -56,6 +60,22 @@ function Fila({ envio }: { envio: EnvioAuditoria }) {
           <p className="mt-1 whitespace-pre-wrap break-words text-[12.5px] text-gris">{envio.message_text}</p>
         )}
         {envio.video_file_id && <p className="mt-1 text-[12px] font-bold text-gris">🎬 Vídeo adjunto en Telegram</p>}
+      </td>
+      <td className="whitespace-nowrap px-3 py-3">
+        {envio.caso ? (
+          <Link
+            href={`/admin/presupuesto/auditorias/${envio.caso.id}`}
+            className="text-[12.5px] font-bold text-accion no-underline hover:underline"
+          >
+            Ver caso · {ETIQUETA_ESTADO[envio.caso.status]}
+          </Link>
+        ) : (
+          <form action={abrirCaso.bind(null, envio.id)}>
+            <button type="submit" className="rounded-boton bg-accion px-3 py-1.5 text-[12.5px] font-bold text-white">
+              Abrir caso
+            </button>
+          </form>
+        )}
       </td>
       <td className="px-3 py-3">
         <select
@@ -130,6 +150,7 @@ export function AuditoriasClient({ envios }: { envios: EnvioAuditoria[] }) {
               <th className="px-3 py-2.5">Recibido</th>
               <th className="px-3 py-2.5">Enviado por</th>
               <th className="px-3 py-2.5">Contenido</th>
+              <th className="px-3 py-2.5">Caso</th>
               <th className="px-3 py-2.5">Estado</th>
               <th className="px-3 py-2.5">Notas</th>
             </tr>

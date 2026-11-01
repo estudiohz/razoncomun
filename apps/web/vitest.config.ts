@@ -21,6 +21,7 @@ export default defineConfig({
       'src/lib/home/**/*.test.ts',
       'src/lib/carnet/**/*.test.ts',
       'src/lib/email/**/*.test.ts',
+      'src/lib/vigia/**/*.test.ts',
     ],
     environment: 'node',
   },

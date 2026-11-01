@@ -68,6 +68,7 @@ export function NuevoUsuarioForm() {
           <select id="roleKey" name="roleKey" defaultValue="admin" className={control}>
             <option value="">Sin rol (usuario normal)</option>
             <option value="editor">Editor (blog, cerebro)</option>
+            <option value="auditor">Auditor (auditorías del gasto)</option>
             <option value="admin">Administrador (acceso total)</option>
           </select>
           <p className="mt-1 text-[12px] text-gris">

@@ -22,7 +22,7 @@ export const metadata: Metadata = metadatosPagina({
  * y de ahí sale tanto el balance global como el estado de cada ficha.
  */
 export default async function AdminPresupuestoPage() {
-  const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
+  const { supabase, esAuditor } = await requireAdminOrEditor('/admin/presupuesto');
   const [parametros, partidas] = await Promise.all([listarParametros(supabase), listarPartidas(supabase)]);
   const modelo = resolver(parametros, partidas);
 
@@ -52,7 +52,7 @@ export default async function AdminPresupuestoPage() {
 
   return (
     <div className="space-y-6">
-      <PestanasPresupuesto activa="presupuesto" />
+      <PestanasPresupuesto activa="presupuesto" verAuditorias={esAuditor} />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[24px] font-extrabold text-titular">Presupuesto del País</h1>

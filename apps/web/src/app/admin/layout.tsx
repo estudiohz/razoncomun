@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { requireAdminOrEditor } from '@/lib/admin/guard';
+import { requirePanelAdmin } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
 import { AdminSidebar, AdminMobileMenu } from '@/components/admin/AdminSidebar';
 import { AdminBreadcrumbs } from '@/components/admin/AdminBreadcrumbs';
@@ -22,8 +22,8 @@ export const metadata: Metadata = metadatosPagina({
  *
  * 1. Middleware (rc-03, src/middleware.ts): exige sesión + 2FA (aal2) si el
  *    usuario tiene rol admin/editor o cargo vigente.
- * 2. `requireAdminOrEditor()` (aquí): exige explícitamente rol de app
- *    admin/editor. Sin ninguno de los dos, ni un `member` autenticado ve
+ * 2. `requirePanelAdmin()` (aquí): exige explícitamente rol de app
+ *    admin/editor, o ser auditor (D-A06; solo ve la bandeja de Auditorías). Sin ninguno de los dos, ni un `member` autenticado ve
  *    el HTML del panel — se le redirige a `/` antes de renderizar nada.
  *
  * La RLS de cada tabla sigue siendo la autoridad real (C3) por si alguien
@@ -38,7 +38,7 @@ export const metadata: Metadata = metadatosPagina({
  * barra superior propia + contenido al 100% del ancho restante.
  */
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const { perfil, esAdmin, esEditor, supabase } = await requireAdminOrEditor();
+  const { perfil, esAdmin, esEditor, esAuditor, supabase } = await requirePanelAdmin();
 
   // Badge de reportes pendientes del tablero de propuestas (D-P15) en el nav.
   // Solo editor/admin ven este apartado; el conteo se deriva sin tocar SQL
@@ -49,18 +49,18 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="min-h-screen w-full bg-fondo min-[960px]:flex">
-      <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} badges={badges} />
+      <AdminSidebar esAdmin={esAdmin} esEditor={esEditor} esAuditor={esAuditor} badges={badges} />
 
       <div className="min-w-0 flex-1">
         <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-linea bg-panel px-4 py-3 min-[960px]:px-8">
           <div className="flex items-center gap-3">
-            <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} badges={badges} />
+            <AdminMobileMenu esAdmin={esAdmin} esEditor={esEditor} esAuditor={esAuditor} badges={badges} />
             <AdminBreadcrumbs />
           </div>
           <div className="flex items-center gap-4">
             <p className="hidden text-[12.5px] text-gris min-[640px]:block">
               {perfil.display_name ?? perfil.email} ·{' '}
-              <span className="font-bold text-titular">{esAdmin ? 'Administrador' : 'Editor'}</span>
+              <span className="font-bold text-titular">{esAdmin ? 'Administrador' : esEditor ? 'Editor' : 'Auditor'}</span>
             </p>
             {/* D-U2: antes, desde /admin no había forma de llegar a los datos
                 propios — el menú de usuario de la web pública no se pinta aquí

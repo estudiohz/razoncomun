@@ -18,10 +18,20 @@ import {
  * Estos dos componentes ya no necesitan ser client: el estado del drawer vive
  * dentro de PanelMobileMenu.
  */
-function gruposDeAdmin(esAdmin: boolean, badges?: Record<string, number>): GrupoNavPanel[] {
+function gruposDeAdmin(
+  esAdmin: boolean,
+  esEditor: boolean,
+  esAuditor: boolean,
+  badges?: Record<string, number>,
+): GrupoNavPanel[] {
+  // Auditorías solo la ven los auditores (D-A06); a quien solo es auditor no
+  // se le enseña el resto: esas páginas le redirigirían de vuelta.
+  const visibles = adminNav.filter((item) =>
+    item.auditoria ? esAuditor : esAdmin || esEditor || item.href === '/admin',
+  );
   return [
     {
-      items: adminNav.map((item) => ({
+      items: visibles.map((item) => ({
         href: item.href,
         label: item.label,
         exacto: item.href === '/admin',
@@ -44,15 +54,18 @@ function gruposDeAdmin(esAdmin: boolean, badges?: Record<string, number>): Grupo
 
 export function AdminSidebar({
   esAdmin,
+  esEditor,
+  esAuditor,
   badges,
 }: {
   esAdmin: boolean;
   esEditor: boolean;
+  esAuditor: boolean;
   badges?: Record<string, number>;
 }) {
   return (
     <PanelSidebar
-      grupos={gruposDeAdmin(esAdmin, badges)}
+      grupos={gruposDeAdmin(esAdmin, esEditor, esAuditor, badges)}
       homeHref="/admin"
       etiqueta="Administración"
     />
@@ -61,11 +74,14 @@ export function AdminSidebar({
 
 export function AdminMobileMenu({
   esAdmin,
+  esEditor,
+  esAuditor,
   badges,
 }: {
   esAdmin: boolean;
   esEditor: boolean;
+  esAuditor: boolean;
   badges?: Record<string, number>;
 }) {
-  return <PanelMobileMenu grupos={gruposDeAdmin(esAdmin, badges)} etiqueta="Administración" />;
+  return <PanelMobileMenu grupos={gruposDeAdmin(esAdmin, esEditor, esAuditor, badges)} etiqueta="Administración" />;
 }

@@ -35,6 +35,9 @@ export interface ResultadoInvitacion {
  * Para hacer admin a alguien que YA tiene cuenta, NO se usa esto: se asigna el
  * rol desde su ficha (asignarRolApp).
  */
+/** Roles con los que se puede invitar a alguien nuevo. `auditor`: D-A06. */
+const ROLES_INVITABLES = ['admin', 'editor', 'auditor'];
+
 export async function invitarUsuario(
   _previo: ResultadoInvitacion | null,
   formData: FormData,
@@ -47,7 +50,7 @@ export async function invitarUsuario(
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return { ok: false, error: 'Email inválido.' };
   }
-  if (roleKey && roleKey !== 'admin' && roleKey !== 'editor') {
+  if (roleKey && !ROLES_INVITABLES.includes(roleKey)) {
     return { ok: false, error: `Rol inválido: ${roleKey}.` };
   }
 
@@ -85,7 +88,7 @@ export async function invitarUsuario(
     await admin.from('profiles').update({ display_name: displayName }).eq('id', nuevoUsuarioId);
   }
 
-  if (roleKey === 'admin' || roleKey === 'editor') {
+  if (ROLES_INVITABLES.includes(roleKey)) {
     const { data: rol } = await admin.from('app_roles').select('id').eq('key', roleKey).single();
     if (rol) {
       await admin

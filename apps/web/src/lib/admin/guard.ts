@@ -18,11 +18,12 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  */
 const rolesDe = cache(async (userId: string) => {
   const supabase = await createClient();
-  const [{ data: esAdmin }, { data: esEditor }] = await Promise.all([
+  const [{ data: esAdmin }, { data: esEditor }, { data: esAuditor }] = await Promise.all([
     supabase.rpc('is_admin', { p_user: userId }),
     supabase.rpc('is_editor', { p_user: userId }),
+    supabase.rpc('is_auditor', { p_user: userId }),
   ]);
-  return { esAdmin: Boolean(esAdmin), esEditor: Boolean(esEditor) };
+  return { esAdmin: Boolean(esAdmin), esEditor: Boolean(esEditor), esAuditor: Boolean(esAuditor) };
 });
 
 /**
@@ -43,13 +44,39 @@ const rolesDe = cache(async (userId: string) => {
  */
 export async function requireAdminOrEditor(rutaVuelta = '/admin') {
   const { user, perfil, supabase } = await requireUsuario(rutaVuelta);
-  const { esAdmin, esEditor } = await rolesDe(user.id);
+  const { esAdmin, esEditor, esAuditor } = await rolesDe(user.id);
 
   if (!esAdmin && !esEditor) {
-    redirect('/');
+    // Un auditor que no es editor vuelve a su bandeja, no a la portada.
+    redirect(esAuditor ? '/admin/presupuesto/auditorias' : '/');
   }
 
-  return { user, perfil: perfil!, supabase, esAdmin, esEditor };
+  return { user, perfil: perfil!, supabase, esAdmin, esEditor, esAuditor };
+}
+
+/**
+ * Puerta del marco de `/admin` (el layout): admin, editor o auditor.
+ *
+ * Los auditores (rol `auditor`, cargo de moderador o admin — D-A06,
+ * docs/auditoria-tiempo-real/07-decisiones.md) entran al panel aunque no sean
+ * editores, pero solo para la bandeja de Auditorías: el resto de secciones
+ * siguen con su `requireAdminOrEditor` y les redirigen fuera.
+ */
+export async function requirePanelAdmin(rutaVuelta = '/admin') {
+  const { user, perfil, supabase } = await requireUsuario(rutaVuelta);
+  const roles = await rolesDe(user.id);
+  if (!roles.esAdmin && !roles.esEditor && !roles.esAuditor) {
+    redirect('/');
+  }
+  return { user, perfil: perfil!, supabase, ...roles };
+}
+
+/** Auditoría del gasto público: rol auditor, moderador o admin (D-A06). Los editores no. */
+export async function requireAuditor(rutaVuelta = '/admin/presupuesto/auditorias') {
+  const { user, perfil, supabase } = await requireUsuario(rutaVuelta);
+  const roles = await rolesDe(user.id);
+  if (!roles.esAuditor) redirect('/admin');
+  return { user, perfil: perfil!, supabase, ...roles };
 }
 
 /** Variante que exige admin (no basta editor) — para acciones exclusivas de admin. */

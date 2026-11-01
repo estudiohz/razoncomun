@@ -1,14 +1,14 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminOrEditor } from '@/lib/admin/guard';
+import { requireAuditor } from '@/lib/admin/guard';
 
 const ESTADOS = ['nuevo', 'en_revision', 'descartado', 'procesado'] as const;
 export type EstadoAuditoria = (typeof ESTADOS)[number];
 
-/** Cambia el estado (y opcionalmente la nota) de un envío del bot. RLS: solo editor/admin. */
+/** Cambia el estado (y opcionalmente la nota) de un envío del bot. RLS: solo auditores (D-A06). */
 export async function actualizarAuditoria(id: string, estado: EstadoAuditoria, notas: string | null) {
-  const { supabase, user } = await requireAdminOrEditor('/admin/presupuesto/auditorias');
+  const { supabase, user } = await requireAuditor('/admin/presupuesto/auditorias');
   if (!ESTADOS.includes(estado)) return { error: 'Estado no válido' };
 
   const { error } = await supabase

@@ -104,11 +104,13 @@ export async function requiereMfa(
   supabase: SupabaseClient,
   userId: string,
 ): Promise<boolean> {
-  const [{ data: esAdmin }, { data: esEditor }, { data: cargos }] = await Promise.all([
+  const [{ data: esAdmin }, { data: esEditor }, { data: esAuditor }, { data: cargos }] = await Promise.all([
     supabase.rpc('is_admin', { p_user: userId }),
     supabase.rpc('is_editor', { p_user: userId }),
+    // Los auditores firman casos públicos de gasto (D-A06): misma 2FA que el resto del panel.
+    supabase.rpc('is_auditor', { p_user: userId }),
     supabase.from('positions').select('id').eq('user_id', userId).is('ended_at', null).limit(1),
   ]);
 
-  return Boolean(esAdmin) || Boolean(esEditor) || Boolean(cargos && cargos.length > 0);
+  return Boolean(esAdmin) || Boolean(esEditor) || Boolean(esAuditor) || Boolean(cargos && cargos.length > 0);
 }
