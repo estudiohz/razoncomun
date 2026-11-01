@@ -194,7 +194,9 @@ export function elegir(candidatos: Candidato[]): { mejores: Candidato[]; claro: 
 
 /** Un DNI o NIE (persona física) empieza por número o por X/Y/Z. */
 export function esNifPersonaFisica(nif: string | null): boolean {
-  return Boolean(nif && /^(\d|[XYZ])/i.test(nif));
+  // Solo DNI (8 cifras + letra) o NIE: un identificador extranjero numérico
+  // no dice nada de si es una persona.
+  return Boolean(nif && /^(\d{8}[A-Z]|[XYZ]\d{7}[A-Z])$/i.test(nif));
 }
 
 /**

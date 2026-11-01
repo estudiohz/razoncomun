@@ -24,6 +24,7 @@ export interface ConcesionBdns {
   importeCents: number | null;
   fechaConcesion: string | null;
   organo: string; // nivel2 › nivel3
+  numConcesiones: number; // >1 si se han sumado varias del mismo beneficiario
   instrumento: string | null;
   urlBases: string | null; // bases reguladoras en el BOE
   urlConvocatoria: string;
@@ -33,6 +34,9 @@ export interface ConcesionBdns {
 }
 
 const NIF = /^([A-HJ-NP-SUVW]\d{7}[0-9A-J]|\d{8}[A-Z]|[XYZ]\d{7}[A-Z])\s+(.+)$/i;
+// Beneficiarios extranjeros: la BDNS antepone un identificador de su país
+// (p. ej. "000801394899 ASOCIACIÓN … DEL PARAGUAY"). Se separa igual.
+const ID_EXTRANJERO = /^([A-Z0-9-]*\d[A-Z0-9-]{4,20})\s+(.+)$/i;
 
 function cadena(v: unknown, max = 1000): string | null {
   return typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null;
@@ -43,7 +47,7 @@ export function aConcesion(o: Record<string, unknown>): ConcesionBdns | null {
   const conv = cadena(String(o.numeroConvocatoria ?? ''), 20);
   const benef = cadena(o.beneficiario, 300);
   if (!cod || !conv || !benef) return null;
-  const m = benef.match(NIF);
+  const m = benef.match(NIF) ?? benef.match(ID_EXTRANJERO);
   const importe = Number(o.importe);
   const fecha = cadena(o.fechaConcesion, 10);
   const url = cadena(o.urlBR, 500);
@@ -56,6 +60,7 @@ export function aConcesion(o: Record<string, unknown>): ConcesionBdns | null {
     importeCents: Number.isFinite(importe) && importe > 0 ? Math.round(importe * 100) : null,
     fechaConcesion: fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha) ? fecha : null,
     organo: [cadena(o.nivel2, 200), cadena(o.nivel3, 200)].filter(Boolean).join(' › '),
+    numConcesiones: 1,
     instrumento: cadena(o.instrumento, 200),
     urlBases: url && /^https:\/\//i.test(url) ? url : null,
     urlConvocatoria: `${BDNS_WEB}/convocatorias/${encodeURIComponent(conv)}`,
@@ -63,6 +68,33 @@ export function aConcesion(o: Record<string, unknown>): ConcesionBdns | null {
     urlApi: `${BDNS_API}/concesiones/busqueda?vpd=GE&numeroConvocatoria=${encodeURIComponent(conv)}&page=0&pageSize=50`,
     raw: o,
   };
+}
+
+/**
+ * Varias concesiones de la misma convocatoria al mismo beneficiario son UN
+ * caso: los reels lo cuentan así («dos concesiones, un solo título») y el
+ * importe que hay que contrastar es la suma. Se agrupan antes de puntuar.
+ */
+export function agruparConcesiones(lista: ConcesionBdns[]): ConcesionBdns[] {
+  const grupos = new Map<string, ConcesionBdns[]>();
+  for (const c of lista) {
+    const k = `${c.numeroConvocatoria}|${c.nif ?? c.beneficiario.toUpperCase()}`;
+    grupos.set(k, [...(grupos.get(k) ?? []), c]);
+  }
+  return [...grupos.values()].map((g) => {
+    if (g.length === 1) return g[0];
+    const orden = [...g].sort((a, b) => (a.codConcesion < b.codConcesion ? -1 : 1));
+    const importes = orden.map((c) => c.importeCents).filter((x): x is number => x != null);
+    const fechas = orden.map((c) => c.fechaConcesion).filter((x): x is string => Boolean(x)).sort();
+    return {
+      ...orden[0],
+      codConcesion: orden.map((c) => c.codConcesion).join(' + '),
+      importeCents: importes.length ? importes.reduce((a, b) => a + b, 0) : null,
+      fechaConcesion: fechas[0] ?? null,
+      numConcesiones: g.length,
+      raw: { concesiones: orden.map((c) => c.raw) },
+    };
+  });
 }
 
 function palabras(t: string): Set<string> {
@@ -158,7 +190,7 @@ export async function concesionesDeConvocatoria(numero: string, timeoutMs = 1000
     `${BDNS_API}/concesiones/busqueda?vpd=GE&page=0&pageSize=50&numeroConvocatoria=${encodeURIComponent(numero)}`,
     timeoutMs,
   );
-  return contenido(d).map(aConcesion).filter((c): c is ConcesionBdns => Boolean(c));
+  return agruparConcesiones(contenido(d).map(aConcesion).filter((c): c is ConcesionBdns => Boolean(c)));
 }
 
 /**
@@ -177,6 +209,12 @@ export async function buscarEnBdns(p: PistaBdns, timeoutMs = 10000): Promise<Can
     );
     meter(contenido(d).map(aConcesion).filter((c): c is ConcesionBdns => Boolean(c)));
   }
+  // Las de una convocatoria pueden llegar ya agrupadas: se desagrupan por
+  // código para no contarlas dos veces al reagrupar al final.
+  const sueltas = (lista: ConcesionBdns[]) =>
+    lista.flatMap((c) =>
+      c.numConcesiones > 1 ? ((c.raw.concesiones as Record<string, unknown>[]) ?? []).map(aConcesion).filter((x): x is ConcesionBdns => Boolean(x)) : [c],
+    );
 
   for (const q of consultasDeTexto(p)) {
     const d = await pedirJson(
@@ -188,10 +226,10 @@ export async function buscarEnBdns(p: PistaBdns, timeoutMs = 10000): Promise<Can
       .filter((n): n is string => Boolean(n))
       .slice(0, 5);
     const resultados = await Promise.allSettled(convocatorias.map((n) => concesionesDeConvocatoria(n, timeoutMs)));
-    for (const r of resultados) if (r.status === 'fulfilled') meter(r.value);
+    for (const r of resultados) if (r.status === 'fulfilled') meter(sueltas(r.value));
   }
 
-  return [...encontradas.values()]
+  return agruparConcesiones([...encontradas.values()])
     .map((c) => puntuarConcesion(c, p))
     .filter((c) => c.score >= 0.3)
     .sort((a, b) => b.score - a.score)

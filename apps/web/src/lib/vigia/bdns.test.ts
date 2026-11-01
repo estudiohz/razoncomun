@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aConcesion, consultasDeTexto, puntuarConcesion } from './bdns';
+import { aConcesion, agruparConcesiones, consultasDeTexto, puntuarConcesion } from './bdns';
 
 // Registro real de la API (BDNS 921565), recortado.
 const REGISTRO = {
@@ -57,5 +57,47 @@ describe('consultasDeTexto', () => {
   });
   it('no busca con nombres de una sola palabra', () => {
     expect(consultasDeTexto({ nif: null, beneficiario: 'Acme', importeCents: null, organismo: null, texto: '' })).toEqual([]);
+  });
+});
+
+// Caso real (02-11-2026): BDNS 922812, dos concesiones a MIPY que suman los
+// 150.000 € del reel. Antes se elegía la de 3.400 € como principal.
+const MIPY = (cod: string, importe: number) => ({
+  codConcesion: cod,
+  fechaConcesion: '2026-07-31',
+  beneficiario: '000801394899 ASOCIACIÓN ARTICULACIÓN DE MUJERES INDÍGENAS DEL PARAGUAY (MIPY)',
+  importe,
+  numeroConvocatoria: '922812',
+  convocatoria: 'Subvención directa Mujeres Indígenas Paraguay',
+  nivel2: 'MINISTERIO DE ASUNTOS EXTERIORES, UNIÓN EUROPEA Y COOPERACIÓN',
+});
+
+describe('varias concesiones, un solo caso', () => {
+  const lista = [aConcesion(MIPY('SB157670369', 3400))!, aConcesion(MIPY('SB157670368', 146600))!];
+
+  it('separa el identificador extranjero del nombre', () => {
+    expect(lista[0].nif).toBe('000801394899');
+    expect(lista[0].beneficiario).toBe('ASOCIACIÓN ARTICULACIÓN DE MUJERES INDÍGENAS DEL PARAGUAY (MIPY)');
+  });
+
+  it('suma las del mismo beneficiario en la misma convocatoria', () => {
+    const [g, ...resto] = agruparConcesiones(lista);
+    expect(resto).toHaveLength(0);
+    expect(g.importeCents).toBe(15000000);
+    expect(g.numConcesiones).toBe(2);
+    expect(g.codConcesion).toBe('SB157670368 + SB157670369');
+  });
+
+  it('el grupo encaja con el importe del reel', () => {
+    const [g] = agruparConcesiones(lista);
+    const r = puntuarConcesion(g, {
+      nif: null,
+      beneficiario: 'Mujeres Indígenas en acción',
+      importeCents: 15000000,
+      organismo: null,
+      texto: 'Paraguay, 150000 €. Mujeres Indígenas en acción. Dos concesiones, un solo título',
+    });
+    expect(r.señales).toContain('mismo importe');
+    expect(r.score).toBeGreaterThanOrEqual(0.5); // sin NIF ni código no es «claro»: lo confirma el auditor
   });
 });

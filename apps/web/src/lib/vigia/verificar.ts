@@ -98,7 +98,7 @@ export async function verificarEnFuentes(
         match_score: cand.score,
         matched_by: 'auto',
         selected: cand === claro && !hayPrincipal,
-        notes: `Encontrado en la BDNS. ${cand.señales.join('; ')}.`.slice(0, 2000),
+        notes: `Encontrado en la BDNS.${c.numConcesiones > 1 ? ` ${c.numConcesiones} concesiones al mismo beneficiario en esta convocatoria, importe sumado.` : ''} ${cand.señales.join('; ')}.`.slice(0, 2000),
         created_by: createdBy,
       })
       .select('id')
