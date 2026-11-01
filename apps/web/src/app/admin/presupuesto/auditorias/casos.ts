@@ -25,6 +25,7 @@ import {
 import { ESTADOS_SOLICITUD, redactarSolicitud } from '@/lib/vigia/transparencia';
 import { DEPARTAMENTOS } from '@/lib/participacion/departments';
 import { generarSlugUnico } from '@/lib/participacion/proposals';
+import { slugificar } from '@/lib/blog/markdown';
 
 /**
  * Ciclo de vida del caso de auditoría (doc 04 §4.5). Todas pasan por
@@ -528,4 +529,184 @@ export async function enlaceCopia(copiaId: string): Promise<{ url: string } | { 
   const { data, error } = await createAdminClient().storage.from(BUCKET_COPIAS).createSignedUrl(copia.storage_path, 600);
   if (error || !data) return { error: error?.message ?? 'No se pudo generar el enlace.' };
   return { url: data.signedUrl };
+}
+
+// ── Publicación y rectificación (F2, 0075) ──────────────────────────────────
+
+/** Lo que se congela en cada versión pública (M7). Sin NIF si es persona física (minimización). */
+async function fotoPublica(supabase: Awaited<ReturnType<typeof requireAuditor>>['supabase'], id: string) {
+  const [{ data: c }, { data: principal }] = await Promise.all([
+    supabase
+      .from('watchdog_alerts')
+      .select(
+        'title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, firmado_por, verified_at, published_at, rectificado_at, rectificacion_nota',
+      )
+      .eq('id', id)
+      .single(),
+    supabase
+      .from('watchdog_evidence')
+      .select('source_kind, expediente, url, snapshot_sha256, snapshot_at')
+      .eq('alert_id', id)
+      .eq('selected', true)
+      .maybeSingle(),
+  ]);
+  if (!c) return null;
+  return { ...c, adjudicatario_nif: c.es_persona_fisica ? null : c.adjudicatario_nif, prueba: principal ?? null };
+}
+
+async function siguienteVersion(supabase: Awaited<ReturnType<typeof requireAuditor>>['supabase'], id: string) {
+  const { data } = await supabase
+    .from('watchdog_alert_versions')
+    .select('version')
+    .eq('alert_id', id)
+    .order('version', { ascending: false })
+    .limit(1);
+  return (data?.[0]?.version ?? 0) + 1;
+}
+
+async function slugUnico(supabase: Awaited<ReturnType<typeof requireAuditor>>['supabase'], titulo: string) {
+  const base = slugificar(titulo).slice(0, 90).replace(/-+$/, '') || 'caso';
+  for (let i = 0; i < 20; i++) {
+    const candidato = i === 0 ? base : `${base}-${i + 1}`;
+    const { data } = await supabase.from('watchdog_alerts').select('id').eq('slug', candidato).maybeSingle();
+    if (!data) return candidato;
+  }
+  return `${base}-${Date.now().toString(36)}`;
+}
+
+/**
+ * Publica un caso verificado (o lo programa). Los triggers de la 0069/0073
+ * exigen firma, hechos, prueba oficial con copia sellada y origen citado: si
+ * falta algo, la base de datos lo rechaza aunque se salte esta comprobación.
+ */
+export async function publicarCaso(id: string, fecha: string | null, sinReplicaConfirmado: boolean): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const { data: caso } = await supabase
+    .from('watchdog_alerts')
+    .select('status, title, slug, replica_solicitada_at, adjudicatario, es_persona_fisica, verified_by')
+    .eq('id', id)
+    .single();
+  if (!caso) return { error: 'Caso no encontrado.' };
+  if (caso.status !== 'verified') return { error: 'Solo se publica un caso verificado y firmado.' };
+  if (!caso.replica_solicitada_at && !sinReplicaConfirmado) {
+    return { error: 'No se pidió réplica. Confirma expresamente que se publica sin ella.' };
+  }
+
+  let cuando = new Date();
+  if (fecha) {
+    const f = new Date(fecha);
+    if (Number.isNaN(f.getTime())) return { error: 'Fecha de publicación no válida.' };
+    cuando = f;
+  }
+
+  const { data: firmante } = await supabase
+    .from('profiles')
+    .select('display_name')
+    .eq('id', caso.verified_by ?? '')
+    .maybeSingle();
+
+  const { error } = await supabase
+    .from('watchdog_alerts')
+    .update({
+      status: 'published',
+      published_at: cuando.toISOString(),
+      slug: caso.slug ?? (await slugUnico(supabase, caso.title)),
+      firmado_por: firmante?.display_name?.trim() || 'Equipo de auditoría de Razón Común',
+    })
+    .eq('id', id);
+  if (error) return { error: error.message };
+
+  const foto = await fotoPublica(supabase, id);
+  await supabase.from('watchdog_alert_versions').insert({
+    alert_id: id,
+    version: await siguienteVersion(supabase, id),
+    snapshot: foto,
+    reason: 'Publicación',
+    changed_by: user.id,
+  });
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'vigia.publish',
+    entity: 'watchdog_alerts',
+    entityId: id,
+    meta: { published_at: cuando.toISOString(), sin_replica: !caso.replica_solicitada_at },
+  });
+  refrescar(id);
+  revalidatePath('/observatorio/auditorias');
+  return { ok: true };
+}
+
+/**
+ * Rectificar: el caso sigue publicado pero con aviso visible y una versión
+ * nueva en el historial. Deja de sumar en el contador (counts_in_total).
+ */
+export async function rectificarCaso(id: string, nota: string): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const texto = nota.trim().slice(0, 4000);
+  if (texto.length < 10) return { error: 'Explica la rectificación (es pública).' };
+  const { error } = await supabase
+    .from('watchdog_alerts')
+    .update({ rectificado_at: new Date().toISOString(), rectificacion_nota: texto })
+    .eq('id', id)
+    .eq('status', 'published');
+  if (error) return { error: error.message };
+  await supabase.from('watchdog_alert_versions').insert({
+    alert_id: id,
+    version: await siguienteVersion(supabase, id),
+    snapshot: await fotoPublica(supabase, id),
+    reason: `Rectificación: ${texto.slice(0, 300)}`,
+    changed_by: user.id,
+  });
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.rectify', entity: 'watchdog_alerts', entityId: id, meta: { nota: texto } });
+  refrescar(id);
+  revalidatePath('/observatorio/auditorias');
+  return { ok: true };
+}
+
+/** Retirar de la web (vuelve a «verificado»). Solo admin: es excepcional. */
+export async function despublicarCaso(id: string, motivo: string): Promise<Resultado> {
+  const { supabase, user, esAdmin } = await requireAuditor(RUTA);
+  if (!esAdmin) return { error: 'Solo un admin puede retirar un caso publicado.' };
+  if (!motivo.trim()) return { error: 'Indica el motivo.' };
+  const { error } = await supabase
+    .from('watchdog_alerts')
+    .update({ status: 'verified', published_at: null })
+    .eq('id', id)
+    .eq('status', 'published');
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.unpublish', entity: 'watchdog_alerts', entityId: id, meta: { motivo: motivo.trim().slice(0, 1000) } });
+  refrescar(id);
+  revalidatePath('/observatorio/auditorias');
+  return { ok: true };
+}
+
+/** Responde una solicitud de rectificación (plazo: 3 días). */
+export async function resolverRectificacion(
+  alertId: string,
+  correctionId: string,
+  resolucion: 'aceptada' | 'parcial' | 'rechazada',
+  notaPublica: string,
+): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  if (!['aceptada', 'parcial', 'rechazada'].includes(resolucion)) return { error: 'Resolución no válida.' };
+  const { error } = await supabase
+    .from('watchdog_corrections')
+    .update({
+      resolved_at: new Date().toISOString(),
+      resolution: resolucion,
+      public_note: notaPublica.trim().slice(0, 2000) || null,
+      handled_by: user.id,
+    })
+    .eq('id', correctionId)
+    .eq('alert_id', alertId);
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'vigia.correction_resolved',
+    entity: 'watchdog_alerts',
+    entityId: alertId,
+    meta: { correctionId, resolucion },
+  });
+  refrescar(alertId);
+  return { ok: true };
 }

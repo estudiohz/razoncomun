@@ -25,6 +25,7 @@ export interface ConcesionBdns {
   fechaConcesion: string | null;
   organo: string; // nivel2 › nivel3
   numConcesiones: number; // >1 si se han sumado varias del mismo beneficiario
+  duplicados: number; // registros con el MISMO importe descartados como posible doble registro
   instrumento: string | null;
   urlBases: string | null; // bases reguladoras en el BOE
   urlConvocatoria: string;
@@ -61,6 +62,7 @@ export function aConcesion(o: Record<string, unknown>): ConcesionBdns | null {
     fechaConcesion: fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha) ? fecha : null,
     organo: [cadena(o.nivel2, 200), cadena(o.nivel3, 200)].filter(Boolean).join(' › '),
     numConcesiones: 1,
+    duplicados: 0,
     instrumento: cadena(o.instrumento, 200),
     urlBases: url && /^https:\/\//i.test(url) ? url : null,
     urlConvocatoria: `${BDNS_WEB}/convocatorias/${encodeURIComponent(conv)}`,
@@ -74,6 +76,12 @@ export function aConcesion(o: Record<string, unknown>): ConcesionBdns | null {
  * Varias concesiones de la misma convocatoria al mismo beneficiario son UN
  * caso: los reels lo cuentan así («dos concesiones, un solo título») y el
  * importe que hay que contrastar es la suma. Se agrupan antes de puntuar.
+ *
+ * Pero la BDNS a veces registra DOS VECES la misma concesión (BDNS 921565:
+ * dos registros de 600.000 € en días seguidos, con un presupuesto total de
+ * 600.000 €). Por eso, dentro del grupo, los registros con el mismo importe
+ * cuentan una sola vez y se anotan como posible duplicado para el auditor.
+ * (922812: 3.400 € + 146.600 €, importes distintos, sí se suman.)
  */
 export function agruparConcesiones(lista: ConcesionBdns[]): ConcesionBdns[] {
   const grupos = new Map<string, ConcesionBdns[]>();
@@ -84,14 +92,22 @@ export function agruparConcesiones(lista: ConcesionBdns[]): ConcesionBdns[] {
   return [...grupos.values()].map((g) => {
     if (g.length === 1) return g[0];
     const orden = [...g].sort((a, b) => (a.codConcesion < b.codConcesion ? -1 : 1));
-    const importes = orden.map((c) => c.importeCents).filter((x): x is number => x != null);
+    const vistosImporte = new Set<number>();
+    const unicas = orden.filter((c) => {
+      if (c.importeCents == null) return true;
+      if (vistosImporte.has(c.importeCents)) return false;
+      vistosImporte.add(c.importeCents);
+      return true;
+    });
+    const importes = unicas.map((c) => c.importeCents).filter((x): x is number => x != null);
     const fechas = orden.map((c) => c.fechaConcesion).filter((x): x is string => Boolean(x)).sort();
     return {
       ...orden[0],
       codConcesion: orden.map((c) => c.codConcesion).join(' + '),
       importeCents: importes.length ? importes.reduce((a, b) => a + b, 0) : null,
       fechaConcesion: fechas[0] ?? null,
-      numConcesiones: g.length,
+      numConcesiones: unicas.length,
+      duplicados: orden.length - unicas.length,
       raw: { concesiones: orden.map((c) => c.raw) },
     };
   });

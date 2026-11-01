@@ -6,6 +6,7 @@ import { metadatosPagina } from '@/lib/seo';
 import { htmlATexto } from '@/lib/vigia/casos';
 import { CasoClient, type Caso, type Prueba } from './CasoClient';
 import { CopiasCaso, type Copia } from './CopiasCaso';
+import { PublicacionCaso, type Rectificacion } from './PublicacionCaso';
 import { esRedSocial } from '@/lib/vigia/copias';
 import { EnlacesCaso, type PartidaEnlazada, type PartidaOpcion, type Solicitud } from './EnlacesCaso';
 
@@ -25,15 +26,15 @@ export const dynamic = 'force-dynamic';
  */
 export default async function CasoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { supabase } = await requireAuditor(`/admin/presupuesto/auditorias/${id}`);
+  const { supabase, esAdmin } = await requireAuditor(`/admin/presupuesto/auditorias/${id}`);
 
-  const [{ data: caso }, { data: pruebas }, { data: propuestas }, { data: partidas }, { data: enlaces }, { data: solicitudes }, { data: copias }] = await Promise.all([
+  const [{ data: caso }, { data: pruebas }, { data: propuestas }, { data: partidas }, { data: enlaces }, { data: solicitudes }, { data: copias }, { data: rectificaciones }] = await Promise.all([
     supabase
       .from('watchdog_alerts')
       .select(
         `id, title, status, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica,
          categoria, importe_denunciado_cents, importe_oficial_cents, fecha_adjudicacion, verificacion,
-         hechos_html, valoracion_html, reel_url, reel_autor, reel_autor_url, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
+         hechos_html, valoracion_html, slug, published_at, rectificado_at, reel_url, reel_autor, reel_autor_url, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
          created_at, revisor:profiles!watchdog_alerts_verified_by_fkey(display_name, email),
          fuente:watchdog_sources(permalink, message_text, telegram_from, received_at, transcript)`,
       )
@@ -59,6 +60,11 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       .select('id, tipo, metodo, url, sha256, bytes, capturada_at, notas')
       .eq('alert_id', id)
       .order('capturada_at', { ascending: false }),
+    supabase
+      .from('watchdog_corrections')
+      .select('id, requester_name, requester_email, requester_role, request_text, received_at, resolved_at, resolution, public_note')
+      .eq('alert_id', id)
+      .order('received_at', { ascending: false }),
   ]);
 
   if (!caso) notFound();
@@ -96,6 +102,16 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
         ← Bandeja de auditorías
       </Link>
       <CasoClient caso={caso as unknown as Caso} pruebas={(pruebas ?? []) as Prueba[]} />
+      <PublicacionCaso
+        alertId={caso.id}
+        status={caso.status}
+        slug={caso.slug}
+        publishedAt={caso.published_at}
+        replicaPedida={Boolean(caso.replica_solicitada_at)}
+        rectificadoAt={caso.rectificado_at}
+        esAdmin={esAdmin}
+        rectificaciones={(rectificaciones ?? []) as Rectificacion[]}
+      />
       <CopiasCaso
         alertId={caso.id}
         copias={(copias ?? []) as Copia[]}

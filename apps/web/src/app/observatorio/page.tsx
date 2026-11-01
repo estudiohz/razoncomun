@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { PortadaBlog } from '@/components/blog/PortadaBlog';
+import { BloqueAuditoriasObservatorio } from '@/components/auditoria/BloqueAuditoriasObservatorio';
 import { listarArticulos, listarCategorias } from '@/lib/blog/consultas';
 import { metadatosPagina } from '@/lib/seo';
 
@@ -27,13 +28,17 @@ export default async function ObservatorioPage() {
   ]);
 
   return (
-    <PortadaBlog
+    <>
+      {/* D-A12: las auditorías viven dentro del Observatorio. */}
+      <BloqueAuditoriasObservatorio />
+      <PortadaBlog
       eyebrow="Observatorio"
       titulo={TITULO}
       descripcion={DESCRIPCION}
       articulos={articulos}
       categorias={categorias}
       base="/observatorio"
-    />
+      />
+    </>
   );
 }

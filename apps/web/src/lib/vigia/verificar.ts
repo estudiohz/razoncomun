@@ -98,7 +98,16 @@ export async function verificarEnFuentes(
         match_score: cand.score,
         matched_by: 'auto',
         selected: cand === claro && !hayPrincipal,
-        notes: `Encontrado en la BDNS.${c.numConcesiones > 1 ? ` ${c.numConcesiones} concesiones al mismo beneficiario en esta convocatoria, importe sumado.` : ''} ${cand.señales.join('; ')}.`.slice(0, 2000),
+        notes: [
+          'Encontrado en la BDNS.',
+          c.numConcesiones > 1 && `${c.numConcesiones} concesiones al mismo beneficiario en esta convocatoria, importe sumado.`,
+          c.duplicados > 0 &&
+            `${c.duplicados} registro${c.duplicados === 1 ? '' : 's'} con el mismo importe no se ha${c.duplicados === 1 ? '' : 'n'} sumado: posible doble registro en la BDNS, compruébalo.`,
+          `${cand.señales.join('; ')}.`,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .slice(0, 2000),
         created_by: createdBy,
       })
       .select('id')

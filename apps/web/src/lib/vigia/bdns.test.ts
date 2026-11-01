@@ -101,3 +101,16 @@ describe('varias concesiones, un solo caso', () => {
     expect(r.score).toBeGreaterThanOrEqual(0.5); // sin NIF ni código no es «claro»: lo confirma el auditor
   });
 });
+
+describe('doble registro en la BDNS', () => {
+  // Caso real BDNS 921565: la misma concesión de 600.000 € registrada dos veces.
+  const reg = (cod: string, fecha: string) => aConcesion({ ...REGISTRO, codConcesion: cod, fechaConcesion: fecha })!;
+
+  it('no suma dos registros con el mismo importe', () => {
+    const [g] = agruparConcesiones([reg('SB155976907', '2026-07-08'), reg('SB155723294', '2026-07-07')]);
+    expect(g.importeCents).toBe(60000000);
+    expect(g.numConcesiones).toBe(1);
+    expect(g.duplicados).toBe(1);
+    expect(g.codConcesion).toBe('SB155723294 + SB155976907');
+  });
+});
