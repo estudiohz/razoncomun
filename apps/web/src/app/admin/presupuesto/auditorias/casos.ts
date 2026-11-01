@@ -4,6 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAuditor } from '@/lib/admin/guard';
 import { registrarAuditoria } from '@/lib/admin/audit';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { BUCKET_COPIAS, guardarCopia } from '@/lib/vigia/copias';
+import { copiarOrigen, verificarEnFuentes } from '@/lib/vigia/verificar';
 import {
   CATEGORIAS,
   CHECKLIST_M5,
@@ -440,4 +443,89 @@ export async function guardarSolicitud(alertId: string, id: string, formData: Fo
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.transparency_update', entity: 'watchdog_alerts', entityId: alertId, meta: { solicitud: id, estado } });
   refrescar(alertId);
   return { ok: true };
+}
+
+// ── Fuentes oficiales y copias de respaldo (0074) ───────────────────────────
+
+/** "Buscar en fuentes oficiales": BDNS con lo que ya sabe el caso. */
+export async function buscarEnFuentes(alertId: string): Promise<Resultado & { resumen?: string }> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const { data: caso } = await supabase
+    .from('watchdog_alerts')
+    .select(
+      'title, organismo, adjudicatario, adjudicatario_nif, importe_denunciado_cents, importe_oficial_cents, hechos_html, fuente:watchdog_sources(transcript, message_text)',
+    )
+    .eq('id', alertId)
+    .single();
+  if (!caso) return { error: 'Caso no encontrado.' };
+  const fuente = (Array.isArray(caso.fuente) ? caso.fuente[0] : caso.fuente) as
+    | { transcript: string | null; message_text: string | null }
+    | null;
+
+  const r = await verificarEnFuentes(
+    createAdminClient(),
+    alertId,
+    {
+      nif: caso.adjudicatario_nif,
+      beneficiario: caso.adjudicatario,
+      importeCents: caso.importe_oficial_cents ?? caso.importe_denunciado_cents,
+      organismo: caso.organismo,
+      texto: [caso.title, caso.hechos_html, fuente?.transcript, fuente?.message_text].filter(Boolean).join(' '),
+    },
+    user.id,
+  );
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'vigia.search_sources',
+    entity: 'watchdog_alerts',
+    entityId: alertId,
+    meta: { encontrados: r.encontrados, claro: r.claro, copias: r.copias, errores: r.errores },
+  });
+  refrescar(alertId);
+  if (!r.encontrados) {
+    return { error: r.errores.length ? `No se pudo consultar la BDNS: ${r.errores[0]}` : 'No hay coincidencias en la BDNS con estos datos. Prueba a completar el adjudicatario o el NIF.' };
+  }
+  return {
+    ok: true,
+    resumen: `${r.encontrados} candidato${r.encontrados === 1 ? '' : 's'} en la BDNS${r.claro ? ', uno claro: rellenado y marcado como principal' : ''}. ${r.copias} copia${r.copias === 1 ? '' : 's'} sellada${r.copias === 1 ? '' : 's'}.`,
+  };
+}
+
+/** Copia sellada de una prueba añadida a mano. */
+export async function copiarPrueba(alertId: string, evidenceId: string): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const { data: ev } = await supabase.from('watchdog_evidence').select('url').eq('id', evidenceId).eq('alert_id', alertId).single();
+  if (!ev) return { error: 'Prueba no encontrada.' };
+  try {
+    await guardarCopia(createAdminClient(), { alertId, evidenceId, tipo: 'prueba', url: ev.url, createdBy: user.id });
+  } catch (e) {
+    return { error: `No se pudo copiar: ${e instanceof Error ? e.message : e}` };
+  }
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.snapshot', entity: 'watchdog_alerts', entityId: alertId, meta: { evidenceId } });
+  refrescar(alertId);
+  return { ok: true };
+}
+
+/** Copia de respaldo del origen (artículo o web). */
+export async function copiarOrigenCaso(alertId: string): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const { data: caso } = await supabase.from('watchdog_alerts').select('reel_url').eq('id', alertId).single();
+  const r = await copiarOrigen(createAdminClient(), alertId, caso?.reel_url ?? null, user.id);
+  if (r === 'sin_url') return { error: 'El caso no tiene enlace de origen.' };
+  if (r === 'red_social') return { error: 'Es un reel: su copia es el vídeo, que guarda el bot al recibirlo.' };
+  if (r !== 'copiado') return { error: `No se pudo copiar: ${r}` };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.snapshot_origin', entity: 'watchdog_alerts', entityId: alertId });
+  refrescar(alertId);
+  return { ok: true };
+}
+
+/** Enlace temporal (10 min) para descargar una copia del bucket privado. */
+export async function enlaceCopia(copiaId: string): Promise<{ url: string } | { error: string }> {
+  const { supabase } = await requireAuditor(RUTA);
+  // Leer la fila con el cliente del usuario: la RLS confirma que es auditor.
+  const { data: copia } = await supabase.from('watchdog_copias').select('storage_path').eq('id', copiaId).single();
+  if (!copia) return { error: 'Copia no encontrada.' };
+  const { data, error } = await createAdminClient().storage.from(BUCKET_COPIAS).createSignedUrl(copia.storage_path, 600);
+  if (error || !data) return { error: error?.message ?? 'No se pudo generar el enlace.' };
+  return { url: data.signedUrl };
 }

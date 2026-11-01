@@ -5,6 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { columnasDesdeExtraccion, confianzas } from '@/lib/vigia/extraccion';
 import { autorPorDefecto, limpiarUrlReel } from '@/lib/vigia/casos';
 import { RASTRO_BASE, citaElRastro, descargarExpedientes, elegir, esNifPersonaFisica, puntuar } from '@/lib/vigia/rastro';
+import { copiarOrigen, verificarEnFuentes } from '@/lib/vigia/verificar';
 
 /**
  * Entrada del bot de Telegram (n8n) cuando alguien pulsa "🔍 Es una auditoría"
@@ -123,13 +124,43 @@ export async function POST(req: Request) {
       await admin.from('watchdog_sources').update({ status: 'en_revision' }).eq('id', data.id);
 
       const transcript = texto(body.transcript, 20000);
-      if (citaElRastro(mensaje, transcript)) {
-        await enlazarConElRastro(admin, caso.id, {
-          importeCents: columnas?.importe_denunciado_cents ?? null,
-          organismo: columnas?.organismo ?? null,
-          texto: [transcript, mensaje, columnas?.title].filter(Boolean).join(' '),
-        }).catch((e) => console.error('[auditoria/ingest] rastro', e instanceof Error ? e.message : e));
+      const textoReel = [transcript, mensaje, columnas?.title].filter(Boolean).join(' ');
+      const pista = {
+        importeCents: columnas?.importe_denunciado_cents ?? null,
+        organismo: columnas?.organismo ?? null,
+        texto: textoReel,
+      };
+
+      // 1. Pista de El Rastro del Dinero (si el reel la cita): NIF y código BDNS.
+      const rastro = citaElRastro(mensaje, transcript)
+        ? await pistaDelRastro(pista).catch((e) => {
+            console.error('[auditoria/ingest] rastro', e instanceof Error ? e.message : e);
+            return null;
+          })
+        : null;
+
+      // 2. Comprobación contra la fuente oficial (BDNS), con copia sellada.
+      const verif = await verificarEnFuentes(admin, caso.id, {
+        ...pista,
+        nif: rastro?.nif ?? null,
+        beneficiario: rastro?.beneficiario ?? columnas?.adjudicatario ?? null,
+        codigoBdns: rastro?.bdns ?? null,
+      }).catch((e) => {
+        console.error('[auditoria/ingest] verificar', e instanceof Error ? e.message : e);
+        return null;
+      });
+      if (verif?.errores.length) console.error('[auditoria/ingest] verificar', verif.errores.join(' | '));
+
+      // 3. Si la BDNS no respondió pero El Rastro sí encontró el caso, sus
+      //    candidatos entran como pruebas (con el enlace oficial que dan).
+      if (!verif?.encontrados && rastro) {
+        await enlazarConElRastro(admin, caso.id, pista).catch((e) =>
+          console.error('[auditoria/ingest] rastro', e instanceof Error ? e.message : e),
+        );
       }
+
+      // 4. Copia de respaldo del origen (artículos y webs; el vídeo lo sube n8n).
+      await copiarOrigen(admin, caso.id, limpiarUrlReel(enlace));
     }
   }
 
@@ -194,4 +225,11 @@ async function enlazarConElRastro(
       })
       .eq('id', casoId);
   }
+}
+
+/** Lo que El Rastro del Dinero sabe del caso del reel: solo si el emparejamiento es claro. */
+async function pistaDelRastro(pista: { importeCents: number | null; organismo: string | null; texto: string }) {
+  const { claro } = elegir((await descargarExpedientes()).map((e) => puntuar(e, pista)));
+  if (!claro) return null;
+  return { bdns: claro.expediente.bdns, nif: claro.expediente.nif, beneficiario: claro.expediente.beneficiario };
 }

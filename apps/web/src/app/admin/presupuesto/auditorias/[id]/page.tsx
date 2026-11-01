@@ -5,6 +5,8 @@ import { requireAuditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
 import { htmlATexto } from '@/lib/vigia/casos';
 import { CasoClient, type Caso, type Prueba } from './CasoClient';
+import { CopiasCaso, type Copia } from './CopiasCaso';
+import { esRedSocial } from '@/lib/vigia/copias';
 import { EnlacesCaso, type PartidaEnlazada, type PartidaOpcion, type Solicitud } from './EnlacesCaso';
 
 export const metadata: Metadata = metadatosPagina({
@@ -25,7 +27,7 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const { supabase } = await requireAuditor(`/admin/presupuesto/auditorias/${id}`);
 
-  const [{ data: caso }, { data: pruebas }, { data: propuestas }, { data: partidas }, { data: enlaces }, { data: solicitudes }] = await Promise.all([
+  const [{ data: caso }, { data: pruebas }, { data: propuestas }, { data: partidas }, { data: enlaces }, { data: solicitudes }, { data: copias }] = await Promise.all([
     supabase
       .from('watchdog_alerts')
       .select(
@@ -52,6 +54,11 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       )
       .eq('alert_id', id)
       .order('created_at'),
+    supabase
+      .from('watchdog_copias')
+      .select('id, tipo, metodo, url, sha256, bytes, capturada_at, notas')
+      .eq('alert_id', id)
+      .order('capturada_at', { ascending: false }),
   ]);
 
   if (!caso) notFound();
@@ -89,6 +96,11 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
         ← Bandeja de auditorías
       </Link>
       <CasoClient caso={caso as unknown as Caso} pruebas={(pruebas ?? []) as Prueba[]} />
+      <CopiasCaso
+        alertId={caso.id}
+        copias={(copias ?? []) as Copia[]}
+        esRedSocial={Boolean(caso.reel_url && esRedSocial(caso.reel_url))}
+      />
       <EnlacesCaso
         alertId={caso.id}
         tituloCaso={caso.title}

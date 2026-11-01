@@ -73,6 +73,8 @@ export async function middleware(request: NextRequest) {
       // Entrada del bot de Telegram (auditorías, D-A17): mismo caso, la llama
       // n8n sin sesión con `Bearer VIGIA_INGEST_SECRET`. Sin él, 401.
       pathname === '/api/auditoria/ingest' ||
+      // Y la copia de respaldo del vídeo del reel (0074), con el mismo secreto.
+      pathname === '/api/auditoria/copia' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';

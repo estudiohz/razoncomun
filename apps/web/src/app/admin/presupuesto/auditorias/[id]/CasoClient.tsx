@@ -19,6 +19,8 @@ import {
   anadirPrueba,
   aprobarCaso,
   borrarPrueba,
+  buscarEnFuentes,
+  copiarPrueba,
   descartarCaso,
   guardarCaso,
   marcarPrincipal,
@@ -149,11 +151,11 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
   const hayPrincipal = pruebas.some((p) => p.selected);
   const bloqueos = bloqueosAprobar(caso, hayPrincipal, checklist);
 
-  function lanzar(accion: () => Promise<{ ok: true } | { error: string }>, exito: string) {
+  function lanzar(accion: () => Promise<({ ok: true } | { error: string }) & { resumen?: string }>, exito: string) {
     setAviso(null);
     start(async () => {
       const r = await accion();
-      setAviso('error' in r ? { tipo: 'error', texto: r.error } : { tipo: 'ok', texto: exito });
+      setAviso('error' in r ? { tipo: 'error', texto: r.error } : { tipo: 'ok', texto: r.resumen ?? exito });
     });
   }
 
@@ -583,9 +585,9 @@ function Pruebas({
   pruebas: Prueba[];
   cerrado: boolean;
   pendiente: boolean;
-  lanzar: (accion: () => Promise<{ ok: true } | { error: string }>, exito: string) => void;
+  lanzar: (accion: () => Promise<({ ok: true } | { error: string }) & { resumen?: string }>, exito: string) => void;
 }) {
-  const [abierto, setAbierto] = useState(pruebas.length === 0);
+  const [abierto, setAbierto] = useState(false);
 
   return (
     <section className={cn(tarjeta, 'space-y-4')}>
@@ -595,6 +597,22 @@ function Pruebas({
           El expediente en la fuente oficial. Una de ellas es la principal: es la que se enseñará en la ficha.
         </p>
       </div>
+
+      {!cerrado && (
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            disabled={pendiente}
+            className={botonPrincipal}
+            onClick={() => lanzar(() => buscarEnFuentes(caso.id), 'Búsqueda hecha.')}
+          >
+            {pendiente ? 'Buscando…' : '🔎 Buscar en fuentes oficiales'}
+          </button>
+          <span className="text-[12px] text-gris">
+            Consulta la BDNS con el NIF, el beneficiario y el importe, y guarda copia sellada de lo que encuentre.
+          </span>
+        </div>
+      )}
 
       {pruebas.length === 0 && <p className="text-[13px] text-cuerpo">Todavía no hay ninguna.</p>}
 
@@ -621,11 +639,25 @@ function Pruebas({
                 </p>
                 {p.notes && <p className="mt-1 whitespace-pre-wrap">{p.notes}</p>}
                 <p className="mt-1 text-[12px] text-gris">
-                  {p.snapshot_sha256 ? 'Copia sellada guardada.' : 'Sin copia sellada (se añade al publicar, F2).'}
+                  {p.snapshot_sha256 ? (
+                    <>✔ Copia sellada guardada · sha256 {p.snapshot_sha256.slice(0, 12)}…</>
+                  ) : (
+                    'Sin copia sellada: hace falta una para poder publicar.'
+                  )}
                 </p>
               </div>
               {!cerrado && (
                 <div className="flex gap-2">
+                  {!p.snapshot_sha256 && (
+                    <button
+                      type="button"
+                      disabled={pendiente}
+                      className={botonSecundario}
+                      onClick={() => lanzar(() => copiarPrueba(caso.id, p.id), 'Copia sellada guardada.')}
+                    >
+                      Guardar copia
+                    </button>
+                  )}
                   {!p.selected && (
                     <button
                       type="button"
