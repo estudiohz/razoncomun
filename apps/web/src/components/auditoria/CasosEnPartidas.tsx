@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { MencionOrigen } from './MencionOrigen';
 
 const euros = (c: number) => (c / 100).toLocaleString('es-ES', { maximumFractionDigits: 2 });
 
@@ -11,6 +12,9 @@ interface Fila {
     organismo: string | null;
     importe_oficial_cents: number | null;
     status: string;
+    reel_url: string | null;
+    reel_autor: string | null;
+    reel_autor_url: string | null;
     evidencia: { url: string; selected: boolean }[];
   } | null;
 }
@@ -26,7 +30,7 @@ export async function CasosEnPartidas({ partidaIds, interno = false }: { partida
   const { data } = await supabase
     .from('watchdog_alert_partidas')
     .select(
-      'partida_id, nota, caso:watchdog_alerts(id, title, organismo, importe_oficial_cents, status, evidencia:watchdog_evidence(url, selected))',
+      'partida_id, nota, caso:watchdog_alerts(id, title, organismo, importe_oficial_cents, status, reel_url, reel_autor, reel_autor_url, evidencia:watchdog_evidence(url, selected))',
     )
     .in('partida_id', partidaIds.slice(0, 300));
 
@@ -65,6 +69,7 @@ export async function CasosEnPartidas({ partidaIds, interno = false }: { partida
                   .filter(Boolean)
                   .join(' · ')}
               </p>
+              <MencionOrigen url={c.reel_url} autor={c.reel_autor} autorUrl={c.reel_autor_url} className="mt-1" />
               {oficial && (
                 <a href={oficial} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-[13px] font-semibold">
                   Fuente oficial ↗

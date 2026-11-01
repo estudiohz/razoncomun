@@ -41,6 +41,8 @@ export interface CasoParaReglas {
   replica_solicitada_at: string | null;
   hechos_html: string | null;
   verificacion: string | null;
+  reel_url: string | null;
+  reel_autor: string | null;
 }
 
 /**
@@ -68,6 +70,9 @@ export function bloqueosAprobar(
   if (!caso.hechos_html?.trim()) motivos.push('Falta el bloque de hechos verificados.');
   if (!caso.verificacion) motivos.push('Falta indicar si el reel coincide con la fuente oficial.');
   if (!pruebaPrincipal) motivos.push('Falta marcar una prueba oficial como principal.');
+  if (!caso.reel_url?.trim() || !caso.reel_autor?.trim()) {
+    motivos.push('Falta citar el origen: enlace y autor o medio (0073).');
+  }
   if (replicaObligatoria(caso) && !caso.replica_solicitada_at) {
     motivos.push('Nombra a una empresa o persona: hay que pedir réplica antes de aprobar (D-A13).');
   }
@@ -117,4 +122,45 @@ export function htmlATexto(html: string | null | undefined): string {
     .replace(/<br\s*\/?>/g, '\n')
     .replace(/<\/?p>/g, '')
     .replace(/&(amp|lt|gt|quot|#39);/g, (_, e: string) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" })[e]!);
+}
+
+/**
+ * Enlace del reel listo para citar en público (0073): sin parámetros de
+ * seguimiento en Instagram y TikTok (`?utm_source=…&srtk=…`). En YouTube el
+ * `?v=` es parte del enlace y se deja tal cual.
+ */
+export function limpiarUrlReel(url: string | null | undefined): string | null {
+  const u = url?.trim();
+  if (!u || !/^https?:\/\//i.test(u)) return null;
+  return /^https?:\/\/(www\.)?(instagram\.com|tiktok\.com)\//i.test(u) ? u.replace(/[?#].*$/, '') : u;
+}
+
+/** '@usuario' a partir de lo que escriba el auditor ("elrastrodeldinero", "@x", la URL del perfil…). */
+export function normalizarAutor(texto: string | null | undefined): string | null {
+  const t = texto?.trim();
+  if (!t) return null;
+  const perfil = t.match(/instagram\.com\/([A-Za-z0-9._]+)/i)?.[1];
+  const usuario = (perfil ?? t).replace(/^@/, '');
+  return /^[A-Za-z0-9._]{1,60}$/.test(usuario) ? `@${usuario}` : t.slice(0, 120);
+}
+
+/** Perfil de Instagram de un autor '@usuario' (null si no es un @usuario). */
+export function perfilDeAutor(autor: string | null): string | null {
+  const m = autor?.match(/^@([A-Za-z0-9._]{1,60})$/);
+  return m ? `https://www.instagram.com/${m[1]}/` : null;
+}
+
+/**
+ * Autor por defecto de un origen que no es una red social (artículo, web):
+ * el dominio, sin www. En Instagram/TikTok/YouTube el enlace no dice el autor
+ * y lo completa el auditor (o El Rastro, si el reel lo cita).
+ */
+export function autorPorDefecto(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    return /(^|\.)(instagram\.com|tiktok\.com|youtube\.com|youtu\.be)$/i.test(host) ? null : host;
+  } catch {
+    return null;
+  }
 }

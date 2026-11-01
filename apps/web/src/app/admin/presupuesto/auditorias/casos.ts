@@ -12,6 +12,10 @@ import {
   VERIFICACIONES,
   bloqueosAprobar,
   eurosACentimos,
+  autorPorDefecto,
+  limpiarUrlReel,
+  normalizarAutor,
+  perfilDeAutor,
   textoAHtml,
   type EstadoCaso,
 } from '@/lib/vigia/casos';
@@ -66,6 +70,8 @@ export async function abrirCaso(sourceId: string) {
       description: resumen.slice(0, 4000),
       status: 'flagged',
       source_id: sourceId,
+      reel_url: limpiarUrlReel(fuente.permalink),
+      reel_autor: autorPorDefecto(fuente.permalink),
       created_by: user.id,
     })
     .select('id')
@@ -131,7 +137,11 @@ export async function guardarCaso(id: string, formData: FormData): Promise<Resul
     hechos_html: textoAHtml(texto(formData.get('hechos'), 8000)),
     valoracion_html: textoAHtml(texto(formData.get('valoracion'), 8000)),
     replica_texto: texto(formData.get('replica_texto'), 8000),
+    reel_url: limpiarUrlReel(texto(formData.get('reel_url'), 1000)),
+    reel_autor: normalizarAutor(texto(formData.get('reel_autor'), 120)),
+    reel_autor_url: perfilDeAutor(normalizarAutor(texto(formData.get('reel_autor'), 120))),
   };
+  if (texto(formData.get('reel_url'), 1000) && !cambios.reel_url) return { error: 'El enlace del reel no es válido.' };
 
   // Un caso ya verificado no se retoca a escondidas: hay que reabrirlo.
   const { data: actual } = await supabase.from('watchdog_alerts').select('status').eq('id', id).single();
@@ -225,7 +235,7 @@ export async function aprobarCaso(id: string, checklist: string[]): Promise<Resu
   const [{ data: caso }, { count }] = await Promise.all([
     supabase
       .from('watchdog_alerts')
-      .select('status, adjudicatario, es_persona_fisica, replica_solicitada_at, hechos_html, verificacion, source_id')
+      .select('status, adjudicatario, es_persona_fisica, replica_solicitada_at, hechos_html, verificacion, source_id, reel_url, reel_autor')
       .eq('id', id)
       .single(),
     supabase.from('watchdog_evidence').select('id', { count: 'exact', head: true }).eq('alert_id', id).eq('selected', true),

@@ -43,6 +43,9 @@ export interface Caso {
   verificacion: string | null;
   hechos_html: string | null;
   valoracion_html: string | null;
+  reel_url: string | null;
+  reel_autor: string | null;
+  reel_autor_url: string | null;
   ai_extraction: (Record<string, unknown> & { _confianzas?: Partial<Record<CampoConConfianza, number>> }) | null;
   ai_model: string | null;
   replica_solicitada_at: string | null;
@@ -248,6 +251,48 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
           lanzar(() => guardarCaso(caso.id, datos), 'Caso guardado.');
         }}
       >
+        <fieldset disabled={cerrado || pendiente} className={cn(tarjeta, 'space-y-4')}>
+          <legend className="sr-only">Origen</legend>
+          <div>
+            <h2 className="text-[15px] font-extrabold text-titular">Origen</h2>
+            <p className="mt-1 text-[12.5px] text-gris">
+              El reel, artículo o web del que nace el caso. Se cita siempre en la ficha pública: es trabajo de otros. Sin enlace y autor no se puede aprobar.
+            </p>
+          </div>
+          <div className="grid gap-4 min-[720px]:grid-cols-[2fr_1fr]">
+            <div>
+              <label className={etiqueta} htmlFor="reel_url">
+                Enlace (reel, artículo o web)
+              </label>
+              <input
+                id="reel_url"
+                name="reel_url"
+                type="url"
+                defaultValue={caso.reel_url ?? ''}
+                placeholder="https://…"
+                className={control}
+              />
+            </div>
+            <div>
+              <label className={etiqueta} htmlFor="reel_autor">
+                Autor o medio
+              </label>
+              <input
+                id="reel_autor"
+                name="reel_autor"
+                defaultValue={caso.reel_autor ?? ''}
+                placeholder="@usuario o nombre del medio"
+                className={control}
+              />
+            </div>
+          </div>
+          {caso.reel_url && (
+            <a href={caso.reel_url} target="_blank" rel="noopener noreferrer nofollow" className="text-[13px] font-semibold">
+              Abrir el origen ↗
+            </a>
+          )}
+        </fieldset>
+
         <fieldset disabled={cerrado || pendiente} className={cn(tarjeta, 'space-y-4')}>
           <legend className="sr-only">Datos del contrato</legend>
           <h2 className="text-[15px] font-extrabold text-titular">Datos del contrato</h2>

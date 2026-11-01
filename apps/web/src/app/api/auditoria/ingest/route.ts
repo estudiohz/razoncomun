@@ -3,6 +3,7 @@ import { timingSafeEqual } from 'node:crypto';
 import { createAdminClient } from '@/lib/supabase/admin';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { columnasDesdeExtraccion, confianzas } from '@/lib/vigia/extraccion';
+import { autorPorDefecto, limpiarUrlReel } from '@/lib/vigia/casos';
 import { RASTRO_BASE, citaElRastro, descargarExpedientes, elegir, esNifPersonaFisica, puntuar } from '@/lib/vigia/rastro';
 
 /**
@@ -102,6 +103,13 @@ export async function POST(req: Request) {
         description: resumen.slice(0, 4000),
         status: columnas ? 'analyzed' : 'flagged',
         source_id: data.id,
+        // Mención del origen (0073): reel, artículo o web. Si cita El Rastro
+        // del Dinero, el autor es su creador; si es una web, su dominio; si
+        // no, lo completa el auditor.
+        reel_url: limpiarUrlReel(enlace),
+        ...(citaElRastro(mensaje, texto(body.transcript, 20000))
+          ? { reel_autor: '@elrastrodeldinero', reel_autor_url: 'https://www.instagram.com/elrastrodeldinero/' }
+          : { reel_autor: autorPorDefecto(enlace) }),
         ai_extraction: extraccion ? { ...extraccion, _confianzas: confianzas(extraccion) } : null,
         ai_model: texto(body.ai_model, 100),
       })
