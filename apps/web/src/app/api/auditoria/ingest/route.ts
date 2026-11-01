@@ -89,6 +89,7 @@ export async function POST(req: Request) {
 
   // Un caso por envío: si n8n reintenta, no se duplica.
   let casoId: string | null = null;
+  let diagnostico: { encontrados: number; errores: string[] } | null = null;
   const { data: existente } = await admin.from('watchdog_alerts').select('id').eq('source_id', data.id).maybeSingle();
   if (existente) {
     casoId = existente.id;
@@ -150,6 +151,7 @@ export async function POST(req: Request) {
         return null;
       });
       if (verif?.errores.length) console.error('[auditoria/ingest] verificar', verif.errores.join(' | '));
+      diagnostico = { encontrados: verif?.encontrados ?? 0, errores: (verif?.errores ?? ['la verificación no respondió']).slice(0, 5) };
 
       // 3. Si la BDNS no respondió pero El Rastro sí encontró el caso, sus
       //    candidatos entran como pruebas (con el enlace oficial que dan).
@@ -166,7 +168,7 @@ export async function POST(req: Request) {
 
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://razoncomun.com';
   const ruta = casoId ? `/admin/presupuesto/auditorias/${casoId}` : '/admin/presupuesto/auditorias';
-  return NextResponse.json({ ok: true, id: data.id, caso_id: casoId, admin_url: `${base}${ruta}` });
+  return NextResponse.json({ ok: true, id: data.id, caso_id: casoId, admin_url: `${base}${ruta}`, verificacion: diagnostico });
 }
 
 /**
