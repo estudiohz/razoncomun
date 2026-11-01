@@ -6,6 +6,7 @@ import { listarParametros, listarPartidas, subarbol } from '@/lib/simulador/admi
 import { resolver } from '@/lib/simulador/resolver';
 import { formatoEuros } from '@/lib/simulador/formato';
 import { TableroClient, type Ficha } from './TableroClient';
+import { PestanasPresupuesto } from './PestanasPresupuesto';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Admin — Presupuesto del País',
@@ -51,6 +52,7 @@ export default async function AdminPresupuestoPage() {
 
   return (
     <div className="space-y-6">
+      <PestanasPresupuesto activa="presupuesto" />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[24px] font-extrabold text-titular">Presupuesto del País</h1>
