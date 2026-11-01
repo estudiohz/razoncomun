@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'node:crypto';
 import { createAdminClient } from '@/lib/supabase/admin';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { columnasDesdeExtraccion, confianzas } from '@/lib/vigia/extraccion';
+import { RASTRO_BASE, citaElRastro, descargarExpedientes, elegir, esNifPersonaFisica, puntuar } from '@/lib/vigia/rastro';
 
 /**
  * Entrada del bot de Telegram (n8n) cuando alguien pulsa "🔍 Es una auditoría"
@@ -111,10 +113,77 @@ export async function POST(req: Request) {
     } else {
       casoId = caso.id;
       await admin.from('watchdog_sources').update({ status: 'en_revision' }).eq('id', data.id);
+
+      const transcript = texto(body.transcript, 20000);
+      if (citaElRastro(mensaje, transcript)) {
+        await enlazarConElRastro(admin, caso.id, {
+          importeCents: columnas?.importe_denunciado_cents ?? null,
+          organismo: columnas?.organismo ?? null,
+          texto: [transcript, mensaje, columnas?.title].filter(Boolean).join(' '),
+        }).catch((e) => console.error('[auditoria/ingest] rastro', e instanceof Error ? e.message : e));
+      }
     }
   }
 
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://razoncomun.com';
   const ruta = casoId ? `/admin/presupuesto/auditorias/${casoId}` : '/admin/presupuesto/auditorias';
   return NextResponse.json({ ok: true, id: data.id, caso_id: casoId, admin_url: `${base}${ruta}` });
+}
+
+/**
+ * El reel cita elrastrodeldinero.com (el creador nos ha dado permiso, D-A03):
+ * se busca su expediente allí. Los candidatos entran como pruebas BDNS con el
+ * enlace oficial; si uno encaja claramente, rellena el caso con sus datos
+ * (beneficiario, NIF, importe, fecha) y queda como prueba principal. El
+ * auditor sigue siendo quien confirma contra la fuente oficial y firma.
+ */
+async function enlazarConElRastro(
+  admin: SupabaseClient,
+  casoId: string,
+  pista: { importeCents: number | null; organismo: string | null; texto: string },
+) {
+  const expedientes = await descargarExpedientes();
+  if (!expedientes.length) return;
+
+  const { mejores, claro } = elegir(expedientes.map((e) => puntuar(e, pista)));
+  if (!mejores.length) return;
+
+  const filas = mejores.map((c) => {
+    const e = c.expediente;
+    const pagina = `${RASTRO_BASE}/ministerio/${encodeURIComponent(e.ministerioSlug)}`;
+    return {
+      alert_id: casoId,
+      source_kind: 'bdns',
+      expediente: e.bdns,
+      organo: e.ministerio || null,
+      adjudicatario: e.beneficiario,
+      nif: e.nif,
+      importe_cents: e.importeCents,
+      fecha: e.fechaConcesion,
+      url: e.fuentes[0] ?? pagina,
+      raw: { origen: 'elrastrodeldinero', pagina, ...e.raw },
+      match_score: c.score,
+      matched_by: 'auto',
+      selected: c === claro,
+      notes: `Encontrado en El Rastro del Dinero (${pagina}). ${c.señales.join('; ')}.`.slice(0, 2000),
+    };
+  });
+  const { error } = await admin.from('watchdog_evidence').insert(filas);
+  if (error) throw new Error(error.message);
+
+  if (claro) {
+    const e = claro.expediente;
+    await admin
+      .from('watchdog_alerts')
+      .update({
+        organismo: e.ministerio || undefined,
+        adjudicatario: e.beneficiario,
+        adjudicatario_nif: e.nif,
+        es_persona_fisica: esNifPersonaFisica(e.nif),
+        importe_oficial_cents: e.importeCents,
+        fecha_adjudicacion: e.fechaConcesion,
+        categoria: /subvenci/i.test(`${e.tipoConvocatoria} ${e.titulo}`) ? 'subvencion' : undefined,
+      })
+      .eq('id', casoId);
+  }
 }
