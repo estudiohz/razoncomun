@@ -609,7 +609,7 @@ function Pruebas({
             {pendiente ? 'Buscando…' : '🔎 Buscar en fuentes oficiales'}
           </button>
           <span className="text-[12px] text-gris">
-            Consulta la BDNS con el NIF, el beneficiario y el importe, y guarda copia sellada de lo que encuentre.
+            Consulta la BDNS (subvenciones) y el BOE (contratos) con el NIF, el beneficiario, el importe y el expediente, y guarda copia sellada de lo que encuentre.
           </span>
         </div>
       )}

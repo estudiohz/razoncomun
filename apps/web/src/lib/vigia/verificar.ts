@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { buscarEnBdns, concesionesDeConvocatoria, puntuarConcesion, type CandidatoBdns, type PistaBdns } from './bdns';
+import { descargarAnuncio, palabrasClave, type AnuncioBoe } from './boe';
 import { esRedSocial, guardarCopia } from './copias';
 import { esNifPersonaFisica } from './rastro';
 
@@ -32,7 +33,7 @@ function elegirClaro(c: CandidatoBdns[]): CandidatoBdns | null {
 export async function verificarEnFuentes(
   admin: SupabaseClient,
   alertId: string,
-  pista: PistaBdns & { codigoBdns?: string | null },
+  pista: PistaBdns & { codigoBdns?: string | null; expediente?: string | null },
   createdBy: string | null = null,
 ): Promise<ResultadoVerificacion> {
   const errores: string[] = [];
@@ -68,7 +69,20 @@ export async function verificarEnFuentes(
     vistos.add(k);
     return true;
   });
-  if (!candidatos.length) return { encontrados: 0, claro: false, copias: 0, errores };
+  if (!candidatos.length) {
+    // Sin subvención en la BDNS: se prueba en el BOE (contratos).
+    try {
+      const { data: existentes } = await admin.from('watchdog_evidence').select('selected').eq('alert_id', alertId);
+      const boe = await buscarEnBoe(admin, pista);
+      if (boe.length) {
+        const r = await guardarCandidatosBoe(admin, alertId, boe, (existentes ?? []).some((e) => e.selected), createdBy);
+        return { encontrados: boe.length, claro: Boolean(r.claro), copias: r.copias, errores: [...errores, ...r.errores] };
+      }
+    } catch (e) {
+      errores.push(`BOE: ${e instanceof Error ? e.message : e}`);
+    }
+    return { encontrados: 0, claro: false, copias: 0, errores };
+  }
 
   // No duplicar pruebas que ya están en el caso.
   const { data: existentes } = await admin.from('watchdog_evidence').select('url, expediente, selected').eq('alert_id', alertId);
@@ -142,6 +156,164 @@ export async function verificarEnFuentes(
   }
 
   return { encontrados: candidatos.length, claro: Boolean(claro), copias, errores };
+}
+
+// ── BOE (contratos y otras disposiciones) ───────────────────────────────────
+
+interface CandidatoBoe {
+  boe_id: string;
+  title: string;
+  url: string;
+  url_xml: string;
+  expediente: string | null;
+  published_date: string;
+  anuncio: AnuncioBoe;
+  score: number;
+  señales: string[];
+}
+
+function palabras(t: string): Set<string> {
+  return new Set(
+    t
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((p) => p.length >= 5),
+  );
+}
+
+export function puntuarAnuncio(
+  a: AnuncioBoe,
+  titulo: string,
+  p: { nif: string | null; beneficiario: string | null; importeCents: number | null; organismo: string | null; texto: string },
+): { score: number; señales: string[] } {
+  let score = 0;
+  const señales: string[] = [];
+  if (p.nif && a.adjudicatarioNif && p.nif.toUpperCase() === a.adjudicatarioNif) {
+    score += 0.4;
+    señales.push('mismo NIF');
+  }
+  if (p.importeCents && a.importeCents) {
+    const dif = Math.abs(p.importeCents - a.importeCents) / a.importeCents;
+    if (dif === 0) {
+      score += 0.4;
+      señales.push('mismo importe');
+    } else if (dif <= 0.02) {
+      score += 0.3;
+      señales.push('importe casi igual');
+    }
+  }
+  const delReel = palabras(`${p.texto} ${p.beneficiario ?? ''} ${p.organismo ?? ''}`);
+  const comunes = [...palabras(`${titulo} ${a.adjudicatario ?? ''}`)].filter((w) => delReel.has(w));
+  if (comunes.length) {
+    score += Math.min(0.3, comunes.length * 0.05);
+    señales.push(`palabras en común: ${comunes.slice(0, 6).join(', ')}`);
+  }
+  return { score: Math.round(Math.min(1, score) * 1000) / 1000, señales };
+}
+
+/**
+ * Busca en el índice del BOE (0076): por expediente si el reel lo da, si no
+ * por palabras clave en los títulos; lee el anuncio de los mejores y puntúa.
+ */
+export async function buscarEnBoe(
+  admin: SupabaseClient,
+  p: { nif: string | null; beneficiario: string | null; importeCents: number | null; organismo: string | null; texto: string; expediente?: string | null },
+): Promise<CandidatoBoe[]> {
+  type Fila = { boe_id: string; title: string; url: string; url_xml: string | null; expediente: string | null; published_date: string };
+  const filas = new Map<string, Fila>();
+  const sel = 'boe_id, title, url, url_xml, expediente, published_date';
+
+  if (p.expediente) {
+    const { data } = await admin.from('boe_items').select(sel).eq('expediente', p.expediente.trim()).limit(5);
+    (data ?? []).forEach((f) => filas.set(f.boe_id, f as Fila));
+  }
+  const claves = palabrasClave(`${p.beneficiario ?? ''} ${p.texto}`, 3);
+  if (claves.length >= 2) {
+    let q = admin.from('boe_items').select(sel).eq('seccion_codigo', '5A');
+    for (const k of claves) q = q.ilike('title', `%${k}%`);
+    const { data } = await q.order('published_date', { ascending: false }).limit(8);
+    (data ?? []).forEach((f) => filas.set(f.boe_id, f as Fila));
+  }
+
+  const leidos = await Promise.allSettled(
+    [...filas.values()]
+      .filter((f) => f.url_xml)
+      .slice(0, 8)
+      .map(async (f) => {
+        const { anuncio } = await descargarAnuncio(f.url_xml!);
+        const { score, señales } = puntuarAnuncio(anuncio, f.title, p);
+        return { ...f, url_xml: f.url_xml!, anuncio, score, señales };
+      }),
+  );
+  return leidos
+    .filter((r): r is PromiseFulfilledResult<CandidatoBoe> => r.status === 'fulfilled')
+    .map((r) => r.value)
+    .filter((c) => c.score >= 0.3)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+}
+
+/** Añade los candidatos del BOE como pruebas, con copia sellada del XML. */
+async function guardarCandidatosBoe(
+  admin: SupabaseClient,
+  alertId: string,
+  candidatos: CandidatoBoe[],
+  hayPrincipal: boolean,
+  createdBy: string | null,
+): Promise<{ claro: CandidatoBoe | null; copias: number; errores: string[] }> {
+  const errores: string[] = [];
+  const [a, b] = candidatos;
+  const claro = a && a.score >= SCORE_CLARO && (!b || a.score - b.score >= 0.1) ? a : null;
+  let copias = 0;
+  for (const c of candidatos) {
+    const { data: ev, error } = await admin
+      .from('watchdog_evidence')
+      .insert({
+        alert_id: alertId,
+        source_kind: 'boe',
+        expediente: [c.boe_id, c.expediente].filter(Boolean).join(' · '),
+        organo: c.anuncio.organo,
+        adjudicatario: c.anuncio.adjudicatario,
+        nif: c.anuncio.adjudicatarioNif,
+        importe_cents: c.anuncio.importeCents,
+        fecha: c.anuncio.fechaAdjudicacion ?? c.published_date,
+        url: c.url,
+        raw: { origen: 'boe', boe_id: c.boe_id, titulo: c.title, anuncio: c.anuncio },
+        match_score: c.score,
+        matched_by: 'auto',
+        selected: c === claro && !hayPrincipal,
+        notes: `Encontrado en el BOE (${c.published_date}). ${c.señales.join('; ')}.`.slice(0, 2000),
+        created_by: createdBy,
+      })
+      .select('id')
+      .single();
+    if (error || !ev) {
+      errores.push(`Prueba ${c.boe_id}: ${error?.message}`);
+      continue;
+    }
+    try {
+      await guardarCopia(admin, { alertId, evidenceId: ev.id, tipo: 'prueba', url: c.url_xml, createdBy });
+      copias++;
+    } catch (e) {
+      errores.push(`Copia de ${c.boe_id}: ${e instanceof Error ? e.message : e}`);
+    }
+  }
+  if (claro && !hayPrincipal) {
+    await admin
+      .from('watchdog_alerts')
+      .update({
+        adjudicatario: claro.anuncio.adjudicatario ?? undefined,
+        adjudicatario_nif: claro.anuncio.adjudicatarioNif ?? undefined,
+        es_persona_fisica: esNifPersonaFisica(claro.anuncio.adjudicatarioNif),
+        importe_oficial_cents: claro.anuncio.importeCents ?? undefined,
+        fecha_adjudicacion: claro.anuncio.fechaAdjudicacion ?? undefined,
+        organismo: claro.anuncio.organo ?? undefined,
+      })
+      .eq('id', alertId);
+  }
+  return { claro, copias, errores };
 }
 
 /**

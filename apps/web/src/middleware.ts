@@ -75,6 +75,8 @@ export async function middleware(request: NextRequest) {
       pathname === '/api/auditoria/ingest' ||
       // Y la copia de respaldo del vídeo del reel (0074), con el mismo secreto.
       pathname === '/api/auditoria/copia' ||
+      // Y el índice diario del BOE (0076), que llama un schedule de Dokploy.
+      pathname === '/api/auditoria/indexar-boe' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';

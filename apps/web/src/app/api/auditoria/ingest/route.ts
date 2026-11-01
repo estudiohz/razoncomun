@@ -146,6 +146,7 @@ export async function POST(req: Request) {
         nif: rastro?.nif ?? null,
         beneficiario: rastro?.beneficiario ?? columnas?.adjudicatario ?? null,
         codigoBdns: rastro?.bdns ?? null,
+        expediente: expedienteExtraido(body.extraction),
       }).catch((e) => {
         console.error('[auditoria/ingest] verificar', e instanceof Error ? e.message : e);
         return null;
@@ -234,4 +235,10 @@ async function pistaDelRastro(pista: { importeCents: number | null; organismo: s
   const { claro } = elegir((await descargarExpedientes()).map((e) => puntuar(e, pista)));
   if (!claro) return null;
   return { bdns: claro.expediente.bdns, nif: claro.expediente.nif, beneficiario: claro.expediente.beneficiario };
+}
+
+/** Expediente que la IA sacó del reel (si lo dice): la vía más precisa para buscar en el BOE. */
+function expedienteExtraido(extraccion: unknown): string | null {
+  const v = (extraccion as { expediente?: { value?: unknown } } | null)?.expediente?.value;
+  return typeof v === 'string' && v.trim() ? v.trim().slice(0, 120) : null;
 }

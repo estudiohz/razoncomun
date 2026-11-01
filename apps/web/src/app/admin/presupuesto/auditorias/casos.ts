@@ -448,13 +448,13 @@ export async function guardarSolicitud(alertId: string, id: string, formData: Fo
 
 // ── Fuentes oficiales y copias de respaldo (0074) ───────────────────────────
 
-/** "Buscar en fuentes oficiales": BDNS con lo que ya sabe el caso. */
+/** "Buscar en fuentes oficiales": BDNS (subvenciones) y, si no hay nada, BOE (contratos). */
 export async function buscarEnFuentes(alertId: string): Promise<Resultado & { resumen?: string }> {
   const { supabase, user } = await requireAuditor(RUTA);
   const { data: caso } = await supabase
     .from('watchdog_alerts')
     .select(
-      'title, organismo, adjudicatario, adjudicatario_nif, importe_denunciado_cents, importe_oficial_cents, hechos_html, fuente:watchdog_sources(transcript, message_text)',
+      'title, organismo, adjudicatario, adjudicatario_nif, importe_denunciado_cents, importe_oficial_cents, hechos_html, ai_extraction, fuente:watchdog_sources(transcript, message_text)',
     )
     .eq('id', alertId)
     .single();
@@ -472,6 +472,10 @@ export async function buscarEnFuentes(alertId: string): Promise<Resultado & { re
       importeCents: caso.importe_oficial_cents ?? caso.importe_denunciado_cents,
       organismo: caso.organismo,
       texto: [caso.title, caso.hechos_html, fuente?.transcript, fuente?.message_text].filter(Boolean).join(' '),
+      expediente: (() => {
+        const v = (caso.ai_extraction as { expediente?: { value?: unknown } } | null)?.expediente?.value;
+        return typeof v === 'string' && v.trim() ? v.trim() : null;
+      })(),
     },
     user.id,
   );
