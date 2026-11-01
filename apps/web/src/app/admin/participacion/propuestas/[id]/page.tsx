@@ -60,6 +60,17 @@ export default async function ModerarPropuestaPage({
         ← Volver al listado
       </a>
 
+      {/* 0072: nace de un caso de auditoría. El editor que no es auditor ve el
+          aviso, pero la ficha del caso solo la abren los auditores (D-A06). */}
+      {propuesta.source_alert_id && (
+        <p className="mt-3 rounded-boton border border-teal-texto/40 bg-teal-texto/5 px-4 py-2 text-[13.5px] text-cuerpo">
+          🔍 Nace de un caso de auditoría del gasto público ·{' '}
+          <a href={`/admin/presupuesto/auditorias/${propuesta.source_alert_id}`} className="font-bold">
+            Ver el caso
+          </a>
+        </p>
+      )}
+
       {fusionada && (
         <p className="mt-3 rounded-boton border border-linea bg-fondo px-4 py-2 text-[13.5px] font-semibold text-titular">
           Se ha recibido una fusión de otra propuesta duplicada.

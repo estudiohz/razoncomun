@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
+import { CasosEnPartidas } from '@/components/auditoria/CasosEnPartidas';
 import { listarDemografia, listarParametros, listarPartidas, subarbol } from '@/lib/simulador/adminData';
 import { listarMinisterios } from '@/lib/participacion/budget';
 import { AreaEditorClient } from './AreaEditorClient';
@@ -54,6 +55,8 @@ export default async function EditorAreaPage({ params }: { params: Promise<{ id:
         ministerios={ministerios.map((m) => ({ id: m.id, name: m.name }))}
         demografia={demografia}
       />
+      {/* 0072: casos de auditoría enlazados a esta área (los auditores los ven todos). */}
+      <CasosEnPartidas partidaIds={subarbolRaiz.map((p) => p.id)} interno />
     </div>
   );
 }

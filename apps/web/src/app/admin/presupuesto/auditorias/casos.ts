@@ -15,6 +15,9 @@ import {
   textoAHtml,
   type EstadoCaso,
 } from '@/lib/vigia/casos';
+import { ESTADOS_SOLICITUD, redactarSolicitud } from '@/lib/vigia/transparencia';
+import { DEPARTAMENTOS } from '@/lib/participacion/departments';
+import { generarSlugUnico } from '@/lib/participacion/proposals';
 
 /**
  * Ciclo de vida del caso de auditoría (doc 04 §4.5). Todas pasan por
@@ -284,5 +287,147 @@ export async function reabrirCaso(id: string): Promise<Resultado> {
   if (error) return { error: error.message };
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.reopen', entity: 'watchdog_alerts', entityId: id });
   refrescar(id);
+  return { ok: true };
+}
+
+// ── Caso → propuesta ────────────────────────────────────────────────────────
+
+/**
+ * Convierte el caso en una propuesta del tablero, enlazada a su origen
+ * (`source_alert_id`). Nace como BORRADOR: un editor la revisa y la abre a
+ * votación desde /admin/participacion, como las del RC-bot.
+ */
+export async function crearPropuestaDesdeCaso(alertId: string, formData: FormData): Promise<Resultado & { slug?: string }> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const titulo = texto(formData.get('titulo'), 200);
+  const cuerpo = texto(formData.get('cuerpo'), 8000);
+  const departamento = de(DEPARTAMENTOS, formData.get('departamento'));
+  if (!titulo || !cuerpo || !departamento) return { error: 'Faltan título, texto o departamento.' };
+  if (cuerpo.length < 40) return { error: 'El texto de la propuesta es demasiado corto.' };
+
+  const { data: ya } = await supabase.from('proposals').select('id').eq('source_alert_id', alertId).limit(1);
+  if (ya?.length) return { error: 'Este caso ya tiene una propuesta.' };
+
+  const slug = await generarSlugUnico(supabase, titulo);
+  const { data, error } = await supabase
+    .from('proposals')
+    .insert({
+      title: titulo,
+      body: textoAHtml(cuerpo),
+      body_format: 'html',
+      department: departamento,
+      question: texto(formData.get('pregunta'), 300),
+      author_id: user.id,
+      status: 'draft',
+      slug,
+      source_alert_id: alertId,
+    })
+    .select('id, slug')
+    .single();
+  if (error || !data) return { error: error?.message ?? 'No se pudo crear la propuesta.' };
+
+  await registrarAuditoria(supabase, {
+    actorId: user.id,
+    action: 'vigia.proposal_created',
+    entity: 'watchdog_alerts',
+    entityId: alertId,
+    meta: { proposalId: data.id },
+  });
+  refrescar(alertId);
+  return { ok: true, slug: data.slug ?? data.id };
+}
+
+// ── Caso ↔ partidas del simulador ───────────────────────────────────────────
+
+export async function vincularPartida(alertId: string, partidaId: string, nota: string): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  if (!partidaId) return { error: 'Elige una partida.' };
+  const { error } = await supabase
+    .from('watchdog_alert_partidas')
+    .upsert({ alert_id: alertId, partida_id: partidaId, nota: nota.trim().slice(0, 1000) || null, created_by: user.id });
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.partida_link', entity: 'watchdog_alerts', entityId: alertId, meta: { partidaId } });
+  refrescar(alertId);
+  return { ok: true };
+}
+
+export async function desvincularPartida(alertId: string, partidaId: string): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const { error } = await supabase.from('watchdog_alert_partidas').delete().eq('alert_id', alertId).eq('partida_id', partidaId);
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.partida_unlink', entity: 'watchdog_alerts', entityId: alertId, meta: { partidaId } });
+  refrescar(alertId);
+  return { ok: true };
+}
+
+// ── Solicitudes de transparencia ────────────────────────────────────────────
+
+/** Abre una solicitud en borrador, ya redactada con los datos del caso. */
+export async function prepararSolicitud(alertId: string): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const [{ data: caso }, { data: principal }] = await Promise.all([
+    supabase
+      .from('watchdog_alerts')
+      .select('organismo, adjudicatario, adjudicatario_nif, importe_oficial_cents, fecha_adjudicacion')
+      .eq('id', alertId)
+      .single(),
+    supabase.from('watchdog_evidence').select('source_kind, expediente, url').eq('alert_id', alertId).eq('selected', true).maybeSingle(),
+  ]);
+  if (!caso) return { error: 'Caso no encontrado.' };
+
+  const expediente = principal?.expediente
+    ? `${principal.source_kind === 'bdns' ? 'BDNS ' : ''}${principal.expediente}`
+    : null;
+  const { asunto, texto: cuerpo } = redactarSolicitud({ ...caso, expediente, urlOficial: principal?.url ?? null });
+  const { error } = await supabase.from('watchdog_transparency_requests').insert({
+    alert_id: alertId,
+    organismo: caso.organismo ?? 'Organismo por determinar',
+    asunto,
+    texto: cuerpo,
+    created_by: user.id,
+  });
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.transparency_draft', entity: 'watchdog_alerts', entityId: alertId });
+  refrescar(alertId);
+  return { ok: true };
+}
+
+function fechaODe(v: FormDataEntryValue | null): string | null {
+  const s = texto(v, 10);
+  return s && /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
+}
+
+/** Guarda el seguimiento: estado, número de registro, fechas y respuesta. */
+export async function guardarSolicitud(alertId: string, id: string, formData: FormData): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const estado = de(ESTADOS_SOLICITUD, formData.get('estado'));
+  if (!estado) return { error: 'Estado no válido.' };
+  const presentada = fechaODe(formData.get('presentada_at'));
+  if (estado !== 'borrador' && !presentada) return { error: 'Indica la fecha en que se presentó.' };
+  const respuestaUrl = texto(formData.get('respuesta_url'), 1000);
+  if (respuestaUrl && !/^https?:\/\//i.test(respuestaUrl)) return { error: 'El enlace de la respuesta debe empezar por http(s)://' };
+
+  const { error } = await supabase
+    .from('watchdog_transparency_requests')
+    .update({
+      estado,
+      organismo: texto(formData.get('organismo'), 300) ?? undefined,
+      asunto: texto(formData.get('asunto'), 250) ?? undefined,
+      texto: texto(formData.get('texto'), 10000) ?? undefined,
+      presentada_at: presentada,
+      numero_registro: texto(formData.get('numero_registro'), 100),
+      ampliada_at: fechaODe(formData.get('ampliada_at')),
+      respuesta_at: fechaODe(formData.get('respuesta_at')),
+      respuesta_texto: texto(formData.get('respuesta_texto'), 10000),
+      respuesta_url: respuestaUrl,
+      reclamacion_at: fechaODe(formData.get('reclamacion_at')),
+      reclamacion_numero: texto(formData.get('reclamacion_numero'), 100),
+      notas: texto(formData.get('notas'), 4000),
+    })
+    .eq('id', id)
+    .eq('alert_id', alertId);
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.transparency_update', entity: 'watchdog_alerts', entityId: alertId, meta: { solicitud: id, estado } });
+  refrescar(alertId);
   return { ok: true };
 }

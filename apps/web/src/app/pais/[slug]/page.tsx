@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { CasosEnPartidas } from '@/components/auditoria/CasosEnPartidas';
 import { notFound } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
@@ -65,6 +66,8 @@ export default async function PaisMinisterioPage({ params }: { params: Promise<{
       <div className="mt-6">
         <PanelMinisterio raizId={raiz.id} parametros={parametros} partidas={subtree} demografia={demografia} />
       </div>
+      {/* 0072: casos de auditoría publicados que caen en este ministerio. */}
+      <CasosEnPartidas partidaIds={subtree.map((p) => p.id)} />
     </Contenedor>
   );
 }

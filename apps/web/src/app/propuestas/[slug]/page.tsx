@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { OrigenAuditoria } from '@/components/auditoria/OrigenAuditoria';
 import { notFound, permanentRedirect, redirect } from 'next/navigation';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { Boton } from '@/components/ui/Boton';
@@ -222,6 +223,9 @@ export default async function PropuestaDetallePage({
             .
           </p>
         )}
+
+        {/* 0072: la propuesta nace de un caso de auditoría (solo si el caso está publicado). */}
+        <OrigenAuditoria alertId={propuesta.source_alert_id ?? null} />
 
         {/* D-P10: respuesta oficial fijada, destacada arriba. */}
         {propuesta.official_response && (

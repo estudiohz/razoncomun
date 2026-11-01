@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireAuditor } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
+import { htmlATexto } from '@/lib/vigia/casos';
 import { CasoClient, type Caso, type Prueba } from './CasoClient';
+import { EnlacesCaso, type PartidaEnlazada, type PartidaOpcion, type Solicitud } from './EnlacesCaso';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Admin — Caso de auditoría',
@@ -23,7 +25,7 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const { supabase } = await requireAuditor(`/admin/presupuesto/auditorias/${id}`);
 
-  const [{ data: caso }, { data: pruebas }] = await Promise.all([
+  const [{ data: caso }, { data: pruebas }, { data: propuestas }, { data: partidas }, { data: enlaces }, { data: solicitudes }] = await Promise.all([
     supabase
       .from('watchdog_alerts')
       .select(
@@ -40,9 +42,46 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       .select('id, source_kind, expediente, organo, adjudicatario, nif, importe_cents, fecha, url, snapshot_sha256, selected, notes')
       .eq('alert_id', id)
       .order('created_at'),
+    supabase.from('proposals').select('id, title, slug, status').eq('source_alert_id', id),
+    supabase.from('sim_partidas').select('id, parent_id, nombre, tipo, publicado, slug').order('orden'),
+    supabase.from('watchdog_alert_partidas').select('partida_id, nota').eq('alert_id', id),
+    supabase
+      .from('watchdog_transparency_requests')
+      .select(
+        'id, organismo, asunto, texto, estado, presentada_at, numero_registro, ampliada_at, respuesta_at, respuesta_texto, respuesta_url, reclamacion_at, reclamacion_numero, notas',
+      )
+      .eq('alert_id', id)
+      .order('created_at'),
   ]);
 
   if (!caso) notFound();
+
+  // Etiqueta con la ruta completa ("Gastos › Exteriores › Cooperación") para
+  // poder elegir la partida en un desplegable plano.
+  const porId = new Map((partidas ?? []).map((p) => [p.id, p]));
+  const ruta = (pid: string): string => {
+    const nombres: string[] = [];
+    let actual = porId.get(pid);
+    for (let i = 0; actual && i < 8; i++) {
+      nombres.unshift(actual.nombre);
+      actual = actual.parent_id ? porId.get(actual.parent_id) : undefined;
+    }
+    return nombres.join(' › ');
+  };
+  const opciones: PartidaOpcion[] = (partidas ?? [])
+    .map((p) => ({ id: p.id, etiqueta: `${p.tipo === 'ingreso' ? 'Ingreso' : 'Gasto'}: ${ruta(p.id)}`, publicado: p.publicado }))
+    .sort((a, b) => a.etiqueta.localeCompare(b.etiqueta, 'es'));
+  const enlazadas: PartidaEnlazada[] = (enlaces ?? []).map((e) => {
+    const p = porId.get(e.partida_id);
+    return {
+      partida_id: e.partida_id,
+      nota: e.nota,
+      etiqueta: p ? ruta(p.id) : 'Partida no visible',
+      slug: p?.slug ?? null,
+      publicado: Boolean(p?.publicado),
+    };
+  });
+  const hoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());
 
   return (
     <div className="space-y-6">
@@ -50,6 +89,16 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
         ← Bandeja de auditorías
       </Link>
       <CasoClient caso={caso as unknown as Caso} pruebas={(pruebas ?? []) as Prueba[]} />
+      <EnlacesCaso
+        alertId={caso.id}
+        tituloCaso={caso.title}
+        hechosTexto={htmlATexto(caso.hechos_html)}
+        propuestas={propuestas ?? []}
+        partidas={opciones}
+        partidasEnlazadas={enlazadas}
+        solicitudes={(solicitudes ?? []) as Solicitud[]}
+        hoy={hoy}
+      />
     </div>
   );
 }
