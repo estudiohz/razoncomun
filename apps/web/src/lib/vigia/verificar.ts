@@ -229,11 +229,17 @@ export async function buscarEnBoe(
     const { data } = await admin.from('boe_items').select(sel).eq('expediente', p.expediente.trim()).limit(5);
     (data ?? []).forEach((f) => filas.set(f.boe_id, f as Fila));
   }
-  const claves = palabrasClave(`${p.beneficiario ?? ''} ${p.texto}`, 3);
-  if (claves.length >= 2) {
+  // Palabras clave contra el título sin tildes (title_norm, 0076). Primero
+  // todas juntas; si no sale nada, por parejas: un anuncio no siempre repite
+  // en el título lo que dice el reel (p. ej. «peluquería» va en el CPV).
+  const claves = palabrasClave(`${p.beneficiario ?? ''} ${p.texto}`, 4);
+  const combinaciones: string[][] = [claves.slice(0, 3)];
+  for (let i = 0; i < claves.length; i++) for (let j = i + 1; j < claves.length; j++) combinaciones.push([claves[i], claves[j]]);
+  for (const combo of combinaciones) {
+    if (combo.length < 2 || filas.size >= 8) continue;
     let q = admin.from('boe_items').select(sel).eq('seccion_codigo', '5A');
-    for (const k of claves) q = q.ilike('title', `%${k}%`);
-    const { data } = await q.order('published_date', { ascending: false }).limit(8);
+    for (const k of combo) q = q.ilike('title_norm', `%${k}%`);
+    const { data } = await q.order('published_date', { ascending: false }).limit(5);
     (data ?? []).forEach((f) => filas.set(f.boe_id, f as Fila));
   }
 
