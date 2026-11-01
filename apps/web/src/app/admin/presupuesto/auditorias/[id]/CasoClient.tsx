@@ -25,6 +25,7 @@ import {
   pedirReplica,
   reabrirCaso,
 } from '../casos';
+import { CONFIANZA_MINIMA, lenguajeDeRiesgo, type CampoConConfianza } from '@/lib/vigia/extraccion';
 
 export interface Caso {
   id: string;
@@ -42,13 +43,21 @@ export interface Caso {
   verificacion: string | null;
   hechos_html: string | null;
   valoracion_html: string | null;
+  ai_extraction: (Record<string, unknown> & { _confianzas?: Partial<Record<CampoConConfianza, number>> }) | null;
+  ai_model: string | null;
   replica_solicitada_at: string | null;
   replica_texto: string | null;
   dismiss_reason: string | null;
   verified_at: string | null;
   created_at: string;
   revisor: { display_name: string | null; email: string | null } | null;
-  fuente: { permalink: string | null; message_text: string | null; telegram_from: string | null; received_at: string } | null;
+  fuente: {
+    permalink: string | null;
+    message_text: string | null;
+    telegram_from: string | null;
+    received_at: string;
+    transcript: string | null;
+  } | null;
 }
 
 export interface Prueba {
@@ -108,6 +117,24 @@ const COLOR_ESTADO: Record<EstadoCaso, string> = {
 };
 
 const fechaHora = new Intl.DateTimeFormat('es-ES', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Europe/Madrid' });
+
+/** Marca junto a la etiqueta: el dato lo puso la IA y con cuánta seguridad. */
+function MarcaIA({ caso, campo }: { caso: Caso; campo: CampoConConfianza }) {
+  const c = caso.ai_extraction?._confianzas?.[campo];
+  if (c == null) return null;
+  const dudoso = c < CONFIANZA_MINIMA;
+  return (
+    <span
+      title={`Rellenado por la IA con una confianza del ${Math.round(c * 100)} %`}
+      className={cn(
+        'ml-1.5 rounded-full px-1.5 py-0.5 text-[10.5px] font-bold',
+        dudoso ? 'bg-naranja/15 text-naranja' : 'bg-accion/10 text-accion',
+      )}
+    >
+      {dudoso ? `IA ${Math.round(c * 100)} % · revísalo` : `IA ${Math.round(c * 100)} %`}
+    </span>
+  );
+}
 
 export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] }) {
   const [pendiente, start] = useTransition();
@@ -178,6 +205,35 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
         </section>
       )}
 
+      {caso.ai_extraction && (
+        <section className="rounded-tarjeta border border-accion/30 bg-accion/5 p-5 text-[13.5px] text-cuerpo">
+          <h2 className="text-[15px] font-extrabold text-titular">Rellenado automáticamente a partir del reel</h2>
+          <p className="mt-1">
+            {caso.ai_model ? `Modelo: ${caso.ai_model}. ` : ''}Tu trabajo es supervisar: comprueba cada dato contra la
+            fuente oficial, corrige lo que esté mal y firma. Los marcados en naranja tienen poca confianza.
+          </p>
+          {typeof (caso.ai_extraction.expediente as { value?: unknown } | undefined)?.value === 'string' && (
+            <p className="mt-2">
+              <strong>Expediente que menciona el reel:</strong>{' '}
+              {String((caso.ai_extraction.expediente as { value: string }).value)}
+            </p>
+          )}
+          {lenguajeDeRiesgo(caso.ai_extraction).length > 0 && (
+            <p className="mt-2 font-semibold text-magenta">
+              ⚠ El reel usa lenguaje de riesgo: {lenguajeDeRiesgo(caso.ai_extraction).join(', ')}. No lo repitas en la
+              ficha (M5).
+            </p>
+          )}
+        </section>
+      )}
+
+      {caso.fuente?.transcript && (
+        <details className={tarjeta}>
+          <summary className="cursor-pointer text-[15px] font-extrabold text-titular">Transcripción del reel</summary>
+          <p className="mt-3 whitespace-pre-wrap break-words text-[13px] text-cuerpo">{caso.fuente.transcript}</p>
+        </details>
+      )}
+
       {caso.status === 'dismissed' && caso.dismiss_reason && (
         <p className="rounded-boton border border-linea bg-fondo p-4 text-[13.5px] text-cuerpo">
           <strong>Descartado:</strong> {caso.dismiss_reason}
@@ -205,12 +261,14 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
             <div>
               <label className={etiqueta} htmlFor="organismo">
                 Organismo que contrata
+              <MarcaIA caso={caso} campo="organismo" />
               </label>
               <input id="organismo" name="organismo" defaultValue={caso.organismo ?? ''} className={control} />
             </div>
             <div>
               <label className={etiqueta} htmlFor="organismo_nivel">
                 Nivel
+              <MarcaIA caso={caso} campo="organismo_nivel" />
               </label>
               <select id="organismo_nivel" name="organismo_nivel" defaultValue={caso.organismo_nivel ?? ''} className={control}>
                 <option value="">—</option>
@@ -226,12 +284,14 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
             <div>
               <label className={etiqueta} htmlFor="adjudicatario">
                 Adjudicatario (empresa o persona)
+              <MarcaIA caso={caso} campo="adjudicatario" />
               </label>
               <input id="adjudicatario" name="adjudicatario" defaultValue={caso.adjudicatario ?? ''} className={control} />
             </div>
             <div>
               <label className={etiqueta} htmlFor="adjudicatario_nif">
                 NIF
+              <MarcaIA caso={caso} campo="nif" />
               </label>
               <input id="adjudicatario_nif" name="adjudicatario_nif" defaultValue={caso.adjudicatario_nif ?? ''} className={control} />
             </div>
@@ -244,6 +304,7 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
             <div>
               <label className={etiqueta} htmlFor="categoria">
                 Categoría
+              <MarcaIA caso={caso} campo="categoria" />
               </label>
               <select id="categoria" name="categoria" defaultValue={caso.categoria ?? ''} className={control}>
                 <option value="">—</option>
@@ -257,6 +318,7 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
             <div>
               <label className={etiqueta} htmlFor="importe_denunciado">
                 Importe que dice el reel (€)
+              <MarcaIA caso={caso} campo="importe_cents" />
               </label>
               <input
                 id="importe_denunciado"
@@ -281,6 +343,7 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
             <div>
               <label className={etiqueta} htmlFor="fecha_adjudicacion">
                 Fecha de adjudicación
+              <MarcaIA caso={caso} campo="fecha" />
               </label>
               <input
                 id="fecha_adjudicacion"
@@ -317,7 +380,7 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
             </label>
             <p className="mb-2 text-[12.5px] text-gris">
               Solo lo que dice la fuente oficial: quién contrata, a quién, cuánto, cuándo y por qué procedimiento. Sin
-              adjetivos.
+              adjetivos.{caso.ai_extraction ? ' El borrador es lo que afirma el reel: déjalo solo en lo que confirme la prueba.' : ''}
             </p>
             <textarea id="hechos" name="hechos" rows={6} defaultValue={htmlATexto(caso.hechos_html)} className={control} />
           </div>

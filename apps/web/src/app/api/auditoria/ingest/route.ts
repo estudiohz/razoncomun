@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'node:crypto';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { columnasDesdeExtraccion, confianzas } from '@/lib/vigia/extraccion';
 
 /**
  * Entrada del bot de Telegram (n8n) cuando alguien pulsa "🔍 Es una auditoría"
  * (docs/auditoria-tiempo-real/07-decisiones.md, D-A17).
  *
  * `Authorization: Bearer $VIGIA_INGEST_SECRET`. Body JSON:
- * `{ chat_id, message_id, from?, text?, video_file_id? }`.
+ * `{ chat_id, message_id, from?, text?, video_file_id?, transcript?, ai_model?, extraction? }`.
  * Idempotente por (chat_id, message_id): si n8n reintenta, devuelve el mismo id.
- * El texto se guarda como dato; aquí no se interpreta nada.
+ *
+ * Sergio (01-11-2026): el caso se rellena a partir del reel y el auditor solo
+ * supervisa. Así que, además de guardar el envío en la bandeja, se abre el
+ * caso ya relleno con la extracción de Gemini (validada en
+ * lib/vigia/extraccion.ts: es salida de un modelo sobre texto ajeno, se trata
+ * como dato). Sin extracción, el caso se abre igual, vacío.
  */
 export const dynamic = 'force-dynamic';
 
@@ -64,6 +70,8 @@ export async function POST(req: Request) {
         message_text: mensaje,
         permalink: enlace,
         video_file_id: videoFileId,
+        transcript: texto(body.transcript, 20000),
+        ai_model: texto(body.ai_model, 100),
       },
       { onConflict: 'telegram_chat_id,telegram_message_id', ignoreDuplicates: false },
     )
@@ -75,6 +83,38 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'no se pudo guardar' }, { status: 500 });
   }
 
+  // Un caso por envío: si n8n reintenta, no se duplica.
+  let casoId: string | null = null;
+  const { data: existente } = await admin.from('watchdog_alerts').select('id').eq('source_id', data.id).maybeSingle();
+  if (existente) {
+    casoId = existente.id;
+  } else {
+    const extraccion = body.extraction && typeof body.extraction === 'object' ? body.extraction : null;
+    const columnas = extraccion ? columnasDesdeExtraccion(extraccion) : null;
+    const resumen = (mensaje ?? enlace ?? 'Vídeo enviado por Telegram').trim();
+    const { data: caso, error: errCaso } = await admin
+      .from('watchdog_alerts')
+      .insert({
+        ...(columnas ?? {}),
+        title: columnas?.title ?? resumen.slice(0, 120),
+        description: resumen.slice(0, 4000),
+        status: columnas ? 'analyzed' : 'flagged',
+        source_id: data.id,
+        ai_extraction: extraccion ? { ...extraccion, _confianzas: confianzas(extraccion) } : null,
+        ai_model: texto(body.ai_model, 100),
+      })
+      .select('id')
+      .single();
+    if (errCaso) {
+      // El envío ya está en la bandeja: el auditor puede abrir el caso a mano.
+      console.error('[auditoria/ingest] caso', errCaso.message);
+    } else {
+      casoId = caso.id;
+      await admin.from('watchdog_sources').update({ status: 'en_revision' }).eq('id', data.id);
+    }
+  }
+
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://razoncomun.com';
-  return NextResponse.json({ ok: true, id: data.id, admin_url: `${base}/admin/presupuesto/auditorias` });
+  const ruta = casoId ? `/admin/presupuesto/auditorias/${casoId}` : '/admin/presupuesto/auditorias';
+  return NextResponse.json({ ok: true, id: data.id, caso_id: casoId, admin_url: `${base}${ruta}` });
 }

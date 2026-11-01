@@ -29,9 +29,9 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       .select(
         `id, title, status, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica,
          categoria, importe_denunciado_cents, importe_oficial_cents, fecha_adjudicacion, verificacion,
-         hechos_html, valoracion_html, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
+         hechos_html, valoracion_html, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
          created_at, revisor:profiles!watchdog_alerts_verified_by_fkey(display_name, email),
-         fuente:watchdog_sources(permalink, message_text, telegram_from, received_at)`,
+         fuente:watchdog_sources(permalink, message_text, telegram_from, received_at, transcript)`,
       )
       .eq('id', id)
       .maybeSingle(),
