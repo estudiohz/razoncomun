@@ -170,6 +170,29 @@ export async function guardarPreguntaAction(
 
   const cambios: Record<string, unknown> = { text, info, proposal_id: proposalId };
 
+  // Única ↔ múltiple. Con votos solo se permite ampliar a múltiple: al revés
+  // dejaría respuestas con varias opciones en una pregunta de respuesta única.
+  const kindNuevo = String(fd.get('kind') ?? '');
+  if (kindNuevo === 'single' || kindNuevo === 'multiple') {
+    const { data: actual } = await supabase
+      .from('survey_questions')
+      .select('kind')
+      .eq('id', questionId)
+      .single();
+    if (actual && actual.kind !== kindNuevo) {
+      if (actual.kind !== 'single' && actual.kind !== 'multiple') {
+        return { ok: false, error: 'Solo se puede cambiar entre respuesta única y múltiple.' };
+      }
+      if (conVotos && kindNuevo === 'single') {
+        return {
+          ok: false,
+          error: `Con ${count} voto${count === 1 ? '' : 's'} emitido${count === 1 ? '' : 's'} no se puede pasar de múltiple a única: algunos votos pueden tener varias opciones.`,
+        };
+      }
+      cambios.kind = kindNuevo;
+    }
+  }
+
   if (nuevas.length > 0) {
     if (conVotos) {
       const { data: fila } = await supabase
