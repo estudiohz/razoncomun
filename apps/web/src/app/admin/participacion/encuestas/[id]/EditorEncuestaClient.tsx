@@ -172,6 +172,16 @@ export function EditorEncuestaClient({
               </div>
               {(p.kind === 'single' || p.kind === 'multiple') && (
                 <div>
+                  <label className={label}>Tipo de respuesta</label>
+                  <select name="kind" defaultValue={p.kind} className={input}>
+                    <option value="single">{TIPO.single}</option>
+                    {/* Con votos, de múltiple a única no: dejaría votos con varias opciones. */}
+                    <option value="multiple">{TIPO.multiple}</option>
+                  </select>
+                </div>
+              )}
+              {(p.kind === 'single' || p.kind === 'multiple') && (
+                <div>
                   <label className={label}>Opciones (una por línea)</label>
                   <textarea
                     name="options"

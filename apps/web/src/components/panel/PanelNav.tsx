@@ -48,9 +48,15 @@ function Enlaces({ grupos, onNavegar }: { grupos: GrupoNavPanel[]; onNavegar?: (
             </p>
           )}
           {grupo.items.map((item) => {
-            const activo = item.exacto
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const casa = (it: ItemNavPanel) =>
+              it.exacto
+                ? pathname === it.href
+                : pathname === it.href || pathname.startsWith(`${it.href}/`);
+            // Si un acceso directo más concreto también casa (Encuestas dentro de
+            // Propuestas), solo se marca ese.
+            const activo =
+              casa(item) &&
+              !grupo.items.some((o) => o.href.length > item.href.length && casa(o));
 
             return (
               <Link
