@@ -7,8 +7,22 @@ import { registrarAuditoria } from '@/lib/admin/audit';
 import { enviarCorreo } from '@/lib/email/enviar';
 import { METADATA_ALTA } from '@/lib/auth/alta';
 import { darDeBajaCuenta, puedeBorrarseSinRastro } from '@/lib/auth/baja';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 const NIVELES_VALIDOS = ['registered', 'member', 'verified'] as const;
+
+/**
+ * Un fundador es un admin al que otro admin no puede quitar nada (0082). El
+ * trigger de `user_app_roles` lo garantiza para los roles, pero la baja y el
+ * cambio de nivel van con service_role y lo saltarían: por eso esta puerta.
+ */
+async function bloqueaSiFundador(supabase: SupabaseClient, actorId: string, targetUserId: string) {
+  const [{ data: objetivoFundador }, { data: actorFundador }] = await Promise.all([
+    supabase.rpc('is_founder', { p_user: targetUserId }),
+    supabase.rpc('is_founder', { p_user: actorId }),
+  ]);
+  return Boolean(objetivoFundador) && !actorFundador;
+}
 
 export interface ResultadoInvitacion {
   ok: boolean;
@@ -316,6 +330,9 @@ export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEl
   if (targetUserId === user.id) {
     return { ok: false, error: 'No puedes eliminar tu propia cuenta desde el panel.' };
   }
+  if (await bloqueaSiFundador(supabase, user.id, targetUserId)) {
+    return { ok: false, error: 'No puedes dar de baja a un fundador.' };
+  }
 
   const admin = createAdminClient();
   const { data: cuenta } = await admin.auth.admin.getUserById(targetUserId);
@@ -391,6 +408,9 @@ export async function cambiarNivelManual(formData: FormData) {
 
   if (!motivo) {
     throw new Error('El motivo es obligatorio para cambiar el nivel manualmente.');
+  }
+  if (await bloqueaSiFundador(supabase, user.id, targetUserId)) {
+    throw new Error('No puedes cambiar el nivel de un fundador.');
   }
   if (!NIVELES_VALIDOS.includes(nuevoNivel as (typeof NIVELES_VALIDOS)[number])) {
     throw new Error(`Nivel inválido: ${nuevoNivel}`);

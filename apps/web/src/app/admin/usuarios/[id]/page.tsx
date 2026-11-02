@@ -29,6 +29,12 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
     data: { user: usuarioActual },
   } = await supabase.auth.getUser();
   const { data: esAdmin } = await supabase.rpc('is_admin', { p_user: usuarioActual?.id });
+  // Un fundador solo lo puede tocar otro fundador (0082): al resto no se le ofrece.
+  const [{ data: soyFundador }, { data: esFundador }] = await Promise.all([
+    supabase.rpc('is_founder', { p_user: usuarioActual?.id }),
+    supabase.rpc('is_founder', { p_user: id }),
+  ]);
+  const rolesBloqueados = Boolean(esFundador) && !soyFundador;
 
   const [{ data: perfil }, { data: miembros }, { data: cargos }, { data: rolesAsignados }, { data: catalogoRoles }, { data: territorio }] =
     await Promise.all([
@@ -52,7 +58,9 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
       Array.isArray(r.app_roles) ? r.app_roles[0]?.key : (r.app_roles as { key: string } | null)?.key,
     ),
   );
-  const rolesDisponibles = (catalogoRoles ?? []).filter((r) => !clavesAsignadas.has(r.key));
+  const rolesDisponibles = (catalogoRoles ?? []).filter(
+    (r) => !clavesAsignadas.has(r.key) && (r.key !== 'founder' || soyFundador),
+  );
 
   // La condición de socio vigente es la fila más reciente que NO sea una baja: incluye
   // 'paused' y 'past_due', que siguen siendo relaciones vivas con el partido y
@@ -224,9 +232,11 @@ export default async function FichaUsuarioPage({ params }: { params: Promise<{ i
                 <input type="hidden" name="userId" value={id} />
                 <input type="hidden" name="roleKey" value={rol.key} />
                 <span className="text-[13px] font-bold">{rol.label}</span>
-                <button type="submit" className="text-[11px] font-bold text-red-600 underline">
-                  revocar
-                </button>
+                {!rolesBloqueados && (
+                  <button type="submit" className="text-[11px] font-bold text-red-600 underline">
+                    revocar
+                  </button>
+                )}
               </form>
             );
           })}
