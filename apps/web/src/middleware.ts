@@ -81,6 +81,8 @@ export async function middleware(request: NextRequest) {
       // el correo sin sesión y se autoriza con la firma del propio enlace.
       pathname === '/baja-avisos' ||
       pathname === '/api/newsletter/baja' ||
+      // Cron de la newsletter: Bearer secreto dentro de la ruta.
+      pathname === '/api/newsletter/cron' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';
@@ -129,6 +131,6 @@ export const config = {
      * Todas las rutas menos assets estáticos, imágenes, favicon y los
      * archivos públicos de la carpeta /public.
      */
-    '/((?!_next/static|_next/image|favicon.ico|logo-rc.*|personas-loop-teal.mp4|personas-loop.webm|personas-loop-hevc.mov|fotos/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|logo-rc.*|personas-loop-teal.mp4|personas-loop.webm|personas-loop-hevc.mov|fotos/|email-).*)',
   ],
 };

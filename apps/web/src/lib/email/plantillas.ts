@@ -35,7 +35,25 @@ const DEGRADADO_CABECERA =
 /** Plano para Outlook de escritorio, que descarta los degradados. */
 const BANDA_FALLBACK = '#5158A7';
 
-function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): string {
+export interface OpcionesEnvoltorio {
+  /** Texto de previsualización que muestran Gmail/Outlook junto al asunto. */
+  preheader?: string;
+  /** Imagen a todo el ancho bajo la cabecera (600 px; se sirve a 2x). */
+  imagen?: { url: string; alt: string; alto: number };
+  /** Sustituye al pie por defecto (que habla de la cuota de socio). */
+  pieHtml?: string;
+}
+
+export function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string, opciones: OpcionesEnvoltorio = {}): string {
+  const preheader = opciones.preheader
+    ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${opciones.preheader}</div>`
+    : '';
+  const imagen = opciones.imagen
+    ? `<tr><td style="padding:0;line-height:0;font-size:0;border-left:1px solid #E2E9F5;border-right:1px solid #E2E9F5;"><img src="${opciones.imagen.url}" width="600" height="${opciones.imagen.alto}" alt="${opciones.imagen.alt}" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;"></td></tr>`
+    : '';
+  const pie =
+    opciones.pieHtml ??
+    'Razón Común — partido político inscrito en el Registro del Ministerio del Interior. Este correo es transaccional (cuota de socio), no publicitario.';
   return `<!doctype html>
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -51,6 +69,7 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
 </style>
 </head>
 <body style="margin:0;padding:0;background:#F4F8FD;">
+  ${preheader}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F8FD;">
     <tr><td align="center" style="padding:32px 16px;">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="rc-container" style="width:600px;max-width:600px;">
@@ -59,6 +78,7 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
             <img src="${LOGO_BLANCO_URL}" width="240" height="54" alt="Razón Común" style="display:block;border:0;outline:none;">
           </td>
         </tr>
+        ${imagen}
         <tr>
           <td class="rc-px" bgcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid #E2E9F5;border-top:none;border-radius:0 0 14px 14px;padding:36px 40px 32px;font-family:Montserrat,'Segoe UI',Arial,Helvetica,sans-serif;">
             <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1B3D9C;">${eyebrow}</p>
@@ -68,7 +88,7 @@ function envoltorio(eyebrow: string, tituloHtml: string, cuerpoHtml: string): st
         </tr>
         <tr>
           <td class="rc-px" style="padding:20px 40px 0;font-family:Montserrat,'Segoe UI',Arial,Helvetica,sans-serif;">
-            <p style="margin:0;font-size:12px;line-height:1.6;color:#5A6780;">Razón Común — partido político inscrito en el Registro del Ministerio del Interior. Este correo es transaccional (cuota de socio), no publicitario.</p>
+            <p style="margin:0;font-size:12px;line-height:1.6;color:#5A6780;">${pie}</p>
           </td>
         </tr>
       </table>

@@ -40,7 +40,9 @@ export async function enviarCorreo(opts: {
   asunto: string;
   html: string;
   texto: string;
-}): Promise<{ enviado: boolean; motivo?: string }> {
+  /** Cabeceras extra (List-Unsubscribe, X-Mailin-custom para Brevo…). */
+  cabeceras?: Record<string, string>;
+}): Promise<{ enviado: boolean; motivo?: string; messageId?: string }> {
   const transporte = obtenerTransportador();
   if (!transporte) {
     console.warn(
@@ -50,14 +52,15 @@ export async function enviarCorreo(opts: {
   }
 
   try {
-    await transporte.sendMail({
+    const info = await transporte.sendMail({
       from: `"${process.env.RC_SMTP_SENDER_NAME ?? 'Razón Común'}" <${process.env.RC_SMTP_ADMIN_EMAIL ?? process.env.RC_SMTP_USER}>`,
       to: opts.para,
       subject: opts.asunto,
       html: opts.html,
       text: opts.texto,
+      headers: opts.cabeceras,
     });
-    return { enviado: true };
+    return { enviado: true, messageId: info.messageId };
   } catch (err) {
     console.error(`[email] Fallo al enviar "${opts.asunto}" a ${opts.para}:`, (err as Error).message);
     return { enviado: false, motivo: (err as Error).message };
