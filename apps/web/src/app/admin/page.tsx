@@ -1,7 +1,10 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { requirePanelAdmin } from '@/lib/admin/guard';
+import Link from 'next/link';
 import { Tarjeta } from '@/components/ui/Tarjeta';
+import { contarReportesAbiertos } from '@/lib/participacion/reports';
+import { contarBorradores } from '@/lib/participacion/drafts';
 
 const NOMBRE_ESTADO: Record<string, string> = {
   seed: 'Semilla',
@@ -43,6 +46,29 @@ export default async function AdminInicioPage() {
         .limit(5),
     ]);
 
+  // Pendientes de un vistazo: lo que espera a que alguien del equipo actúe.
+  const [auditoriasNuevas, auditoriasEnRevision, borradores, reportes] = await Promise.all([
+    supabase
+      .from('watchdog_sources')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'nuevo')
+      .then((r) => r.count ?? 0),
+    supabase
+      .from('watchdog_sources')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'en_revision')
+      .then((r) => r.count ?? 0),
+    contarBorradores(supabase).catch(() => 0),
+    contarReportesAbiertos(supabase).catch(() => 0),
+  ]);
+  const pendientes = [
+    { href: '/admin/presupuesto/auditorias', label: 'Auditorías nuevas', n: auditoriasNuevas },
+    { href: '/admin/presupuesto/auditorias', label: 'Auditorías en revisión', n: auditoriasEnRevision },
+    { href: '/admin/participacion/borradores', label: 'Propuestas en borrador', n: borradores },
+    { href: '/admin/participacion/reportes', label: 'Reportes abiertos', n: reportes },
+  ];
+  const totalPendientes = pendientes.reduce((a, p) => a + p.n, 0);
+
   const propuestasPorEstado = (propuestas ?? []).reduce<Record<string, number>>((acc, p) => {
     acc[p.status] = (acc[p.status] ?? 0) + 1;
     return acc;
@@ -51,6 +77,29 @@ export default async function AdminInicioPage() {
   return (
     <div className="space-y-8">
       <h1 className="text-[24px] font-extrabold">Panel de inicio</h1>
+
+      <Tarjeta className="p-5">
+        <p className="text-[12px] font-bold uppercase tracking-wide text-gris">
+          Pendientes{totalPendientes > 0 ? ` · ${totalPendientes}` : ''}
+        </p>
+        {totalPendientes > 0 ? (
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {pendientes.map((p) => (
+              <li key={p.label}>
+                <Link
+                  href={p.href}
+                  className="flex items-center justify-between rounded-lg border border-linea px-3 py-2.5 text-[13.5px] no-underline hover:bg-fondo"
+                >
+                  <span className={p.n > 0 ? 'font-semibold text-cuerpo' : 'text-gris'}>{p.label}</span>
+                  <span className={p.n > 0 ? 'font-extrabold text-magenta' : 'font-bold text-gris'}>{p.n}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-[13px] text-gris">Nada pendiente. Todo al día.</p>
+        )}
+      </Tarjeta>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Tarjeta className="p-5">
