@@ -409,7 +409,8 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
           </div>
           <div>
             <label className={etiqueta} htmlFor="verificacion">
-              Resultado del contraste
+              Resultado del contraste{' '}
+              <span className="font-normal normal-case text-gris">(debe estar rellenado para que sea público)</span>
             </label>
             <select id="verificacion" name="verificacion" defaultValue={caso.verificacion ?? ''} className={control}>
               <option value="">Sin contrastar todavía</option>
