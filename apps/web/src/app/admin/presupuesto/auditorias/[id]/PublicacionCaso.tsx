@@ -105,7 +105,7 @@ export function PublicacionCaso({
           {!replicaPedida && (
             <label className="flex items-start gap-2 text-[13.5px] text-naranja">
               <input type="checkbox" className="mt-1" checked={sinReplica} onChange={(e) => setSinReplica(e.target.checked)} />
-              No se pidió réplica. Confirmo que se publica sin ella (solo nombra al organismo público).
+              No se pidió réplica (no fue posible o no era necesaria). Confirmo que se publica sin ella.
             </label>
           )}
           <button
