@@ -22,7 +22,9 @@ export function RegistroForm({ googleActivo }: { googleActivo?: boolean }) {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [nombre, setNombre] = useState('');
-  const [newsletter, setNewsletter] = useState(false);
+  // Marcada por defecto: decisión de Sergio (02/11/2026), tras avisarle de que
+  // una casilla premarcada no vale como consentimiento RGPD (Planet49).
+  const [newsletter, setNewsletter] = useState(true);
   const [consiente, setConsiente] = useState(false);
   const [estado, setEstado] = useState<Estado>({ tipo: 'idle' });
 
