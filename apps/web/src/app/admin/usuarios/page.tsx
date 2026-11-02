@@ -65,8 +65,13 @@ export default async function UsuariosPage({
     data: { user: usuarioActual },
   } = await supabase.auth.getUser();
 
-  const [{ data: provincias }, { data: cargosVigentes }, { data: esAdmin }, { data: afiliaciones }] =
-    await Promise.all([
+  const [
+    { data: provincias },
+    { data: cargosVigentes },
+    { data: esAdmin },
+    { data: afiliaciones },
+    { data: soyFundador },
+  ] = await Promise.all([
       supabase.from('territories').select('id, name').eq('type', 'province').order('name'),
       supabase.from('positions').select('user_id, role, scope, territory_id').is('ended_at', null),
       supabase.rpc('is_admin', { p_user: usuarioActual?.id }),
@@ -74,7 +79,21 @@ export default async function UsuariosPage({
         .from('members')
         .select('user_id, status, billing_period, amount_cents, started_at')
         .order('started_at', { ascending: false }),
+      supabase.rpc('is_founder', { p_user: usuarioActual?.id }),
     ]);
+
+  // Columna «Rol»: solo la ven los fundadores (petición de Sergio, 02/11/2026).
+  const rolesPorUsuario = new Map<string, string[]>();
+  if (soyFundador) {
+    const { data: rolesApp } = await supabase.from('user_app_roles').select('user_id, app_roles(label)');
+    for (const r of rolesApp ?? []) {
+      const rol = Array.isArray(r.app_roles) ? r.app_roles[0] : (r.app_roles as { label: string } | null);
+      if (!rol) continue;
+      const lista = rolesPorUsuario.get(r.user_id) ?? [];
+      lista.push(rol.label);
+      rolesPorUsuario.set(r.user_id, lista);
+    }
+  }
 
   // Un usuario puede tener histórico (alta, baja, alta): nos quedamos con la
   // más reciente, que es su situación actual.
@@ -239,6 +258,7 @@ export default async function UsuariosPage({
               <th className="px-4 py-3">Socio</th>
               <th className="px-4 py-3">Provincia</th>
               <th className="px-4 py-3">Cargo vigente</th>
+              {soyFundador && <th className="px-4 py-3">Rol</th>}
               <th className="px-4 py-3 text-center" title="Ha abierto la web como app instalada en su móvil">App</th>
               <th className="px-4 py-3 text-center" title="Tiene los avisos push activados en algún dispositivo">Push</th>
               <th className="px-4 py-3" />
@@ -304,6 +324,9 @@ export default async function UsuariosPage({
                 <td className="px-4 py-3 text-cuerpo">
                   {(cargosPorUsuario.get(p.id) ?? []).join(', ') || '—'}
                 </td>
+                {soyFundador && (
+                  <td className="px-4 py-3 text-cuerpo">{(rolesPorUsuario.get(p.id) ?? []).join(', ') || '—'}</td>
+                )}
                 <td className="px-4 py-3 text-center">
                   {p.app_installed_at ? (
                     <span
@@ -346,7 +369,7 @@ export default async function UsuariosPage({
             ))}
             {perfilesFiltrados.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-gris">
+                <td colSpan={soyFundador ? 10 : 9} className="px-4 py-8 text-center text-gris">
                   Sin resultados para este filtro.
                 </td>
               </tr>
