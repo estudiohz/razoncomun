@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { tokenBajaValido } from './baja';
+import { registrarBajaPropia } from './brevo';
 
 /**
  * Cambia `avisos_correo` desde un enlace firmado (sin sesión). Lo usan la
@@ -13,9 +14,11 @@ export async function fijarAvisosPorToken(
   activar: boolean,
 ): Promise<boolean> {
   if (!tokenBajaValido(userId, token)) return false;
-  const { error } = await createAdminClient()
+  const admin = createAdminClient();
+  const { error } = await admin
     .from('profiles')
     .update({ avisos_correo: activar, avisos_correo_at: new Date().toISOString() })
     .eq('id', userId!);
+  if (!error && !activar) await registrarBajaPropia(admin, userId!).catch(() => {});
   return !error;
 }

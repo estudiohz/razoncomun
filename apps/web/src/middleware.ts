@@ -83,6 +83,8 @@ export async function middleware(request: NextRequest) {
       pathname === '/api/newsletter/baja' ||
       // Cron de la newsletter: Bearer secreto dentro de la ruta.
       pathname === '/api/newsletter/cron' ||
+      // Webhook de Brevo: se autoriza con la clave `?k=` de la URL.
+      pathname === '/api/newsletter/brevo' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';

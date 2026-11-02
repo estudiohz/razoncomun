@@ -563,7 +563,7 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
           <div className="space-y-2">
             <p className="text-[13px] text-cuerpo">
               {caso.status === 'verified'
-                ? 'Verificado. La publicación llegará con la sección pública (fase F2). Para corregir algo, reábrelo: se quitará la firma.'
+                ? 'Verificado. Ya puedes publicarlo en el bloque «Publicación». Para corregir algo, reábrelo: se quitará la firma.'
                 : 'Para retomarlo, reábrelo.'}
             </p>
             <button
