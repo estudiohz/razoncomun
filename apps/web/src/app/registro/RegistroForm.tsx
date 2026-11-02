@@ -196,6 +196,13 @@ export function RegistroForm({ googleActivo }: { googleActivo?: boolean }) {
         </span>
       </label>
 
+      {/* Avisos de participación (0077, newsletter.md D-N1): informativo, no
+          casilla. Se desactivan en el panel o con un clic en cada correo. */}
+      <p className="text-[12px] leading-relaxed text-gris">
+        Al crear tu cuenta te avisaremos por correo de la encuesta de cada mes y de sus plazos. Puedes desactivarlo
+        cuando quieras desde tu panel o con un clic en cualquiera de esos correos.
+      </p>
+
       {estado.tipo === 'error' && (
         <p className="rounded-boton bg-magenta/10 px-3.5 py-2.5 text-[13px] font-medium text-magenta">
           {estado.mensaje}

@@ -21,6 +21,8 @@ export type Perfil = {
   origin_province_id: number | null;
   newsletter_opt_in: boolean;
   newsletter_opt_in_at: string | null;
+  /** Avisos de participación por correo (0077); activado por defecto. */
+  avisos_correo: boolean;
   privacy_consent_at: string | null;
   member_since: string | null;
   identity_verified_at: string | null;

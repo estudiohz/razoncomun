@@ -77,6 +77,10 @@ export async function middleware(request: NextRequest) {
       pathname === '/api/auditoria/copia' ||
       // Y el índice diario del BOE (0076), que llama un schedule de Dokploy.
       pathname === '/api/auditoria/indexar-boe' ||
+      // Baja de los avisos por correo (newsletter.md, D-N3): se abre desde
+      // el correo sin sesión y se autoriza con la firma del propio enlace.
+      pathname === '/baja-avisos' ||
+      pathname === '/api/newsletter/baja' ||
       pathname === '/robots.txt' ||
       pathname === '/sitemap.xml' ||
       pathname === '/favicon.ico';

@@ -9,6 +9,7 @@ import { ExportarBorrarCuenta } from '@/components/perfil/ExportarBorrarCuenta';
 import { VerificarIdentidad } from '@/components/perfil/VerificarIdentidad';
 import { estadoIdentidad } from '@/lib/stripe/identidad';
 import { NotificacionesPushForm } from '@/components/perfil/NotificacionesPushForm';
+import { AvisosCorreoForm } from '@/components/perfil/AvisosCorreoForm';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Mi perfil',
@@ -134,6 +135,14 @@ export default async function PanelPerfilPage() {
         <h2 className="text-[15px] font-bold text-titular">Notificaciones push</h2>
         <div className="mt-3">
           <NotificacionesPushForm />
+        </div>
+      </section>
+
+      {/* AVISOS POR CORREO (0077) */}
+      <section className="rounded-tarjeta border border-linea bg-panel p-6 shadow-nav">
+        <h2 className="text-[15px] font-bold text-titular">Avisos por correo</h2>
+        <div className="mt-3">
+          <AvisosCorreoForm activo={perfil.avisos_correo !== false} />
         </div>
       </section>
 

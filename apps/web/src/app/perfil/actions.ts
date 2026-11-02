@@ -183,3 +183,22 @@ export async function eliminarSuscripcionPushAction(endpoint: string): Promise<{
   if (error) return { ok: false, error: error.message };
   return { ok: true };
 }
+
+/**
+ * Avisos de participación por correo (0077, newsletter.md D-N3): encuesta
+ * del mes y recordatorio. Interruptor del panel; la misma columna la cambia
+ * la baja con un clic de cada correo.
+ */
+export async function cambiarAvisosCorreoAction(activar: boolean): Promise<{ ok: boolean }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+  const { error } = await supabase
+    .from('profiles')
+    .update({ avisos_correo: activar, avisos_correo_at: new Date().toISOString() })
+    .eq('id', user.id);
+  if (!error) revalidatePath('/panel/perfil');
+  return { ok: !error };
+}
