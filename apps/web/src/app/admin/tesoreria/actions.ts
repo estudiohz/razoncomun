@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireTesoreria } from '@/lib/tesoreria/guard';
 
@@ -17,6 +18,7 @@ export interface ResultadoTesoreria {
  * apunte, como en cualquier contabilidad seria.
  */
 export async function crearMovimientoAction(fd: FormData): Promise<ResultadoTesoreria> {
+  return conAviso('Movimiento creado', async () => {
   const { supabase } = await requireTesoreria();
 
   const dated = String(fd.get('dated') ?? '').trim();
@@ -55,6 +57,7 @@ export async function crearMovimientoAction(fd: FormData): Promise<ResultadoTeso
 
   revalidatePath('/admin/tesoreria');
   return { ok: true };
+  });
 }
 
 /**
@@ -64,6 +67,7 @@ export async function crearMovimientoAction(fd: FormData): Promise<ResultadoTeso
  * marca la fila como editada — la marca es visible también en /cuentas.
  */
 export async function editarMovimientoAction(id: string, fd: FormData): Promise<ResultadoTesoreria> {
+  return conAviso('Movimiento guardado', async () => {
   const { supabase } = await requireTesoreria();
 
   const description = String(fd.get('description') ?? '').trim();
@@ -84,6 +88,7 @@ export async function editarMovimientoAction(id: string, fd: FormData): Promise<
   revalidatePath('/admin/tesoreria');
   revalidatePath('/cuentas');
   return { ok: true };
+  });
 }
 
 /** Publica o retira un movimiento de la web pública de transparencia. */
@@ -91,6 +96,7 @@ export async function publicarMovimientoAction(
   id: string,
   publicado: boolean,
 ): Promise<ResultadoTesoreria> {
+  return conAviso(publicado ? 'Movimiento publicado' : 'Movimiento retirado de la web', async () => {
   const { supabase } = await requireTesoreria();
 
   const { error } = await supabase
@@ -102,4 +108,5 @@ export async function publicarMovimientoAction(
   revalidatePath('/admin/tesoreria');
   revalidatePath('/cuentas');
   return { ok: true };
+  });
 }

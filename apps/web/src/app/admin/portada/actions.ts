@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import { registrarAuditoria } from '@/lib/admin/audit';
@@ -43,6 +44,7 @@ export async function guardarVideoDestacado(
   _previo: ResultadoPortada | null,
   formData: FormData,
 ): Promise<ResultadoPortada> {
+  return conAviso('Vídeo destacado guardado', async () => {
   const { user, supabase } = await requireAdmin('/admin/portada');
   const url = String(formData.get('url') ?? '').trim();
 
@@ -64,6 +66,7 @@ export async function guardarVideoDestacado(
   revalidatePath('/admin/portada');
   revalidatePath('/');
   return { ok: true };
+  });
 }
 
 /**
@@ -76,6 +79,7 @@ export async function guardarEnlaceDiscord(
   _previo: ResultadoPortada | null,
   formData: FormData,
 ): Promise<ResultadoPortada> {
+  return conAviso('Enlace de Discord guardado', async () => {
   const { user, supabase } = await requireAdmin('/admin/portada');
   const url = String(formData.get('discord_url') ?? '').trim();
 
@@ -98,6 +102,7 @@ export async function guardarEnlaceDiscord(
   revalidatePath('/admin/portada');
   revalidatePath('/');
   return { ok: true };
+  });
 }
 
 export interface ResultadoCaratula {
@@ -112,6 +117,7 @@ export async function subirCaratulaVideo(
   _previo: ResultadoCaratula | null,
   formData: FormData,
 ): Promise<ResultadoCaratula> {
+  return conAviso('Carátula subida', async () => {
   const { user, supabase } = await requireAdmin('/admin/portada');
 
   const archivo = formData.get('archivo');
@@ -148,4 +154,5 @@ export async function subirCaratulaVideo(
   revalidatePath('/admin/portada');
   revalidatePath('/');
   return { url: urlPublica };
+  });
 }

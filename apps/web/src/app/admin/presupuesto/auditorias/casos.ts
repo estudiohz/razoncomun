@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAuditor } from '@/lib/admin/guard';
@@ -56,6 +57,7 @@ function refrescar(id?: string) {
 
 /** Abre (o reabre) el caso de un envío de la bandeja y lleva a su ficha. */
 export async function abrirCaso(sourceId: string) {
+  return conAviso('Caso abierto', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
 
   const { data: existente } = await supabase.from('watchdog_alerts').select('id').eq('source_id', sourceId).maybeSingle();
@@ -92,10 +94,12 @@ export async function abrirCaso(sourceId: string) {
 
   refrescar();
   redirect(`${RUTA}/${caso.id}`);
+  });
 }
 
 /** Alta manual: un reel o enlace que no llegó por el bot. */
 export async function altaManual(formData: FormData) {
+  return conAviso('Caso creado', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const permalink = texto(formData.get('permalink'), 1000);
   const nota = texto(formData.get('nota'), 4000);
@@ -109,10 +113,12 @@ export async function altaManual(formData: FormData) {
   if (error || !fuente) throw new Error(`No se pudo guardar el enlace: ${error?.message}`);
 
   await abrirCaso(fuente.id);
+  });
 }
 
 /** Guarda los datos, los hechos y la valoración. No cambia el estado. */
 export async function guardarCaso(id: string, formData: FormData): Promise<Resultado> {
+  return conAviso('Caso guardado', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
 
   const titulo = texto(formData.get('title'), 200);
@@ -165,9 +171,11 @@ export async function guardarCaso(id: string, formData: FormData): Promise<Resul
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.edit', entity: 'watchdog_alerts', entityId: id });
   refrescar(id);
   return { ok: true };
+  });
 }
 
 export async function anadirPrueba(alertId: string, formData: FormData): Promise<Resultado> {
+  return conAviso('Prueba añadida', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const url = texto(formData.get('url'), 1000);
   if (!url || !/^https?:\/\//i.test(url)) return { error: 'La prueba necesita el enlace a la fuente oficial.' };
@@ -196,10 +204,12 @@ export async function anadirPrueba(alertId: string, formData: FormData): Promise
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.evidence_add', entity: 'watchdog_alerts', entityId: alertId, meta: { fuente, url } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 /** Marca una prueba como la principal del caso (solo puede haber una). */
 export async function marcarPrincipal(alertId: string, evidenceId: string): Promise<Resultado> {
+  return conAviso('Prueba principal marcada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { error: e1 } = await supabase.from('watchdog_evidence').update({ selected: false }).eq('alert_id', alertId).eq('selected', true);
   if (e1) return { error: e1.message };
@@ -208,9 +218,11 @@ export async function marcarPrincipal(alertId: string, evidenceId: string): Prom
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.evidence_select', entity: 'watchdog_alerts', entityId: alertId, meta: { evidenceId } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 export async function borrarPrueba(alertId: string, evidenceId: string): Promise<Resultado> {
+  return conAviso('Prueba borrada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { data: caso } = await supabase.from('watchdog_alerts').select('status').eq('id', alertId).single();
   if (caso && ['verified', 'published'].includes(caso.status)) return { error: 'Reabre el caso antes de quitar pruebas.' };
@@ -219,10 +231,12 @@ export async function borrarPrueba(alertId: string, evidenceId: string): Promise
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.evidence_remove', entity: 'watchdog_alerts', entityId: alertId, meta: { evidenceId } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 /** Anota que se ha pedido réplica (el correo se manda fuera, M6). */
 export async function pedirReplica(id: string): Promise<Resultado> {
+  return conAviso('Réplica solicitada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { error } = await supabase
     .from('watchdog_alerts')
@@ -233,10 +247,12 @@ export async function pedirReplica(id: string): Promise<Resultado> {
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.reply_requested', entity: 'watchdog_alerts', entityId: id });
   refrescar(id);
   return { ok: true };
+  });
 }
 
 /** Aprobar = el auditor firma: pasa a `verified` con su nombre y la fecha (M1). */
 export async function aprobarCaso(id: string, checklist: string[]): Promise<Resultado> {
+  return conAviso('Caso aprobado', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const [{ data: caso }, { count }] = await Promise.all([
     supabase
@@ -267,9 +283,11 @@ export async function aprobarCaso(id: string, checklist: string[]): Promise<Resu
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.verify', entity: 'watchdog_alerts', entityId: id, meta: { checklist: marcados } });
   refrescar(id);
   return { ok: true };
+  });
 }
 
 export async function descartarCaso(id: string, motivo: string): Promise<Resultado> {
+  return conAviso('Caso descartado', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const razon = motivo.trim().slice(0, 2000);
   if (!razon) return { error: 'Descartar exige motivo.' };
@@ -290,10 +308,12 @@ export async function descartarCaso(id: string, motivo: string): Promise<Resulta
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.dismiss', entity: 'watchdog_alerts', entityId: id, meta: { motivo: razon } });
   refrescar(id);
   return { ok: true };
+  });
 }
 
 /** Vuelve a análisis un caso verificado o descartado (no uno publicado: eso será rectificar, F2). */
 export async function reabrirCaso(id: string): Promise<Resultado> {
+  return conAviso('Caso reabierto', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { error } = await supabase
     .from('watchdog_alerts')
@@ -304,6 +324,7 @@ export async function reabrirCaso(id: string): Promise<Resultado> {
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.reopen', entity: 'watchdog_alerts', entityId: id });
   refrescar(id);
   return { ok: true };
+  });
 }
 
 // ── Caso → propuesta ────────────────────────────────────────────────────────
@@ -314,6 +335,7 @@ export async function reabrirCaso(id: string): Promise<Resultado> {
  * votación desde /admin/participacion, como las del RC-bot.
  */
 export async function crearPropuestaDesdeCaso(alertId: string, formData: FormData): Promise<Resultado & { slug?: string }> {
+  return conAviso('Propuesta creada desde el caso', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const titulo = texto(formData.get('titulo'), 200);
   const cuerpo = texto(formData.get('cuerpo'), 8000);
@@ -351,11 +373,13 @@ export async function crearPropuestaDesdeCaso(alertId: string, formData: FormDat
   });
   refrescar(alertId);
   return { ok: true, slug: data.slug ?? data.id };
+  });
 }
 
 // ── Caso ↔ partidas del simulador ───────────────────────────────────────────
 
 export async function vincularPartida(alertId: string, partidaId: string, nota: string): Promise<Resultado> {
+  return conAviso('Partida vinculada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   if (!partidaId) return { error: 'Elige una partida.' };
   const { error } = await supabase
@@ -365,21 +389,25 @@ export async function vincularPartida(alertId: string, partidaId: string, nota: 
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.partida_link', entity: 'watchdog_alerts', entityId: alertId, meta: { partidaId } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 export async function desvincularPartida(alertId: string, partidaId: string): Promise<Resultado> {
+  return conAviso('Partida desvinculada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { error } = await supabase.from('watchdog_alert_partidas').delete().eq('alert_id', alertId).eq('partida_id', partidaId);
   if (error) return { error: error.message };
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.partida_unlink', entity: 'watchdog_alerts', entityId: alertId, meta: { partidaId } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 // ── Solicitudes de transparencia ────────────────────────────────────────────
 
 /** Abre una solicitud en borrador, ya redactada con los datos del caso. */
 export async function prepararSolicitud(alertId: string): Promise<Resultado> {
+  return conAviso('Solicitud preparada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const [{ data: caso }, { data: principal }] = await Promise.all([
     supabase
@@ -406,6 +434,7 @@ export async function prepararSolicitud(alertId: string): Promise<Resultado> {
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.transparency_draft', entity: 'watchdog_alerts', entityId: alertId });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 function fechaODe(v: FormDataEntryValue | null): string | null {
@@ -415,6 +444,7 @@ function fechaODe(v: FormDataEntryValue | null): string | null {
 
 /** Guarda el seguimiento: estado, número de registro, fechas y respuesta. */
 export async function guardarSolicitud(alertId: string, id: string, formData: FormData): Promise<Resultado> {
+  return conAviso('Solicitud guardada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const estado = de(ESTADOS_SOLICITUD, formData.get('estado'));
   if (!estado) return { error: 'Estado no válido.' };
@@ -446,12 +476,14 @@ export async function guardarSolicitud(alertId: string, id: string, formData: Fo
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.transparency_update', entity: 'watchdog_alerts', entityId: alertId, meta: { solicitud: id, estado } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 // ── Fuentes oficiales y copias de respaldo (0074) ───────────────────────────
 
 /** "Buscar en fuentes oficiales": BDNS (subvenciones) y, si no hay nada, BOE (contratos). */
 export async function buscarEnFuentes(alertId: string): Promise<Resultado & { resumen?: string }> {
+  return conAviso('Búsqueda en fuentes completada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { data: caso } = await supabase
     .from('watchdog_alerts')
@@ -496,10 +528,12 @@ export async function buscarEnFuentes(alertId: string): Promise<Resultado & { re
     ok: true,
     resumen: `${r.encontrados} candidato${r.encontrados === 1 ? '' : 's'} en la BDNS${r.claro ? ', uno claro: rellenado y marcado como principal' : ''}. ${r.copias} copia${r.copias === 1 ? '' : 's'} sellada${r.copias === 1 ? '' : 's'}.`,
   };
+  });
 }
 
 /** Copia sellada de una prueba añadida a mano. */
 export async function copiarPrueba(alertId: string, evidenceId: string): Promise<Resultado> {
+  return conAviso('Copia de la prueba guardada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { data: ev } = await supabase.from('watchdog_evidence').select('url').eq('id', evidenceId).eq('alert_id', alertId).single();
   if (!ev) return { error: 'Prueba no encontrada.' };
@@ -511,10 +545,12 @@ export async function copiarPrueba(alertId: string, evidenceId: string): Promise
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.snapshot', entity: 'watchdog_alerts', entityId: alertId, meta: { evidenceId } });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 /** Copia de respaldo del origen (artículo o web). */
 export async function copiarOrigenCaso(alertId: string): Promise<Resultado> {
+  return conAviso('Copia del origen guardada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { data: caso } = await supabase.from('watchdog_alerts').select('reel_url').eq('id', alertId).single();
   const r = await copiarOrigen(createAdminClient(), alertId, caso?.reel_url ?? null, user.id);
@@ -524,6 +560,7 @@ export async function copiarOrigenCaso(alertId: string): Promise<Resultado> {
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.snapshot_origin', entity: 'watchdog_alerts', entityId: alertId });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 /** Enlace temporal (10 min) para descargar una copia del bucket privado. */
@@ -586,6 +623,7 @@ async function slugUnico(supabase: Awaited<ReturnType<typeof requireAuditor>>['s
  * falta algo, la base de datos lo rechaza aunque se salte esta comprobación.
  */
 export async function publicarCaso(id: string, fecha: string | null, sinReplicaConfirmado: boolean): Promise<Resultado> {
+  return conAviso('Caso publicado', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { data: caso } = await supabase
     .from('watchdog_alerts')
@@ -640,6 +678,7 @@ export async function publicarCaso(id: string, fecha: string | null, sinReplicaC
   refrescar(id);
   revalidatePath('/observatorio/auditorias');
   return { ok: true };
+  });
 }
 
 /**
@@ -647,6 +686,7 @@ export async function publicarCaso(id: string, fecha: string | null, sinReplicaC
  * nueva en el historial. Deja de sumar en el contador (counts_in_total).
  */
 export async function rectificarCaso(id: string, nota: string): Promise<Resultado> {
+  return conAviso('Rectificación publicada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const texto = nota.trim().slice(0, 4000);
   if (texto.length < 10) return { error: 'Explica la rectificación (es pública).' };
@@ -667,10 +707,12 @@ export async function rectificarCaso(id: string, nota: string): Promise<Resultad
   refrescar(id);
   revalidatePath('/observatorio/auditorias');
   return { ok: true };
+  });
 }
 
 /** Retirar de la web (vuelve a «verificado»). Solo admin: es excepcional. */
 export async function despublicarCaso(id: string, motivo: string): Promise<Resultado> {
+  return conAviso('Caso despublicado', async () => {
   const { supabase, user, esAdmin } = await requireAuditor(RUTA);
   if (!esAdmin) return { error: 'Solo un admin puede retirar un caso publicado.' };
   if (!motivo.trim()) return { error: 'Indica el motivo.' };
@@ -684,6 +726,7 @@ export async function despublicarCaso(id: string, motivo: string): Promise<Resul
   refrescar(id);
   revalidatePath('/observatorio/auditorias');
   return { ok: true };
+  });
 }
 
 /** Responde una solicitud de rectificación (plazo: 3 días). */
@@ -693,6 +736,7 @@ export async function resolverRectificacion(
   resolucion: 'aceptada' | 'parcial' | 'rechazada',
   notaPublica: string,
 ): Promise<Resultado> {
+  return conAviso('Rectificación resuelta', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   if (!['aceptada', 'parcial', 'rechazada'].includes(resolucion)) return { error: 'Resolución no válida.' };
   const { error } = await supabase
@@ -715,6 +759,7 @@ export async function resolverRectificacion(
   });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 type CampoImagen = 'cover_image' | 'reel_frame';
@@ -730,6 +775,7 @@ export async function subirPortadaCaso(
   formData: FormData,
   campo: CampoImagen = 'cover_image',
 ): Promise<Resultado & { url?: string }> {
+  return conAviso('Portada subida', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
 
   const archivo = formData.get('archivo');
@@ -753,19 +799,23 @@ export async function subirPortadaCaso(
   refrescar(alertId);
   revalidatePath('/observatorio');
   return { ok: true, url };
+  });
 }
 
 export async function quitarPortadaCaso(alertId: string, campo: CampoImagen = 'cover_image'): Promise<Resultado> {
+  return conAviso('Portada quitada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   const { error } = await supabase.from('watchdog_alerts').update({ [campo]: null }).eq('id', alertId);
   if (error) return { error: error.message };
   await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.portada', entity: 'watchdog_alerts', entityId: alertId });
   refrescar(alertId);
   return { ok: true };
+  });
 }
 
 /** Categoría del blog/Observatorio del caso (0081): gráfico y filtros. Editable en cualquier estado. */
 export async function asignarCategoriaCaso(alertId: string, categoryId: number | null): Promise<Resultado> {
+  return conAviso('Categoría asignada', async () => {
   const { supabase, user } = await requireAuditor(RUTA);
   if (categoryId != null && !Number.isInteger(categoryId)) return { error: 'Categoría no válida.' };
   const { error } = await supabase.from('watchdog_alerts').update({ category_id: categoryId }).eq('id', alertId);
@@ -774,4 +824,5 @@ export async function asignarCategoriaCaso(alertId: string, categoryId: number |
   refrescar(alertId);
   revalidatePath('/observatorio');
   return { ok: true };
+  });
 }

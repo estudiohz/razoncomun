@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import { registrarAuditoria } from '@/lib/admin/audit';
@@ -40,6 +41,7 @@ async function siguienteId(supabase: Awaited<ReturnType<typeof requireAdmin>>['s
 }
 
 export async function crearPunto(formData: FormData) {
+  return conAviso('Punto del manifiesto creado', async () => {
   const title = String(formData.get('title') ?? '').trim();
   const body = String(formData.get('body') ?? '').trim();
   const { user, supabase } = await requireAdmin('/admin/manifiesto');
@@ -64,9 +66,11 @@ export async function crearPunto(formData: FormData) {
 
   revalidatePath('/admin/manifiesto');
   revalidatePath('/manifiesto');
+  });
 }
 
 export async function actualizarPunto(formData: FormData) {
+  return conAviso('Punto del manifiesto guardado', async () => {
   const id = Number(formData.get('id'));
   const title = String(formData.get('title') ?? '').trim();
   const body = String(formData.get('body') ?? '').trim();
@@ -108,4 +112,5 @@ export async function actualizarPunto(formData: FormData) {
   revalidatePath('/admin/manifiesto');
   revalidatePath(`/admin/manifiesto/${id}`);
   revalidatePath('/manifiesto');
+  });
 }

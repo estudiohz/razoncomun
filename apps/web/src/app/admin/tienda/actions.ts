@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireEditor } from '@/lib/blog/guard';
 import { sanitizarHtml } from '@/lib/paginas';
@@ -28,6 +29,7 @@ export async function guardarFichaProducto(
   _previo: ResultadoFicha | null,
   fd: FormData,
 ): Promise<ResultadoFicha> {
+  return conAviso('Producto guardado', async () => {
   const { supabase, userId } = await requireEditor();
 
   const printful_product_id = Number(texto(fd, 'printful_product_id'));
@@ -60,4 +62,5 @@ export async function guardarFichaProducto(
   // hasta una hora en verse y parecería que no se ha guardado.
   revalidatePath(`/tienda/${printful_product_id}`);
   return { ok: true };
+  });
 }

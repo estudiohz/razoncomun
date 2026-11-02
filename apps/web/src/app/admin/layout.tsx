@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { Avisos } from '@/components/ui/Avisos';
+import { COOKIE_AVISO } from '@/lib/avisos/comun';
 import { requirePanelAdmin } from '@/lib/admin/guard';
 import { metadatosPagina } from '@/lib/seo';
 import { AdminSidebar, AdminMobileMenu } from '@/components/admin/AdminSidebar';
@@ -95,6 +98,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         </header>
 
         <main className="w-full px-4 py-6 min-[960px]:px-8 min-[960px]:py-8">{children}</main>
+        <Avisos flash={(await cookies()).get(COOKIE_AVISO)?.value} />
       </div>
     </div>
   );

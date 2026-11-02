@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 
@@ -19,6 +20,7 @@ export async function crearCategoriaPropuesta(
   _previo: ResultadoAccion | null,
   fd: FormData,
 ): Promise<ResultadoAccion> {
+  return conAviso('Categoría creada', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/participacion/categorias');
 
   const nombre = texto(fd, 'nombre');
@@ -47,6 +49,7 @@ export async function crearCategoriaPropuesta(
 
   revalidatePath('/admin/participacion/categorias');
   return { ok: true };
+  });
 }
 
 /** Renombra y/o recolorea una categoría existente. */
@@ -55,6 +58,7 @@ export async function editarCategoriaPropuesta(
   nombre: string,
   color: string,
 ): Promise<ResultadoAccion> {
+  return conAviso('Categoría guardada', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/participacion/categorias');
 
   const nombreLimpio = nombre.trim();
@@ -78,6 +82,7 @@ export async function editarCategoriaPropuesta(
 
   revalidatePath('/admin/participacion/categorias');
   return { ok: true };
+  });
 }
 
 /** Sube o baja una categoría una posición, intercambiando `orden` con la vecina. */
@@ -85,6 +90,7 @@ export async function reordenarCategoriaPropuesta(
   id: string,
   direccion: 'subir' | 'bajar',
 ): Promise<ResultadoAccion> {
+  return conAviso('Orden actualizado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/participacion/categorias');
 
   const { data: categorias, error } = await supabase
@@ -111,10 +117,12 @@ export async function reordenarCategoriaPropuesta(
 
   revalidatePath('/admin/participacion/categorias');
   return { ok: true };
+  });
 }
 
 /** Elimina una categoría — solo si ninguna propuesta la usa (category_id es nullable, no hay ON DELETE RESTRICT explícito pero se comprueba igualmente para no dejar hilos huérfanos sin avisar). */
 export async function eliminarCategoriaPropuesta(id: string): Promise<ResultadoAccion> {
+  return conAviso('Categoría eliminada', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/participacion/categorias');
   if (!id) return { ok: false, error: 'Categoría inválida.' };
 
@@ -135,4 +143,5 @@ export async function eliminarCategoriaPropuesta(id: string): Promise<ResultadoA
 
   revalidatePath('/admin/participacion/categorias');
   return { ok: true };
+  });
 }

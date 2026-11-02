@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
@@ -8,6 +9,7 @@ import { notificarEncuestaNueva } from '@/lib/participacion/notifications-admin'
 import type { TipoPregunta } from '@/lib/participacion/types';
 
 export async function crearEncuestaAction(formData: FormData) {
+  return conAviso('Encuesta creada', async () => {
   const { user, supabase } = await requireAdminOCoordinador('/admin/participacion/encuestas/nueva');
 
   const title = (formData.get('title') as string)?.trim();
@@ -92,4 +94,5 @@ export async function crearEncuestaAction(formData: FormData) {
 
   revalidatePath('/admin/participacion/encuestas');
   redirect(`/admin/participacion/encuestas?creada=${encuesta.id}`);
+  });
 }

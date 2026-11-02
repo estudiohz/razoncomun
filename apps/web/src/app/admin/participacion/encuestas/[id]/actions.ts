@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
 import type { TipoPregunta } from '@/lib/participacion/types';
@@ -43,6 +44,7 @@ export async function actualizarEncuestaAction(
   surveyId: string,
   fd: FormData,
 ): Promise<ResultadoEdicion> {
+  return conAviso('Encuesta guardada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/encuestas/${surveyId}`);
 
   const title = String(fd.get('title') ?? '').trim();
@@ -80,12 +82,14 @@ export async function actualizarEncuestaAction(
   revalidatePath(`/admin/participacion/encuestas/${surveyId}`);
   revalidatePath('/mes');
   return { ok: true };
+  });
 }
 
 export async function anadirPreguntaAction(
   surveyId: string,
   fd: FormData,
 ): Promise<ResultadoEdicion> {
+  return conAviso('Pregunta añadida', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/encuestas/${surveyId}`);
 
   const text = String(fd.get('text') ?? '').trim();
@@ -130,6 +134,7 @@ export async function anadirPreguntaAction(
   revalidatePath('/mes');
   revalidatePath('/panel');
   return { ok: true };
+  });
 }
 
 /**
@@ -145,6 +150,7 @@ export async function guardarPreguntaAction(
   questionId: string,
   fd: FormData,
 ): Promise<ResultadoEdicion> {
+  return conAviso('Pregunta guardada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/encuestas/${surveyId}`);
 
   const { count } = await supabase
@@ -236,12 +242,14 @@ export async function guardarPreguntaAction(
   revalidatePath(`/admin/participacion/encuestas/${surveyId}`);
   revalidatePath('/mes');
   return { ok: true };
+  });
 }
 
 export async function eliminarPreguntaAction(
   surveyId: string,
   questionId: string,
 ): Promise<ResultadoEdicion> {
+  return conAviso('Pregunta eliminada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/encuestas/${surveyId}`);
 
   const { count } = await supabase
@@ -265,4 +273,5 @@ export async function eliminarPreguntaAction(
   revalidatePath(`/admin/participacion/encuestas/${surveyId}`);
   revalidatePath('/mes');
   return { ok: true };
+  });
 }

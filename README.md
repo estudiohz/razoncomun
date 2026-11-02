@@ -20,6 +20,10 @@ razoncomun/
 └── bot/                # Bot de Discord del RC-Brain.
 ```
 
+## Norma: toda acción avisa de su resultado
+
+Cada acción que guarda, edita, publica o borra muestra un aviso de éxito («Rol asignado», «Artículo publicado»…) y uno de error si falla: en server actions, envuelve el cuerpo en `conAviso('Texto', async () => {...})` (`src/lib/avisos/servidor.ts`); en Client Components, llama a `avisar()` de `src/lib/avisos/cliente.ts`. Los pinta `<Avisos />` (layouts de `/admin` y `/panel`).
+
 ## Cero secretos en este repo
 
 Ningún `.env`, clave, token o contraseña debe llegar nunca a un commit — es un repo público. Cada carpeta con necesidad de secretos trae su propio `*.env.example` documentado; los valores reales viven en `infra/.env` local (ignorado por git) o en la configuración de cada servicio en Dokploy.

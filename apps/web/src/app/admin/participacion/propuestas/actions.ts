@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
@@ -50,6 +51,7 @@ async function obtenerPropuestaOrThrow(supabase: Awaited<ReturnType<typeof requi
 
 /** Cambia el estado desde la ficha de moderación (D-P3). Trigger SQL exige coordinator/admin. */
 export async function cambiarEstadoAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Estado de la propuesta actualizado', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const nuevoEstado = String(fd.get('status') ?? '').trim() as EstadoPropuesta;
@@ -65,6 +67,7 @@ export async function cambiarEstadoAction(id: string, fd: FormData): Promise<Res
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido cambiar el estado.' };
   }
+  });
 }
 
 /**
@@ -73,6 +76,7 @@ export async function cambiarEstadoAction(id: string, fd: FormData): Promise<Res
  * coordinator/admin — aquí solo se da la mejor experiencia al error.
  */
 export async function fijarMesAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Propuesta del mes actualizada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const raw = String(fd.get('featured_month') ?? '').trim(); // "2026-08" o ""
@@ -89,10 +93,12 @@ export async function fijarMesAction(id: string, fd: FormData): Promise<Resultad
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   revalidatePath('/mes');
   return { ok: true };
+  });
 }
 
 /** Fija o quita la fecha límite (D-P6). Input datetime-local vacío = sin límite. */
 export async function fijarDeadlineAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Fecha límite guardada', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const raw = String(fd.get('deadline_at') ?? '').trim();
@@ -106,6 +112,7 @@ export async function fijarDeadlineAction(id: string, fd: FormData): Promise<Res
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   return { ok: true };
+  });
 }
 
 /**
@@ -113,6 +120,7 @@ export async function fijarDeadlineAction(id: string, fd: FormData): Promise<Res
  * lo quita. Orden de prioridad: quitar > PDF subido > enlace escrito.
  */
 export async function guardarInformeAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Informe guardado', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   try {
@@ -151,6 +159,7 @@ export async function guardarInformeAction(id: string, fd: FormData): Promise<Re
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido guardar el informe.' };
   }
+  });
 }
 
 /**
@@ -159,6 +168,7 @@ export async function guardarInformeAction(id: string, fd: FormData): Promise<Re
  * puede corregir la fecha o el resultado sin volver a subirlo.
  */
 export async function guardarSimulacionAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Simulación guardada', async () => {
   const { user, supabase, esAdmin } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
   if (!esAdmin) return { ok: false, error: 'Solo un administrador puede gestionar la simulación.' };
 
@@ -210,10 +220,12 @@ export async function guardarSimulacionAction(id: string, fd: FormData): Promise
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido guardar la simulación.' };
   }
+  });
 }
 
 /** 0064: muestra u oculta el nombre del autor en la ficha pública. */
 export async function fijarMostrarAutorAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Visibilidad del autor actualizada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const propuesta = await obtenerPropuestaOrThrow(supabase, id);
@@ -226,6 +238,7 @@ export async function fijarMostrarAutorAction(id: string, fd: FormData): Promise
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   if (propuesta.slug) revalidatePath(`/propuestas/${propuesta.slug}`);
   return { ok: true };
+  });
 }
 
 /**
@@ -234,6 +247,7 @@ export async function fijarMostrarAutorAction(id: string, fd: FormData): Promise
  * sustituida solo cuando ESTA esté aprobada/planeada.
  */
 export async function fijarSustitucionAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Sustitución guardada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const destino = String(fd.get('supersedes_id') ?? '').trim();
@@ -260,6 +274,7 @@ export async function fijarSustitucionAction(id: string, fd: FormData): Promise<
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   revalidatePath('/programa');
   return { ok: true };
+  });
 }
 
 /**
@@ -270,6 +285,7 @@ export async function fijarSustitucionAction(id: string, fd: FormData): Promise<
  * = sin categoría en el tablero con colores); department es obligatorio.
  */
 export async function editarClasificacionAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Clasificación guardada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const department = String(fd.get('department') ?? '').trim();
@@ -289,6 +305,7 @@ export async function editarClasificacionAction(id: string, fd: FormData): Promi
   revalidatePath('/admin/participacion');
   revalidatePath('/propuestas');
   return { ok: true };
+  });
 }
 
 /**
@@ -299,6 +316,7 @@ export async function editarClasificacionAction(id: string, fd: FormData): Promi
  * mutile contenido válido que sí sabrá pintar el de la próxima versión.
  */
 export async function editarContenidoAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Propuesta guardada', async () => {
   const { supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const title = String(fd.get('title') ?? '').trim();
@@ -316,10 +334,12 @@ export async function editarContenidoAction(id: string, fd: FormData): Promise<R
   revalidatePath('/propuestas');
   if (propuesta.slug) revalidatePath(`/propuestas/${propuesta.slug}`);
   return { ok: true };
+  });
 }
 
 /** Publica la respuesta oficial fijada (D-P10). Solo coordinator/admin (mismo trigger que status). */
 export async function publicarRespuestaOficialAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Respuesta oficial publicada', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const texto = String(fd.get('official_response') ?? '').trim();
@@ -334,10 +354,12 @@ export async function publicarRespuestaOficialAction(id: string, fd: FormData): 
 
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   return { ok: true };
+  });
 }
 
 /** Archiva (soft, D-P3). */
 export async function archivarAction(id: string): Promise<ResultadoAccion> {
+  return conAviso('Propuesta archivada', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
   try {
     await archivarPropuesta(supabase, user.id, id);
@@ -347,10 +369,12 @@ export async function archivarAction(id: string): Promise<ResultadoAccion> {
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   revalidatePath('/admin/participacion');
   return { ok: true };
+  });
 }
 
 /** Elimina duro. Exige motivo (RGPD/trazabilidad — queda en audit_log antes del delete). */
 export async function eliminarAction(id: string, motivo: string): Promise<ResultadoAccion> {
+  return conAviso('Propuesta eliminada', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
   const motivoLimpio = motivo.trim();
   if (!motivoLimpio) return { ok: false, error: 'El motivo es obligatorio para eliminar.' };
@@ -363,10 +387,12 @@ export async function eliminarAction(id: string, motivo: string): Promise<Result
 
   revalidatePath('/admin/participacion');
   redirect('/admin/participacion?eliminada=1');
+  });
 }
 
 /** Fusiona `id` (origen, "B") en `destinoId` (A). Rechaza si A tiene la votación cerrada (D-P11). */
 export async function fusionarAction(id: string, fd: FormData): Promise<ResultadoAccion> {
+  return conAviso('Propuestas fusionadas', async () => {
   const { user, supabase } = await requireAdminOCoordinador(`/admin/participacion/propuestas/${id}`);
 
   const destinoRaw = String(fd.get('destino') ?? '').trim();
@@ -389,4 +415,5 @@ export async function fusionarAction(id: string, fd: FormData): Promise<Resultad
   revalidatePath(`/admin/participacion/propuestas/${id}`);
   revalidatePath('/admin/participacion');
   redirect(`/admin/participacion/propuestas/${destinoId}?fusionada=1`);
+  });
 }

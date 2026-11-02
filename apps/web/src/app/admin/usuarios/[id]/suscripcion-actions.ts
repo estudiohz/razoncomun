@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import { stripeCliente, stripeSecretKey } from '@/lib/stripe/servidor';
@@ -67,6 +68,7 @@ async function suscripcionDe(
  * `keep_as_draft` se le cobraría todo junto al volver.
  */
 export async function pausarCuotaAction(userId: string): Promise<ResultadoSuscripcion> {
+  return conAviso('Cuota pausada', async () => {
   try {
     const { stripe, supabase, actorId } = await conStripe(`/admin/usuarios/${userId}`);
     const s = await suscripcionDe(supabase, userId);
@@ -83,10 +85,12 @@ export async function pausarCuotaAction(userId: string): Promise<ResultadoSuscri
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido pausar la cuota.' };
   }
+  });
 }
 
 /** Reanuda el cobro (quita pause_collection). */
 export async function reanudarCuotaAction(userId: string): Promise<ResultadoSuscripcion> {
+  return conAviso('Cuota reanudada', async () => {
   try {
     const { stripe, supabase, actorId } = await conStripe(`/admin/usuarios/${userId}`);
     const s = await suscripcionDe(supabase, userId);
@@ -101,6 +105,7 @@ export async function reanudarCuotaAction(userId: string): Promise<ResultadoSusc
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido reanudar la cuota.' };
   }
+  });
 }
 
 /**
@@ -109,6 +114,7 @@ export async function reanudarCuotaAction(userId: string): Promise<ResultadoSusc
  * que no presta.
  */
 export async function cancelarCuotaAction(userId: string): Promise<ResultadoSuscripcion> {
+  return conAviso('Cuota cancelada', async () => {
   try {
     const { stripe, supabase, actorId } = await conStripe(`/admin/usuarios/${userId}`);
     const s = await suscripcionDe(supabase, userId);
@@ -129,4 +135,5 @@ export async function cancelarCuotaAction(userId: string): Promise<ResultadoSusc
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'No se ha podido cancelar la cuota.' };
   }
+  });
 }

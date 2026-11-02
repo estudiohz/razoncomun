@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 /**
  * lib/simulador/adminActions.ts
  *
@@ -66,6 +67,7 @@ function revalidarDemografia(areaId: string | null) {
 
 /** Crea o actualiza una partida (raíz o hija — el `parent_id` decide). */
 export async function guardarPartidaAction(formData: FormData): Promise<ResultadoAccion> {
+  return conAviso('Partida guardada', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
 
   const id = texto(formData, 'id') || null;
@@ -213,9 +215,11 @@ export async function guardarPartidaAction(formData: FormData): Promise<Resultad
   } catch {
     return { ok: false, error: 'No se ha podido guardar (error de red o servidor). Inténtalo de nuevo.' };
   }
+  });
 }
 
 export async function eliminarPartidaAction(id: string): Promise<ResultadoAccion> {
+  return conAviso('Partida eliminada', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
 
   const todas = await listarPartidas(supabase);
@@ -238,9 +242,11 @@ export async function eliminarPartidaAction(id: string): Promise<ResultadoAccion
   } catch {
     return { ok: false, error: 'No se ha podido borrar (error de red o servidor).' };
   }
+  });
 }
 
 export async function publicarPartidaAction(id: string, publicar: boolean): Promise<ResultadoAccion> {
+  return conAviso(publicar ? 'Partida publicada' : 'Partida despublicada', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
 
   if (publicar) {
@@ -253,6 +259,7 @@ export async function publicarPartidaAction(id: string, publicar: boolean): Prom
   if (error) return { ok: false, error: error.message };
   revalidarPresupuesto();
   return { ok: true };
+  });
 }
 
 // ============================================================================
@@ -262,6 +269,7 @@ export async function publicarPartidaAction(id: string, publicar: boolean): Prom
 const CLAVE_SLUG = /^[a-z][a-z0-9_]*$/;
 
 export async function guardarParametroAction(formData: FormData): Promise<ResultadoAccion> {
+  return conAviso('Parámetro guardado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto/parametros');
 
   const id = texto(formData, 'id') || null;
@@ -349,9 +357,11 @@ export async function guardarParametroAction(formData: FormData): Promise<Result
   } catch {
     return { ok: false, error: 'No se ha podido guardar (error de red o servidor). Inténtalo de nuevo.' };
   }
+  });
 }
 
 export async function eliminarParametroAction(id: string): Promise<ResultadoAccion> {
+  return conAviso('Parámetro eliminado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto/parametros');
 
   const parametros = await listarParametros(supabase);
@@ -379,9 +389,11 @@ export async function eliminarParametroAction(id: string): Promise<ResultadoAcci
   } catch {
     return { ok: false, error: 'No se ha podido borrar (error de red o servidor).' };
   }
+  });
 }
 
 export async function publicarParametroAction(id: string, publicar: boolean): Promise<ResultadoAccion> {
+  return conAviso(publicar ? 'Parámetro publicado' : 'Parámetro despublicado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto/parametros');
 
   if (publicar) {
@@ -394,6 +406,7 @@ export async function publicarParametroAction(id: string, publicar: boolean): Pr
   if (error) return { ok: false, error: error.message };
   revalidarPresupuesto();
   return { ok: true };
+  });
 }
 
 // ============================================================================
@@ -404,6 +417,7 @@ export async function publicarParametroAction(id: string, publicar: boolean): Pr
 // ============================================================================
 
 export async function guardarDemografiaAction(formData: FormData): Promise<ResultadoAccion> {
+  return conAviso('Dato demográfico guardado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
 
   const id = texto(formData, 'id') || null;
@@ -458,9 +472,11 @@ export async function guardarDemografiaAction(formData: FormData): Promise<Resul
   } catch {
     return { ok: false, error: 'No se ha podido guardar (error de red o servidor). Inténtalo de nuevo.' };
   }
+  });
 }
 
 export async function eliminarDemografiaAction(id: string, areaId: string | null): Promise<ResultadoAccion> {
+  return conAviso('Dato demográfico eliminado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
 
   try {
@@ -471,9 +487,11 @@ export async function eliminarDemografiaAction(id: string, areaId: string | null
   } catch {
     return { ok: false, error: 'No se ha podido borrar (error de red o servidor).' };
   }
+  });
 }
 
 export async function publicarDemografiaAction(id: string, areaId: string | null, publicar: boolean): Promise<ResultadoAccion> {
+  return conAviso(publicar ? 'Dato demográfico publicado' : 'Dato demográfico despublicado', async () => {
   const { supabase } = await requireAdminOrEditor('/admin/presupuesto');
 
   if (publicar) {
@@ -486,6 +504,7 @@ export async function publicarDemografiaAction(id: string, areaId: string | null
   if (error) return { ok: false, error: error.message };
   revalidarDemografia(areaId);
   return { ok: true };
+  });
 }
 
 export type { PartidaRow };

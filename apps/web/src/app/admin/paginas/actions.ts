@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { requireEditor } from '@/lib/blog/guard';
@@ -26,6 +27,7 @@ export async function guardarPagina(
   _previo: ResultadoPagina | null,
   fd: FormData,
 ): Promise<ResultadoPagina> {
+  return conAviso('Página guardada', async () => {
   const { supabase, userId } = await requireEditor();
 
   const id = texto(fd, 'id');
@@ -72,10 +74,12 @@ export async function guardarPagina(
   revalidatePath('/admin/paginas');
   revalidatePath('/', 'layout');
   redirect(`/admin/paginas/${data.id}`);
+  });
 }
 
 /** Elimina una o varias páginas. RLS ya exige is_editor; requireEditor es la 2ª capa. */
 export async function eliminarPaginas(ids: string[]): Promise<ResultadoPagina> {
+  return conAviso('Páginas eliminadas', async () => {
   const { supabase } = await requireEditor();
   const limpios = Array.from(new Set((ids ?? []).map((s) => String(s).trim()).filter(Boolean)));
   if (limpios.length === 0) return { ok: false, error: 'No hay páginas seleccionadas.' };
@@ -86,4 +90,5 @@ export async function eliminarPaginas(ids: string[]): Promise<ResultadoPagina> {
   revalidatePath('/admin/paginas');
   revalidatePath('/', 'layout');
   return { ok: true };
+  });
 }

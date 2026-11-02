@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import {
@@ -31,6 +32,7 @@ export async function guardarCredencialPago(
   _previo: ResultadoPagos | null,
   fd: FormData,
 ): Promise<ResultadoPagos> {
+  return conAviso('Credencial de pago guardada', async () => {
   const { user } = await requireAdmin('/admin/tienda/pagos');
 
   const provider = texto(fd, 'provider') as Pasarela;
@@ -63,6 +65,7 @@ export async function guardarCredencialPago(
         ? 'Guardada. Todavía no hay ningún cobro por PayPal: se usará cuando exista el checkout.'
         : undefined,
   };
+  });
 }
 
 /** Enciende o apaga métodos de pago. No toca el panel de Stripe: ver 0053. */
@@ -70,6 +73,7 @@ export async function guardarMetodosPago(
   _previo: ResultadoPagos | null,
   fd: FormData,
 ): Promise<ResultadoPagos> {
+  return conAviso('Métodos de pago guardados', async () => {
   await requireAdmin('/admin/tienda/pagos');
 
   const codigos = fd.getAll('codigos').map(String);
@@ -87,4 +91,5 @@ export async function guardarMetodosPago(
 
   revalidatePath('/admin/tienda/pagos');
   return { ok: true };
+  });
 }

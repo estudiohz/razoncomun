@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/cn';
+import { avisar } from '@/lib/avisos/cliente';
 
 type Estado = { tipo: 'idle' | 'enviando' | 'ok' | 'error' | 'aal2'; mensaje?: string };
 
@@ -68,6 +69,7 @@ export function ContrasenaForm({ tieneContrasenaInicial }: { tieneContrasenaInic
               ? 'Tu sesión ha caducado. Vuelve a entrar e inténtalo de nuevo.'
               : 'No hemos podido guardar la contraseña. Inténtalo de nuevo.';
       setEstado({ tipo: 'error', mensaje });
+      avisar(mensaje, 'error');
       return;
     }
     setEstado({
@@ -76,6 +78,7 @@ export function ContrasenaForm({ tieneContrasenaInicial }: { tieneContrasenaInic
         ? 'Contraseña actualizada.'
         : 'Contraseña creada. Ya puedes entrar con ella, sin depender del enlace mágico.',
     });
+    avisar(tieneContrasena ? 'Contraseña actualizada' : 'Contraseña creada');
     setTieneContrasena(true);
     setPassword('');
     setPassword2('');

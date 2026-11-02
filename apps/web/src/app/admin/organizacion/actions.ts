@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import { registrarAuditoria } from '@/lib/admin/audit';
@@ -18,6 +19,7 @@ const CARGOS_VALIDOS = [...CARGOS_NACIONALES, ...CARGOS_COMUNIDAD];
  * la capa de aplicación, antes de tocar la tabla.
  */
 export async function asignarCargo(formData: FormData) {
+  return conAviso('Cargo asignado', async () => {
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const role = String(formData.get('role') ?? '');
   const ambito = String(formData.get('ambito') ?? '');
@@ -76,10 +78,12 @@ export async function asignarCargo(formData: FormData) {
 
   revalidatePath('/admin/organizacion');
   revalidatePath('/transparencia/organigrama');
+  });
 }
 
 /** Cesa un cargo vigente (ended_at = now). Exige motivo — queda en audit_log (I6). */
 export async function cesarCargo(formData: FormData) {
+  return conAviso('Cargo cesado', async () => {
   const positionId = String(formData.get('positionId') ?? '');
   const motivo = String(formData.get('motivo') ?? '').trim();
   const { user, supabase } = await requireAdmin('/admin/organizacion');
@@ -116,4 +120,5 @@ export async function cesarCargo(formData: FormData) {
 
   revalidatePath('/admin/organizacion');
   revalidatePath('/transparencia/organigrama');
+  });
 }

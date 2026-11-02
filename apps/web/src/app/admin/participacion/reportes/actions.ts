@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdminOrEditor } from '@/lib/admin/guard';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
@@ -30,6 +31,7 @@ export async function resolverReporteAction(
   proposalId: string | null,
   commentId: string | null,
 ): Promise<ResultadoAccion> {
+  return conAviso('Reporte resuelto', async () => {
   if (tipo === 'propuesta') {
     if (!proposalId) return { ok: false, error: 'Reporte inválido.' };
     const { user, supabase } = await requireAdminOCoordinador('/admin/participacion/reportes');
@@ -72,4 +74,5 @@ export async function resolverReporteAction(
 
   revalidatePath('/admin/participacion/reportes');
   return { ok: true };
+  });
 }

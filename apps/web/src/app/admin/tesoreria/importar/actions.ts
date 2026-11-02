@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireTesoreria } from '@/lib/tesoreria/guard';
 import { leerExtracto } from '@/lib/tesoreria/csv';
@@ -29,6 +30,7 @@ const MAX_BYTES = 2 * 1024 * 1024;
  *    con los nombres de los donantes.
  */
 export async function importarExtractoAction(fd: FormData): Promise<ResultadoImportacion> {
+  return conAviso('Extracto importado', async () => {
   const { supabase } = await requireTesoreria('/admin/tesoreria/importar');
 
   const fichero = fd.get('extracto');
@@ -91,4 +93,5 @@ export async function importarExtractoAction(fd: FormData): Promise<ResultadoImp
     columnas,
     lote,
   };
+  });
 }

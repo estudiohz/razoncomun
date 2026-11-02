@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/cn';
+import { avisar } from '@/lib/avisos/cliente';
 
 type Factor = { id: string; friendly_name?: string | null; status: string };
 
@@ -21,7 +22,11 @@ export function Seguridad2FA() {
   const [secreto, setSecreto] = useState<string | null>(null);
   const [factorPendienteId, setFactorPendienteId] = useState<string | null>(null);
   const [codigo, setCodigo] = useState('');
-  const [mensaje, setMensaje] = useState<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
+  const [mensaje, setMensajeLocal] = useState<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
+  const setMensaje = (m: { tipo: 'ok' | 'error'; texto: string } | null) => {
+    setMensajeLocal(m);
+    if (m) avisar(m.texto, m.tipo === 'ok' ? 'exito' : 'error');
+  };
   const [cargando, setCargando] = useState(false);
 
   async function cargarFactores() {

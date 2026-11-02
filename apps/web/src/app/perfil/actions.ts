@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
@@ -41,6 +42,7 @@ export async function actualizarPerfil(
   _prevState: EstadoActualizarPerfil,
   formData: FormData,
 ): Promise<EstadoActualizarPerfil> {
+  return conAviso('Perfil guardado', async () => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -120,6 +122,7 @@ export async function actualizarPerfil(
 
   revalidatePath('/perfil');
   return { ok: true, mensaje: 'Guardado.', valores: filaActualizada };
+  });
 }
 
 export async function cerrarSesion() {
@@ -145,6 +148,7 @@ export async function guardarSuscripcionPushAction(
   sub: SuscripcionPushInput,
   userAgent: string,
 ): Promise<{ ok: boolean; error?: string }> {
+  return conAviso('Notificaciones activadas', async () => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -169,10 +173,12 @@ export async function guardarSuscripcionPushAction(
   if (errorPrefs) return { ok: false, error: errorPrefs.message };
 
   return { ok: true };
+  });
 }
 
 /** Da de baja ESTE dispositivo. Si era el único, deja de recibir push (no toca los demás). */
 export async function eliminarSuscripcionPushAction(endpoint: string): Promise<{ ok: boolean; error?: string }> {
+  return conAviso('Notificaciones desactivadas', async () => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -182,6 +188,7 @@ export async function eliminarSuscripcionPushAction(endpoint: string): Promise<{
   const { error } = await supabase.from('push_subscriptions').delete().eq('endpoint', endpoint);
   if (error) return { ok: false, error: error.message };
   return { ok: true };
+  });
 }
 
 /**
@@ -190,6 +197,7 @@ export async function eliminarSuscripcionPushAction(endpoint: string): Promise<{
  * la baja con un clic de cada correo.
  */
 export async function cambiarAvisosCorreoAction(activar: boolean): Promise<{ ok: boolean }> {
+  return conAviso('Preferencias de correo guardadas', async () => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -201,4 +209,5 @@ export async function cambiarAvisosCorreoAction(activar: boolean): Promise<{ ok:
     .eq('id', user.id);
   if (!error) revalidatePath('/panel/perfil');
   return { ok: !error };
+  });
 }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { avisar } from '@/lib/avisos/cliente';
 
 export function ExportarBorrarCuenta() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export function ExportarBorrarCuenta() {
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
       setError(data.error ?? 'No hemos podido borrar la cuenta.');
+      avisar(data.error ?? 'No hemos podido borrar la cuenta.', 'error');
       setBorrando(false);
       return;
     }

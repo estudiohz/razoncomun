@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdminOCoordinador } from '@/lib/participacion/admin-guard';
 import { cambiarEstadoPropuesta } from '@/lib/participacion/moderation';
@@ -20,6 +21,7 @@ export interface ResultadoAccion {
  * puede), la autoridad real sigue estando en Postgres.
  */
 export async function publicarBorradorAction(id: string): Promise<ResultadoAccion> {
+  return conAviso('Propuesta publicada', async () => {
   const { user, supabase } = await requireAdminOCoordinador('/admin/participacion/borradores');
 
   const { data, error } = await supabase
@@ -48,10 +50,12 @@ export async function publicarBorradorAction(id: string): Promise<ResultadoAccio
   revalidatePath('/admin/participacion');
   revalidatePath('/propuestas');
   return { ok: true };
+  });
 }
 
 /** Descarta un borrador sin publicarlo: `draft` → `archived`. */
 export async function descartarBorradorAction(id: string): Promise<ResultadoAccion> {
+  return conAviso('Borrador descartado', async () => {
   const { user, supabase } = await requireAdminOCoordinador('/admin/participacion/borradores');
 
   const { data, error } = await supabase
@@ -79,4 +83,5 @@ export async function descartarBorradorAction(id: string): Promise<ResultadoAcci
   revalidatePath('/admin/participacion/borradores');
   revalidatePath('/admin/participacion');
   return { ok: true };
+  });
 }

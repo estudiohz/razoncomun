@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import { registrarAuditoria } from '@/lib/admin/audit';
@@ -44,6 +45,7 @@ async function exigirAal2(supabase: SupabaseClient) {
  * `actor_id = auth.uid()` — así el actor registrado es siempre real.
  */
 export async function activarProveedorIA(formData: FormData) {
+  return conAviso('Proveedor de IA activado', async () => {
   const provider = String(formData.get('provider') ?? '');
   const model = String(formData.get('model') ?? '').trim();
   const apiKey = String(formData.get('apiKey') ?? '').trim();
@@ -91,6 +93,7 @@ export async function activarProveedorIA(formData: FormData) {
   });
 
   revalidatePath('/admin/ajustes');
+  });
 }
 
 /**
@@ -101,6 +104,7 @@ export async function activarProveedorIA(formData: FormData) {
  * deshacer manualmente un cambio reciente.
  */
 export async function revertirProveedorIA(formData: FormData) {
+  return conAviso('Proveedor de IA revertido', async () => {
   const motivo = String(formData.get('motivo') ?? '').trim();
   const { user, supabase } = await requireAdmin('/admin/ajustes');
   await exigirAal2(supabase);
@@ -120,6 +124,7 @@ export async function revertirProveedorIA(formData: FormData) {
   }
 
   revalidatePath('/admin/ajustes');
+  });
 }
 
 /**
@@ -136,6 +141,7 @@ export async function revertirProveedorIA(formData: FormData) {
  * + motivo + auditoría).
  */
 export async function actualizarModeloProveedorIA(formData: FormData) {
+  return conAviso('Modelo de IA guardado', async () => {
   const model = String(formData.get('model') ?? '').trim();
   const motivo = String(formData.get('motivo') ?? '').trim();
   const { user, supabase } = await requireAdmin('/admin/ajustes');
@@ -184,6 +190,7 @@ export async function actualizarModeloProveedorIA(formData: FormData) {
   });
 
   revalidatePath('/admin/ajustes');
+  });
 }
 
 /**
@@ -200,6 +207,7 @@ export async function actualizarModeloProveedorIA(formData: FormData) {
  * sensibles: admin + 2FA + motivo + auditoría (I5/I6, revision-seguridad.md).
  */
 export async function eliminarProveedorIA(formData: FormData) {
+  return conAviso('Proveedor de IA eliminado', async () => {
   const motivo = String(formData.get('motivo') ?? '').trim();
   const { user, supabase } = await requireAdmin('/admin/ajustes');
   await exigirAal2(supabase);
@@ -236,6 +244,7 @@ export async function eliminarProveedorIA(formData: FormData) {
   });
 
   revalidatePath('/admin/ajustes');
+  });
 }
 
 /**
@@ -279,6 +288,7 @@ export async function eliminarProveedorIA(formData: FormData) {
  * `CodigoSeguimiento.tsx` desde el cliente, nunca el servidor.
  */
 export async function actualizarCodigoSeguimiento(formData: FormData) {
+  return conAviso('Código de seguimiento guardado', async () => {
   const head = String(formData.get('tracking_head') ?? '');
   const body = String(formData.get('tracking_body') ?? '');
   const { user, supabase } = await requireAdmin('/admin/ajustes');
@@ -328,9 +338,11 @@ export async function actualizarCodigoSeguimiento(formData: FormData) {
 
   revalidatePath('/admin/ajustes');
   revalidatePath('/', 'layout');
+  });
 }
 
 export async function actualizarAntiguedadMinima(formData: FormData) {
+  return conAviso('Antigüedad mínima guardada', async () => {
   const dias = Number(formData.get('dias'));
   const motivo = String(formData.get('motivo') ?? '').trim();
   const { user, supabase } = await requireAdmin('/admin/ajustes');
@@ -368,4 +380,5 @@ export async function actualizarAntiguedadMinima(formData: FormData) {
   });
 
   revalidatePath('/admin/ajustes');
+  });
 }

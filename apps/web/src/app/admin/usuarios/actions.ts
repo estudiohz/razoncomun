@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/admin/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -56,6 +57,7 @@ export async function invitarUsuario(
   _previo: ResultadoInvitacion | null,
   formData: FormData,
 ): Promise<ResultadoInvitacion> {
+  return conAviso('Invitación creada', async () => {
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const displayName = String(formData.get('display_name') ?? '').trim();
   const roleKey = String(formData.get('roleKey') ?? '').trim();
@@ -146,6 +148,7 @@ export async function invitarUsuario(
 
   revalidatePath('/admin/usuarios');
   return { ok: true, emailEnviado: envio.enviado, enlace, email };
+  });
 }
 
 /**
@@ -166,6 +169,7 @@ export async function invitarUsuario(
  * resultado del envío queda en `audit_log` (mismo criterio que invitarUsuario).
  */
 export async function asignarRolApp(formData: FormData) {
+  return conAviso('Rol asignado', async () => {
   const targetUserId = String(formData.get('userId') ?? '');
   const roleKey = String(formData.get('roleKey') ?? '');
   const { user, supabase } = await requireAdmin(`/admin/usuarios/${targetUserId}`);
@@ -191,6 +195,7 @@ export async function asignarRolApp(formData: FormData) {
   });
 
   revalidatePath(`/admin/usuarios/${targetUserId}`);
+  });
 }
 
 async function enviarAvisoRolConcedido(
@@ -272,6 +277,7 @@ async function enviarAvisoRolConcedido(
 
 /** Revoca un rol funcional de app ya asignado. Solo admin. */
 export async function revocarRolApp(formData: FormData) {
+  return conAviso('Rol revocado', async () => {
   const targetUserId = String(formData.get('userId') ?? '');
   const roleKey = String(formData.get('roleKey') ?? '');
   const { user, supabase } = await requireAdmin(`/admin/usuarios/${targetUserId}`);
@@ -295,6 +301,7 @@ export async function revocarRolApp(formData: FormData) {
   });
 
   revalidatePath(`/admin/usuarios/${targetUserId}`);
+  });
 }
 
 export interface ResultadoEliminacion {
@@ -323,6 +330,7 @@ export interface ResultadoEliminacion {
  * partido podría quedarse sin ningún admin.
  */
 export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEliminacion> {
+  return conAviso('Cuenta dada de baja', async () => {
   const motivoBaja = 'Baja ejecutada desde el panel de administración.';
   const { user, supabase } = await requireAdmin('/admin/usuarios');
 
@@ -390,6 +398,7 @@ export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEl
 
   revalidatePath('/admin/usuarios');
   return { ok: true, accion: 'dada_de_baja', retieneDatosFiscales: baja.retieneDatosFiscales };
+  });
 }
 
 /**
@@ -401,6 +410,7 @@ export async function eliminarUsuario(targetUserId: string): Promise<ResultadoEl
  * en `audit_log` junto con el nivel anterior y el nuevo (I6).
  */
 export async function cambiarNivelManual(formData: FormData) {
+  return conAviso('Nivel actualizado', async () => {
   const targetUserId = String(formData.get('userId') ?? '');
   const nuevoNivel = String(formData.get('nivel') ?? '');
   const motivo = String(formData.get('motivo') ?? '').trim();
@@ -444,6 +454,7 @@ export async function cambiarNivelManual(formData: FormData) {
   });
 
   revalidatePath(`/admin/usuarios/${targetUserId}`);
+  });
 }
 
 export interface ResultadoRecuperacion {
@@ -466,6 +477,7 @@ export interface ResultadoRecuperacion {
  * (quien lo ve podría restablecer la contraseña de esa cuenta). Queda en audit_log.
  */
 export async function reenviarRecuperacion(targetUserId: string): Promise<ResultadoRecuperacion> {
+  return conAviso('Correo de recuperación enviado', async () => {
   const { user, supabase } = await requireAdmin(`/admin/usuarios/${targetUserId}`);
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/+$/, '');
@@ -517,4 +529,5 @@ export async function reenviarRecuperacion(targetUserId: string): Promise<Result
   });
 
   return { ok: true, emailEnviado: envio.enviado, email, enlace: envio.enviado ? undefined : enlace };
+  });
 }

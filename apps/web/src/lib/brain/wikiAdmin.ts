@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { slugificar } from '@/lib/blog/markdown';
@@ -78,6 +79,7 @@ export async function guardarEntrada(
   _previo: ResultadoAccion | null,
   fd: FormData,
 ): Promise<ResultadoAccion> {
+  return conAviso('Entrada guardada', async () => {
   const { supabase, userId } = await requireEditorCerebro();
 
   const id = texto(fd, 'id');
@@ -139,6 +141,7 @@ export async function guardarEntrada(
 
   revalidatePath('/admin/cerebro');
   redirect(`/admin/cerebro/${data.id}`);
+  });
 }
 
 /**
@@ -147,6 +150,7 @@ export async function guardarEntrada(
  * `requireEditorCerebro` es la segunda capa.
  */
 export async function eliminarEntradas(ids: string[]): Promise<ResultadoAccion> {
+  return conAviso('Entradas eliminadas', async () => {
   const { supabase } = await requireEditorCerebro();
 
   const limpios = Array.from(new Set((ids ?? []).map((s) => String(s).trim()).filter(Boolean)));
@@ -157,6 +161,7 @@ export async function eliminarEntradas(ids: string[]): Promise<ResultadoAccion> 
 
   revalidatePath('/admin/cerebro');
   return { ok: true };
+  });
 }
 
 /** Crea una categoría de la wiki. Slug autogenerado del nombre (ascii sin acentos). */
@@ -164,6 +169,7 @@ export async function crearCategoria(
   _previo: ResultadoAccion | null,
   fd: FormData,
 ): Promise<ResultadoAccion> {
+  return conAviso('Categoría creada', async () => {
   const { supabase } = await requireEditorCerebro('/admin/cerebro/categorias');
 
   const name = texto(fd, 'name');
@@ -194,10 +200,12 @@ export async function crearCategoria(
   revalidatePath('/admin/cerebro/categorias');
   revalidatePath('/admin/cerebro');
   return { ok: true };
+  });
 }
 
 /** Renombra una categoría. El slug NO cambia: evita romper referencias externas (p.ej. el futuro connector de ingesta de rc-08). */
 export async function renombrarCategoria(id: string, name: string): Promise<ResultadoAccion> {
+  return conAviso('Categoría renombrada', async () => {
   const { supabase } = await requireEditorCerebro('/admin/cerebro/categorias');
 
   const limpio = name.trim();
@@ -210,6 +218,7 @@ export async function renombrarCategoria(id: string, name: string): Promise<Resu
   revalidatePath('/admin/cerebro/categorias');
   revalidatePath('/admin/cerebro');
   return { ok: true };
+  });
 }
 
 /** Sube o baja una categoría una posición, intercambiando `position` con la vecina. */
@@ -217,6 +226,7 @@ export async function reordenarCategoria(
   id: string,
   direccion: 'subir' | 'bajar',
 ): Promise<ResultadoAccion> {
+  return conAviso('Orden actualizado', async () => {
   const { supabase } = await requireEditorCerebro('/admin/cerebro/categorias');
 
   const { data: categorias, error } = await supabase
@@ -244,6 +254,7 @@ export async function reordenarCategoria(
   revalidatePath('/admin/cerebro/categorias');
   revalidatePath('/admin/cerebro');
   return { ok: true };
+  });
 }
 
 /**
@@ -252,6 +263,7 @@ export async function reordenarCategoria(
  * antes para dar un mensaje claro en vez de un error de Postgres crudo).
  */
 export async function eliminarCategoria(id: string): Promise<ResultadoAccion> {
+  return conAviso('Categoría eliminada', async () => {
   const { supabase } = await requireEditorCerebro('/admin/cerebro/categorias');
   if (!id) return { ok: false, error: 'Categoría inválida.' };
 
@@ -273,6 +285,7 @@ export async function eliminarCategoria(id: string): Promise<ResultadoAccion> {
   revalidatePath('/admin/cerebro/categorias');
   revalidatePath('/admin/cerebro');
   return { ok: true };
+  });
 }
 
 /**
@@ -286,6 +299,7 @@ export async function resolverContribucion(
   accion: 'aceptada' | 'rechazada' | 'fusionada',
   nota?: string,
 ): Promise<ResultadoAccion> {
+  return conAviso('Contribución resuelta', async () => {
   const { supabase, userId } = await requireEditorCerebro('/admin/cerebro/contribuciones');
   if (!id) return { ok: false, error: 'Contribución inválida.' };
   if (!['aceptada', 'rechazada', 'fusionada'].includes(accion)) {
@@ -305,6 +319,7 @@ export async function resolverContribucion(
 
   revalidatePath('/admin/cerebro/contribuciones');
   return { ok: true };
+  });
 }
 
 /**
@@ -313,6 +328,7 @@ export async function resolverContribucion(
  * no estaba disponible en el momento del alta.
  */
 export async function reclasificarContribucion(id: string): Promise<ResultadoAccion> {
+  return conAviso('Contribución reclasificada', async () => {
   await requireEditorCerebro('/admin/cerebro/contribuciones');
   if (!id) return { ok: false, error: 'Contribución inválida.' };
 
@@ -329,6 +345,7 @@ export async function reclasificarContribucion(id: string): Promise<ResultadoAcc
 
   revalidatePath('/admin/cerebro/contribuciones');
   return { ok: true };
+  });
 }
 
 export interface ResultadoIndexado extends ResultadoAccion {
@@ -358,6 +375,7 @@ type RespuestaIngesta =
  * Server Action.
  */
 export async function indexarCerebro(mode: 'pending' | 'all' = 'pending'): Promise<ResultadoIndexado> {
+  return conAviso('Cerebro reindexado', async () => {
   await requireEditorCerebro();
 
   let respuesta: { status: number; body: unknown };
@@ -388,4 +406,5 @@ export async function indexarCerebro(mode: 'pending' | 'all' = 'pending'): Promi
     chunks_inserted: cuerpo.chunks_inserted,
     skipped: cuerpo.skipped,
   };
+  });
 }

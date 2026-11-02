@@ -1,5 +1,6 @@
 'use server';
 
+import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { emitirPublicacion } from './eventos';
 import { BUCKET_PORTADAS, requireEditor } from './guard';
@@ -35,6 +36,7 @@ export async function guardarArticulo(
   _previo: ResultadoAccion | null,
   fd: FormData,
 ): Promise<ResultadoAccion> {
+  return conAviso(fd.get('status') === 'published' ? 'Artículo publicado' : 'Artículo guardado', async () => {
   const { supabase, userId } = await requireEditor();
 
   const id = texto(fd, 'id');
@@ -189,6 +191,7 @@ export async function guardarArticulo(
   if (data.id) revalidatePath(`/admin/articulos/${data.id}`);
 
   return { ok: true, slug, aviso };
+  });
 }
 
 /**
@@ -200,6 +203,7 @@ export async function guardarArticulo(
  * puede estar compartida y su limpieza no es crítica.
  */
 export async function eliminarArticulos(ids: string[]): Promise<ResultadoAccion> {
+  return conAviso('Artículos eliminados', async () => {
   // `requireEditor()` puede llamar a `redirect()`, que funciona LANZANDO
   // `NEXT_REDIRECT`. Va FUERA del try de abajo a propósito: si lo envolviéramos,
   // el catch se tragaría ese control de flujo y el redirect no ocurriría.
@@ -238,6 +242,7 @@ export async function eliminarArticulos(ids: string[]): Promise<ResultadoAccion>
   revalidatePath('/admin/articulos');
 
   return { ok: true };
+  });
 }
 
 /** Sube una portada al bucket público y devuelve su URL definitiva. */
@@ -245,6 +250,7 @@ export async function subirPortada(
   _previo: { url?: string; error?: string } | null,
   fd: FormData,
 ): Promise<{ url?: string; error?: string }> {
+  return conAviso('Portada subida', async () => {
   const { supabase } = await requireEditor();
 
   const archivo = fd.get('archivo');
@@ -271,6 +277,7 @@ export async function subirPortada(
   // portada quedaria apuntando al host de Docker y no la veria nadie.
   const { data } = supabase.storage.from(BUCKET_PORTADAS).getPublicUrl(ruta);
   return { url: aUrlPublica(data.publicUrl) };
+  });
 }
 
 /** Tipos que admite el cuerpo del artículo. Debe caber en lo que acepta el
@@ -300,6 +307,7 @@ export async function subirMedia(
   _previo: { markdown?: string; url?: string; error?: string } | null,
   fd: FormData,
 ): Promise<{ markdown?: string; url?: string; error?: string }> {
+  return conAviso('Imagen subida', async () => {
   const { supabase } = await requireEditor();
 
   const archivo = fd.get('archivo');
@@ -339,4 +347,5 @@ export async function subirMedia(
         : `:::pdf ${url}\n${archivo.name}\n:::`;
 
   return { url, markdown };
+  });
 }
