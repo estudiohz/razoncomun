@@ -36,7 +36,6 @@ export interface CasoPublico {
   reel_url: string | null;
   reel_autor: string | null;
   reel_autor_url: string | null;
-  firmado_por: string | null;
   verified_at: string | null;
   published_at: string;
   rectificado_at: string | null;
@@ -50,7 +49,7 @@ export interface CasoPublico {
 }
 
 const COLUMNAS =
-  'id, slug, title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, reel_autor_url, firmado_por, verified_at, published_at, rectificado_at, rectificacion_nota, ai_model, counts_in_total, cover_image, reel_frame, category_id, categoria_blog:categories(slug, name, color)';
+  'id, slug, title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, reel_autor_url, verified_at, published_at, rectificado_at, rectificacion_nota, ai_model, counts_in_total, cover_image, reel_frame, category_id, categoria_blog:categories(slug, name, color)';
 
 export async function listarCasosPublicos(supabase: SupabaseClient): Promise<CasoPublico[]> {
   const { data } = await supabase

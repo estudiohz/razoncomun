@@ -105,10 +105,12 @@ export default async function CasoPublicoPage({ params }: { params: Promise<{ sl
         <div className="mt-6 flex flex-wrap items-center gap-3 border-b border-linea pb-7 text-[13.5px] font-semibold text-gris">
           <span className="flex items-center gap-[9px]">
             <span aria-hidden className="h-[30px] w-[30px] rounded-full bg-grad" />
-            Verificado por {caso.firmado_por ?? 'el equipo de auditoría'}
+            Verificado{caso.verified_at && ` el ${fechaLarga(caso.verified_at)}`}
           </span>
           <span aria-hidden className="h-[3px] w-[3px] rounded-full bg-gris" />
-          <time dateTime={caso.published_at}>{fechaLarga(caso.published_at)}</time>
+          <span>
+            Publicado el <time dateTime={caso.published_at}>{fechaLarga(caso.published_at)}</time>
+          </span>
         </div>
       </div>
 
@@ -195,8 +197,9 @@ export default async function CasoPublicoPage({ params }: { params: Promise<{ sl
 
         <footer className="space-y-2 border-t border-linea pt-6 text-[13px] text-gris">
           <p>
-            <strong className="text-cuerpo">Verificado por {caso.firmado_por ?? 'el equipo de auditoría de Razón Común'}</strong>
-            {caso.verified_at && ` el ${fechaLarga(caso.verified_at)}`}. Publicado el {fechaLarga(caso.published_at)}.
+            {/* El nombre de quien firma queda interno (decisión de Sergio, 02/11/2026). */}
+            <strong className="text-cuerpo">Verificado{caso.verified_at && ` el ${fechaLarga(caso.verified_at)}`}.</strong> Publicado el{' '}
+            {fechaLarga(caso.published_at)}.
           </p>
           <p>
             Uso de inteligencia artificial: la transcripción y una primera extracción de datos se hicieron con IA
