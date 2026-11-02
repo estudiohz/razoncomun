@@ -486,7 +486,7 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
           <div className="space-y-2">
             <p className="text-[13px] text-cuerpo">
               {replicaObligatoria(caso)
-                ? 'Este caso nombra a una empresa o a una persona: antes de aprobar hay que pedirle réplica (D-A13).'
+                ? 'Este caso nombra a una empresa o a una persona: pídele réplica si es posible. Si no se puede contactar, se confirma al publicar.'
                 : 'Solo nombra al organismo: la réplica es recomendable, no obligatoria.'}{' '}
               Envía el correo fuera del panel y márcalo aquí.
             </p>

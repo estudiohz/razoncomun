@@ -73,9 +73,7 @@ export function bloqueosAprobar(
   if (!caso.reel_url?.trim() || !caso.reel_autor?.trim()) {
     motivos.push('Falta citar el origen: enlace y autor o medio (0073).');
   }
-  if (replicaObligatoria(caso) && !caso.replica_solicitada_at) {
-    motivos.push('Nombra a una empresa o persona: hay que pedir réplica antes de aprobar (D-A13).');
-  }
+  // La réplica ya no bloquea la aprobación: si no se pudo pedir, se confirma al publicar.
   const faltan = CHECKLIST_M5.filter((c) => !checklist.includes(c.id));
   if (faltan.length) motivos.push(`Falta marcar ${faltan.length} punto${faltan.length === 1 ? '' : 's'} del checklist de lenguaje.`);
   return motivos;

@@ -33,8 +33,8 @@ describe('bloqueosAprobar', () => {
     expect(m.join(' ')).toMatch(/prueba/);
     expect(m.join(' ')).toMatch(/checklist/);
   });
-  it('exige réplica si nombra empresa', () => {
-    expect(bloqueosAprobar({ ...base, adjudicatario: 'Acme' }, true, todoMarcado)).toHaveLength(1);
+  it('no exige réplica para aprobar aunque nombre empresa', () => {
+    expect(bloqueosAprobar({ ...base, adjudicatario: 'Acme' }, true, todoMarcado)).toEqual([]);
     expect(
       bloqueosAprobar({ ...base, adjudicatario: 'Acme', replica_solicitada_at: '2026-11-01' }, true, todoMarcado),
     ).toEqual([]);
