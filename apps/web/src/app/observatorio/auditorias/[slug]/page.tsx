@@ -1,13 +1,22 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Contenedor } from '@/components/layout/Contenedor';
-import { MencionOrigen } from '@/components/auditoria/MencionOrigen';
+import { CtaAfiliacion } from '@/components/blog/CtaAfiliacion';
 import { generarCaptcha } from '@/lib/antibot/captcha';
 import { sanearHtml } from '@/lib/blog/html';
 import { metadatosPagina } from '@/lib/seo';
 import { createClient } from '@/lib/supabase/server';
-import { NOMBRE_VERIFICACION, auditoriaAbierta, casoPublico, euros, fechaLarga } from '@/lib/vigia/publico';
+import {
+  NOMBRE_CATEGORIA,
+  NOMBRE_VERIFICACION,
+  auditoriaAbierta,
+  casoPublico,
+  euros,
+  eurosEnteros,
+  fechaLarga,
+  listarCasosPublicos,
+  type CasoPublico,
+} from '@/lib/vigia/publico';
 import { FormularioRectificacion } from './FormularioRectificacion';
 
 export const dynamic = 'force-dynamic';
@@ -54,26 +63,57 @@ export default async function CasoPublicoPage({ params }: { params: Promise<{ sl
   const captcha = generarCaptcha();
   const urlBases = (prueba?.raw as { urlBases?: string } | null)?.urlBases;
 
-  return (
-    <Contenedor as="article" className="py-14">
-      <div className="mx-auto w-full max-w-[820px] space-y-8">
-        <Link href="/observatorio/auditorias" className="text-[13.5px] font-semibold text-cuerpo underline">
-          ← Auditoría del gasto público
-        </Link>
+  const otros = (await listarCasosPublicos(supabase)).filter((c) => c.id !== caso.id).slice(0, 3);
 
-        <header className="space-y-3">
+  // Misma plantilla que una noticia (FichaArticulo): cabecera a la izquierda a
+  // 1200px con foto 21:9, metadatos debajo y rejilla 75/25 con sidebar sticky.
+  return (
+    <>
+      <div className="mx-auto max-w-[1200px] px-4 min-[720px]:px-8">
+        <header className="pt-8 min-[981px]:pt-10">
           <div className="flex flex-wrap items-center gap-2 text-[12px] font-bold">
+            <Link href="/observatorio/auditorias" className="rounded-full bg-grad px-3 py-1 text-white no-underline">
+              Auditoría del gasto público
+            </Link>
             {caso.verificacion && (
               <span className="rounded-full bg-teal-texto/10 px-2.5 py-1 text-teal-texto">
                 {NOMBRE_VERIFICACION[caso.verificacion] ?? caso.verificacion}
               </span>
             )}
+            {caso.categoria && (
+              <span className="rounded-full bg-fondo px-2.5 py-1 text-cuerpo">{NOMBRE_CATEGORIA[caso.categoria] ?? caso.categoria}</span>
+            )}
             {caso.organismo_nivel && <span className="rounded-full bg-fondo px-2.5 py-1 text-cuerpo">{NIVEL[caso.organismo_nivel]}</span>}
           </div>
-          <h1 className="text-[clamp(26px,4vw,38px)] font-extrabold leading-[1.15]">{caso.title}</h1>
-          <MencionOrigen url={caso.reel_url} autor={caso.reel_autor} autorUrl={caso.reel_autor_url} className="text-[14px]" />
+          <h1 className="mt-4 text-[clamp(28px,3.8vw,44px)] font-extrabold leading-[1.16] text-tinta">{caso.title}</h1>
+          <p className="mt-[18px] text-[18px] leading-[1.55] text-cuerpo">
+            {[caso.organismo, euros(caso.importe_oficial_cents)].filter((x) => x && x !== '—').join(' · ')}
+          </p>
         </header>
 
+        {caso.cover_image && (
+          <div className="mt-8 overflow-hidden rounded-[22px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={caso.cover_image}
+              alt=""
+              className="aspect-[21/9] w-full object-cover shadow-[0_24px_60px_rgba(27,61,156,.12)]"
+            />
+          </div>
+        )}
+
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-b border-linea pb-7 text-[13.5px] font-semibold text-gris">
+          <span className="flex items-center gap-[9px]">
+            <span aria-hidden className="h-[30px] w-[30px] rounded-full bg-grad" />
+            Verificado por {caso.firmado_por ?? 'el equipo de auditoría'}
+          </span>
+          <span aria-hidden className="h-[3px] w-[3px] rounded-full bg-gris" />
+          <time dateTime={caso.published_at}>{fechaLarga(caso.published_at)}</time>
+        </div>
+      </div>
+
+      <div className="mx-auto mb-[60px] mt-[40px] grid max-w-[1200px] grid-cols-1 gap-10 px-4 min-[720px]:px-8 min-[981px]:grid-cols-[75%_25%] min-[981px]:gap-0">
+        <article className="min-w-0 space-y-8 min-[981px]:pr-14">
         {caso.rectificado_at && (
           <div className="rounded-tarjeta border border-naranja bg-naranja/10 p-5 text-[14.5px] text-cuerpo">
             <p className="text-[12px] font-extrabold uppercase tracking-[.08em] text-naranja">
@@ -84,18 +124,6 @@ export default async function CasoPublicoPage({ params }: { params: Promise<{ sl
           </div>
         )}
 
-        <dl className="grid gap-4 rounded-tarjeta border border-linea bg-panel p-6 min-[640px]:grid-cols-2">
-          <Dato titulo="Organismo">{caso.organismo ?? '—'}</Dato>
-          <Dato titulo="Beneficiario o adjudicatario">
-            {caso.adjudicatario ?? '—'}
-            {caso.adjudicatario_nif && <span className="block text-[12.5px] text-gris">NIF/ID {caso.adjudicatario_nif}</span>}
-          </Dato>
-          <Dato titulo="Importe oficial">{euros(caso.importe_oficial_cents)}</Dato>
-          <Dato titulo="Fecha">{fechaLarga(caso.fecha_adjudicacion)}</Dato>
-          {caso.importe_denunciado_cents != null && caso.importe_denunciado_cents !== caso.importe_oficial_cents && (
-            <Dato titulo="Importe que se difundió">{euros(caso.importe_denunciado_cents)}</Dato>
-          )}
-        </dl>
 
         <section>
           <h2 className="text-[13px] font-extrabold uppercase tracking-[.1em] text-titular">Hechos verificados</h2>
@@ -196,8 +224,97 @@ export default async function CasoPublicoPage({ params }: { params: Promise<{ sl
           </p>
           <FormularioRectificacion slug={caso.slug} pregunta={captcha.pregunta} token={captcha.token} />
         </section>
+        </article>
+
+        <aside>
+          <div className="flex flex-col gap-[22px] min-[981px]:sticky min-[981px]:top-24">
+            <ReelOrigen caso={caso} />
+            <dl className="grid gap-4 rounded-tarjeta border border-linea bg-panel p-5">
+              <Dato titulo="Organismo">{caso.organismo ?? '—'}</Dato>
+              <Dato titulo="Beneficiario o adjudicatario">
+                {caso.adjudicatario ?? '—'}
+                {caso.adjudicatario_nif && <span className="block text-[12.5px] text-gris">NIF/ID {caso.adjudicatario_nif}</span>}
+              </Dato>
+              <Dato titulo="Importe oficial">{euros(caso.importe_oficial_cents)}</Dato>
+              <Dato titulo="Fecha">{fechaLarga(caso.fecha_adjudicacion)}</Dato>
+              {caso.importe_denunciado_cents != null && caso.importe_denunciado_cents !== caso.importe_oficial_cents && (
+                <Dato titulo="Importe que se difundió">{euros(caso.importe_denunciado_cents)}</Dato>
+              )}
+            </dl>
+            {otros.length > 0 && (
+              <div className="rounded-tarjeta border border-linea bg-white p-5">
+                <p className="text-[12px] font-bold uppercase tracking-[.08em] text-gris">Otros casos</p>
+                <ul className="mt-3 space-y-3">
+                  {otros.map((c) => (
+                    <li key={c.id}>
+                      <Link href={`/observatorio/auditorias/${c.slug}`} className="text-[14px] font-bold text-titular no-underline hover:underline">
+                        {c.title}
+                      </Link>
+                      <span className="block text-[12.5px] text-gris">{eurosEnteros(c.importe_oficial_cents)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/observatorio/auditorias" className="mt-3 inline-block text-[13px] font-bold">
+                  Ver todos →
+                </Link>
+              </div>
+            )}
+            <CtaAfiliacion />
+          </div>
+        </aside>
       </div>
-    </Contenedor>
+    </>
+  );
+}
+
+/** Primer widget del lateral: fotograma del reel de origen, enlace y cuenta (0073/0080). */
+function ReelOrigen({ caso }: { caso: CasoPublico }) {
+  if (!caso.reel_url && !caso.reel_autor) return null;
+  const esVideo = Boolean(caso.reel_url && /instagram\.com|tiktok\.com|youtube\.com|youtu\.be/i.test(caso.reel_url));
+  const marco = (
+    <span className="relative block aspect-[9/16] w-full overflow-hidden rounded-boton bg-grad">
+      {caso.reel_frame && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={caso.reel_frame} alt="" className="h-full w-full object-cover" />
+      )}
+      <span aria-hidden className="absolute inset-0 flex items-center justify-center">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-black/45 text-[22px] text-white">▶</span>
+      </span>
+    </span>
+  );
+  return (
+    <div className="rounded-tarjeta border border-linea bg-white p-4">
+      <p className="mb-3 text-[12px] font-bold uppercase tracking-[.08em] text-gris">Origen del caso</p>
+      {caso.reel_url ? (
+        <a href={caso.reel_url} target="_blank" rel="noopener noreferrer nofollow" aria-label="Ver el reel">
+          {marco}
+        </a>
+      ) : (
+        marco
+      )}
+      {caso.reel_url && (
+        <a
+          href={caso.reel_url}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="mt-3 block text-[14px] font-bold"
+        >
+          {esVideo ? 'Ver el reel ↗' : 'Ver la publicación ↗'}
+        </a>
+      )}
+      {caso.reel_autor && (
+        <p className="mt-1 text-[13px] text-gris">
+          De{' '}
+          {caso.reel_autor_url ? (
+            <a href={caso.reel_autor_url} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold">
+              {caso.reel_autor}
+            </a>
+          ) : (
+            <strong className="text-cuerpo">{caso.reel_autor}</strong>
+          )}
+        </p>
+      )}
+    </div>
   );
 }
 

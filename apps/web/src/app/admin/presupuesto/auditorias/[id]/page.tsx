@@ -6,6 +6,7 @@ import { metadatosPagina } from '@/lib/seo';
 import { htmlATexto } from '@/lib/vigia/casos';
 import { CasoClient, type Caso, type Prueba } from './CasoClient';
 import { CopiasCaso, type Copia } from './CopiasCaso';
+import { PortadaCaso } from './PortadaCaso';
 import { PublicacionCaso, type Rectificacion } from './PublicacionCaso';
 import { esRedSocial } from '@/lib/vigia/copias';
 import { EnlacesCaso, type PartidaEnlazada, type PartidaOpcion, type Solicitud } from './EnlacesCaso';
@@ -34,7 +35,7 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       .select(
         `id, title, status, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica,
          categoria, importe_denunciado_cents, importe_oficial_cents, fecha_adjudicacion, verificacion,
-         hechos_html, valoracion_html, slug, published_at, rectificado_at, reel_url, reel_autor, reel_autor_url, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
+         hechos_html, valoracion_html, slug, cover_image, reel_frame, published_at, rectificado_at, reel_url, reel_autor, reel_autor_url, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
          created_at, revisor:profiles!watchdog_alerts_verified_by_fkey(display_name, email),
          fuente:watchdog_sources(permalink, message_text, telegram_from, received_at, transcript, notes)`,
       )
@@ -102,6 +103,8 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
         ← Bandeja de auditorías
       </Link>
       <CasoClient caso={caso as unknown as Caso} pruebas={(pruebas ?? []) as Prueba[]} />
+      <PortadaCaso alertId={caso.id} imagen={(caso.cover_image as string | null) ?? null} />
+      <PortadaCaso alertId={caso.id} campo="reel_frame" imagen={(caso.reel_frame as string | null) ?? null} />
       <PublicacionCaso
         alertId={caso.id}
         status={caso.status}

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Contenedor } from '@/components/layout/Contenedor';
 import { createClient } from '@/lib/supabase/server';
 import {
   NOMBRE_CATEGORIA,
@@ -28,7 +29,7 @@ export async function BloqueAuditoriasObservatorio() {
   if (!casos.length) return null;
 
   return (
-    <section className="mx-auto mt-10 w-full max-w-[1100px] px-4">
+    <Contenedor as="section" className="mt-10">
       <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
         <p className={rotulo}>Auditoría del gasto público</p>
         <Link href="/observatorio/auditorias" className="text-[14px] font-bold">
@@ -55,7 +56,7 @@ export async function BloqueAuditoriasObservatorio() {
           <Categorias casos={casos} />
         </div>
       </div>
-    </section>
+    </Contenedor>
   );
 }
 

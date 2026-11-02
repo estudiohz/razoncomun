@@ -26,6 +26,8 @@ import { ESTADOS_SOLICITUD, redactarSolicitud } from '@/lib/vigia/transparencia'
 import { DEPARTAMENTOS } from '@/lib/participacion/departments';
 import { generarSlugUnico } from '@/lib/participacion/proposals';
 import { slugificar } from '@/lib/blog/markdown';
+import { BUCKET_PORTADAS } from '@/lib/blog/guard';
+import { aUrlPublica } from '@/lib/supabase/env';
 
 /**
  * Ciclo de vida del caso de auditoría (doc 04 §4.5). Todas pasan por
@@ -711,6 +713,53 @@ export async function resolverRectificacion(
     entityId: alertId,
     meta: { correctionId, resolucion },
   });
+  refrescar(alertId);
+  return { ok: true };
+}
+
+type CampoImagen = 'cover_image' | 'reel_frame';
+
+/**
+ * Foto de cabecera o fotograma del reel de la ficha pública (0080). Es decorativa, no parte de los
+ * hechos: se puede cambiar en cualquier estado, también publicado, sin versión
+ * nueva. Va al bucket público de portadas con el cliente admin, porque un
+ * auditor no tiene por qué ser editor del blog.
+ */
+export async function subirPortadaCaso(
+  alertId: string,
+  formData: FormData,
+  campo: CampoImagen = 'cover_image',
+): Promise<Resultado & { url?: string }> {
+  const { supabase, user } = await requireAuditor(RUTA);
+
+  const archivo = formData.get('archivo');
+  if (!(archivo instanceof File) || archivo.size === 0) return { error: 'Selecciona una imagen.' };
+  if (!/^image\/(jpeg|png|webp|avif)$/.test(archivo.type)) return { error: 'Formato no admitido. Usa JPG, PNG, WebP o AVIF.' };
+  if (archivo.size > 5 * 1024 * 1024) return { error: 'La imagen supera los 5 MB.' };
+
+  const ext = archivo.name.split('.').pop()?.toLowerCase() ?? 'jpg';
+  const ruta = `auditorias/${campo === 'reel_frame' ? 'reel-' : ''}${Date.now()}-${slugificar(archivo.name.replace(/\.[^.]+$/, ''))}.${ext}`;
+  const admin = createAdminClient();
+  const { error: errorSubida } = await admin.storage
+    .from(BUCKET_PORTADAS)
+    .upload(ruta, archivo, { cacheControl: '31536000', upsert: false });
+  if (errorSubida) return { error: `No se ha podido subir: ${errorSubida.message}` };
+  // Se guarda en BD: hay que reescribir el host interno de Docker (ver subirPortada).
+  const url = aUrlPublica(admin.storage.from(BUCKET_PORTADAS).getPublicUrl(ruta).data.publicUrl);
+
+  const { error } = await supabase.from('watchdog_alerts').update({ [campo]: url }).eq('id', alertId);
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.portada', entity: 'watchdog_alerts', entityId: alertId });
+  refrescar(alertId);
+  revalidatePath('/observatorio');
+  return { ok: true, url };
+}
+
+export async function quitarPortadaCaso(alertId: string, campo: CampoImagen = 'cover_image'): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  const { error } = await supabase.from('watchdog_alerts').update({ [campo]: null }).eq('id', alertId);
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.portada', entity: 'watchdog_alerts', entityId: alertId });
   refrescar(alertId);
   return { ok: true };
 }

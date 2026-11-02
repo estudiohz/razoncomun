@@ -43,10 +43,12 @@ export interface CasoPublico {
   rectificacion_nota: string | null;
   ai_model: string | null;
   counts_in_total: boolean;
+  cover_image: string | null;
+  reel_frame: string | null;
 }
 
 const COLUMNAS =
-  'id, slug, title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, reel_autor_url, firmado_por, verified_at, published_at, rectificado_at, rectificacion_nota, ai_model, counts_in_total';
+  'id, slug, title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, reel_autor_url, firmado_por, verified_at, published_at, rectificado_at, rectificacion_nota, ai_model, counts_in_total, cover_image, reel_frame';
 
 export async function listarCasosPublicos(supabase: SupabaseClient): Promise<CasoPublico[]> {
   const { data } = await supabase
