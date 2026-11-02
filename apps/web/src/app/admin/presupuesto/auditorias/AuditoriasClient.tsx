@@ -16,7 +16,7 @@ export interface EnvioAuditoria {
   status: EstadoAuditoria;
   notes: string | null;
   received_at: string;
-  caso: { id: string; status: EstadoCaso } | null;
+  caso: { id: string; status: EstadoCaso; title: string | null } | null;
 }
 
 const ETIQUETAS: Record<EstadoAuditoria, { texto: string; clase: string }> = {
@@ -26,6 +26,23 @@ const ETIQUETAS: Record<EstadoAuditoria, { texto: string; clase: string }> = {
   descartado: { texto: 'Descartado', clase: 'bg-gris/15 text-gris' },
 };
 
+/** Título interno recortado a las primeras palabras. */
+const PALABRAS_TITULO = 12;
+function recortar(texto: string, max = PALABRAS_TITULO): string {
+  const p = texto.trim().split(/\s+/);
+  return p.length > max ? `${p.slice(0, max).join(' ')}…` : texto.trim();
+}
+
+const esInstagram = (url: string) => /(^|\.)instagram\.com$/i.test(new URL(url).hostname);
+function origenDe(url: string | null): 'Instagram' | 'URL' | null {
+  if (!url) return null;
+  try {
+    return esInstagram(url) ? 'Instagram' : 'URL';
+  } catch {
+    return 'URL';
+  }
+}
+
 const fecha = new Intl.DateTimeFormat('es-ES', {
   dateStyle: 'short',
   timeStyle: 'short',
@@ -34,14 +51,14 @@ const fecha = new Intl.DateTimeFormat('es-ES', {
 
 function Fila({ envio }: { envio: EnvioAuditoria }) {
   const [estado, setEstado] = useState(envio.status);
-  const [notas, setNotas] = useState(envio.notes ?? '');
   const [error, setError] = useState<string | null>(null);
   const [pendiente, start] = useTransition();
 
-  function guardar(nuevoEstado: EstadoAuditoria, nuevasNotas: string) {
+  function guardar(nuevoEstado: EstadoAuditoria) {
     setError(null);
     start(async () => {
-      const r = await actualizarAuditoria(envio.id, nuevoEstado, nuevasNotas);
+      // Las notas se editan dentro del caso; aquí se conservan tal cual.
+      const r = await actualizarAuditoria(envio.id, nuevoEstado, envio.notes);
       if ('error' in r && r.error) setError(r.error);
     });
   }
@@ -50,16 +67,22 @@ function Fila({ envio }: { envio: EnvioAuditoria }) {
     <tr className="border-t border-linea align-top">
       <td className="whitespace-nowrap px-3 py-3 text-[12.5px] text-gris">{fecha.format(new Date(envio.received_at))}</td>
       <td className="px-3 py-3 text-[12.5px] text-cuerpo">{envio.telegram_from ?? '—'}</td>
-      <td className="max-w-[420px] px-3 py-3 text-[13px] text-cuerpo">
-        {envio.permalink && (
-          <a href={envio.permalink} target="_blank" rel="noopener noreferrer nofollow" className="block break-all font-semibold">
-            {envio.permalink}
-          </a>
-        )}
-        {envio.message_text && envio.message_text !== envio.permalink && (
-          <p className="mt-1 whitespace-pre-wrap break-words text-[12.5px] text-gris">{envio.message_text}</p>
-        )}
+      <td className="max-w-[420px] px-3 py-3 text-[13px] font-semibold text-titular">
+        {envio.caso?.title
+          ? recortar(envio.caso.title)
+          : envio.message_text && envio.message_text !== envio.permalink
+            ? <span className="font-normal text-gris">{recortar(envio.message_text)}</span>
+            : <span className="font-normal text-gris">Sin título todavía</span>}
         {envio.video_file_id && <p className="mt-1 text-[12px] font-bold text-gris">🎬 Vídeo adjunto en Telegram</p>}
+      </td>
+      <td className="whitespace-nowrap px-3 py-3 text-[12.5px]">
+        {envio.permalink ? (
+          <a href={envio.permalink} target="_blank" rel="noopener noreferrer nofollow" className="font-bold text-accion" title={envio.permalink}>
+            {origenDe(envio.permalink)}
+          </a>
+        ) : (
+          <span className="text-gris">—</span>
+        )}
       </td>
       <td className="whitespace-nowrap px-3 py-3">
         {envio.caso ? (
@@ -84,7 +107,7 @@ function Fila({ envio }: { envio: EnvioAuditoria }) {
           onChange={(e) => {
             const v = e.target.value as EstadoAuditoria;
             setEstado(v);
-            guardar(v, notas);
+            guardar(v);
           }}
           className={cn('rounded-full border-0 px-2.5 py-1 text-[12px] font-bold', ETIQUETAS[estado].clase)}
           aria-label="Estado"
@@ -95,16 +118,6 @@ function Fila({ envio }: { envio: EnvioAuditoria }) {
             </option>
           ))}
         </select>
-      </td>
-      <td className="min-w-[200px] px-3 py-3">
-        <textarea
-          value={notas}
-          onChange={(e) => setNotas(e.target.value)}
-          onBlur={() => notas !== (envio.notes ?? '') && guardar(estado, notas)}
-          rows={2}
-          placeholder="Notas…"
-          className="w-full rounded-boton border border-linea px-2 py-1.5 text-[12.5px]"
-        />
         {error && <p className="mt-1 text-[12px] text-magenta">{error}</p>}
       </td>
     </tr>
@@ -149,10 +162,10 @@ export function AuditoriasClient({ envios }: { envios: EnvioAuditoria[] }) {
             <tr className="text-[11px] font-bold uppercase tracking-wide text-gris">
               <th className="px-3 py-2.5">Recibido</th>
               <th className="px-3 py-2.5">Enviado por</th>
-              <th className="px-3 py-2.5">Contenido</th>
+              <th className="px-3 py-2.5">Título</th>
+              <th className="px-3 py-2.5">Origen</th>
               <th className="px-3 py-2.5">Caso</th>
               <th className="px-3 py-2.5">Estado</th>
-              <th className="px-3 py-2.5">Notas</th>
             </tr>
           </thead>
           <tbody>

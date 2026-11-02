@@ -28,9 +28,9 @@ export default async function AdminAuditoriasPage() {
       .select('id, telegram_from, message_text, permalink, video_file_id, status, notes, received_at')
       .order('received_at', { ascending: false })
       .limit(500),
-    supabase.from('watchdog_alerts').select('id, source_id, status').not('source_id', 'is', null),
+    supabase.from('watchdog_alerts').select('id, source_id, status, title').not('source_id', 'is', null),
   ]);
-  const casoDe = new Map((casos ?? []).map((c) => [c.source_id as string, { id: c.id, status: c.status }]));
+  const casoDe = new Map((casos ?? []).map((c) => [c.source_id as string, { id: c.id, status: c.status, title: c.title as string | null }]));
 
   return (
     <div className="space-y-6">

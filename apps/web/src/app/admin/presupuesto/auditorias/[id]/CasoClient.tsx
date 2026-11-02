@@ -62,6 +62,7 @@ export interface Caso {
     telegram_from: string | null;
     received_at: string;
     transcript: string | null;
+    notes: string | null;
   } | null;
 }
 
@@ -206,6 +207,11 @@ export function CasoClient({ caso, pruebas }: { caso: Caso; pruebas: Prueba[] })
           )}
           {caso.fuente.message_text && caso.fuente.message_text !== caso.fuente.permalink && (
             <p className="mt-2 whitespace-pre-wrap break-words text-[13px] text-cuerpo">{caso.fuente.message_text}</p>
+          )}
+          {caso.fuente.notes && (
+            <p className="mt-2 whitespace-pre-wrap break-words rounded-boton bg-gris/10 p-2 text-[13px] text-cuerpo">
+              <strong>Notas:</strong> {caso.fuente.notes}
+            </p>
           )}
         </section>
       )}
