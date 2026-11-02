@@ -1,5 +1,8 @@
 import { notFound } from 'next/navigation';
 import { PortadaBlog } from './PortadaBlog';
+import { ListadoAuditoriasObservatorio } from '@/components/auditoria/BloqueAuditoriasObservatorio';
+import { createClient } from '@/lib/supabase/server';
+import { auditoriaAbierta, listarCasosPublicos } from '@/lib/vigia/publico';
 import { FichaArticulo } from './FichaArticulo';
 import {
   listarArticulos,
@@ -42,7 +45,15 @@ export async function VistaSlug({
 
   // 1) Es una categoría → listado filtrado.
   if (categoria) {
-    const articulos = await listarArticulos({ tipo, categoriaSlug: categoria.slug });
+    const [articulos, casos] = await Promise.all([
+      listarArticulos({ tipo, categoriaSlug: categoria.slug }),
+      // Casos de auditoría de esta categoría (0081): solo en el Observatorio.
+      tipo === 'observatorio' && auditoriaAbierta()
+        ? createClient()
+            .then(listarCasosPublicos)
+            .then((c) => c.filter((x) => x.category_id === categoria.id))
+        : Promise.resolve([]),
+    ]);
     return (
       <PortadaBlog
         eyebrow={eyebrow}
@@ -52,6 +63,7 @@ export async function VistaSlug({
         categorias={categorias}
         categoriaActiva={categoria.slug}
         base={base}
+        extra={casos.length ? <ListadoAuditoriasObservatorio casos={casos} /> : undefined}
       />
     );
   }

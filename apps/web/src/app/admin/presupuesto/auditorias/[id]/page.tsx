@@ -35,7 +35,7 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       .select(
         `id, title, status, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica,
          categoria, importe_denunciado_cents, importe_oficial_cents, fecha_adjudicacion, verificacion,
-         hechos_html, valoracion_html, slug, cover_image, reel_frame, published_at, rectificado_at, reel_url, reel_autor, reel_autor_url, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
+         hechos_html, valoracion_html, slug, cover_image, reel_frame, category_id, published_at, rectificado_at, reel_url, reel_autor, reel_autor_url, ai_extraction, ai_model, replica_solicitada_at, replica_texto, dismiss_reason, verified_at,
          created_at, revisor:profiles!watchdog_alerts_verified_by_fkey(display_name, email),
          fuente:watchdog_sources(permalink, message_text, telegram_from, received_at, transcript, notes)`,
       )
@@ -95,6 +95,7 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
       publicado: Boolean(p?.publicado),
     };
   });
+  const { data: categoriasBlog } = await supabase.from('categories').select('id, name').order('name');
   const hoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());
 
   return (
@@ -114,6 +115,8 @@ export default async function CasoPage({ params }: { params: Promise<{ id: strin
         rectificadoAt={caso.rectificado_at}
         esAdmin={esAdmin}
         rectificaciones={(rectificaciones ?? []) as Rectificacion[]}
+        categorias={categoriasBlog ?? []}
+        categoryId={(caso.category_id as number | null) ?? null}
       />
       <CopiasCaso
         alertId={caso.id}

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { cn } from '@/lib/cn';
-import { despublicarCaso, publicarCaso, rectificarCaso, resolverRectificacion } from '../casos';
+import { asignarCategoriaCaso, despublicarCaso, publicarCaso, rectificarCaso, resolverRectificacion } from '../casos';
 
 export interface Rectificacion {
   id: string;
@@ -36,6 +36,8 @@ export function PublicacionCaso({
   rectificadoAt,
   esAdmin,
   rectificaciones,
+  categorias,
+  categoryId,
 }: {
   alertId: string;
   status: string;
@@ -45,6 +47,8 @@ export function PublicacionCaso({
   rectificadoAt: string | null;
   esAdmin: boolean;
   rectificaciones: Rectificacion[];
+  categorias: { id: number; name: string }[];
+  categoryId: number | null;
 }) {
   const [pendiente, start] = useTransition();
   const [aviso, setAviso] = useState<{ tipo: 'ok' | 'error'; texto: string } | null>(null);
@@ -52,6 +56,7 @@ export function PublicacionCaso({
   const [sinReplica, setSinReplica] = useState(false);
   const [nota, setNota] = useState('');
   const [motivo, setMotivo] = useState('');
+  const [categoria, setCategoria] = useState(categoryId == null ? '' : String(categoryId));
 
   const lanzar = (accion: () => Promise<{ ok: true } | { error: string }>, exito: string) => {
     setAviso(null);
@@ -85,6 +90,30 @@ export function PublicacionCaso({
           {aviso.texto}
         </p>
       )}
+
+      <div>
+        <label className="mb-1 block text-[12px] font-bold text-gris" htmlFor="categoria-blog">
+          Categoría en el Observatorio (gráfico «Lo más señalado» y filtros)
+        </label>
+        <select
+          id="categoria-blog"
+          value={categoria}
+          disabled={pendiente}
+          onChange={(e) => {
+            const v = e.target.value;
+            setCategoria(v);
+            lanzar(() => asignarCategoriaCaso(alertId, v ? Number(v) : null), 'Categoría guardada.');
+          }}
+          className={control}
+        >
+          <option value="">Sin categoría</option>
+          {categorias.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {status === 'verified' && (
         <div className="space-y-3">

@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { createClient } from '@/lib/supabase/server';
 import {
-  NOMBRE_CATEGORIA,
   auditoriaAbierta,
   boeIndexado,
   eurosEnteros,
@@ -60,12 +59,12 @@ export async function BloqueAuditoriasObservatorio() {
   );
 }
 
-/** Reparto por categoría del gasto señalado (por importe; si no hay importes, por nº de casos). */
+/** Reparto del gasto señalado por categoría del Observatorio (0081); si no hay importes, por nº de casos. */
 function Categorias({ casos }: { casos: CasoPublico[] }) {
   const porImporte = casos.some((c) => (c.importe_oficial_cents ?? 0) > 0);
   const suma = new Map<string, number>();
   for (const c of casos) {
-    const k = c.categoria ?? 'otro';
+    const k = c.categoria_blog?.name ?? 'Sin categoría';
     suma.set(k, (suma.get(k) ?? 0) + (porImporte ? c.importe_oficial_cents ?? 0 : 1));
   }
   const filas = [...suma.entries()].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
@@ -101,7 +100,7 @@ function Categorias({ casos }: { casos: CasoPublico[] }) {
         {filas.slice(0, 5).map(([k, v], i) => (
           <li key={k} className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: COLORES[i % COLORES.length] }} />
-            <span className="truncate">{NOMBRE_CATEGORIA[k] ?? k}</span>
+            <span className="truncate">{k}</span>
             <span className="ml-auto pl-2 font-bold text-titular">{Math.round((v / total) * 100)} %</span>
           </li>
         ))}
@@ -110,11 +109,8 @@ function Categorias({ casos }: { casos: CasoPublico[] }) {
   );
 }
 
-/** Listado de casos publicados, en la zona de contenido de la portada. */
-export async function ListadoAuditoriasObservatorio() {
-  if (!auditoriaAbierta()) return null;
-  const supabase = await createClient();
-  const casos = await listarCasosPublicos(supabase);
+/** Listado de casos publicados, en la zona de contenido de la portada o de una categoría. */
+export function ListadoAuditoriasObservatorio({ casos }: { casos: CasoPublico[] }) {
   if (!casos.length) return null;
 
   return (
@@ -130,7 +126,7 @@ export async function ListadoAuditoriasObservatorio() {
               <span className="min-w-0">
                 <span className="block text-[15.5px] font-bold text-titular">{c.title}</span>
                 <span className="block text-[13px] text-gris">
-                  {[c.organismo, c.categoria ? NOMBRE_CATEGORIA[c.categoria] ?? c.categoria : null, fechaLarga(c.published_at)]
+                  {[c.organismo, c.categoria_blog?.name, fechaLarga(c.published_at)]
                     .filter(Boolean)
                     .join(' · ')}
                 </span>

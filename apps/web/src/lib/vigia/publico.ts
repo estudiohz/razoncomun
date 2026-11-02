@@ -45,10 +45,12 @@ export interface CasoPublico {
   counts_in_total: boolean;
   cover_image: string | null;
   reel_frame: string | null;
+  category_id: number | null;
+  categoria_blog: { slug: string; name: string; color: string } | null;
 }
 
 const COLUMNAS =
-  'id, slug, title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, reel_autor_url, firmado_por, verified_at, published_at, rectificado_at, rectificacion_nota, ai_model, counts_in_total, cover_image, reel_frame';
+  'id, slug, title, organismo, organismo_nivel, adjudicatario, adjudicatario_nif, es_persona_fisica, categoria, importe_oficial_cents, importe_denunciado_cents, fecha_adjudicacion, verificacion, hechos_html, valoracion_html, replica_solicitada_at, replica_texto, reel_url, reel_autor, reel_autor_url, firmado_por, verified_at, published_at, rectificado_at, rectificacion_nota, ai_model, counts_in_total, cover_image, reel_frame, category_id, categoria_blog:categories(slug, name, color)';
 
 export async function listarCasosPublicos(supabase: SupabaseClient): Promise<CasoPublico[]> {
   const { data } = await supabase
@@ -58,7 +60,7 @@ export async function listarCasosPublicos(supabase: SupabaseClient): Promise<Cas
     .lte('published_at', new Date().toISOString())
     .order('published_at', { ascending: false })
     .limit(200);
-  return (data ?? []) as CasoPublico[];
+  return (data ?? []) as unknown as CasoPublico[];
 }
 
 export async function casoPublico(supabase: SupabaseClient, slug: string): Promise<CasoPublico | null> {
@@ -70,7 +72,7 @@ export async function casoPublico(supabase: SupabaseClient, slug: string): Promi
     .lte('published_at', new Date().toISOString())
     .maybeSingle();
   if (!data) return null;
-  const c = data as CasoPublico;
+  const c = data as unknown as CasoPublico;
   // Minimización (doc 03): de una persona física no se publica el NIF.
   return c.es_persona_fisica ? { ...c, adjudicatario_nif: null } : c;
 }

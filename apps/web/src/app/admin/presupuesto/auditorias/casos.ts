@@ -763,3 +763,15 @@ export async function quitarPortadaCaso(alertId: string, campo: CampoImagen = 'c
   refrescar(alertId);
   return { ok: true };
 }
+
+/** Categoría del blog/Observatorio del caso (0081): gráfico y filtros. Editable en cualquier estado. */
+export async function asignarCategoriaCaso(alertId: string, categoryId: number | null): Promise<Resultado> {
+  const { supabase, user } = await requireAuditor(RUTA);
+  if (categoryId != null && !Number.isInteger(categoryId)) return { error: 'Categoría no válida.' };
+  const { error } = await supabase.from('watchdog_alerts').update({ category_id: categoryId }).eq('id', alertId);
+  if (error) return { error: error.message };
+  await registrarAuditoria(supabase, { actorId: user.id, action: 'vigia.categoria', entity: 'watchdog_alerts', entityId: alertId });
+  refrescar(alertId);
+  revalidatePath('/observatorio');
+  return { ok: true };
+}

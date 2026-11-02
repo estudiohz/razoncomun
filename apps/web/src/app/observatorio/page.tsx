@@ -24,12 +24,10 @@ export const revalidate = 300;
  * Ese feed lo alimenta rc-08 desde n8n.
  */
 export default async function ObservatorioPage() {
-  const [articulos, categorias, hayCasos] = await Promise.all([
+  const [articulos, categorias, casos] = await Promise.all([
     listarArticulos({ tipo: 'observatorio' }),
     listarCategorias(),
-    auditoriaAbierta()
-      ? createClient().then(listarCasosPublicos).then((c) => c.length > 0)
-      : Promise.resolve(false),
+    auditoriaAbierta() ? createClient().then(listarCasosPublicos) : Promise.resolve([]),
   ]);
 
   return (
@@ -43,7 +41,7 @@ export default async function ObservatorioPage() {
       articulos={articulos}
       categorias={categorias}
       base="/observatorio"
-      extra={hayCasos ? <ListadoAuditoriasObservatorio /> : undefined}
+      extra={casos.length ? <ListadoAuditoriasObservatorio casos={casos} /> : undefined}
       />
     </>
   );
