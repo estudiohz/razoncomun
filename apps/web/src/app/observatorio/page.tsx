@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { PortadaBlog } from '@/components/blog/PortadaBlog';
-import { BloqueAuditoriasObservatorio } from '@/components/auditoria/BloqueAuditoriasObservatorio';
+import { BloqueAuditoriasObservatorio, ListadoAuditoriasObservatorio } from '@/components/auditoria/BloqueAuditoriasObservatorio';
+import { createClient } from '@/lib/supabase/server';
+import { auditoriaAbierta, listarCasosPublicos } from '@/lib/vigia/publico';
 import { listarArticulos, listarCategorias } from '@/lib/blog/consultas';
 import { metadatosPagina } from '@/lib/seo';
 
@@ -22,9 +24,12 @@ export const revalidate = 300;
  * Ese feed lo alimenta rc-08 desde n8n.
  */
 export default async function ObservatorioPage() {
-  const [articulos, categorias] = await Promise.all([
+  const [articulos, categorias, hayCasos] = await Promise.all([
     listarArticulos({ tipo: 'observatorio' }),
     listarCategorias(),
+    auditoriaAbierta()
+      ? createClient().then(listarCasosPublicos).then((c) => c.length > 0)
+      : Promise.resolve(false),
   ]);
 
   return (
@@ -38,6 +43,7 @@ export default async function ObservatorioPage() {
       articulos={articulos}
       categorias={categorias}
       base="/observatorio"
+      extra={hayCasos ? <ListadoAuditoriasObservatorio /> : undefined}
       />
     </>
   );

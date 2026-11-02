@@ -86,6 +86,29 @@ export async function totales(supabase: SupabaseClient): Promise<{ casos: number
 export const euros = (c: number | null | undefined) =>
   c == null ? '—' : (c / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 
+/** Euros sin céntimos, para cifras de portada. */
+export const eurosEnteros = (c: number | null | undefined) =>
+  c == null ? '—' : (c / 100).toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+export const NOMBRE_CATEGORIA: Record<string, string> = {
+  consultoria: 'Consultoría',
+  eventos: 'Eventos',
+  publicidad: 'Publicidad',
+  obras: 'Obras',
+  suministros: 'Suministros',
+  subvencion: 'Subvención',
+  otro: 'Otro',
+};
+
+/** Disposiciones del BOE indexadas por el job diario (0076) y fecha de la más antigua. */
+export async function boeIndexado(supabase: SupabaseClient): Promise<{ total: number; desde: string | null }> {
+  const [{ count }, { data }] = await Promise.all([
+    supabase.from('boe_items').select('id', { count: 'exact', head: true }),
+    supabase.from('boe_items').select('published_date').order('published_date', { ascending: true }).limit(1),
+  ]);
+  return { total: count ?? 0, desde: (data?.[0]?.published_date as string | undefined) ?? null };
+}
+
 export const fechaLarga = (f: string | null | undefined) =>
   f ? new Date(f.length === 10 ? `${f}T12:00:00Z` : f).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' }) : '—';
 

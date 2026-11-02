@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { Destacado } from './Destacado';
 import { TarjetaArticulo } from './TarjetaArticulo';
@@ -19,6 +20,7 @@ export function PortadaBlog({
   categorias,
   categoriaActiva,
   base = '/blog',
+  extra,
 }: {
   eyebrow: string;
   titulo: string;
@@ -27,6 +29,8 @@ export function PortadaBlog({
   categorias: Categoria[];
   categoriaActiva?: string;
   base?: string;
+  /** Bloque propio de la sección bajo los filtros (p. ej. casos de auditoría); si lo hay, no se muestra el aviso de vacío. */
+  extra?: ReactNode;
 }) {
   // Sin filtro de categoría, el más reciente va de destacado. Con filtro, la
   // lista es homogénea y se muestra entera en el grid.
@@ -49,6 +53,8 @@ export function PortadaBlog({
 
       <FiltrosCategoria categorias={categorias} activa={categoriaActiva} base={base} />
 
+      {extra}
+
       {destacado && <Destacado articulo={destacado} base={base} />}
 
       {resto.length > 0 && (
@@ -59,7 +65,7 @@ export function PortadaBlog({
         </div>
       )}
 
-      {articulos.length === 0 && (
+      {articulos.length === 0 && !extra && (
         <p className="rounded-tarjeta border border-linea bg-panel px-8 py-16 text-center text-[15px] text-cuerpo">
           Todavía no hay artículos publicados en esta sección.
         </p>
