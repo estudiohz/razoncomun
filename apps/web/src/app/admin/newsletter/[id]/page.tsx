@@ -7,6 +7,7 @@ import { nombreMes, respondidasPorUsuario } from '@/lib/newsletter/campanas';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { cancelarCampana } from '../actions';
 import { ESTADO, TIPO, pct, type Stats } from '../comun';
+import { DestinatariosTabla, type FilaDestinatario } from './DestinatariosTabla';
 
 export const metadata: Metadata = metadatosPagina({
   titulo: 'Admin — Newsletter',
@@ -66,6 +67,20 @@ export default async function CampanaPage({ params }: { params: Promise<{ id: st
     totalPreguntas = count ?? 0;
     respondidas = await respondidasPorUsuario(admin, c.survey_id, (envios ?? []).map((e) => e.user_id));
   }
+
+  const filas: FilaDestinatario[] = (envios ?? []).map((e) => {
+    const p = (Array.isArray(e.perfil) ? e.perfil[0] : e.perfil) as { display_name: string | null; first_name: string | null } | null;
+    return {
+      id: e.id,
+      nombre: p?.display_name || p?.first_name || '—',
+      email: e.email ?? '',
+      recibido: e.estado === 'enviado' && e.enviado_at ? fecha.format(new Date(e.enviado_at)) : null,
+      estado: e.estado,
+      abierto: abiertos.has(e.id),
+      clic: conClic.has(e.id),
+      hechas: c.survey_id ? (respondidas.get(e.user_id) ?? 0) : null,
+    };
+  });
 
   const s = ((stats ?? []) as Stats[]).find((x) => x.campaign_id === id);
   const n = (k: keyof Stats) => Number(s?.[k] ?? 0);
@@ -189,52 +204,7 @@ export default async function CampanaPage({ params }: { params: Promise<{ id: st
         </section>
       </div>
 
-      <section className="rounded-tarjeta border border-linea bg-white p-4">
-        <h2 className="text-[15px] font-bold text-titular">Destinatarios ({envios?.length ?? 0})</h2>
-        <div className="mt-2 overflow-x-auto">
-          <table className="w-full text-[13px]">
-            <thead>
-              <tr className="text-left text-[11.5px] font-bold uppercase tracking-wide text-gris">
-                <th className="py-2 pr-3">Persona</th>
-                <th className="py-2 pr-3">Recibido</th>
-                <th className="py-2 pr-3">Abierto</th>
-                {c.survey_id && <th className="py-2">Encuesta</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {(envios ?? []).map((e) => {
-                const p = (Array.isArray(e.perfil) ? e.perfil[0] : e.perfil) as { display_name: string | null; first_name: string | null } | null;
-                const hechas = respondidas.get(e.user_id) ?? 0;
-                return (
-                  <tr key={e.id} className="border-t border-linea">
-                    <td className="py-2 pr-3">
-                      <span className="font-semibold text-titular">{p?.display_name || p?.first_name || '—'}</span>
-                      <span className="block text-[12px] text-gris">{e.email}</span>
-                    </td>
-                    <td className="py-2 pr-3 text-cuerpo">
-                      {e.estado === 'enviado' && e.enviado_at ? fecha.format(new Date(e.enviado_at)) : <span className="text-gris">{e.estado}</span>}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {abiertos.has(e.id) ? <span className="font-semibold text-teal-texto">Sí{conClic.has(e.id) ? ' · clic' : ''}</span> : <span className="text-gris">No</span>}
-                    </td>
-                    {c.survey_id && (
-                      <td className="py-2">
-                        {totalPreguntas > 0 && hechas >= totalPreguntas ? (
-                          <span className="font-semibold text-teal-texto">Completada</span>
-                        ) : hechas > 0 ? (
-                          <span className="text-naranja">{hechas}/{totalPreguntas}</span>
-                        ) : (
-                          <span className="text-gris">No</span>
-                        )}
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DestinatariosTabla filas={filas} totalPreguntas={totalPreguntas} />
 
       <section className="rounded-tarjeta border border-linea bg-white p-4">
         <h2 className="text-[15px] font-bold text-titular">Contenido enviado</h2>
