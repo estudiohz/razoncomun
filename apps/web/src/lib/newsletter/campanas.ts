@@ -65,7 +65,7 @@ async function todas<T>(consulta: (desde: number, hasta: number) => PromiseLike<
 }
 
 /** user_id → preguntas distintas respondidas en la encuesta. */
-async function respondidasPorUsuario(admin: SupabaseClient, surveyId: string, userIds?: string[]): Promise<Map<string, number>> {
+export async function respondidasPorUsuario(admin: SupabaseClient, surveyId: string, userIds?: string[]): Promise<Map<string, number>> {
   const filas = await todas<{ user_id: string; question_id: string }>((a, b) => {
     let q = admin.from('survey_responses').select('user_id, question_id').eq('survey_id', surveyId).not('user_id', 'is', null);
     if (userIds) q = q.in('user_id', userIds);
