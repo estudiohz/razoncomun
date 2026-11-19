@@ -63,7 +63,7 @@ function AvisoNoDisponibles({
 }
 
 export function ResumenCheckout() {
-  const { items, cargado, cambiarCantidad, quitar, vaciar } = useCarrito();
+  const { items, cargado, cambiarCantidad, quitar, vaciar, modoCatalogo } = useCarrito();
   const [datos, setDatos] = useState<CarritoResuelto | null>(null);
   const [cargando, setCargando] = useState(true);
 
@@ -125,6 +125,19 @@ export function ResumenCheckout() {
       if (!r.ok || !r.url) return setError(r.error ?? 'No se ha podido abrir el pago.');
       window.location.href = r.url;
     });
+  }
+
+  if (modoCatalogo) {
+    return (
+      <div className="rounded-tarjeta border border-linea bg-panel p-8 text-center">
+        <p className="text-[15px] text-cuerpo">
+          La tienda está en modo catálogo: de momento no se pueden hacer pedidos.
+        </p>
+        <Link href="/tienda" className="mt-3 inline-block text-[14px] font-bold text-titular">
+          Ver productos
+        </Link>
+      </div>
+    );
   }
 
   if (cargando) return <p className="text-[15px] text-gris">Cargando tu pedido…</p>;

@@ -3,6 +3,8 @@ import { Tarjeta } from '@/components/ui/Tarjeta';
 import { requireEditor } from '@/lib/blog/guard';
 import { fichaVacia, obtenerFichas } from '@/lib/tienda/fichas';
 import { listarProductos, PrintfulNoConfiguradoError } from '@/lib/tienda/printful';
+import { tiendaEnModoCatalogo } from '@/lib/tienda/modo';
+import { cambiarModoCatalogo } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +35,7 @@ export default async function TiendaAdminPage() {
   }
 
   const fichas = await obtenerFichas();
+  const modoCatalogo = await tiendaEnModoCatalogo();
 
   return (
     <div className="space-y-6">
@@ -51,6 +54,32 @@ export default async function TiendaAdminPage() {
           Pagos
         </Link>
       </div>
+
+      <Tarjeta className="flex flex-wrap items-center justify-between gap-4 p-5">
+        <div>
+          <p className="text-[15px] font-bold text-titular">
+            {modoCatalogo ? 'Modo catálogo: activado' : 'Venta: abierta'}
+          </p>
+          <p className="mt-1 text-[13px] text-gris">
+            {modoCatalogo
+              ? 'Los productos se ven, pero no se puede comprar. Vuelve a abrir la venta cuando Printful tenga método de facturación.'
+              : 'Se aceptan pedidos. Activa el modo catálogo si Printful no puede cobrar la fabricación.'}
+          </p>
+        </div>
+        <form action={cambiarModoCatalogo}>
+          <input type="hidden" name="activar" value={modoCatalogo ? '0' : '1'} />
+          <button
+            type="submit"
+            className={
+              modoCatalogo
+                ? 'rounded-boton bg-accion px-5 py-2.5 text-[14px] font-bold text-white'
+                : 'rounded-boton border border-linea bg-white px-5 py-2.5 text-[14px] font-bold text-titular'
+            }
+          >
+            {modoCatalogo ? 'Abrir la venta' : 'Pasar a modo catálogo'}
+          </button>
+        </form>
+      </Tarjeta>
 
       <Tarjeta className="overflow-x-auto">
         <table className="w-full min-w-[560px] text-left text-[13.5px]">

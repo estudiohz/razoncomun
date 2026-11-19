@@ -34,7 +34,7 @@ export function FichaCliente({
   const disponibles = producto.variantes.filter((v) => v.disponible);
   const [seleccionadaId, setSeleccionadaId] = useState<number | null>(disponibles[0]?.id ?? null);
   const [cantidad, setCantidad] = useState(1);
-  const { anadir } = useCarrito();
+  const { anadir, modoCatalogo } = useCarrito();
 
   const seleccionada = disponibles.find((v) => v.id === seleccionadaId) ?? null;
   // Mockups de Printful primero y fotos de uso después: la foto de producto
@@ -105,7 +105,11 @@ export function FichaCliente({
           </div>
         )}
 
-        {disponibles.length === 0 ? (
+        {modoCatalogo ? (
+          <p className="mt-8 rounded-boton bg-fondo px-4 py-3 text-[14px] text-cuerpo">
+            De momento no se pueden hacer pedidos: la tienda está en modo catálogo.
+          </p>
+        ) : disponibles.length === 0 ? (
           <p className="mt-8 rounded-boton bg-fondo px-4 py-3 text-[14px] text-cuerpo">
             Este producto no está disponible ahora mismo.
           </p>

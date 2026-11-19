@@ -12,6 +12,7 @@ import {
   hostDe,
 } from '@/lib/tienda/pedido';
 import { calcularEnvio } from '@/lib/tienda/printful';
+import { tiendaEnModoCatalogo } from '@/lib/tienda/modo';
 import type { DestinoEnvio, ItemCarrito, TarifaEnvio } from '@/lib/tienda/tipos';
 import { resolverCarritoAction } from '../actions';
 
@@ -116,6 +117,11 @@ export async function crearSesionPagoAction(
   comprador: DatosComprador,
   tarifaId: string,
 ): Promise<ResultadoPago> {
+  // El bloqueo de verdad es este: la UI esconde el botón, pero una pestaña
+  // abierta de antes o una llamada directa llegarían aquí igualmente.
+  if (await tiendaEnModoCatalogo()) {
+    return { ok: false, error: 'La tienda está en modo catálogo: de momento no se pueden hacer pedidos.' };
+  }
   const nombre = limpiar(comprador.nombre);
   const email = limpiar(comprador.email);
   const direccion = limpiar(comprador.direccion);

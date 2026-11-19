@@ -3,6 +3,9 @@
 import { conAviso } from '@/lib/avisos/servidor';
 import { revalidatePath } from 'next/cache';
 import { requireEditor } from '@/lib/blog/guard';
+import { requireAdmin } from '@/lib/admin/guard';
+import { registrarAuditoria } from '@/lib/admin/audit';
+import { CLAVE_MODO_CATALOGO } from '@/lib/tienda/modo';
 import { sanitizarHtml } from '@/lib/paginas';
 
 export interface ResultadoFicha {
@@ -63,4 +66,35 @@ export async function guardarFichaProducto(
   revalidatePath(`/tienda/${printful_product_id}`);
   return { ok: true };
   });
+}
+
+/**
+ * Modo catálogo (19/11/2026): enciende/apaga la venta. Solo admin, porque
+ * escribe en `settings` (RLS 0019) y corta los ingresos de la tienda.
+ */
+export async function cambiarModoCatalogo(formData: FormData): Promise<void> {
+  const activar = String(formData.get('activar')) === '1';
+  await conAviso(
+    activar ? 'Tienda en modo catálogo: ya no se pueden hacer pedidos' : 'Tienda abierta: se vuelven a aceptar pedidos',
+    async () => {
+      const { user, supabase } = await requireAdmin('/admin/tienda');
+      const { error } = await supabase.from('settings').upsert({
+        key: CLAVE_MODO_CATALOGO,
+        value: activar,
+        updated_by: user.id,
+        updated_at: new Date().toISOString(),
+      });
+      if (error) throw new Error(`No se pudo cambiar el modo de la tienda: ${error.message}`);
+      await registrarAuditoria(supabase, {
+        actorId: user.id,
+        action: 'setting_changed',
+        entity: 'settings',
+        entityId: null,
+        meta: { key: CLAVE_MODO_CATALOGO, to: activar },
+      });
+      revalidatePath('/admin/tienda');
+      revalidatePath('/tienda', 'layout');
+      return { ok: true };
+    },
+  );
 }

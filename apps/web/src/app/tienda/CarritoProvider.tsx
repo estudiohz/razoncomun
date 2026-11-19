@@ -24,6 +24,8 @@ interface Contexto {
   cambiarCantidad: (variantId: number, cantidad: number) => void;
   quitar: (variantId: number) => void;
   vaciar: () => void;
+  /** Tienda en modo catálogo: se ve, no se compra (lib/tienda/modo.ts). */
+  modoCatalogo: boolean;
 }
 
 const CarritoCtx = createContext<Contexto | null>(null);
@@ -44,7 +46,13 @@ function leer(): ItemCarrito[] {
   }
 }
 
-export function CarritoProvider({ children }: { children: React.ReactNode }) {
+export function CarritoProvider({
+  children,
+  modoCatalogo = false,
+}: {
+  children: React.ReactNode;
+  modoCatalogo?: boolean;
+}) {
   const [items, setItems] = useState<ItemCarrito[]>([]);
   const [cargado, setCargado] = useState(false);
   const [abierto, setAbierto] = useState(false);
@@ -107,8 +115,9 @@ export function CarritoProvider({ children }: { children: React.ReactNode }) {
       cambiarCantidad,
       quitar: (variantId) => setItems((p) => p.filter((i) => i.variantId !== variantId)),
       vaciar: () => setItems([]),
+      modoCatalogo,
     }),
-    [items, cargado, abierto, anadir, cambiarCantidad],
+    [items, cargado, abierto, anadir, cambiarCantidad, modoCatalogo],
   );
 
   return <CarritoCtx.Provider value={valor}>{children}</CarritoCtx.Provider>;

@@ -19,7 +19,7 @@ import { useCarrito } from './CarritoProvider';
  * `backdrop-blur` crea containing block y rompe `position: fixed`.
  */
 export function CarritoPanel() {
-  const { items, abierto, cerrar, cambiarCantidad, quitar } = useCarrito();
+  const { items, abierto, cerrar, cambiarCantidad, quitar, modoCatalogo } = useCarrito();
   const [montado, setMontado] = useState(false);
   const [datos, setDatos] = useState<CarritoResuelto | null>(null);
   const [cargando, setCargando] = useState(false);
@@ -156,7 +156,12 @@ export function CarritoPanel() {
           </ul>
         </div>
 
-        {!vacio && (
+        {!vacio && modoCatalogo && (
+          <footer className="border-t border-linea px-5 py-4 text-[13.5px] text-cuerpo">
+            La tienda está en modo catálogo: de momento no se pueden tramitar pedidos.
+          </footer>
+        )}
+        {!vacio && !modoCatalogo && (
           <footer className="border-t border-linea px-5 py-4">
             <div className="flex items-center justify-between text-[15px]">
               <span className="font-bold text-cuerpo">Subtotal</span>
