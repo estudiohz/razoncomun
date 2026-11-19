@@ -106,10 +106,16 @@ export function FichaCliente({
         )}
 
         {modoCatalogo ? (
-          <p className="mt-8 rounded-boton bg-fondo px-4 py-3 text-[14px] text-cuerpo">
-            De momento no se pueden hacer pedidos: la tienda está en modo catálogo.
-          </p>
-        ) : disponibles.length === 0 ? (
+          <div className="mt-8">
+            <button
+              type="button"
+              disabled
+              className="w-full cursor-not-allowed rounded-boton bg-gris/20 px-6 py-3.5 text-[15px] font-bold text-gris min-[520px]:w-auto"
+            >
+              Próximamente
+            </button>
+          </div>
+        ) :disponibles.length === 0 ? (
           <p className="mt-8 rounded-boton bg-fondo px-4 py-3 text-[14px] text-cuerpo">
             Este producto no está disponible ahora mismo.
           </p>
