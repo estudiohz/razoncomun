@@ -72,14 +72,14 @@ export async function cumplirPedidoTienda(
 
   // --- 1. Reserva idempotente. Se inserta ANTES de tocar Printful: si dos
   // entregas del mismo pago corren a la vez, solo una pasa de aquí.
-  const { error: errReserva } = await admin.from('shop_orders').insert({
+  const { data: reserva, error: errReserva } = await admin.from('shop_orders').insert({
     stripe_session_id: sessionId,
     email: email || 'desconocido@razoncomun.com',
     total_cents: sesion.amount_total ?? 0,
     shipping_cents: envioCents,
     currency: (sesion.currency ?? 'eur').toUpperCase(),
     status: 'paid',
-  });
+  }).select('id').single();
   if (errReserva) {
     const duplicado =
       errReserva.code === '23505' || /duplicate|unique/i.test(errReserva.message ?? '');
@@ -129,7 +129,10 @@ export async function cumplirPedidoTienda(
   let printfulOrderId: number;
   try {
     const pedido = await crearPedido({
-      externalId: sessionId,
+      // Printful exige external_id de máx. 32 caracteres [A-Za-z0-9_-]: el id
+      // de sesión de Stripe (cs_live_…, ~66) lo rechaza con 400. El UUID del
+      // pedido sin guiones son 32 hex exactos y sigue siendo único.
+      externalId: String(reserva?.id ?? '').replace(/-/g, ''),
       destinatario: { ...destinatario, email: email || 'pedidos@razoncomun.com' },
       lineas: carrito.lineas.map((l) => ({ variante: l.variante, cantidad: l.cantidad })),
     });
