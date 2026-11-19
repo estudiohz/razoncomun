@@ -162,3 +162,11 @@ export async function crearPedido(datos: DatosPedido): Promise<{ id: number }> {
 export async function confirmarPedido(printfulOrderId: number): Promise<void> {
   await llamar(`/orders/${printfulOrderId}/confirm`, { metodo: 'POST' });
 }
+
+/** Estado actual de un pedido en Printful (para la tabla de /admin/tienda).
+ *  `error` es el motivo que da Printful cuando el pedido falla (p. ej. "No
+ *  payment method added"): sin él, la BD dice "confirmado" y nadie se entera. */
+export async function estadoPedido(printfulOrderId: number): Promise<{ estado: string; error: string | null }> {
+  const r = await llamar<{ status?: string; error?: string | null }>(`/orders/${printfulOrderId}`);
+  return { estado: r?.status ?? 'desconocido', error: r?.error ?? null };
+}

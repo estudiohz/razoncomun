@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { requireEditor } from '@/lib/blog/guard';
 import { fichaVacia, obtenerFichas } from '@/lib/tienda/fichas';
-import { listarProductos, PrintfulNoConfiguradoError } from '@/lib/tienda/printful';
+import { estadoPedido, listarProductos, PrintfulNoConfiguradoError } from '@/lib/tienda/printful';
+import { formatoPrecio } from '@/lib/tienda/precios';
 import { tiendaEnModoCatalogo } from '@/lib/tienda/modo';
 import { cambiarModoCatalogo } from './actions';
 
@@ -15,8 +16,66 @@ export const dynamic = 'force-dynamic';
  * se les escribe el texto que Printful no tiene. Por eso no hay botón de
  * "añadir producto" — se añade en Printful y aparece solo.
  */
+/** Nuestro estado (0047) en palabras. */
+const ESTADO_BD: Record<string, string> = {
+  paid: 'Cobrado',
+  sent_to_printful: 'Enviado a Printful',
+  confirmed: 'Confirmado',
+  failed: 'Fallido',
+};
+
+/** Estado de Printful en palabras. */
+const ESTADO_PRINTFUL: Record<string, string> = {
+  draft: 'Borrador',
+  pending: 'Pendiente',
+  failed: 'Error',
+  canceled: 'Cancelado',
+  inprocess: 'En producción',
+  onhold: 'En espera',
+  partial: 'Enviado en parte',
+  fulfilled: 'Enviado',
+};
+
+interface FilaPedido {
+  id: string;
+  email: string;
+  total_cents: number;
+  shipping_cents: number;
+  status: string;
+  printful_order_id: number | null;
+  printful_error: string | null;
+  created_at: string;
+}
+
 export default async function TiendaAdminPage() {
-  await requireEditor();
+  const { supabase } = await requireEditor();
+
+  // RLS (0047): solo un ADMIN lee pedidos (llevan el email del comprador). A
+  // un editor la consulta le devuelve vacío y la sección no se pinta.
+  const { data: filasPedidos } = await supabase
+    .from('shop_orders')
+    .select('id, email, total_cents, shipping_cents, status, printful_order_id, printful_error, created_at')
+    .order('created_at', { ascending: false })
+    .limit(50);
+  const pedidos = (filasPedidos ?? []) as FilaPedido[];
+
+  // El estado VIVO de Printful: nuestra BD dice "Confirmado" en cuanto
+  // Printful acepta el pedido, pero el cobro de la fabricación puede fallar
+  // después (19/11/2026: "No payment method added"). Solo los 20 últimos.
+  const estadosPrintful = new Map(
+    await Promise.all(
+      pedidos
+        .filter((p) => p.printful_order_id)
+        .slice(0, 20)
+        .map(async (p) => {
+          try {
+            return [p.id, await estadoPedido(p.printful_order_id as number)] as const;
+          } catch {
+            return [p.id, { estado: 'sin respuesta', error: null }] as const;
+          }
+        }),
+    ),
+  );
 
   let productos;
   try {
@@ -126,6 +185,84 @@ export default async function TiendaAdminPage() {
           </tbody>
         </table>
       </Tarjeta>
+
+      {pedidos.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-[18px] font-extrabold">Pedidos</h2>
+          <Tarjeta className="overflow-x-auto">
+            <table className="w-full min-w-[760px] text-left text-[13.5px]">
+              <thead>
+                <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
+                  <th className="px-4 py-3">Fecha</th>
+                  <th className="px-4 py-3">Comprador</th>
+                  <th className="px-4 py-3 text-right">Total</th>
+                  <th className="px-4 py-3">Estado</th>
+                  <th className="px-4 py-3">Printful</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pedidos.map((p) => {
+                  const vivo = estadosPrintful.get(p.id);
+                  const malPrintful = vivo?.estado === 'failed' || vivo?.estado === 'canceled';
+                  const mal = p.status === 'failed' || malPrintful;
+                  const motivo = p.printful_error ?? vivo?.error ?? null;
+                  return (
+                    <tr key={p.id} className="border-b border-linea align-top last:border-0">
+                      <td className="whitespace-nowrap px-4 py-3 text-cuerpo">
+                        {new Date(p.created_at).toLocaleString('es-ES', {
+                          dateStyle: 'short',
+                          timeStyle: 'short',
+                          timeZone: 'Europe/Madrid',
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-titular">{p.email}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
+                        {formatoPrecio(p.total_cents)}
+                        <span className="block text-[12px] text-gris">
+                          envío {formatoPrecio(p.shipping_cents)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={
+                            mal
+                              ? 'rounded-full bg-red-100 px-2.5 py-1 text-[12px] font-bold text-red-700'
+                              : 'rounded-full bg-accion/10 px-2.5 py-1 text-[12px] font-bold text-accion'
+                          }
+                        >
+                          {ESTADO_BD[p.status] ?? p.status}
+                        </span>
+                        {motivo && <p className="mt-1.5 max-w-[280px] text-[12px] text-red-700">{motivo}</p>}
+                      </td>
+                      <td className="px-4 py-3">
+                        {p.printful_order_id ? (
+                          <>
+                            <a
+                              href={`https://www.printful.com/dashboard/default/orders?order_id=${p.printful_order_id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-bold text-titular"
+                            >
+                              #{p.printful_order_id}
+                            </a>
+                            {vivo && (
+                              <span className={`block text-[12px] ${malPrintful ? 'font-bold text-red-700' : 'text-gris'}`}>
+                                {ESTADO_PRINTFUL[vivo.estado] ?? vivo.estado}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-gris">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Tarjeta>
+        </section>
+      )}
     </div>
   );
 }
