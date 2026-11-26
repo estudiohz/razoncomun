@@ -173,6 +173,8 @@ export interface EstadoPedidoPrintful {
   articulos: { nombre: string; cantidad: number }[];
   /** Lo que Printful nos cobra (producto + envío + IVA), en céntimos. */
   costeCents: number | null;
+  /** Desglose del coste en céntimos. El IVA (21 %) Printful lo suma aparte. */
+  desglose: { productoCents: number; envioCents: number; ivaCents: number } | null;
 }
 
 export async function estadoPedido(printfulOrderId: number): Promise<EstadoPedidoPrintful> {
@@ -180,13 +182,21 @@ export async function estadoPedido(printfulOrderId: number): Promise<EstadoPedid
     status?: string;
     error?: string | null;
     items?: { name?: string; quantity?: number }[];
-    costs?: { total?: string | number };
+    costs?: { total?: string | number; subtotal?: string; shipping?: string; vat?: string; tax?: string };
   }>(`/orders/${printfulOrderId}`);
   const total = Number(r?.costs?.total);
+  const c = (v: unknown) => Math.round((Number(v) || 0) * 100);
   return {
     estado: r?.status ?? 'desconocido',
     error: r?.error ?? null,
     articulos: (r?.items ?? []).map((i) => ({ nombre: i.name ?? 'Artículo', cantidad: i.quantity ?? 1 })),
     costeCents: Number.isFinite(total) ? Math.round(total * 100) : null,
+    desglose: r?.costs
+      ? {
+          productoCents: c(r.costs.subtotal),
+          envioCents: c(r.costs.shipping),
+          ivaCents: c(r.costs.vat) + c(r.costs.tax),
+        }
+      : null,
   };
 }

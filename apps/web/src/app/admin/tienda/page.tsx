@@ -4,6 +4,7 @@ import { requireEditor } from '@/lib/blog/guard';
 import { fichaVacia, obtenerFichas } from '@/lib/tienda/fichas';
 import { estadoPedido, listarProductos, PrintfulNoConfiguradoError, type EstadoPedidoPrintful } from '@/lib/tienda/printful';
 import { formatoPrecio } from '@/lib/tienda/precios';
+import { stripeCliente } from '@/lib/stripe/servidor';
 import { tiendaEnModoCatalogo } from '@/lib/tienda/modo';
 import { cambiarModoCatalogo } from './actions';
 
@@ -38,6 +39,7 @@ const ESTADO_PRINTFUL: Record<string, string> = {
 
 interface FilaPedido {
   id: string;
+  stripe_session_id: string;
   email: string;
   total_cents: number;
   shipping_cents: number;
@@ -54,7 +56,7 @@ export default async function TiendaAdminPage() {
   // un editor la consulta le devuelve vacío y la sección no se pinta.
   const { data: filasPedidos } = await supabase
     .from('shop_orders')
-    .select('id, email, total_cents, shipping_cents, status, printful_order_id, printful_error, created_at')
+    .select('id, stripe_session_id, email, total_cents, shipping_cents, status, printful_order_id, printful_error, created_at')
     .order('created_at', { ascending: false })
     .limit(50);
   const pedidos = (filasPedidos ?? []) as FilaPedido[];
@@ -70,7 +72,7 @@ export default async function TiendaAdminPage() {
           try {
             return [p.id, await estadoPedido(p.printful_order_id as number)] as [string, EstadoPedidoPrintful];
           } catch {
-            return [p.id, { estado: 'sin respuesta', error: null, articulos: [], costeCents: null }] as [string, EstadoPedidoPrintful];
+            return [p.id, { estado: 'sin respuesta', error: null, articulos: [], costeCents: null, desglose: null }] as [string, EstadoPedidoPrintful];
           }
         }),
     ),
@@ -83,14 +85,52 @@ export default async function TiendaAdminPage() {
   // Stripe no está incluida.
   const ventasCents = pedidos.reduce((s, p) => s + p.total_cents, 0);
   let costeCents = 0;
+  let productoCents = 0;
+  let envioCents = 0;
+  let ivaCents = 0;
   let sinCoste = 0;
   for (const p of pedidos) {
     const v = estadosPrintful.get(p.id);
     if (v?.estado === 'canceled') continue;
     if (v?.costeCents == null) sinCoste++;
     else costeCents += v.costeCents;
+    if (v?.desglose) {
+      productoCents += v.desglose.productoCents;
+      envioCents += v.desglose.envioCents;
+      ivaCents += v.desglose.ivaCents;
+    }
   }
-  const beneficioCents = ventasCents - costeCents;
+
+  // Comisión REAL de Stripe por cobro (balance_transaction.fee), no una
+  // estimación con la tarifa publicada.
+  let comisionCents = 0;
+  let sinComision = 0;
+  try {
+    const stripe = await stripeCliente();
+    const comisiones = await Promise.all(
+      pedidos.map(async (p) => {
+        try {
+          const ses = await stripe.checkout.sessions.retrieve(p.stripe_session_id, {
+            expand: ['payment_intent.latest_charge.balance_transaction'],
+          });
+          const pi = ses.payment_intent;
+          const cargo = pi && typeof pi !== 'string' ? pi.latest_charge : null;
+          const bt = cargo && typeof cargo !== 'string' ? cargo.balance_transaction : null;
+          return bt && typeof bt !== 'string' ? bt.fee : null;
+        } catch {
+          return null;
+        }
+      }),
+    );
+    for (const f of comisiones) {
+      if (f == null) sinComision++;
+      else comisionCents += f;
+    }
+  } catch {
+    sinComision = pedidos.length;
+  }
+
+  const beneficioCents = ventasCents - costeCents - comisionCents;
 
   let productos;
   try {
@@ -137,13 +177,19 @@ export default async function TiendaAdminPage() {
             {
               titulo: 'Coste y envío (Printful)',
               valor: formatoPrecio(costeCents),
-              nota: sinCoste > 0 ? `${sinCoste} pedido(s) sin coste en Printful` : 'Producto + envío + IVA',
+              nota:
+                sinCoste > 0
+                  ? `${sinCoste} pedido(s) sin coste en Printful`
+                  : `${formatoPrecio(productoCents)} producto + ${formatoPrecio(envioCents)} envío + ${formatoPrecio(ivaCents)} IVA`,
               negativo: false,
             },
             {
               titulo: 'Beneficio',
               valor: formatoPrecio(beneficioCents),
-              nota: 'Sin descontar la comisión de Stripe',
+              nota:
+                sinComision > 0
+                  ? `Comisión de Stripe ${formatoPrecio(comisionCents)} (faltan ${sinComision} pedido(s))`
+                  : `Ya restada la comisión de Stripe: ${formatoPrecio(comisionCents)}`,
               negativo: beneficioCents < 0,
             },
           ].map((t) => (
