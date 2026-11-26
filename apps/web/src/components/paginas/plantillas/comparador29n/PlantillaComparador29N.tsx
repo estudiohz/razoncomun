@@ -9,6 +9,9 @@ import { Comparador } from './Comparador';
  * Plantilla «comparador-29n» (diseño A). Servidor: cabecera + intro del
  * editor; los apartados (JSON con cita y verificación) van al comparador.
  */
+/** Fecha y hora de la última revisión de los datos: actualizar al tocar los JSON. */
+const REVISADO = '27/11/2026';
+
 export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
   return (
     <>
@@ -21,15 +24,31 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
             <div className="prose-rc max-w-[700px]" dangerouslySetInnerHTML={{ __html: introHtml }} />
           ) : (
             <p className="max-w-[680px] text-[16px] leading-[1.55] text-cuerpo">
-              Lo que propone cada fuerza, citado de su programa y verificado con fuentes oficiales. Y al lado, la alternativa de Razón Común.
+              Lo que propone cada fuerza, citado de su programa y analizado con fuentes oficiales. Debajo, la propuesta de Razón Común.
             </p>
           )}
+          <p className="text-[12.5px] text-gris">
+            PP, PSOE, Vox y Frente Amplio · Revisado el {REVISADO}
+          </p>
+          <details className="group max-w-[760px] rounded-[12px] border border-linea bg-white px-4 py-3">
+            <summary className="flex min-h-[32px] cursor-pointer list-none items-center justify-between text-[13px] font-bold text-titular">
+              Cómo lo hemos hecho
+              <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[13.5px] leading-[1.5] text-cuerpo">
+              <li><b>Quién:</b> el equipo de Razón Común, con ayuda de IA y revisión humana.</li>
+              <li><b>Qué partidos:</b> las cuatro fuerzas con más diputados y candidatura en toda España. Por falta de medios no hemos podido analizar al resto.</li>
+              <li><b>Las propuestas</b> salen del programa oficial 2026 de cada partido, con su página.</li>
+              <li><b>El círculo es nuestro análisis</b>, no un hecho: verde, viable tal cual; naranja, viable con matices; rojo, choca con la Constitución, la ley europea o una sentencia firme. Mismo criterio para todos y con fuentes oficiales.</li>
+              <li><b>Nuestras propuestas</b> van aparte y sin círculo: no nos ponemos nota.</li>
+            </ul>
+          </details>
         </div>
       </Contenedor>
       <Contenedor className="py-10 min-[720px]:py-12">
         <Comparador apartados={APARTADOS} partidos={PARTIDOS} rc={ALTERNATIVAS_RC} />
         <p className="mt-10 max-w-[820px] text-[12.5px] leading-relaxed text-gris">
-          Cada propuesta enlaza a la página de su programa oficial. La verificación aplica el mismo criterio a todas las fuerzas, con fuentes oficiales: verde, viable tal como se plantea; naranja, viable con matices; rojo, inviable tal cual o en conflicto con la ley o la normativa europea. Durante la legislatura marcaremos cada propuesta como cumplida, en parte o incumplida, con su fuente; en las próximas elecciones ese historial medirá la credibilidad de cada fuerza, la nuestra incluida. ¿Ves un error? Escríbenos y lo corregimos.
+          Cada propuesta enlaza a la página de su programa oficial. Durante la legislatura marcaremos cada propuesta como cumplida, en parte o incumplida, con su fuente; en las próximas elecciones ese historial medirá la credibilidad de cada fuerza, la nuestra incluida.
         </p>
       </Contenedor>
     </>

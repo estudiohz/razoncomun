@@ -30,6 +30,10 @@ function enlacePdf(url: string | null | undefined, pagina: number | null) {
 export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[]; partidos: Partido[]; rc: Record<string, PropuestaRc[]> }) {
   const [sel, setSel] = useState(0);
   const [voto, setVoto] = useState<Record<string, string>>({});
+  // Cara a cara: qué partidos se ven (mínimo uno).
+  const [visibles, setVisibles] = useState<string[]>(partidos.map((p) => p.id));
+  const alternar = (id: string) =>
+    setVisibles((v) => (v.includes(id) ? (v.length > 1 ? v.filter((x) => x !== id) : v) : [...v, id]));
   // Orden barajado una vez por visita, tras montar (no rompe la hidratación).
   const [orden, setOrden] = useState(partidos);
   useEffect(() => setOrden([...partidos].sort(() => Math.random() - 0.5)), [partidos]);
@@ -121,8 +125,27 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
           </div>
         ) : null}
 
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Partidos que comparas">
+          <span className="text-[11px] font-bold uppercase tracking-[.12em] text-gris">Comparar</span>
+          {partidos.map((p) => {
+            const on = visibles.includes(p.id);
+            return (
+              <button
+                key={p.id}
+                onClick={() => alternar(p.id)}
+                aria-pressed={on}
+                className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border-[1.5px] px-3 text-[12.5px] font-bold"
+                style={on ? { borderColor: p.color, background: `${p.color}14`, color: '#1B3D9C' } : { borderColor: '#E4E6EE', color: '#6B6B6B' }}
+              >
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: on ? p.color : '#C9CCD6' }} />
+                {p.sigla}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="grid grid-cols-1 gap-4 min-[640px]:grid-cols-2">
-          {orden.map((p) => (
+          {orden.filter((p) => visibles.includes(p.id)).map((p) => (
             <TarjetaPartido
               key={p.id}
               partido={p}
@@ -214,7 +237,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
 function Leyenda() {
   return (
     <div className="mt-4 space-y-1.5 rounded-[12px] border border-linea bg-white px-3.5 py-3 text-[12px] text-cuerpo">
-      <p className="font-bold uppercase tracking-wide text-gris">Verificación</p>
+      <p className="font-bold uppercase tracking-wide text-gris">Análisis de Razón Común</p>
       {(Object.keys(VEREDICTO) as Veredicto[]).map((k) => (
         <p key={k} className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-full" style={{ background: VEREDICTO[k].color }} /> {VEREDICTO[k].etiqueta}
@@ -240,6 +263,9 @@ function BotonVoto({ activo, onClick }: { activo: boolean; onClick: () => void }
 function TarjetaPartido({
   partido, propuestas, pdf, elegido, onElegir,
 }: { partido: Partido; propuestas: PropuestaVerificada[]; pdf: string | null; elegido: boolean; onElegir: () => void }) {
+  // Misma extensión para todos: 3 propuestas a la vista; el resto, a demanda.
+  const [todas, setTodas] = useState(false);
+  const visiblesP = todas ? propuestas : propuestas.slice(0, 3);
   return (
     <article
       id={`partido-${partido.id}`}
@@ -274,12 +300,12 @@ function TarjetaPartido({
         <p className="text-[14px] italic text-gris">No hemos encontrado propuesta concreta sobre este apartado en su programa.</p>
       ) : (
         <div className="flex flex-col gap-3.5">
-          {propuestas.map((x, i) => {
+          {visiblesP.map((x, i) => {
             const v = VEREDICTO[x.verificacion.veredicto] ?? VEREDICTO.naranja;
             const href = enlacePdf(pdf, x.cita.pagina);
             const cita = x.cita.pagina
               ? `Programa ${partido.nombre} 2026 · pág. ${x.cita.pagina}${x.cita.apartado ? `, ${x.cita.apartado}` : ''}`
-              : x.cita.nota || 'Programa 2026';
+              : 'Página por confirmar';
             // Una nota con URL pegada («Tomado de prensa (https://…)») se pinta como «Fuente ↗».
             const urlNota = !x.cita.pagina ? (x.cita.nota ?? '').match(/https?:\/\/[^\s)]+/)?.[0] ?? null : null;
             const notaSinUrl = urlNota
@@ -305,7 +331,7 @@ function TarjetaPartido({
                     </a>
                   </p>
                 ) : (
-                  <span className="pl-[22px] text-[12px] font-semibold text-gris">{cita}</span>
+                  <span className="pl-[22px] text-[12px] font-semibold text-gris" title={x.cita.nota ?? undefined}>{cita}</span>
                 )}
                 <div className="ml-[22px]"><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
                 <div className="ml-[22px]"><BloqueViabilidad b={x.viabilidad} /></div>
@@ -313,6 +339,11 @@ function TarjetaPartido({
               </div>
             );
           })}
+          {propuestas.length > 3 ? (
+            <button onClick={() => setTodas((t) => !t)} className="self-start pl-[22px] text-[12.5px] font-bold text-titular underline">
+              {todas ? 'Ver menos' : `Ver ${propuestas.length - 3} más`}
+            </button>
+          ) : null}
         </div>
       )}
       <div className="mt-auto pt-1">
@@ -326,7 +357,7 @@ function Verificacion({ v, texto, fuentes, titulo }: { v: { color: string; etiqu
   return (
     <details className="group rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
       <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
-        {titulo ?? `Verificación · ${v.etiqueta}`}
+        {titulo ?? `Análisis de Razón Común · ${v.etiqueta}`}
         <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
       </summary>
       <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{texto}</p>
