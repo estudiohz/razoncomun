@@ -140,11 +140,11 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
             {rc[ap.id]?.length ? (
               <div className="grid grid-cols-1 gap-4 min-[640px]:grid-cols-2">
                 {rc[ap.id].map((x, i) => {
-                  const v = VEREDICTO[x.verificacion.veredicto] ?? VEREDICTO.naranja;
+                  // Sin círculo: Razón Común no se pone nota a sí misma.
+                  const v = { color: '#5B5B5B', etiqueta: '' };
                   return (
                     <div key={i} className="flex flex-col gap-2 rounded-[14px] border border-linea px-4 py-4">
                       <p className="flex gap-2.5 text-[15px] font-bold leading-snug text-titular">
-                        <span className="mt-[5px] h-3 w-3 flex-none rounded-full" style={{ background: v.color }} role="img" aria-label={`Verificación: ${v.etiqueta}`} />
                         <span>{x.titulo}</span>
                       </p>
                       <EstadoSeguimiento s={x.seguimiento} />
@@ -160,7 +160,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
                         <span className="font-bold">Quién lo hace:</span> {x.competencia}
                         {x.punto ? <> · <a href="/manifiesto" className="underline">Punto {x.punto} del manifiesto</a></> : null}
                       </p>
-                      <Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} />
+                      <Verificacion v={v} titulo="Riesgos y límites" texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} />
                       <BloqueViabilidad b={x.viabilidad} />
                     </div>
                   );
@@ -301,11 +301,11 @@ function TarjetaPartido({
   );
 }
 
-function Verificacion({ v, texto, fuentes }: { v: { color: string; etiqueta: string }; texto: string; fuentes?: Fuente[] }) {
+function Verificacion({ v, texto, fuentes, titulo }: { v: { color: string; etiqueta: string }; texto: string; fuentes?: Fuente[]; titulo?: string }) {
   return (
     <div className="rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
       <p className="text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
-        Verificación · {v.etiqueta}
+        {titulo ?? `Verificación · ${v.etiqueta}`}
       </p>
       <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{texto}</p>
       {fuentes?.length ? (
