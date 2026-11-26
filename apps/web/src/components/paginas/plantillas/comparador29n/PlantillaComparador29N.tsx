@@ -1,5 +1,4 @@
 import { Contenedor } from '@/components/layout/Contenedor';
-import { sanearHtml } from '@/lib/blog/html';
 import type { PropsPlantilla } from '../index';
 import { APARTADOS } from './apartados';
 import { ALTERNATIVAS_RC } from './alternativasRc';
@@ -11,7 +10,6 @@ import { Comparador } from './Comparador';
  * editor; los apartados (JSON con cita y verificación) van al comparador.
  */
 export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
-  const rcHtml = Object.fromEntries(Object.entries(ALTERNATIVAS_RC).map(([k, v]) => [k, sanearHtml(v)]));
   return (
     <>
       <Contenedor as="section" className="pt-12 min-[720px]:pt-16">
@@ -29,9 +27,9 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
         </div>
       </Contenedor>
       <Contenedor className="py-10 min-[720px]:py-12">
-        <Comparador apartados={APARTADOS} partidos={PARTIDOS} rcHtml={rcHtml} />
+        <Comparador apartados={APARTADOS} partidos={PARTIDOS} rc={ALTERNATIVAS_RC} />
         <p className="mt-10 max-w-[820px] text-[12.5px] leading-relaxed text-gris">
-          Cada propuesta enlaza a la página de su programa oficial. La verificación aplica el mismo criterio a todas las fuerzas, con fuentes oficiales: verde, viable tal como se plantea; naranja, viable con matices; rojo, inviable tal cual o en conflicto con la ley o la normativa europea. ¿Ves un error? Escríbenos y lo corregimos.
+          Cada propuesta enlaza a la página de su programa oficial. La verificación aplica el mismo criterio a todas las fuerzas, con fuentes oficiales: verde, viable tal como se plantea; naranja, viable con matices; rojo, inviable tal cual o en conflicto con la ley o la normativa europea. Durante la legislatura marcaremos cada propuesta como cumplida, en parte o incumplida, con su fuente; en las próximas elecciones ese historial medirá la credibilidad de cada fuerza, la nuestra incluida. ¿Ves un error? Escríbenos y lo corregimos.
         </p>
       </Contenedor>
     </>

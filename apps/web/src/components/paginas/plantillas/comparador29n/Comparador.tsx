@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaVerificada, type Veredicto } from './tipos';
+import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente } from './tipos';
 
 const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
   verde: { color: '#1E9E5A', etiqueta: 'Posible' },
@@ -27,7 +27,7 @@ function enlacePdf(url: string | null | undefined, pagina: number | null) {
  * Comparador por apartados (diseño A). «Me convence» = voto privado del
  * visitante: estado React, ni localStorage ni servidor (RGPD Art. 9).
  */
-export function Comparador({ apartados, partidos, rcHtml }: { apartados: Apartado[]; partidos: Partido[]; rcHtml: Record<string, string> }) {
+export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[]; partidos: Partido[]; rc: Record<string, PropuestaRc[]> }) {
   const [sel, setSel] = useState(0);
   const [voto, setVoto] = useState<Record<string, string>>({});
   // Orden barajado una vez por visita, tras montar (no rompe la hidratación).
@@ -85,7 +85,7 @@ export function Comparador({ apartados, partidos, rcHtml }: { apartados: Apartad
           </div>
         ) : null}
 
-        <div className="grid gap-4 min-[760px]:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 min-[640px]:grid-cols-2">
           {orden.map((p) => (
             <TarjetaPartido
               key={p.id}
@@ -101,14 +101,40 @@ export function Comparador({ apartados, partidos, rcHtml }: { apartados: Apartad
         <article className="rounded-[18px] p-[3px]" style={{ background: 'linear-gradient(120deg,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }}>
           <div className="flex flex-col gap-3 rounded-[15px] bg-white px-6 py-6">
             <p className="text-[12px] font-bold uppercase tracking-[.12em]" style={{ color: '#0E8C7A' }}>La alternativa de Razón Común</p>
-            {rcHtml[ap.id] ? (
-              <div className="prose-rc" dangerouslySetInnerHTML={{ __html: rcHtml[ap.id] }} />
+            {rc[ap.id]?.length ? (
+              <div className="grid grid-cols-1 gap-4 min-[640px]:grid-cols-2">
+                {rc[ap.id].map((x, i) => {
+                  const v = VEREDICTO[x.verificacion.veredicto] ?? VEREDICTO.naranja;
+                  return (
+                    <div key={i} className="flex flex-col gap-2 rounded-[14px] border border-linea px-4 py-4">
+                      <p className="flex gap-2.5 text-[15px] font-bold leading-snug text-titular">
+                        <span className="mt-[5px] h-3 w-3 flex-none rounded-full" style={{ background: v.color }} role="img" aria-label={`Verificación: ${v.etiqueta}`} />
+                        <span>{x.titulo}</span>
+                      </p>
+                      <EstadoSeguimiento s={x.seguimiento} />
+                      <p className="text-[14px] leading-[1.5] text-cuerpo">{x.texto}</p>
+                      {x.dato ? (
+                        <p className="text-[12.5px] text-gris">
+                          <span className="font-bold">El problema:</span> {x.dato.texto}{' '}
+                          <a href={x.dato.url} target="_blank" rel="noopener nofollow" className="underline">{x.dato.fuente}</a>
+                        </p>
+                      ) : null}
+                      <p className="text-[12.5px] text-gris"><span className="font-bold">Cómo se mide:</span> {x.medicion}</p>
+                      <p className="text-[12.5px] text-gris">
+                        <span className="font-bold">Quién lo hace:</span> {x.competencia}
+                        {x.punto ? <> · <a href="/manifiesto" className="underline">Punto {x.punto} del manifiesto</a></> : null}
+                      </p>
+                      <Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} />
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <p className="text-[15px] italic text-gris">En desarrollo: la estamos elaborando con datos y la publicaremos aquí.</p>
             )}
             <div className="flex flex-wrap items-center gap-4">
               <a href="/manifiesto" className="text-[13px] font-bold underline">Ver los 30 puntos del manifiesto →</a>
-              {rcHtml[ap.id] ? <BotonVoto activo={voto[ap.id] === 'rc'} onClick={() => elegir('rc')} /> : null}
+              {rc[ap.id]?.length ? <BotonVoto activo={voto[ap.id] === 'rc'} onClick={() => elegir('rc')} /> : null}
             </div>
           </div>
         </article>
@@ -222,19 +248,8 @@ function TarjetaPartido({
                 ) : (
                   <span className="pl-[22px] text-[12px] font-semibold text-gris">{cita}</span>
                 )}
-                <details className="ml-[22px] rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
-                  <summary className="cursor-pointer text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
-                    Verificación · {v.etiqueta}
-                  </summary>
-                  <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{x.verificacion.texto}</p>
-                  {x.verificacion.fuentes?.length ? (
-                    <p className="mt-1.5 flex flex-wrap gap-x-3 text-[11.5px]">
-                      {x.verificacion.fuentes.map((f, j) => (
-                        <a key={j} href={f.url} target="_blank" rel="noopener nofollow" className="underline">{f.nombre}</a>
-                      ))}
-                    </p>
-                  ) : null}
-                </details>
+                <div className="ml-[22px]"><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
+                <div className="ml-[22px]"><EstadoSeguimiento s={x.seguimiento} /></div>
               </div>
             );
           })}
@@ -244,5 +259,43 @@ function TarjetaPartido({
         <BotonVoto activo={elegido} onClick={onElegir} />
       </div>
     </article>
+  );
+}
+
+function Verificacion({ v, texto, fuentes }: { v: { color: string; etiqueta: string }; texto: string; fuentes?: Fuente[] }) {
+  return (
+    <div className="rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
+      <p className="text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
+        Verificación · {v.etiqueta}
+      </p>
+      <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{texto}</p>
+      {fuentes?.length ? (
+        <p className="mt-1.5 flex flex-wrap gap-x-3 text-[11.5px]">
+          {fuentes.map((f, j) => (
+            <a key={j} href={f.url} target="_blank" rel="noopener nofollow" className="underline">{f.nombre}</a>
+          ))}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+const ESTADO: Record<string, { etiqueta: string; color: string }> = {
+  en_curso: { etiqueta: 'En curso', color: '#1B3D9C' },
+  cumplida: { etiqueta: 'Cumplida', color: '#1E9E5A' },
+  parcial: { etiqueta: 'Cumplida en parte', color: '#A2470F' },
+  incumplida: { etiqueta: 'Incumplida', color: '#D0342C' },
+};
+
+/** Seguimiento de la legislatura. «Pendiente» (o sin dato) no se pinta. */
+function EstadoSeguimiento({ s }: { s?: Seguimiento }) {
+  const e = s && ESTADO[s.estado];
+  if (!e) return null;
+  return (
+    <p className="text-[12px] font-bold" style={{ color: e.color }}>
+      ● {e.etiqueta}{s?.fecha ? ` · ${s.fecha}` : ''}
+      {s?.fuente ? <> · <a href={s.fuente.url} target="_blank" rel="noopener nofollow" className="underline">{s.fuente.nombre}</a></> : null}
+      {s?.nota ? <span className="font-normal text-gris"> — {s.nota}</span> : null}
+    </p>
   );
 }
