@@ -30,6 +30,8 @@ export function Juego({
   const { votos, reiniciar } = useVotos();
   const [paso, setPaso] = useState(0);
   const [desvelado, setDesvelado] = useState(false);
+  // Pantalla intermedia con el resultado de la ronda recién terminada.
+  const [entreRondas, setEntreRondas] = useState(false);
 
   const rondas = useMemo(
     () =>
@@ -134,12 +136,70 @@ export function Juego({
             );
           })}
         </section>
+        <AvisoPrivacidad />
         <button type="button" onClick={() => { reiniciar(); setPaso(0); setDesvelado(false); }} className="self-start text-[13px] font-bold text-gris underline">Volver a jugar</button>
       </div>
     );
   }
 
   const { ap, fichas } = rondas[paso];
+
+  if (entreRondas) {
+    const deEste = Object.fromEntries(Object.entries(votos).filter(([k]) => k.startsWith(`${ap.id}|`)));
+    const filas = calcularAfinidad(deEste, fuerzas);
+    const votadasRonda = Object.keys(deEste).length;
+    const gana = filas.find((f) => f.votadas && f.puntuacion > 0);
+    const c = COLOR_APARTADO[ap.id] ?? '#1B3D9C';
+    const seguir = () => { setEntreRondas(false); setPaso((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    return (
+      <div className="flex flex-col gap-5">
+        <div className="rounded-[18px] px-7 py-6 text-titular" style={{ background: `${c}24`, borderTop: `6px solid ${c}` }}>
+          <p className="text-[12px] font-bold uppercase tracking-[.12em] opacity-85">Resultado de la ronda {paso + 1} de {rondas.length}</p>
+          <h2 className="mt-1 text-[clamp(22px,3vw,30px)] font-extrabold leading-tight">
+            En materia de {ap.titulo.toLowerCase()},{' '}
+            {gana ? <>tus respuestas encajan más con <span style={{ color: gana.color }}>{gana.nombre}</span></> : votadasRonda ? 'ninguna propuesta te ha convencido' : 'no has votado ninguna propuesta'}
+          </h2>
+        </div>
+
+        {votadasRonda ? (
+          <section className="rounded-[18px] border border-linea bg-white p-6">
+            <p className="text-[13px] text-gris">Tus votos en esta ronda, por fuerza (▲ me gusta · ▼ no me gusta)</p>
+            <div className="mt-4 space-y-3">
+              {filas.map((f) => {
+                const pct = Math.round(((f.puntuacion + 1) / 2) * 100);
+                return (
+                  <div key={f.id} className="flex items-center gap-3 text-[13.5px]">
+                    <span className="w-[110px] shrink-0 font-semibold text-titular">{f.nombre}</span>
+                    <div className="h-3 flex-1 overflow-hidden rounded-full bg-linea/60" role="img" aria-label={`${f.nombre}: ${f.votadas ? pct + ' %' : 'sin votos'}`}>
+                      <div className="h-full rounded-full" style={{ width: f.votadas ? `${pct}%` : 0, background: f.color }} />
+                    </div>
+                    <span className="w-[88px] text-right text-[12px] tabular-nums text-gris">{f.votadas ? `▲${f.arriba} ▼${f.abajo}` : 'sin votos'}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
+
+        {gana?.id === 'rc' ? (
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-[16px] px-6 py-5" style={{ background: 'linear-gradient(120deg,rgba(139,48,217,.10),rgba(22,184,160,.12))' }}>
+            <p className="max-w-[620px] text-[15px] font-bold leading-snug text-titular">En {ap.titulo.toLowerCase()} piensas como Razón Común. Aquí las propuestas las deciden los socios: regístrate y vota las nuestras.</p>
+            <a href="/registro" className="inline-flex min-h-[48px] items-center rounded-boton px-6 text-[15px] font-bold text-white no-underline shadow-boton" style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}>Regístrate</a>
+          </div>
+        ) : null}
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <button type="button" onClick={() => { setEntreRondas(false); setDesvelado(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-[13px] font-bold text-titular underline">
+            Terminar y ver resultados
+          </button>
+          <button type="button" onClick={seguir} className="min-h-[48px] rounded-boton px-6 text-[15px] font-bold text-white" style={{ background: '#1B3D9C' }}>
+            Siguiente ronda: {rondas[paso + 1]?.ap.titulo} →
+          </button>
+        </div>
+        <AvisoPrivacidad />
+      </div>
+    );
+  }
   const color = COLOR_APARTADO[ap.id] ?? '#1B3D9C';
   const ultimo = paso === rondas.length - 1;
   return (
@@ -184,11 +244,21 @@ export function Juego({
             Desvelar resultados
           </button>
         ) : (
-          <button type="button" onClick={() => { setPaso((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="min-h-[48px] rounded-boton px-6 text-[15px] font-bold text-white" style={{ background: '#1B3D9C' }}>
+          <button type="button" onClick={() => { setEntreRondas(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="min-h-[48px] rounded-boton px-6 text-[15px] font-bold text-white" style={{ background: '#1B3D9C' }}>
             Siguiente →
           </button>
         )}
       </div>
+      <AvisoPrivacidad />
     </div>
+  );
+}
+
+function AvisoPrivacidad() {
+  return (
+    <p className="flex items-center gap-1.5 text-[11.5px] text-gris">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+      No guardamos tus votaciones: se borran cuando cierras la página.
+    </p>
   );
 }
