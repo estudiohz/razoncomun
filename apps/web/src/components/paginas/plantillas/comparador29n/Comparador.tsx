@@ -272,6 +272,11 @@ function TarjetaPartido({
             const cita = x.cita.pagina
               ? `Programa ${partido.nombre} 2026 · pág. ${x.cita.pagina}${x.cita.apartado ? `, ${x.cita.apartado}` : ''}`
               : x.cita.nota || 'Programa 2026';
+            // Una nota con URL pegada («Tomado de prensa (https://…)») se pinta como «Fuente ↗».
+            const urlNota = !x.cita.pagina ? (x.cita.nota ?? '').match(/https?:\/\/[^\s)]+/)?.[0] ?? null : null;
+            const notaSinUrl = urlNota
+              ? (x.cita.nota ?? '').replace(urlNota, '').replace(/\(\s*\)/g, '').replace(/\s+([;,.])/g, '$1').replace(/\s{2,}/g, ' ').trim()
+              : '';
             return (
               <div key={i} className="flex flex-col gap-2 border-b border-linea pb-3.5 last:border-0 last:pb-0">
                 <p className="flex gap-2.5 text-[14.5px] font-bold leading-[1.45] text-titular">
@@ -283,6 +288,14 @@ function TarjetaPartido({
                     <Icono size={14} d={['M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z', 'M14 3v5h5']} />
                     {cita}
                   </a>
+                ) : urlNota ? (
+                  <p className="pl-[22px] text-[12px] text-gris">
+                    {notaSinUrl ? <>{notaSinUrl} </> : null}
+                    <a href={urlNota} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1 font-semibold underline">
+                      Fuente
+                      <Icono size={13} d={['M14 4h6v6', 'M20 4l-9 9', 'M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5']} />
+                    </a>
+                  </p>
                 ) : (
                   <span className="pl-[22px] text-[12px] font-semibold text-gris">{cita}</span>
                 )}
