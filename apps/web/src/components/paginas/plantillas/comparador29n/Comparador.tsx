@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVista } from './vista';
+import { BloqueAfinidad, Flechas, claveVoto, useVotos } from './votos';
 import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente, type Viabilidad, type Ficha } from './tipos';
 
 const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
@@ -27,14 +28,15 @@ function enlacePdf(url: string | null | undefined, pagina: number | null) {
 }
 
 /**
- * Comparador por apartados (diseño A). «Me convence» = voto privado del
+ * Comparador por apartados. Flechas por propuesta = voto privado del
  * visitante: estado React, ni localStorage ni servidor (RGPD Art. 9).
  */
 export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[]; partidos: Partido[]; rc: Record<string, PropuestaRc[]> }) {
   const [sel, setSel] = useState(0);
   const [vista] = useVista();
   const columnas = vista === 'columnas';
-  const [voto, setVoto] = useState<Record<string, string>>({});
+  const { votos } = useVotos();
+  const votadoEn = (id: string) => Object.keys(votos).some((k) => k.startsWith(`${id}|`));
   // Cara a cara: qué partidos se ven (mínimo uno).
   const [visibles, setVisibles] = useState<string[]>(partidos.map((p) => p.id));
   const alternar = (id: string) =>
@@ -45,15 +47,8 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
 
   const ap = apartados[sel];
   const color = COLOR_APARTADO[ap?.id ?? ''] ?? '#1B3D9C';
-  const recuento = useMemo(() => {
-    const r: Record<string, number> = {};
-    for (const v of Object.values(voto)) if (v) r[v] = (r[v] ?? 0) + 1;
-    return r;
-  }, [voto]);
-  const respondidos = Object.values(voto).filter(Boolean).length;
   if (!ap) return null;
 
-  const elegir = (id: string) => setVoto((v) => ({ ...v, [ap.id]: v[ap.id] === id ? '' : id }));
 
   return (
     <div className="flex flex-wrap items-start gap-8">
@@ -70,7 +65,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
           >
             {apartados.map((a, i) => (
               <option key={a.id} value={i}>
-                {String(i + 1).padStart(2, '0')} · {a.titulo}{voto[a.id] ? ' ✓' : ''}
+                {String(i + 1).padStart(2, '0')} · {a.titulo}{votadoEn(a.id) ? ' ✓' : ''}
               </option>
             ))}
           </select>
@@ -95,7 +90,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
                   <span className="flex w-full items-center gap-2 text-[14px] font-extrabold">
                     <span className="text-[12px] opacity-80">{String(i + 1).padStart(2, '0')}</span>
                     <span className="flex-1">{a.titulo}</span>
-                    {voto[a.id] ? <span aria-label="respondido">✓</span> : null}
+                    {votadoEn(a.id) ? <span aria-label="has votado aquí">✓</span> : null}
                   </span>
                   <span className="mt-1 flex items-center gap-1.5 text-[11.5px] font-semibold" style={{ opacity: activo ? 0.9 : 0.75 }}>
                     {activo ? null : <span className="h-2 w-2 rounded-full" style={{ background: c }} />}
@@ -122,7 +117,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
             >
               <span className="h-2.5 w-2.5 flex-none rounded-full" style={{ background: c }} />
               <span className="flex-1">{a.titulo}</span>
-              <span className="text-[11px] font-semibold text-gris">{voto[a.id] ? '✓' : String(i + 1).padStart(2, '0')}</span>
+              <span className="text-[11px] font-semibold text-gris">{votadoEn(a.id) ? '✓' : String(i + 1).padStart(2, '0')}</span>
             </button>
           );
         })}
@@ -193,8 +188,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
               partido={p}
               propuestas={ap.propuestas[p.id] ?? []}
               pdf={p.pdf ?? ap.programas?.[p.id]?.url ?? null}
-              elegido={voto[ap.id] === p.id}
-              onElegir={() => elegir(p.id)}
+              apartado={ap.id}
             />
           ))}
         </div>
@@ -235,6 +229,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
                       </details>
                       <Verificacion v={v} titulo="Riesgos y límites" texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} />
                       <BloqueViabilidad b={x.viabilidad} />
+                      <div className="mt-auto pt-1"><Flechas clave={claveVoto(ap.id, 'rc', i)} /></div>
                     </div>
                   );
                 })}
@@ -244,7 +239,6 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
             )}
             <div className="flex flex-wrap items-center gap-4">
               <a href="/manifiesto" className="text-[13px] font-bold underline">Ver los 30 puntos del manifiesto →</a>
-              {rc[ap.id]?.length ? <BotonVoto activo={voto[ap.id] === 'rc'} onClick={() => elegir('rc')} /> : null}
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-4 rounded-[14px] px-5 py-4" style={{ background: 'linear-gradient(120deg,rgba(139,48,217,.10),rgba(22,184,160,.12))' }}>
               <p className="text-[15px] font-bold leading-snug text-titular">Si te gusta nuestra forma de pensar y quieres participar</p>
@@ -259,28 +253,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
           </div>
         </article>
 
-        <section className="rounded-[18px] border border-linea bg-white p-6">
-          <h2 className="text-[20px] font-extrabold text-titular">Tu afinidad</h2>
-          <p className="mt-1 text-[13.5px] text-gris">
-            Pulsa «Me convence» en la propuesta que prefieras de cada apartado. Llevas {respondidos} de {apartados.length}. Solo lo ves tú: no se guarda.
-          </p>
-          {respondidos > 0 ? (
-            <div className="mt-5 space-y-2.5">
-              {[...partidos, { id: 'rc', nombre: 'Razón Común', color: RC_COLOR, sigla: 'RC' }]
-                .map((p) => ({ ...p, n: recuento[p.id] ?? 0 }))
-                .sort((a, b) => b.n - a.n)
-                .map((p) => (
-                  <div key={p.id} className="flex items-center gap-3 text-[13.5px]">
-                    <span className="w-[120px] shrink-0 font-semibold text-titular">{p.nombre}</span>
-                    <div className="h-3 flex-1 overflow-hidden rounded-full bg-linea/60">
-                      <div className="h-full rounded-full" style={{ width: `${(p.n / respondidos) * 100}%`, background: p.color }} />
-                    </div>
-                    <span className="w-[34px] text-right tabular-nums text-gris">{p.n}</span>
-                  </div>
-                ))}
-            </div>
-          ) : null}
-        </section>
+        <BloqueAfinidad fuerzas={[...partidos.map((p) => ({ id: p.id, nombre: p.nombre, color: p.color })), { id: 'rc', nombre: 'Razón Común', color: RC_COLOR }]} />
       </div>
     </div>
   );
@@ -299,22 +272,9 @@ function Leyenda() {
   );
 }
 
-function BotonVoto({ activo, onClick }: { activo: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-pressed={activo}
-      className="min-h-[44px] self-start rounded-[10px] border-[1.5px] border-titular px-4 text-[13px] font-bold"
-      style={activo ? { background: '#1B3D9C', color: '#fff' } : { background: '#fff', color: '#1B3D9C' }}
-    >
-      {activo ? '✓ Me convence' : 'Me convence esta'}
-    </button>
-  );
-}
-
 function TarjetaPartido({
-  partido, propuestas, pdf, elegido, onElegir,
-}: { partido: Partido; propuestas: PropuestaVerificada[]; pdf: string | null; elegido: boolean; onElegir: () => void }) {
+  partido, propuestas, pdf, apartado,
+}: { partido: Partido; propuestas: PropuestaVerificada[]; pdf: string | null; apartado: string }) {
   // Misma extensión para todos: 3 propuestas a la vista; el resto, a demanda.
   const [todas, setTodas] = useState(false);
   const visiblesP = todas ? propuestas : propuestas.slice(0, 3);
@@ -322,7 +282,7 @@ function TarjetaPartido({
     <article
       id={`partido-${partido.id}`}
       className="flex scroll-mt-[150px] flex-col gap-3.5 rounded-[16px] bg-white px-5 py-5"
-      style={{ border: `1px solid ${elegido ? partido.color : '#E4E6EE'}`, boxShadow: elegido ? `0 0 0 2px ${partido.color}` : '0 1px 2px rgba(27,61,156,.06)' }}
+      style={{ border: '1px solid #E4E6EE', boxShadow: '0 1px 2px rgba(27,61,156,.06)' }}
     >
       <div className="flex items-center gap-2.5">
         <span className="inline-flex h-[26px] min-w-[44px] items-center justify-center rounded-full px-2 text-[11px] font-extrabold text-white" style={{ background: partido.color }}>
@@ -386,6 +346,7 @@ function TarjetaPartido({
                 <div><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
                 <div><BloqueViabilidad b={x.viabilidad} /></div>
                 <div><EstadoSeguimiento s={x.seguimiento} /></div>
+                <Flechas clave={claveVoto(apartado, partido.id, propuestas.indexOf(x))} />
               </div>
             );
           })}
@@ -396,9 +357,6 @@ function TarjetaPartido({
           ) : null}
         </div>
       )}
-      <div className="mt-auto pt-1">
-        <BotonVoto activo={elegido} onClick={onElegir} />
-      </div>
     </article>
   );
 }

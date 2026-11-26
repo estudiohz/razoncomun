@@ -3,7 +3,7 @@ import type { PropsPlantilla } from '../index';
 import { APARTADOS } from './apartados';
 import { ALTERNATIVAS_RC } from './alternativasRc';
 import { PARTIDOS } from './tipos';
-import { Comparador } from './Comparador';
+import { Modos } from './Modos';
 import { BotonVista } from './vista';
 
 /**
@@ -51,7 +51,7 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
         </div>
       </Contenedor>
       <Contenedor className="py-10 min-[720px]:py-12">
-        <Comparador apartados={APARTADOS} partidos={PARTIDOS} rc={ALTERNATIVAS_RC} />
+        <Modos apartados={APARTADOS} partidos={PARTIDOS} rc={ALTERNATIVAS_RC} />
         <p className="mt-10 max-w-[820px] text-[12.5px] leading-relaxed text-gris">
           Cada propuesta enlaza a la página de su programa oficial. Durante la legislatura marcaremos cada propuesta como cumplida, en parte o incumplida, con su fuente; en las próximas elecciones ese historial medirá la credibilidad de cada fuerza, la nuestra incluida.
         </p>
