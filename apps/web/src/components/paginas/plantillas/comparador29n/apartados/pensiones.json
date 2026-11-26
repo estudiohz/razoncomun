@@ -1,0 +1,686 @@
+{
+  "id": "pensiones",
+  "titulo": "Pensiones",
+  "dato": {
+    "texto": "La AIReF prevé un gasto bruto en pensiones del 14,6 % del PIB de media entre 2022 y 2050 y, sin más cambios, una deuda pública del 123 % del PIB en 2050.",
+    "fuente": "AIReF · Estudio de la regla de gasto de pensiones (29/05/2026)",
+    "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/PROGRAMA-ELECTORAL-PP-2026-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Aseguraremos que las pensiones mantengan su poder adquisitivo y suban cada año con el IPC.",
+        "cita": {
+          "pagina": 34,
+          "apartado": "Medida 108",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe y ya está en vigor: la Ley General de la Seguridad Social, reformada por la Ley 21/2021, revaloriza cada año las pensiones con el IPC medio (2,7 % en 2026). Basta con mantener esa ley.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            },
+            {
+              "nombre": "BOE · Ley 21/2021 (revalorización con el IPC y auditoría de cuentas)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2021-21652"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Subir con el IPC protege el poder de compra, pero la AIReF prevé un gasto bruto en pensiones del 14,6 % del PIB de media en 2022-2050 y una deuda del 123 % en 2050 si no hay otros cambios. El programa no dice de dónde sale el dinero.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Cada año"
+        }
+      },
+      {
+        "texto": "Incentivaremos la jubilación activa mediante deducciones en el IRPF.",
+        "cita": {
+          "pagina": 34,
+          "apartado": "Medida 108",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la jubilación activa (cobrar pensión y trabajar) la regula la ley estatal (LGSS) y el Estado puede crear deducciones en la parte estatal del IRPF por ley ordinaria.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Alargar la vida laboral de forma voluntaria mejora ingresos y cotizaciones, pero una deducción fiscal resta recaudación. No se dice su cuantía ni a quién se aplica.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Blindaremos legalmente la caja única de la Seguridad Social: las cotizaciones seguirán financiando las pensiones y prestaciones en toda España.",
+        "cita": {
+          "pagina": 15,
+          "apartado": null,
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la Constitución reserva al Estado el régimen económico de la Seguridad Social (art. 149.1.17 CE). Una ley estatal puede reforzar la caja única, que ya recoge la LGSS.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Refuerza lo que ya existe: no cambia el gasto ni los ingresos del sistema. Su efecto es de garantía frente a futuras cesiones a comunidades autónomas.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "sin_estimacion_oficial",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Ampliaremos el acceso a la jubilación anticipada de las personas con síndrome de Down.",
+        "cita": {
+          "pagina": 35,
+          "apartado": "Medida 112",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la anticipación de la edad por discapacidad la fijan la ley estatal (LGSS) y su reglamento, que el Gobierno puede modificar.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Afecta a un colectivo pequeño, con coste limitado. El programa no concreta la edad ni los requisitos nuevos.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Haremos compatibles las pensiones de discapacidad con el empleo.",
+        "cita": {
+          "pagina": 35,
+          "apartado": "Medida 112",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la compatibilidad entre pensión de incapacidad o no contributiva y trabajo la regula la LGSS; basta reformar esa ley estatal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Facilita el empleo de personas con discapacidad sin perder ingresos. Puede subir el gasto si se cobran a la vez pensión y salario; no se cifra.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Blindar constitucionalmente el sistema público de pensiones y su revalorización conforme al IPC.",
+        "cita": {
+          "pagina": 40,
+          "apartado": "Pensiones · compromiso 100",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Exige reformar la Constitución. Las pensiones están en el art. 50 (capítulo III): basta el art. 167, tres quintos de cada Cámara. Si se llevan a la sección 1.ª del capítulo II, hace falta el art. 168: dos tercios, disolver las Cortes y referéndum.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Blindarlo en la Constitución da seguridad al pensionista, pero quita margen si cambia la demografía. Además, la AIReF prevé un gasto bruto en pensiones del 14,6 % del PIB de media en 2022-2050 y una deuda del 123 % en 2050 sin otros cambios.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Acelerar el despliegue de la cuota de solidaridad para completar su aplicación durante la próxima legislatura.",
+        "cita": {
+          "pagina": 39,
+          "apartado": "Pensiones · compromiso 98",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la cuota de solidaridad la creó el Real Decreto-ley 2/2023 con un calendario hasta 2045. Adelantarlo solo exige cambiar esa norma estatal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 2/2023 (MEI, cuota de solidaridad, regla de gasto)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-6967"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Adelanta ingresos al sistema a costa de encarecer los salarios más altos, lo que puede afectar al empleo cualificado. El programa no cifra la recaudación extra.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Próxima legislatura"
+        }
+      },
+      {
+        "texto": "Culminar la separación de fuentes, asumiendo el Estado la financiación de prestaciones y complementos de naturaleza no contributiva.",
+        "cita": {
+          "pagina": 40,
+          "apartado": "Pensiones · compromiso 99",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: se hace con la LGSS y las leyes de Presupuestos, ambas estatales; es además una recomendación del Pacto de Toledo.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mejora las cuentas de la Seguridad Social, pero el gasto pasa al Estado: no desaparece. Según la AIReF, las transferencias al sistema tendrán que subir hasta el 3 % del PIB.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Aplicar los coeficientes reductores de la edad de jubilación por penosidad de forma singularizada, a través de una cuenta individual de penosidad.",
+        "cita": {
+          "pagina": 40,
+          "apartado": "Pensiones · compromiso 104",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: los coeficientes reductores de la edad por penosidad los regulan la LGSS y su reglamento; el Estado puede cambiar cómo se reconocen.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Medir el desgaste de cada trabajador es más justo que hacerlo por profesión, pero exige registrar datos laborales de forma fiable. No se cifra el coste ni el calendario.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Elevar del 20 % al 30 % la pensión de orfandad, sin el límite del 100 % en supuestos de vulnerabilidad.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Pensiones · compromiso 106",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la cuantía de la pensión de orfandad la fija la LGSS y su desarrollo; es competencia del Estado (art. 149.1.17 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mejora una prestación con pocos beneficiarios y coste moderado. El programa no lo cuantifica.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Garantizar la sostenibilidad del sistema de pensiones. Revitalizar la economía, impulsar el empleo, mejorar los salarios. Una economía más productiva es la garantía de sostenibilidad de las pensiones.",
+        "cita": {
+          "pagina": 10,
+          "apartado": "Economía, industria y energía · punto 7",
+          "nota": "Página según la posición en el PDF oficial descargado; en el apartado de economía la misma propuesta figura con otra página."
+        },
+        "verificacion": {
+          "veredicto": "gris",
+          "texto": "No evaluable: no propone ninguna medida concreta, solo objetivos generales (empleo, salarios, productividad).",
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más empleo y productividad ayudan, pero la AIReF calcula que aun así el gasto en pensiones y la deuda siguen subiendo hasta 2050. La propuesta no concreta ninguna medida.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Cotización a la Seguridad Social financiada por el Estado para los españoles dedicados al cuidado de sus hijos, para que criar no penalice en la jubilación.",
+        "cita": {
+          "pagina": 51,
+          "apartado": "Familia y vida · punto 94",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe que el Estado pague cotizaciones por cuidado de hijos (la LGSS ya reconoce periodos así). Limitarlo a «españoles» choca con la igualdad de trato en Seguridad Social de ciudadanos UE (Reglamento 883/2004, art. 4) y residentes de larga duración (Directiva 2003/109/CE, art. 11): para ellos sería inviable.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (CE) 883/2004, coordinación de la Seguridad Social",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32004R0883"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2003/109/CE, residentes de larga duración",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32003L0109"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Reduce la penalización de las carreras interrumpidas, sobre todo de mujeres. No dice durante cuántos años ni sobre qué base se cotiza, así que no se puede estimar el coste.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Blindaje constitucional de las pensiones: revalorización automática con arreglo al IPC y que ninguna pensión sea inferior al SMI, por el procedimiento del artículo 167 CE.",
+        "cita": {
+          "pagina": 64,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Exige reformar la Constitución por el art. 167, como propone: tres quintos de cada Cámara (o mayoría absoluta del Senado y dos tercios del Congreso). Llevarlo a la sección 2.ª del capítulo II no activa el art. 168. Sin ese acuerdo, la revalorización con el IPC ya cabe por ley.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            },
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Que ninguna pensión baje del SMI supone subir mucho las mínimas (12.441,80 €/año en 2026) y las no contributivas, sin cifra de coste. Además, la AIReF prevé un gasto bruto en pensiones del 14,6 % del PIB de media en 2022-2050 y una deuda del 123 % en 2050 sin otros cambios.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Devolveremos la edad de jubilación a los 65 años, que nos fue arrebatada en la reforma realizada en 2011.",
+        "cita": {
+          "pagina": 65,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la edad de jubilación la fija una ley estatal ordinaria (Ley General de la Seguridad Social, art. 205, tras la Ley 27/2011). Volver a los 65 años solo requiere cambiar esa ley; el coste no cuenta para este análisis.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 27/2011 (edad de jubilación)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2011-13242"
+            },
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Bajar la edad de jubilación aumenta el gasto y reduce cotizantes justo cuando se jubila el baby boom. La AIReF ya prevé déficit del 6,6 % del PIB y deuda del 123 % en 2050 con la edad actual. Sin cifra de coste.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Construcción, limpieza, ayuda a domicilio, camareras de piso y la pesca deben poder acceder a la jubilación a los 60 años por su especial esfuerzo físico y siniestralidad.",
+        "cita": {
+          "pagina": 65,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la LGSS (art. 206) permite rebajar la edad con coeficientes reductores por penosidad, que se aprueban por real decreto tras estudiar la siniestralidad de cada actividad.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Reconoce el desgaste físico, pero aplicarlo a sectores enteros con muchos trabajadores eleva el gasto y, con la norma actual, exige subir las cotizaciones de esos sectores. Sin cifra de coste.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Eliminaremos los coeficientes reductores en las jubilaciones anticipadas de quienes han cotizado más de 40 años y tienen que acogerse a ella de manera involuntaria.",
+        "cita": {
+          "pagina": 65,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: las penalizaciones por jubilación anticipada están en la LGSS (art. 207); una ley estatal puede suprimirlas para carreras largas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Protege a quien pierde el empleo cerca de la jubilación tras una carrera larga. Aumenta el gasto y puede animar a jubilarse antes; no se cifra.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Publicaremos de inmediato el informe de auditoría independiente sobre las cuentas de la Seguridad Social (1967-2019) previsto en la Ley 21/2021.",
+        "cita": {
+          "pagina": 65,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la Ley 21/2021 ya prevé esa auditoría; publicarla depende solo del Gobierno.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 21/2021 (revalorización con el IPC y auditoría de cuentas)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2021-21652"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Dar transparencia sobre qué gastos ajenos a las pensiones pagó la Seguridad Social ayuda a ordenar el debate. Coste casi nulo.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "sin_estimacion_oficial",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "De inmediato"
+        }
+      }
+    ]
+  }
+}

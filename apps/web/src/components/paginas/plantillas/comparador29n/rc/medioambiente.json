@@ -1,0 +1,190 @@
+{
+  "id": "medioambiente",
+  "propuestas": [
+    {
+      "titulo": "Cada obra de agua, con un examen público antes de decidir",
+      "texto": "Toda obra hidráulica grande (embalse, trasvase, desaladora o regadío nuevo) se aprueba solo tras un estudio público de cuánta agua hay de verdad, cuánto cuesta cada metro cúbico y qué pasa con los ríos. Ni «sí a todo» ni «no a todo»: deciden los números.",
+      "punto": 29,
+      "dato": null,
+      "medicion": "Estudio publicado para el 100 % de las obras de más de 50 M€ antes de licitarlas; revisión anual del coste por metro cúbico.",
+      "competencia": "Estado (cuencas intercomunitarias)",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "El Estado ya debe evaluar el impacto ambiental de estas obras y justificar cada excepción a la Directiva marco del agua (art. 4.7). Publicar además el coste por metro cúbico es una decisión del Gobierno que no exige cambiar leyes.",
+        "fuentes": [
+          {
+            "nombre": "EUR-Lex · Directiva 2000/60/CE marco del agua",
+            "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32000L0060"
+          },
+          {
+            "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Evita obras sin agua que trasvasar y también moratorias a ciegas. Alarga algo la tramitación.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Modernizar regadíos sin regar más: parte del agua ahorrada vuelve al río",
+      "texto": "El Estado paga la modernización de regadíos solo si una parte fija del agua ahorrada se devuelve al río o al acuífero, comprobada con contadores. Así el ahorro es real y no se convierte en más hectáreas regadas.",
+      "punto": 28,
+      "dato": null,
+      "medicion": "Volumen concedido y volumen medido por comunidad de regantes, publicado cada año; objetivo: menos extracción total en cuencas sobreexplotadas en 4 años.",
+      "competencia": "Estado y CCAA",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Cabe: el Estado puede condicionar sus ayudas y revisar concesiones según la Ley de Aguas. Los regadíos de cuencas internas y los planes autonómicos exigen acuerdo con las CCAA.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+          },
+          {
+            "nombre": "EUR-Lex · Directiva 2000/60/CE marco del agua",
+            "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32000L0060"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Corrige el efecto rebote de modernizaciones pasadas. Los regantes pueden resistirse si sienten que pierden derechos; por eso se compensa con la inversión.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado + CCAA",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Censo público de pozos y cierre de los ilegales",
+      "texto": "Registro digital y abierto de todas las captaciones de agua subterránea, con contador obligatorio en las grandes. Los pozos ilegales en acuíferos sobreexplotados se cierran; los legales pagan según lo que extraen.",
+      "punto": 28,
+      "dato": null,
+      "medicion": "Porcentaje de captaciones inscritas y con contador, publicado cada año por cuenca; objetivo: 90 % en 4 años.",
+      "competencia": "Estado (cuencas intercomunitarias) y CCAA",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "La Ley de Aguas ya prohíbe extraer sin concesión y permite exigir contadores. El cierre efectivo depende de los medios de inspección de las confederaciones y, en las cuencas internas, de las CCAA.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Es la condición para que funcione cualquier canon o banco de agua. Exige más guardería fluvial; su coste no está cifrado.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado + CCAA",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Prevenir incendios pagando por cuidar el monte",
+      "texto": "Parte del gasto en extinción pasa a prevención: pagos a ganaderos y propietarios que mantengan cortafuegos y paisajes en mosaico, comprobados con imagen de satélite. Lo que funciona se mide y se amplía.",
+      "punto": 14,
+      "dato": null,
+      "medicion": "Hectáreas con gestión preventiva verificada y superficie quemada en incendios de más de 500 ha, comparadas cada año.",
+      "competencia": "Estado (bases y fondos) y CCAA (gestión)",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El Estado puede fijar bases forestales y financiar (Ley 43/2003; art. 149.1.23ª CE) y usar fondos de la PAC (Reglamento 2021/2115). La gestión forestal es autonómica, así que se ejecuta con las CCAA.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 43/2003 de Montes",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-21339"
+          },
+          {
+            "nombre": "EUR-Lex · Reglamento (UE) 2021/2115 de planes estratégicos de la PAC",
+            "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32021R2115"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "PP, PSOE y Frente Amplio coinciden en la idea; lo que se añade es medir el resultado. Riesgo: pagar sin verificar.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado + CCAA",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Política climática con números, no con consignas",
+      "texto": "Se cumplen los compromisos europeos, pero cada medida nacional nueva se publica con su coste por tonelada de CO2 evitada y su efecto en precios y empleo. Primero se aplican las más baratas por tonelada.",
+      "punto": 29,
+      "dato": {
+        "texto": "Las emisiones de 2025 fueron 270,7 Mt de CO2 equivalente, un 1,1 % más que en 2024 (avance provisional).",
+        "fuente": "MITECO · Avance del Inventario de GEI 2025",
+        "url": "https://www.miteco.gob.es/content/dam/miteco/es/calidad-y-evaluacion-ambiental/temas/sistema-espanol-de-inventario-sei-/Nota-Avance-GEI-2025.pdf"
+      },
+      "medicion": "Coste por tonelada evitada de cada medida, publicado antes de aprobarla; emisiones de cada año frente a la senda de la Ley 7/2021.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe sin cambiar los objetivos legales: la Ley 7/2021 y la Ley Europea del Clima fijan metas, no obligan a una medida concreta. Evaluar antes de aprobar es una decisión del Gobierno.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 7/2021 de cambio climático y transición energética",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2021-8447"
+          },
+          {
+            "nombre": "EUR-Lex · Reglamento (UE) 2021/1119, Ley Europea del Clima",
+            "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32021R1119"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Evita medidas caras con poco efecto y mantiene los compromisos. Exige un organismo técnico con datos abiertos.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    }
+  ]
+}

@@ -8,8 +8,11 @@ import educacion from './educacion.json';
 import trabajo from './trabajo.json';
 import autonomos from './autonomos.json';
 import economia from './economia.json';
+import pensiones from './pensiones.json';
+import corrupcion from './corrupcion.json';
+import medioambiente from './medioambiente.json';
 
 /** Orden de los apartados en el comparador. */
 export const APARTADOS = [
-  vivienda, energia, inmigracion, turismo, sanidad, educacion, trabajo, autonomos, economia,
+  vivienda, energia, inmigracion, turismo, sanidad, educacion, trabajo, autonomos, economia, pensiones, corrupcion, medioambiente,
 ] as unknown as Apartado[];

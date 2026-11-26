@@ -40,6 +40,7 @@ export interface Partido { id: string; sigla: string; nombre: string; color: str
 export const COLOR_APARTADO: Record<string, string> = {
   vivienda: '#16B8A0', energia: '#E8792F', inmigracion: '#8B30D9', turismo: '#2BC7E8',
   sanidad: '#C3369E', educacion: '#5B4BD6', trabajo: '#0E9C8A', autonomos: '#D65F1F', economia: '#1B3D9C',
+  pensiones: '#9B2C8F', corrupcion: '#6D28D9', medioambiente: '#2F9E44',
 };
 
 export const PARTIDOS: Partido[] = [

@@ -1,0 +1,220 @@
+{
+  "id": "corrupcion",
+  "propuestas": [
+    {
+      "titulo": "Fin de los aforamientos, también para diputados y ministros",
+      "texto": "A los políticos los juzga el mismo juzgado que a cualquiera, por cualquier delito. Se reforma la Constitución (arts. 71.3 y 102.1) para quitar el fuero a diputados, senadores y Gobierno, y la LOPJ y los Estatutos para el resto. Se mantiene la inviolabilidad por los votos y opiniones en el Parlamento.",
+      "punto": 11,
+      "dato": null,
+      "medicion": "Número de cargos aforados; objetivo: ninguno con fuero por la Constitución o la LOPJ al acabar la legislatura.",
+      "competencia": "Reforma constitucional + Estado + CCAA",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Exige reforma constitucional por el procedimiento del art. 167 CE (3/5 de cada Cámara) y reformar la LOPJ y los Estatutos. No choca con normas europeas.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Necesita un acuerdo amplio que hoy no existe, aunque PP y PSOE proponen recortarlos. Coste nulo.",
+        "precedentes": [
+          {
+            "pais": "Italia, Alemania, Reino Unido",
+            "resultado": "Los parlamentarios no tienen fuero especial: los juzgan los tribunales ordinarios (Italia y Alemania mantienen la inmunidad frente a detención).",
+            "url": "https://www.venice.coe.int/webforms/documents/?pdf=CDL-AD(2014)011-e"
+          }
+        ],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Reforma constitucional + Estado + CCAA",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": "Una legislatura"
+      }
+    },
+    {
+      "titulo": "Los jueces eligen a los jueces del CGPJ, con transparencia",
+      "texto": "Los 12 vocales judiciales los eligen los propios jueces por voto directo y secreto, con candidaturas individuales y reparto por categorías para que no decidan solo las asociaciones. No puede ser vocal quien haya tenido un cargo político en los 5 años anteriores.",
+      "punto": 9,
+      "dato": null,
+      "medicion": "Meses de retraso en la renovación del CGPJ respecto al fin de su mandato; objetivo: cero.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Cabe por ley orgánica: el art. 122.3 CE remite a ella y el TC admitió este sistema (STC 108/1986). Requiere mayoría absoluta en el Congreso.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+          },
+          {
+            "nombre": "TC · STC 108/1986, sobre la elección del CGPJ",
+            "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Toma lo que comparten PP y Vox y añade un freno al corporativismo. Coste de organizar la votación entre jueces: bajo, sin estimación oficial.",
+        "precedentes": [
+          {
+            "pais": "España (1980-1985)",
+            "resultado": "Los jueces eligieron a los 12 vocales judiciales hasta la reforma de la LOPJ de 1985.",
+            "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+          }
+        ],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Fiscal general con mandato fijo y sin depender del Gobierno",
+      "texto": "El fiscal general tiene un mandato único de 6 años y no cesa con el Gobierno. Antes del nombramiento comparece en el Congreso y el CGPJ publica un informe motivado sobre su idoneidad. Las comunicaciones del Gobierno con la Fiscalía son por escrito y públicas.",
+      "punto": 9,
+      "dato": null,
+      "medicion": "Duración media del mandato del fiscal general y comunicaciones Gobierno-Fiscalía publicadas; evaluación al final de la legislatura.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe reformando el Estatuto del Ministerio Fiscal, ley ordinaria (art. 124.3 CE). Se respeta que el Gobierno propone «oído» el CGPJ (art. 124.4 CE): el informe es público pero no vinculante, para no chocar con la Constitución.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley 50/1981, Estatuto Orgánico del Ministerio Fiscal",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1982-837"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Coste nulo. Corrige el informe vinculante que propone el PP, de encaje constitucional dudoso.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "CIS independiente y con datos abiertos",
+      "texto": "El presidente del CIS lo elige el Congreso por 3/5 entre expertos, con un mandato de 6 años no ligado al Gobierno. El CIS publica siempre cuestionario, método y microdatos el mismo día que los resultados.",
+      "punto": 27,
+      "dato": null,
+      "medicion": "Porcentaje de estudios del CIS con microdatos publicados el mismo día; objetivo: 100 % en un año.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "El CIS se rige por ley ordinaria (Ley 39/1995): las Cortes pueden cambiar cómo se nombra a su presidente y qué debe publicar.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley 39/1995, de organización del CIS (citada por número; no abierta)",
+            "url": "https://www.boe.es/buscar/legislacion.php"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Coste bajo. Exigir 3/5 puede bloquear el nombramiento: se prevé que el anterior siga en funciones.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Recuperar lo robado, siempre con un juez",
+      "texto": "Se refuerza la Oficina de Recuperación de Activos y se amplía el decomiso sin condena previa en los términos de la Directiva europea de 2024, siempre por decisión judicial. Los condenados por corrupción no pueden contratar con la Administración durante el plazo que fije la sentencia.",
+      "punto": 23,
+      "dato": null,
+      "medicion": "Euros recuperados al año por la Oficina de Recuperación de Activos frente a los fijados en sentencias; informe anual público.",
+      "competencia": "Estado + UE",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Exige reformar el Código Penal (ley orgánica) y transponer la Directiva (UE) 2024/1260. Al exigir siempre un juez respeta la presunción de inocencia (art. 24 CE). Del punto 23 se descarta quitar la pensión contributiva, de encaje dudoso con el art. 50 CE.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+          },
+          {
+            "nombre": "EUR-Lex · Directiva (UE) 2024/1260, recuperación y decomiso de activos (citada por número; no abierta)",
+            "url": "https://eur-lex.europa.eu/eli/dir/2024/1260/oj"
+          },
+          {
+            "nombre": "BOE · Ley 9/2017, de Contratos del Sector Público",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2017-12902"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Toma lo útil de PP y Frente Amplio y corrige lo que la ley no permite (decomiso sin juez, exclusión administrativa de 20 años).",
+        "precedentes": [
+          {
+            "pais": "Italia",
+            "resultado": "Las medidas de prevención patrimonial antimafia permiten decomisar sin condena, siempre por decisión judicial.",
+            "url": "https://www.giustizia.it/giustizia/it/mg_1_12_1.page"
+          }
+        ],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado + UE",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    }
+  ]
+}
