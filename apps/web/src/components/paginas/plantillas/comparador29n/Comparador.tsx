@@ -316,10 +316,11 @@ function TarjetaPartido({
 
 function Verificacion({ v, texto, fuentes, titulo }: { v: { color: string; etiqueta: string }; texto: string; fuentes?: Fuente[]; titulo?: string }) {
   return (
-    <div className="rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
-      <p className="text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
+    <details className="group rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
+      <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
         {titulo ?? `Verificación · ${v.etiqueta}`}
-      </p>
+        <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
+      </summary>
       <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{texto}</p>
       {fuentes?.length ? (
         <p className="mt-1.5 flex flex-wrap gap-x-3 text-[11.5px]">
@@ -328,7 +329,7 @@ function Verificacion({ v, texto, fuentes, titulo }: { v: { color: string; etiqu
           ))}
         </p>
       ) : null}
-    </div>
+    </details>
   );
 }
 
