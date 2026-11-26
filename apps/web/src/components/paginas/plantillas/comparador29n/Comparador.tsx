@@ -9,6 +9,7 @@ const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
   rojo: { color: '#D0342C', etiqueta: 'Inviable tal cual' },
 };
 const RC_COLOR = '#16B8A0';
+const GRADIENTE = 'linear-gradient(90deg,#1B3D9C,#8B30D9 25%,#C3369E 45%,#E8792F 65%,#16B8A0 85%,#2BC7E8)';
 
 function Icono({ d, size = 16 }: { d: string[]; size?: number }) {
   return (
@@ -95,7 +96,10 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
       </nav>
 
       <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
-        <div className="sticky top-[86px] z-40 -mx-4 bg-white/95 px-4 py-2 backdrop-blur min-[900px]:hidden" role="navigation" aria-label="Ir a un partido">
+        {/* Móvil: franja fija con el degradado corporativo detrás del header… */}
+        <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 z-40 h-[92px] min-[900px]:hidden" style={{ background: GRADIENTE }} />
+        {/* …que continúa sin corte en la barra de pastillas (degradado horizontal: casa a cualquier altura). */}
+        <div className="sticky top-[92px] z-40 -mx-4 px-4 py-2.5 shadow-[0_6px_14px_rgba(27,61,156,.12)] min-[900px]:hidden" style={{ background: GRADIENTE }} role="navigation" aria-label="Ir a un partido">
           <div className="flex gap-2 overflow-x-auto [scrollbar-width:none]">
             {[...partidos.map((p) => ({ id: p.id, sigla: p.sigla, color: p.color })), { id: 'rc', sigla: 'RC', color: RC_COLOR }].map((p) => (
               <a
