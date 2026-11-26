@@ -7,9 +7,11 @@ import {
   REDACTED,
   beforeBreadcrumb,
   beforeSend,
+  beforeSendSpan,
   beforeSendTransaction,
   buildSentryOptions,
   redact,
+  scrubDsc,
   stripQuery,
   type TransactionEvent,
 } from './sentry.common';
@@ -236,6 +238,31 @@ describe('beforeSendTransaction (CA6)', () => {
   });
 });
 
+describe('beforeSendSpan y DSC (CA6)', () => {
+  it('beforeSendSpan limpia descripción y atributos del span', () => {
+    const span = {
+      span_id: 's1',
+      trace_id: 't1',
+      start_timestamp: 0,
+      status: 'ok',
+      description: 'GET https://api.x/y?email=a@b.es',
+      data: { 'url.full': 'https://api.x/y?email=a@b.es', 'url.query': '?email=a@b.es', nota: 'tel 612345678' },
+    };
+    const out = beforeSendSpan(span as never) as unknown as typeof span;
+    expect(out.description).toBe('GET https://api.x/y');
+    expect(Object.keys(out.data)).toEqual(['url.full', 'nota']);
+    expect(out.data['url.full']).toBe('https://api.x/y');
+    expect(out.data.nota).toContain(REDACTED);
+    expect(out.data.nota).not.toContain('612345678');
+  });
+
+  it('scrubDsc quita la query del nombre de transacción', () => {
+    const dsc = { trace_id: 't', public_key: 'k', transaction: 'GET /p?email=a@b.es' };
+    scrubDsc(dsc);
+    expect(dsc.transaction).toBe('GET /p');
+  });
+});
+
 describe('buildSentryOptions (CA7)', () => {
   it('sin DSN queda deshabilitado, en development y sin trazas', () => {
     const o = buildSentryOptions({});
@@ -262,6 +289,9 @@ describe('buildSentryOptions (CA7)', () => {
       expect(o.beforeSend).toBe(beforeSend);
       expect(o.beforeSendTransaction).toBe(beforeSendTransaction);
       expect(o.beforeBreadcrumb).toBe(beforeBreadcrumb);
+      expect(o.beforeSendSpan).toBe(beforeSendSpan);
+      // Con el modo por defecto ('stream') el SDK ignora beforeSendTransaction.
+      expect(o.traceLifecycle).toBe('static');
     }
   });
 
@@ -281,12 +311,14 @@ describe('cableado estático (CA8–CA12)', () => {
     const client = read('src/instrumentation-client.ts');
     expect(client).toContain('process.env.NEXT_PUBLIC_SENTRY_DSN');
     expect(client).not.toMatch(/process\.env\.SENTRY_DSN/);
+    expect(client).toContain('registerPrivacyHooks(Sentry.getClient())');
     expect(client).toMatch(/onRouterTransitionStart\s*=\s*Sentry\.captureRouterTransitionStart/);
 
     for (const f of ['sentry.server.config.ts', 'sentry.edge.config.ts']) {
       const src = read(f);
       expect(src).toMatch(/process\.env\.SENTRY_DSN\s*\|\|\s*process\.env\.NEXT_PUBLIC_SENTRY_DSN/);
       expect(src).toContain('buildSentryOptions');
+      expect(src).toContain('registerPrivacyHooks(Sentry.getClient())');
     }
   });
 

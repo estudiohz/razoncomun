@@ -25,7 +25,7 @@ export default function GlobalError({
         <section className="mx-auto max-w-[48ch] px-6 py-24 text-center">
           <h1 className="text-[clamp(24px,3vw,36px)] font-extrabold text-titular">Algo ha ido mal</h1>
           <p className="mt-3 text-[16px] text-cuerpo">
-            Ha ocurrido un error inesperado. Ya lo hemos registrado; prueba de nuevo en un momento.
+            Ha ocurrido un error inesperado. Prueba de nuevo en un momento.
           </p>
           <button
             type="button"

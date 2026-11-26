@@ -1,7 +1,7 @@
 // Sentry en el runtime edge (middleware y rutas con `runtime = 'edge'`).
 // Lo carga `src/instrumentation.ts`. Sin DSN queda deshabilitado.
 import * as Sentry from '@sentry/nextjs';
-import { buildSentryOptions } from './sentry.common';
+import { buildSentryOptions, registerPrivacyHooks } from './sentry.common';
 
 Sentry.init(
   buildSentryOptions({
@@ -9,3 +9,4 @@ Sentry.init(
     environment: process.env.SENTRY_ENVIRONMENT || process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
   }),
 );
+registerPrivacyHooks(Sentry.getClient());

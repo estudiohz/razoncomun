@@ -11,7 +11,7 @@ funciona igual.
 
 | Archivo | Qué hace |
 |---|---|
-| `sentry.common.ts` | Redactor, `beforeSend`, `beforeSendTransaction`, `beforeBreadcrumb` y `buildSentryOptions` |
+| `sentry.common.ts` | Redactor, `beforeSend`, `beforeSendTransaction`, `beforeSendSpan`, `beforeBreadcrumb`, `buildSentryOptions` y `registerPrivacyHooks` (DSC) |
 | `sentry.server.config.ts` / `sentry.edge.config.ts` | `Sentry.init` en Node y edge |
 | `src/instrumentation.ts` | `register()` carga la config del runtime; `onRequestError` captura errores de servidor |
 | `src/instrumentation-client.ts` | `Sentry.init` en el navegador |
@@ -35,6 +35,14 @@ declara como `ARG` vacíos en el stage `builder`, así que sin ellas el build no
 `SENTRY_AUTH_TOKEN` solo existe en el stage `builder` y nunca llega a la imagen final.
 
 Con `production`, `tracesSampleRate` es 0.1; en cualquier otro entorno, 0.
+
+**`traceLifecycle: 'static'` es obligatorio.** En `@sentry/nextjs` 11 el modo por defecto es
+`'stream'` (los spans se envían sueltos) y en ese modo el SDK **ignora `beforeSendTransaction`**:
+las trazas saldrían sin limpiar. En modo estático los spans van dentro de la transacción, que pasa
+por `beforeSendTransaction`, y cada span por `beforeSendSpan` (envuelto con `withStaticSpan`).
+Además, cada `Sentry.init` va seguido de `registerPrivacyHooks(Sentry.getClient())`, que limpia el
+contexto de muestreo (DSC: cabecera del envelope y `baggage` saliente), donde el nombre de la
+transacción raíz viaja sin pasar por `beforeSend*`.
 
 ## Qué se filtra (en todos los eventos y transacciones)
 
@@ -66,6 +74,7 @@ Sin Replay, el SDK no escribe cookies ni `localStorage`, así que no depende del
 
 ## Tests
 
-`npm test` incluye `sentry.common.test.ts`: limpieza de eventos, transacciones y migas, redactor,
+`npm test` incluye `sentry.sdk.test.ts` (el SDK real con transporte en memoria: comprueba que
+lo que se envía de verdad sale limpio) y `sentry.common.test.ts`: limpieza de eventos, transacciones y migas, redactor,
 opciones sin DSN, y comprobaciones estáticas del cableado (instrumentation, `next.config.mjs`,
 `Dockerfile`, `global-error.tsx`).

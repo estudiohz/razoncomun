@@ -2,7 +2,7 @@
 // incrusta al compilar (build arg en Dokploy). Sin DSN queda deshabilitado.
 // Sin Session Replay ni User Feedback: no se añaden integraciones extra.
 import * as Sentry from '@sentry/nextjs';
-import { buildSentryOptions } from '../sentry.common';
+import { buildSentryOptions, registerPrivacyHooks } from '../sentry.common';
 
 Sentry.init(
   buildSentryOptions({
@@ -10,5 +10,6 @@ Sentry.init(
     environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
   }),
 );
+registerPrivacyHooks(Sentry.getClient());
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
