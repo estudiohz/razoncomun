@@ -149,17 +149,25 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
                       </p>
                       <EstadoSeguimiento s={x.seguimiento} />
                       <p className="text-[14px] leading-[1.5] text-cuerpo">{x.texto}</p>
-                      {x.dato ? (
-                        <p className="text-[12.5px] text-gris">
-                          <span className="font-bold">El problema:</span> {x.dato.texto}{' '}
-                          <a href={x.dato.url} target="_blank" rel="noopener nofollow" className="underline">{x.dato.fuente}</a>
-                        </p>
-                      ) : null}
-                      <p className="text-[12.5px] text-gris"><span className="font-bold">Cómo se mide:</span> {x.medicion}</p>
-                      <p className="text-[12.5px] text-gris">
-                        <span className="font-bold">Quién lo hace:</span> {x.competencia}
-                        {x.punto ? <> · <a href="/manifiesto" className="underline">Punto {x.punto} del manifiesto</a></> : null}
-                      </p>
+                      <details className="group rounded-[10px] border border-linea bg-white px-3 py-2.5">
+                        <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em] text-titular">
+                          El problema y cómo se mide
+                          <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
+                        </summary>
+                        <div className="mt-1.5 space-y-1.5 text-[13px] leading-[1.45] text-cuerpo">
+                          {x.dato ? (
+                            <p>
+                              <span className="font-bold">El problema:</span> {x.dato.texto}{' '}
+                              <a href={x.dato.url} target="_blank" rel="noopener nofollow" className="text-[11.5px] underline">{x.dato.fuente}</a>
+                            </p>
+                          ) : null}
+                          <p><span className="font-bold">Cómo se mide:</span> {x.medicion}</p>
+                          <p>
+                            <span className="font-bold">Quién lo hace:</span> {x.competencia}
+                            {x.punto ? <> · <a href="/manifiesto" className="underline">Punto {x.punto} del manifiesto</a></> : null}
+                          </p>
+                        </div>
+                      </details>
                       <Verificacion v={v} titulo="Riesgos y límites" texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} />
                       <BloqueViabilidad b={x.viabilidad} />
                     </div>
