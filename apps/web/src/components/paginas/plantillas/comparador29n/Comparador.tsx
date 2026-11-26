@@ -274,7 +274,7 @@ function TarjetaPartido({
               : x.cita.nota || 'Programa 2026';
             return (
               <div key={i} className="flex flex-col gap-2 border-b border-linea pb-3.5 last:border-0 last:pb-0">
-                <p className="flex gap-2.5 text-[14.5px] leading-[1.45] text-cuerpo">
+                <p className="flex gap-2.5 text-[14.5px] font-bold leading-[1.45] text-titular">
                   <span className="mt-[5px] h-3 w-3 flex-none rounded-full" style={{ background: v.color }} title={v.etiqueta} aria-label={`Verificación: ${v.etiqueta}`} role="img" />
                   <span>«{x.texto}»</span>
                 </p>
