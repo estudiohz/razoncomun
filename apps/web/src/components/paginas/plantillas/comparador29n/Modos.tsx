@@ -8,6 +8,24 @@ import { ProveedorVotos } from './votos';
 
 type Modo = 'elegir' | 'comparar' | 'juego';
 const CLAVE = 'rc-comparador29n-modo';
+const EVENTO_JUEGO = 'rc-29n-jugar';
+
+/** Acceso compacto al juego, junto a «Cómo lo hemos hecho». */
+export function BotonJuego() {
+  return (
+    <div className="flex items-center gap-3 rounded-[12px] border border-linea bg-white px-4 py-2">
+      <span className="text-[13px] font-bold text-titular">¿Y si no supieras de quién es cada propuesta?</span>
+      <button
+        type="button"
+        onClick={() => window.dispatchEvent(new Event(EVENTO_JUEGO))}
+        className="min-h-[40px] flex-none rounded-boton px-4 text-[13.5px] font-bold text-white"
+        style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}
+      >
+        Jugar a ciegas
+      </button>
+    </div>
+  );
+}
 
 /**
  * Entrada al comparador: «ver con su partido» o «jugar a ciegas».
@@ -33,6 +51,13 @@ export function Modos({ apartados, partidos, rc }: { apartados: Apartado[]; part
     window.scrollTo({ top: 0 });
   };
 
+  // El botón «Jugar a ciegas» de la cabecera (fuera de este árbol) avisa con un evento.
+  useEffect(() => {
+    const abrir = () => ir('juego');
+    window.addEventListener(EVENTO_JUEGO, abrir);
+    return () => window.removeEventListener(EVENTO_JUEGO, abrir);
+  }, []);
+
   useEffect(() => {
     if (modo !== 'elegir') return;
     const prev = document.body.style.overflow;
@@ -51,12 +76,6 @@ export function Modos({ apartados, partidos, rc }: { apartados: Apartado[]; part
         <Juego apartados={apartados} partidos={partidos} rc={rc} onSalir={() => ir('comparar')} />
       ) : (
         <>
-          <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[14px] border border-linea bg-white px-5 py-3.5">
-            <span className="text-[14px] font-bold text-titular">¿Y si no supieras de quién es cada propuesta?</span>
-            <button type="button" onClick={() => ir('juego')} className="ml-auto min-h-[44px] rounded-boton px-5 text-[14px] font-bold text-white" style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}>
-              Jugar a ciegas
-            </button>
-          </div>
           <Comparador apartados={apartados} partidos={partidos} rc={rc} />
         </>
       )}

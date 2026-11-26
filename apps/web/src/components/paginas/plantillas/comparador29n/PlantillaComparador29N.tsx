@@ -3,7 +3,7 @@ import type { PropsPlantilla } from '../index';
 import { APARTADOS } from './apartados';
 import { ALTERNATIVAS_RC } from './alternativasRc';
 import { PARTIDOS } from './tipos';
-import { Modos } from './Modos';
+import { BotonJuego, Modos } from './Modos';
 import { LeyendaSiColumnas } from './Comparador';
 import { BotonVista } from './vista';
 
@@ -35,8 +35,8 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
           <p className="text-[12.5px] text-gris">
             PP, PSOE, Vox y Frente Amplio · Revisado el {REVISADO}
           </p>
-          <div className="flex flex-wrap items-start gap-3">
-          <details className="group w-full max-w-[760px] flex-1 rounded-[12px] border border-linea bg-white px-4 py-3">
+          <div className="flex flex-wrap items-center gap-3">
+          <details className="group min-w-[280px] max-w-[760px] flex-1 rounded-[12px] border border-linea bg-white px-4 py-3">
             <summary className="flex min-h-[32px] cursor-pointer list-none items-center justify-between text-[13px] font-bold text-titular">
               Cómo lo hemos hecho
               <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
@@ -50,6 +50,7 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
               <li><b>Nuestras propuestas</b> van aparte y sin círculo: no nos ponemos nota.</li>
             </ul>
           </details>
+          <BotonJuego />
           <LeyendaSiColumnas />
           </div>
         </div>
