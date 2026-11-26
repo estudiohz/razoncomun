@@ -23,6 +23,8 @@ export default defineConfig({
       'src/lib/email/**/*.test.ts',
       'src/lib/vigia/**/*.test.ts',
       'src/lib/newsletter/**/*.test.ts',
+      // T-0097: filtrado RGPD de Sentry (sentry.common.ts en la raíz de apps/web).
+      'sentry.*.test.ts',
     ],
     environment: 'node',
   },
