@@ -325,26 +325,23 @@ function TarjetaPartido({
             return (
               <div key={i} className="flex flex-col gap-2 border-b border-linea pb-3.5 last:border-0 last:pb-0">
                 <p className="text-[14.5px] font-bold leading-[1.45] text-titular">«{x.texto}»</p>
-                {urlNota ? (
-                  <p className="text-[12px] text-gris">
-                    {prefijoNota ? <>{prefijoNota} </> : null}(
-                    <a href={urlNota} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1 font-semibold underline">
-                      Fuente
-                      <Icono size={13} d={['M14 4h6v6', 'M20 4l-9 9', 'M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5']} />
-                    </a>
-                    )
-                  </p>
-                ) : href ? (
-                  <a href={href} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-gris">
-                    <Icono size={14} d={['M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z', 'M14 3v5h5']} />
-                    {cita}
+                {/* Solo «Fuente», enlazada; el origen exacto va en el tooltip. */}
+                {urlNota || href ? (
+                  <a
+                    href={urlNota ?? href ?? undefined}
+                    target="_blank"
+                    rel="noopener nofollow"
+                    title={urlNota ? prefijoNota || 'Tomado de prensa' : cita}
+                    className="inline-flex items-center gap-1 self-start text-[12px] font-semibold text-gris underline"
+                  >
+                    Fuente
+                    <Icono size={13} d={['M14 4h6v6', 'M20 4l-9 9', 'M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5']} />
                   </a>
                 ) : (
-                  <span className="text-[12px] font-semibold text-gris" title={x.cita.nota ?? undefined}>{cita}</span>
+                  <span className="self-start text-[12px] font-semibold text-gris" title={x.cita.nota ?? cita}>Fuente por confirmar</span>
                 )}
-                <LineaFicha f={x.ficha} />
                 <div><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
-                <div><BloqueViabilidad b={x.viabilidad} /></div>
+                <div><BloqueViabilidad b={x.viabilidad} f={x.ficha} /></div>
                 <div><EstadoSeguimiento s={x.seguimiento} /></div>
                 <Flechas clave={claveVoto(apartado, partido.id, propuestas.indexOf(x))} />
               </div>
@@ -365,9 +362,9 @@ function Verificacion({ v, texto, fuentes, titulo }: { v: { color: string; etiqu
   return (
     <details className="group rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
       <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
-        <span className="flex items-center gap-2">
+        <span className="flex min-w-0 items-center gap-2 whitespace-nowrap">
           {titulo ? null : <span className="h-3 w-3 flex-none rounded-full" style={{ background: v.color }} aria-hidden="true" />}
-          {titulo ?? `Análisis de Razón Común · ${v.etiqueta}`}
+          <span className="truncate">{titulo ?? `Análisis ${v.etiqueta.toLowerCase()} (RC)`}</span>
         </span>
         <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
       </summary>
@@ -404,17 +401,18 @@ function EstadoSeguimiento({ s }: { s?: Seguimiento }) {
 }
 
 /** Acordeón «Viabilidad»: coste estimado, consecuencias y precedentes en otros países. */
-function BloqueViabilidad({ b }: { b?: Viabilidad }) {
-  if (!b || (!b.texto && !b.coste)) return null;
+function BloqueViabilidad({ b, f }: { b?: Viabilidad; f?: Ficha }) {
+  if ((!b || (!b.texto && !b.coste)) && !f) return null;
   return (
     <details className="group rounded-[10px] border border-linea bg-white px-3 py-2.5">
       <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em] text-titular">
-        Viabilidad: coste y consecuencias
+        Viabilidad
         <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
       </summary>
-      {b.coste ? <p className="mt-1.5 text-[13px] font-bold text-titular">Coste: {b.coste}</p> : null}
-      {b.texto ? <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{b.texto}</p> : null}
-      {b.precedentes?.length ? (
+      {f ? <div className="mt-1.5"><LineaFicha f={f} /></div> : null}
+      {b?.coste ? <p className="mt-1.5 text-[13px] font-bold text-titular">Coste: {b.coste}</p> : null}
+      {b?.texto ? <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{b.texto}</p> : null}
+      {b?.precedentes?.length ? (
         <ul className="mt-2 space-y-1.5">
           {b.precedentes.map((p, i) => (
             <li key={i} className="text-[12.5px] leading-[1.4] text-cuerpo">
@@ -424,7 +422,7 @@ function BloqueViabilidad({ b }: { b?: Viabilidad }) {
           ))}
         </ul>
       ) : null}
-      {b.fuentes?.length ? (
+      {b?.fuentes?.length ? (
         <p className="mt-1.5 flex flex-wrap gap-x-3 text-[11.5px]">
           {b.fuentes.map((f, j) => (
             <a key={j} href={f.url} target="_blank" rel="noopener nofollow" className="underline">{f.nombre}</a>
