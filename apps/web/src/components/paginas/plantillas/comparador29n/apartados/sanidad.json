@@ -35,7 +35,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "El Estado solo fija bases y coordinación (art. 149.1.16 CE); las CCAA gestionan el 93,6% del gasto. A dic. 2025 había 853.509 pacientes en lista quirúrgica, 121 días de media. El plan depende de acuerdos con cada comunidad; no fija plazos ni coste.",
+          "texto": "El Estado puede impulsar el pacto y fijar bases y coordinación (art. 149.1.16 CE), pero las listas de espera las gestionan los servicios de salud de las CCAA: el plan solo funciona si cada comunidad lo asume.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
@@ -61,6 +61,15 @@
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -72,7 +81,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Contratar es competencia de los servicios autonómicos de salud. La oferta MIR 2027 es de 9.676 plazas de Medicina para todas las especialidades y la residencia de Familia dura 4 años: la cifra no se cubre a corto plazo solo con nuevos especialistas. No fija coste.",
+          "texto": "Cabe en la ley, pero contratar médicos de primaria corresponde a los servicios autonómicos de salud. El Estado puede ampliar plazas MIR y cofinanciar; la incorporación real depende de las CCAA.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · Oferta FSE 2027",
@@ -89,6 +98,15 @@
           "texto": "Más plazas no garantizan más médicos a corto plazo: un médico de familia tarda 4 años en formarse tras el MIR y hay que cubrir jubilaciones. El coste depende del salario que pague cada comunidad; el programa no lo cifra.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -102,7 +120,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "En 2024 el gasto fue del 6,4% del PIB (101.739 M€). Subir al 7% supone unos 9.500 M€ más al año, que ejecutarían sobre todo las CCAA (93,6% del gasto). A dic. 2025 la espera quirúrgica media era de 121 días.",
+          "texto": "El Estado puede subir su gasto y las transferencias, pero el 93,6 % del gasto sanitario lo deciden y ejecutan las CCAA, que tienen autonomía financiera (art. 156 CE). Llegar al 7 % exige acuerdo con ellas o reformar la financiación autonómica.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
@@ -111,6 +129,10 @@
             {
               "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
               "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -124,6 +146,15 @@
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -135,11 +166,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "La asistencia la prestan los servicios autonómicos de salud; un plazo garantizado exige norma básica estatal y plantillas que contratan las CCAA (art. 149.1.16 CE). Sin dato oficial localizado sobre la demora actual en salud mental ni sobre el coste.",
+          "texto": "El Estado puede fijar en la cartera común un plazo máximo garantizado (art. 149.1.16 CE; Ley 16/2003), pero los psicólogos los contratan y gestionan los servicios autonómicos de salud.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución Española",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 16/2003 de cohesión y calidad del SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-10715"
             }
           ]
         },
@@ -154,6 +189,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -165,7 +209,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Ampliar la cartera común es competencia estatal, pero la prestación la financian y gestionan las CCAA, que gestionan el 93,6% del gasto sanitario. Sin dato oficial localizado sobre el coste de la ayuda de 200 €.",
+          "texto": "Ampliar la cartera común de servicios es competencia estatal (Ley 16/2003), y una ayuda directa estatal también cabe. La prestación dental la tendrían que organizar y, en parte, financiar las CCAA.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
@@ -174,6 +218,10 @@
             {
               "nombre": "BOE · Constitución Española",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 16/2003 de cohesión y calidad del SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-10715"
             }
           ]
         },
@@ -182,6 +230,15 @@
           "texto": "El coste depende de cuántas personas cobren la ayuda de 200 €; el programa no da la cifra. Ayudas directas sin dentistas públicos suficientes pueden acabar en clínicas privadas con precios libres. No hemos encontrado una evaluación publicada de un plan comparable.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -195,7 +252,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Ya existe la Historia Clínica Digital del SNS, que comparte informes entre CCAA, pero su implantación depende de que cada comunidad cumpla los requisitos técnicos. Unificar la tarjeta exige acuerdo en el Consejo Interterritorial; el Estado solo tiene la coordinación (art. 149.1.16 CE).",
+          "texto": "El Estado puede fijar estándares comunes de tarjeta e historia clínica (art. 149.1.16 CE; Ley 16/2003); ya existe la Historia Clínica Digital del SNS. Pero emitir la tarjeta y aplicar el sistema es tarea de cada comunidad.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · Historia Clínica Digital del SNS",
@@ -204,6 +261,10 @@
             {
               "nombre": "BOE · Constitución Española",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 16/2003 de cohesión y calidad del SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-10715"
             }
           ]
         },
@@ -212,6 +273,15 @@
           "texto": "La historia clínica digital común ya existe pero está desigualmente implantada; completarla es sobre todo tarea técnica y de coordinación con las comunidades. Coste bajo en relación con el gasto sanitario, sin cifra oficial.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -223,11 +293,19 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Hoy rige el RDL 7/2018, que reconoce la asistencia a extranjeros no registrados en las mismas condiciones que a los españoles. Revertirlo exige una norma con rango de ley; en 2012 ya se hizo (RDL 16/2012). Sin dato oficial localizado sobre su coste.",
+          "texto": "Cabe por ley: el TC avaló la restricción de 2012 (STC 139/2016). Pero hay mínimos: menores (Convención sobre los Derechos del Niño, art. 24) y, para quien espera su expulsión, urgencias y tratamiento básico (Directiva 2008/115, art. 14). «Solo urgencia grave» quedaría por debajo de eso.",
           "fuentes": [
             {
               "nombre": "BOE · Real Decreto-ley 7/2018, acceso universal al SNS",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
+            },
+            {
+              "nombre": "TC · STC 139/2016 (citada por número; no abierta)",
+              "url": "https://hj.tribunalconstitucional.es/"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2008/115/CE (retorno), art. 14",
+              "url": "https://eur-lex.europa.eu/eli/dir/2008/115/oj"
             }
           ]
         },
@@ -247,6 +325,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -258,7 +345,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "A dic. 2025: 853.509 pacientes y 121 días de media. Los datos ya se publican cada semestre por el RD 605/2003. La concertación con centros privados la deciden y pagan las CCAA, que gestionan el 93,6% del gasto.",
+          "texto": "El Estado puede aprobar un plan y fijar indicadores comunes (art. 149.1.16 CE; RD 605/2003). Derivar pacientes a centros privados lo deciden y pagan las CCAA, que gestionan el 93,6 % del gasto.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
@@ -267,6 +354,10 @@
             {
               "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -275,6 +366,15 @@
           "texto": "Concertar con la privada puede bajar esperas rápido si hay capacidad libre, pero no crea médicos nuevos y puede trasladar profesionales de un sector a otro. Su eficacia depende de controlar precios y resultados.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -288,11 +388,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "En 2024 el gasto fue del 6,4% del PIB. Llegar al 8% supone unos 25.000 M€ más al año. Las CCAA gestionan el 93,6% del gasto y los PGE no lo fijan directamente: haría falta trasladarlo vía financiación autonómica.",
+          "texto": "El Estado decide sus Presupuestos, pero gestiona solo una parte pequeña del gasto sanitario; el resto lo deciden las CCAA con autonomía financiera (art. 156 CE). Llegar al 8 % exige trasladarlo vía financiación autonómica y acuerdo con ellas.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -306,6 +410,15 @@
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -317,7 +430,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "El Estado puede dictar legislación básica (art. 149.1.16 CE), pero la gestión de los centros y los contratos vigentes son de las CCAA; la internalización tendría que respetar los contratos en vigor y su coste no consta.",
+          "texto": "Derogar la Ley 15/1997 y fijar la gestión directa como regla general cabe como legislación básica (art. 149.1.16 CE). Pero los centros los gestionan las CCAA y los contratos vigentes deben respetarse hasta su fin o indemnizarse.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución Española",
@@ -330,6 +443,15 @@
           "texto": "No hay una evaluación concluyente de qué modelo es más barato: en el caso de Alzira (revertido en 2018) la empresa alegó ahorro y los sindicatos, sobrecostes. Pasar a gestión directa implica asumir plantillas y posibles indemnizaciones.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -341,7 +463,7 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "El RDL 7/2018 ya reconoce esa asistencia en las mismas condiciones que a los españoles. Elevarla a una ley específica es viable con mayoría simple.",
+          "texto": "Cabe con mayoría simple: el Estado regula quién tiene derecho a la asistencia (art. 149.1.16 CE). El RDL 7/2018 ya la reconoce; pasarla a una ley específica refuerza esa garantía.",
           "fuentes": [
             {
               "nombre": "BOE · Real Decreto-ley 7/2018, acceso universal al SNS",
@@ -365,6 +487,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -376,7 +507,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "El art. 43 está en el Capítulo III del Título I: su reforma va por el art. 167 CE, que exige tres quintos de cada Cámara (210 diputados) o, si no, la vía alternativa de ese artículo. Es jurídicamente posible, pero exige una mayoría amplia.",
+          "texto": "El art. 43 está en el Capítulo III del Título I: se reforma por el art. 167 CE, con tres quintos de cada Cámara (210 diputados y 159 senadores) o la vía alternativa de ese artículo, y referéndum si lo pide una décima parte de una Cámara.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución Española",
@@ -395,6 +526,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -406,7 +546,7 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "Fijar criterios homogéneos de información es competencia estatal de coordinación; así se hizo con el RD 605/2003, con el que hoy se publica el SISLE. La calidad de los datos sigue dependiendo de lo que envíe cada comunidad.",
+          "texto": "Fijar criterios comunes para medir y publicar las listas de espera es coordinación estatal (art. 149.1.16 CE), como ya hizo el RD 605/2003. Basta un real decreto del Gobierno; la calidad del dato sigue dependiendo de cada comunidad.",
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
@@ -423,6 +563,15 @@
           "texto": "Medir desde la indicación del médico y sumar primaria y salud mental hará que las listas oficiales parezcan más largas al principio: más transparencia, pero no menos espera por sí sola.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ]

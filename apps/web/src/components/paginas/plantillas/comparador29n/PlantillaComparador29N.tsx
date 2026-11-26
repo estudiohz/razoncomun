@@ -39,7 +39,8 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
               <li><b>Quién:</b> el equipo de Razón Común, con ayuda de IA y revisión humana.</li>
               <li><b>Qué partidos:</b> las cuatro fuerzas con más diputados y candidatura en toda España. Por falta de medios no hemos podido analizar al resto.</li>
               <li><b>Las propuestas</b> salen del programa oficial 2026 de cada partido, con su página.</li>
-              <li><b>El círculo es nuestro análisis</b>, no un hecho: verde, viable tal cual; naranja, viable con matices; rojo, choca con la Constitución, la ley europea o una sentencia firme. Mismo criterio para todos y con fuentes oficiales.</li>
+              <li><b>El círculo es nuestro análisis</b> y solo mide si la medida cabe en la ley y en las competencias de quien la propone: verde, posible; naranja, necesita a otra administración, reformar una ley o cumplir condiciones; rojo, choca con una norma o sentencia concreta, siempre citada; gris, no evaluable por falta de concreción o de base. Mismo criterio para todos.</li>
+              <li><b>Competencia, coste y plazo</b> se muestran aparte y no cambian el color: que un partido no dé coste no hace inviable su propuesta.</li>
               <li><b>Nuestras propuestas</b> van aparte y sin círculo: no nos ponemos nota.</li>
             </ul>
           </details>

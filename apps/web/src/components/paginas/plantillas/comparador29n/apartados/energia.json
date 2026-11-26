@@ -35,11 +35,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Almaraz ya está autorizada hasta el 8/6/2030. Cada extensión exige solicitud del titular e informe del CSN: en Almaraz pasaron más de 9 meses (solicitud 30/10/2025, informe 16/7/2026, orden 12/8/2026). Tramitar en 100 días es posible; resolver en ese plazo, no según el precedente.",
+          "texto": "Cabe: decidir la vida de las centrales es del Estado. Pero cada prórroga exige que la pida la eléctrica titular y un informe favorable del CSN, vinculante si es negativo (Ley 15/1980). El Gobierno no puede imponerla solo. Almaraz ya tiene permiso hasta el 8/6/2030.",
           "fuentes": [
             {
               "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 15/1980 de creación del CSN",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-8927"
             }
           ]
         },
@@ -59,6 +63,15 @@
               "url": "https://www.nber.org/papers/w26598"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Tramitar en los primeros 100 días"
         }
       },
       {
@@ -70,7 +83,7 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "Basta una ley estatal. La Ley 15/2012 ya prevé bajar el impuesto al 3,5 % en 2027 y al 0 % desde 2028, así que la medida adelanta lo ya legislado. El resto de la rebaja fiscal del recibo no está cuantificado.",
+          "texto": "Cabe: es un impuesto estatal (Ley 15/2012) y basta una ley de las Cortes para suprimirlo. La propia ley ya lo baja al 3,5 % en 2027 y al 0 % desde 2028, así que la medida adelanta lo legislado.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 15/2012, art. 8 (IVPEE)",
@@ -88,6 +101,18 @@
               "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "cifra",
+            "texto": "≈900 M€/año: lo que recaudó el impuesto en 2024 (AEAT)",
+            "fuente": {
+              "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+            }
+          },
+          "plazo": "De inmediato"
         }
       },
       {
@@ -98,9 +123,18 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su coste. Es competencia estatal y viable por norma con rango de ley, pero el programa no cuantifica la mejora ni su financiación.",
-          "fuentes": []
+          "veredicto": "verde",
+          "texto": "Cabe: el bono social eléctrico y el térmico son estatales (Ley 24/2013, art. 45) y pueden fundirse por ley o reglamento. La Directiva (UE) 2019/944 permite precios protegidos para hogares vulnerables.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 24/2013 del Sector Eléctrico",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2013-13645"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
+              "url": "https://eur-lex.europa.eu/eli/dir/2019/944/oj"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
@@ -118,6 +152,15 @@
               "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -131,7 +174,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Es el objetivo oficial del PNIEC 2023-2030. El propio Gobierno calcula que la prórroga de Almaraz reduce un 1,4 % la generación renovable de 2030 frente al escenario PNIEC. Alcanzarlo depende de redes y almacenamiento; sin dato oficial localizado sobre el grado de avance.",
+          "texto": "Cabe como objetivo (es el del PNIEC), pero el Estado no lo cumple solo: autoriza las plantas de más de 50 MW y las comunidades las menores (Ley 24/2013, art. 3.13). Las Zonas de Aceleración Renovable de la Directiva (UE) 2023/2413 exigen planificarlas con las CCAA.",
           "fuentes": [
             {
               "nombre": "MITECO · PNIEC 2023-2030",
@@ -140,6 +183,14 @@
             {
               "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 24/2013 del Sector Eléctrico",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2013-13645"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2023/2413 (renovables)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2023/2413/oj"
             }
           ]
         },
@@ -153,6 +204,18 @@
               "url": "https://www.miteco.gob.es/es/prensa/ultimas-noticias/2024/septiembre/el-gobierno-aprueba-la-actualizacion-del-plan-nacional-integrado.html"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "cifra",
+            "texto": "≈308.000 M€ de inversión hasta 2030, 82 % privada (PNIEC)",
+            "fuente": {
+              "nombre": "MITECO · Actualización del PNIEC 2023-2030",
+              "url": "https://www.miteco.gob.es/es/prensa/ultimas-noticias/2024/septiembre/el-gobierno-aprueba-la-actualizacion-del-plan-nacional-integrado.html"
+            }
+          },
+          "plazo": "2030"
         }
       },
       {
@@ -163,12 +226,16 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "El calendario ya se ha modificado: la Orden TED/864/2026 del propio Gobierno alargó Almaraz de 2027-2028 a junio de 2030. El horizonte de 2035 sigue siendo posible, pero las fechas intermedias ya no son las del calendario original.",
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado decide si concede o niega cada renovación de las centrales, previo informe del CSN. Mantener el cierre en 2035 es legal; las fechas intermedias ya cambiaron con la Orden TED/864/2026, que alargó Almaraz hasta junio de 2030.",
           "fuentes": [
             {
               "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 15/1980 de creación del CSN",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-8927"
             }
           ]
         },
@@ -188,6 +255,15 @@
               "url": "https://www.nber.org/papers/w26598"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Cierre completo en 2035"
         }
       },
       {
@@ -199,8 +275,13 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su coste. Las tarifas de agua dependen de ayuntamientos y las de telecomunicaciones de operadores, por eso el propio texto las condiciona a convenios.",
-          "fuentes": []
+          "texto": "Cabe la parte estatal (bonos eléctrico y térmico). Pero el agua es competencia municipal (Ley 7/1985, arts. 25-26), algunas ayudas de transporte son autonómicas y las tarifas de telecomunicaciones son de operadores privados: integrarlas exige convenios, como admite el propio texto.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 7/1985 de Bases de Régimen Local, arts. 25-26",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
@@ -218,6 +299,15 @@
               "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -231,7 +321,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "No se cuantifica. El impuesto a la producción ya baja al 3,5 % en 2027 y al 0 % en 2028 por ley. Rebajar el IVA por debajo del 5 % está limitado por la Directiva (UE) 2022/542 a un máximo de siete partidas de necesidades básicas.",
+          "texto": "Cabe bajar impuestos estatales de la luz por ley. Límite UE: el IVA por debajo del 5 % o a tipo cero solo se permite en un máximo de siete partidas de primera necesidad (Directiva 2006/112/CE, art. 98, reformada por la 2022/542). «Doble imposición» no se concreta.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 15/2012, art. 8 (IVPEE)",
@@ -240,6 +330,10 @@
             {
               "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA, arts. 97-98",
+              "url": "https://eur-lex.europa.eu/eli/dir/2006/112/oj"
             }
           ]
         },
@@ -257,6 +351,15 @@
               "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -268,11 +371,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Las prórrogas son viables caso a caso con informe del CSN y solicitud del titular (precedente: Almaraz hasta 2030). Construir nuevas centrales no tiene plazo ni coste en el programa; sin dato oficial localizado sobre los plazos de una central nueva.",
+          "texto": "Cabe: ninguna ley prohíbe prorrogar ni construir nucleares, y es competencia estatal. Pero cada prórroga exige solicitud del titular e informe favorable del CSN, y una central nueva exige un promotor y todas las autorizaciones nucleares (Ley 15/1980). El Gobierno no puede imponerlas.",
           "fuentes": [
             {
               "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 15/1980 de creación del CSN",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-8927"
             }
           ]
         },
@@ -301,6 +408,15 @@
               "url": "https://www.connaissancedesenergies.org/afp/programme-depr-la-cour-des-comptes-publie-un-rapport-critique-et-recalcule-le-cout-de-flamanville-3-250114"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -312,8 +428,21 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado. Quitar el tope a la inversión regulada eleva los costes que pagan los consumidores en peajes. El silencio positivo exige compatibilizarlo con la evaluación ambiental obligatoria.",
-          "fuentes": []
+          "texto": "Quitar el tope de inversión en redes cabe (es norma estatal), pero la retribución la fija la CNMC con la independencia que exige la UE. El silencio positivo solo vale para obras sin evaluación ambiental: para líneas grandes lo impide el STJUE (C-230/00) por la Directiva 2011/92/UE.",
+          "fuentes": [
+            {
+              "nombre": "EUR-Lex · Directiva 2011/92/UE (evaluación ambiental)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2011/92/oj"
+            },
+            {
+              "nombre": "CURIA · STJUE C-230/00, Comisión/Bélgica (2001)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-230/00"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
+              "url": "https://eur-lex.europa.eu/eli/dir/2019/944/oj"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
@@ -325,6 +454,15 @@
               "url": "https://www.cnmc.es/prensa/circulares-retribucion-electrica-20251222"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -338,11 +476,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Esas fechas ya no son las vigentes: la Orden TED/864/2026 autoriza Almaraz I y II hasta el 8/6/2030. Cerrar en 2027-2028 exigiría que la empresa renuncie o una nueva decisión administrativa motivada.",
+          "texto": "Cabe revisar el calendario, pero la Orden TED/864/2026 ya autoriza Almaraz hasta el 8/6/2030. Anular un permiso favorable exige que la empresa renuncie o declararlo lesivo y recurrirlo ante los tribunales (Ley 39/2015, art. 107), con posible indemnización.",
           "fuentes": [
             {
               "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 39/2015, art. 107 (lesividad)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10565"
             }
           ]
         },
@@ -362,6 +504,15 @@
               "url": "https://www.nber.org/papers/w26598"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Cierre de Almaraz en 2027-2028"
         }
       },
       {
@@ -373,11 +524,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "La Directiva (UE) 2022/542 solo permite tipos inferiores al 5 % o tipo cero en un máximo de siete partidas consideradas de necesidades básicas. Además, aplicarlo por persona exige cruzar datos de empadronamiento con cada contrato de luz.",
+          "texto": "Cabe en parte: la UE permite IVA reducido para la luz, pero el tipo cero o inferior al 5 % solo en un máximo de siete partidas (Directiva 2006/112/CE, art. 98). Un IVA distinto según consumo por persona tiene encaje dudoso con la neutralidad del impuesto y no hay sentencia que lo avale.",
           "fuentes": [
             {
               "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA, arts. 97-98",
+              "url": "https://eur-lex.europa.eu/eli/dir/2006/112/oj"
             }
           ]
         },
@@ -386,6 +541,15 @@
           "texto": "Premia a quien consume poco, pero el consumo depende de cosas como la calefacción eléctrica o el tamaño del hogar, no solo de la renta. Exige saber cuántas personas viven en cada casa y encaja mal con las reglas europeas del IVA. No hay cálculo de coste.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -396,9 +560,18 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su coste. El programa financia los peajes de esas horas con el gravamen a las energéticas y crea una comercializadora pública que aún no existe.",
-          "fuentes": []
+          "veredicto": "rojo",
+          "texto": "La comercializadora pública sí podría ofrecer esas horas. Lo que no cabe es obligar por ley a las privadas: la Directiva (UE) 2019/944, art. 5, les deja fijar libremente el precio, salvo para hogares vulnerables o en crisis declarada por la UE (criterio del STJUE C-121/15).",
+          "fuentes": [
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
+              "url": "https://eur-lex.europa.eu/eli/dir/2019/944/oj"
+            },
+            {
+              "nombre": "CURIA · STJUE C-121/15, ANODE (2016)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-121/15"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
@@ -416,6 +589,15 @@
               "url": "https://www.pv-magazine.com/2025/11/04/australia-plans-nationwide-three-hour-free-solar-power-offer-from-july-2026/"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ]

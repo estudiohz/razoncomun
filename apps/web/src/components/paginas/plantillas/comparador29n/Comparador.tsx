@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente, type Viabilidad } from './tipos';
+import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente, type Viabilidad, type Ficha } from './tipos';
 
 const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
   verde: { color: '#1E9E5A', etiqueta: 'Posible' },
   naranja: { color: '#E8792F', etiqueta: 'Con matices' },
   rojo: { color: '#D0342C', etiqueta: 'Inviable tal cual' },
+  gris: { color: '#8A8F9C', etiqueta: 'No evaluable' },
 };
 const RC_COLOR = '#16B8A0';
 const GRADIENTE = 'linear-gradient(90deg,#1B3D9C,#8B30D9 25%,#C3369E 45%,#E8792F 65%,#16B8A0 85%,#2BC7E8)';
@@ -154,7 +155,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
               key={p.id}
               partido={p}
               propuestas={ap.propuestas[p.id] ?? []}
-              pdf={ap.programas?.[p.id]?.url ?? null}
+              pdf={p.pdf ?? ap.programas?.[p.id]?.url ?? null}
               elegido={voto[ap.id] === p.id}
               onElegir={() => elegir(p.id)}
             />
@@ -337,6 +338,7 @@ function TarjetaPartido({
                 ) : (
                   <span className="pl-[22px] text-[12px] font-semibold text-gris" title={x.cita.nota ?? undefined}>{cita}</span>
                 )}
+                <LineaFicha f={x.ficha} />
                 <div className="ml-[22px]"><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
                 <div className="ml-[22px]"><BloqueViabilidad b={x.viabilidad} /></div>
                 <div className="ml-[22px]"><EstadoSeguimiento s={x.seguimiento} /></div>
@@ -425,5 +427,34 @@ function BloqueViabilidad({ b }: { b?: Viabilidad }) {
         </p>
       ) : null}
     </details>
+  );
+}
+
+const COSTE: Record<string, string> = {
+  partido_no_da: 'el partido no lo da',
+  sin_estimacion_oficial: 'sin estimación oficial',
+  pendiente: 'pendiente de localizar',
+};
+
+/** Una línea gris: competencia · coste · plazo. Descriptiva: no cambia el color. */
+function LineaFicha({ f }: { f?: Ficha }) {
+  if (!f) return null;
+  const coste = f.coste
+    ? f.coste.estado === 'cifra' && f.coste.texto
+      ? f.coste.texto
+      : COSTE[f.coste.estado] ?? null
+    : null;
+  const partes: React.ReactNode[] = [];
+  if (f.competencia) partes.push(<span key="c"><b className="font-semibold">Competencia:</b> {f.competencia}</span>);
+  if (coste)
+    partes.push(
+      <span key="k">
+        <b className="font-semibold">Coste:</b>{' '}
+        {f.coste?.fuente ? <a href={f.coste.fuente.url} target="_blank" rel="noopener nofollow" className="underline">{coste}</a> : coste}
+      </span>,
+    );
+  partes.push(<span key="p"><b className="font-semibold">Plazo:</b> {f.plazo || 'no especificado'}</span>);
+  return (
+    <p className="flex flex-wrap gap-x-3 gap-y-0.5 pl-[22px] text-[11.5px] leading-[1.4] text-gris">{partes}</p>
   );
 }

@@ -59,6 +59,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -83,6 +92,15 @@
           "texto": "Coste casi nulo: el SEPE ya tiene los datos. Mejora la transparencia del paro, pero no cambia el empleo por sí sola. No hemos encontrado una evaluación publicada de una medida igual.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -93,12 +111,16 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "La cuantía del subsidio de incapacidad temporal la fija la LGSS (art. 171) y su normativa de desarrollo, y es competencia estatal. No hay dato oficial de coste localizado, ni una definición de qué enfermedades entrarían.",
+          "veredicto": "verde",
+          "texto": "La cuantía de la incapacidad temporal la fija la LGSS (art. 171 y desarrollo), de competencia estatal (art. 149.1.17 CE). Subirla al 100 % para enfermedades graves cabe con una ley o reforma reglamentaria. Falta definir qué enfermedades entrarían.",
           "fuentes": [
             {
               "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -107,6 +129,15 @@
           "texto": "Mejora la renta de enfermos graves de larga duración. No hay cálculo público de su coste; dependerá de cuántas bajas se incluyan y de cómo se defina «enfermedad severa». Sin precedente evaluado encontrado.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -119,12 +150,16 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Exige reformar el art. 34 del Estatuto de los Trabajadores, que fija un máximo de 40 h semanales, mediante una ley con mayoría en el Congreso. Un proyecto equivalente no superó el debate de totalidad en septiembre de 2025.",
+          "veredicto": "verde",
+          "texto": "La jornada máxima la fija el art. 34 del Estatuto de los Trabajadores, legislación laboral estatal (art. 149.1.7 CE). Bajarla a 37,5 h cabe con una ley ordinaria; en septiembre de 2025 un proyecto así no superó el debate de totalidad, pero eso es un obstáculo político, no jurídico.",
           "fuentes": [
             {
               "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -144,6 +179,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -179,6 +223,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -189,8 +242,8 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "El art. 56 ET tasa la indemnización en 33 días por año, con un tope de 24 mensualidades. El Comité Europeo de Derechos Sociales tramitó la reclamación 207/2022 sobre ese sistema. Cambiarlo requiere ley y el diseño está por concretar.",
+          "veredicto": "verde",
+          "texto": "El art. 56 ET tasa hoy la indemnización en 33 días por año, con tope de 24 mensualidades. Cambiarlo cabe con una ley ordinaria estatal y va en la línea del art. 24 de la Carta Social Europea revisada, que España ratificó (reclamación 207/2022 ante el CEDS). El diseño concreto está por definir.",
           "fuentes": [
             {
               "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
@@ -213,6 +266,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -237,6 +299,15 @@
           "texto": "Frena el uso de contratos a tiempo parcial con horas extra encubiertas. Coste público bajo. Riesgo: que algunas empresas reduzcan las horas pactadas para no pasar del 80 %. Sin precedente evaluado encontrado.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -250,7 +321,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "La reforma laboral (RDL 32/2021) se aprobó como compromiso del Plan de Recuperación pactado con la UE. Derogarla puede afectar a esos compromisos. La EPA registra 22,85 millones de ocupados y más empleo indefinido.",
+          "texto": "Derogar o cambiar la reforma laboral (RDL 32/2021) cabe con una ley estatal. Pero fue un hito del Plan de Recuperación: el Reglamento (UE) 2021/241 (art. 24) permite a la Comisión suspender o reducir pagos si se revierte un hito ya cumplido. Además, el programa no concreta qué normas derogaría.",
           "fuentes": [
             {
               "nombre": "BOE · Real Decreto-ley 32/2021 (reforma laboral)",
@@ -259,6 +330,10 @@
             {
               "nombre": "INE · EPA tercer trimestre 2026",
               "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2021/241 (Mecanismo de Recuperación)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32021R0241"
             }
           ]
         },
@@ -267,6 +342,15 @@
           "texto": "Propuesta genérica: su efecto depende de qué norma sustituya a la reforma de 2021. Volver al marco anterior podría reactivar la temporalidad que esa reforma redujo. No hay coste cuantificable sin conocer el texto.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -304,6 +388,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -314,8 +407,8 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Crear un tributo requiere ley (arts. 31 y 133 CE) y es posible. Al no tener precedente, su encaje con el principio de capacidad económica y su recaudación son inciertos. Sin dato oficial de recaudación localizado.",
+          "veredicto": "verde",
+          "texto": "Crear un tributo estatal cabe con una ley (arts. 31 y 133 CE). No conocemos sentencia que impida un gravamen así, aunque, al no tener precedente, su diseño tendría que respetar el principio de capacidad económica (art. 31 CE) y podría ser recurrido.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución Española",
@@ -328,6 +421,15 @@
           "texto": "Impuesto sin precedente claro en Europa. Es difícil de medir (qué es que «los salarios se queden atrás») y fácil de esquivar repartiendo beneficios entre sociedades. La recaudación es incierta; no hay estimación pública.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -338,8 +440,8 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Hoy el art. 270 LGSS fija la prestación en el 70 % de la base durante 180 días y el 60 % después, con un tope del 175-225 % del IPREM. Cambiarlo requiere ley y más gasto del SEPE. Sin dato oficial de coste localizado.",
+          "veredicto": "verde",
+          "texto": "El art. 270 LGSS fija hoy la prestación en el 70 % de la base durante 180 días y el 60 % después, con un tope del 175-225 % del IPREM. Subirla cabe con una ley estatal (art. 149.1.17 CE); el coste no cuenta para este color.",
           "fuentes": [
             {
               "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
@@ -352,6 +454,15 @@
           "texto": "Más renta para los parados los primeros meses, pero encarece una de las mayores partidas del gasto social, sin estimación pública del coste. Prestaciones más altas pueden alargar algo el tiempo en paro si no se combinan con orientación y control.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -362,12 +473,16 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Requiere reformar por ley el art. 34 ET, que fija hoy un máximo de 40 h semanales. La rebaja a 37,5 h no prosperó en el Congreso en 2025. Ningún dato oficial localizado cuantifica el impacto de llegar a 32 h.",
+          "veredicto": "verde",
+          "texto": "La jornada máxima la fija el art. 34 ET, legislación laboral estatal (art. 149.1.7 CE). Bajarla progresivamente a 32 h cabe con una ley ordinaria; ninguna norma de la UE lo impide (la Directiva 2003/88/CE solo fija un máximo de 48 h).",
           "fuentes": [
             {
               "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -387,6 +502,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -398,7 +522,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Cataluña ya asumió en 2010 la función inspectora en materia laboral (RD 206/2010). El régimen económico de la Seguridad Social es competencia exclusiva del Estado (art. 149.1.17 CE), así que traspasar esa parte es jurídicamente discutible.",
+          "texto": "Cataluña ya gestiona la inspección laboral (RD 206/2010). La Seguridad Social es distinta: su legislación básica y régimen económico son competencia exclusiva del Estado (art. 149.1.17 CE; STC 124/1989, caja única). Traspasar esa inspección exigiría al menos una ley orgánica de delegación (art. 150.2 CE) y sería recurrible.",
           "fuentes": [
             {
               "nombre": "BOE · Real Decreto 206/2010 (Inspección a Cataluña)",
@@ -407,6 +531,10 @@
             {
               "nombre": "BOE · Constitución Española",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "Tribunal Constitucional · STC 124/1989 (citada por número, no abierta)",
+              "url": "https://hj.tribunalconstitucional.es/"
             }
           ]
         },
@@ -421,6 +549,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ]

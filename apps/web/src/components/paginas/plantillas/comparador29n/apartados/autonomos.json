@@ -34,8 +34,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Hoy el art. 38 ter LETA da una cuota reducida 12 meses, ampliable otros 12 si se ingresa menos del SMI. Pasar a cuota cero requiere ley, reduce ingresos del sistema y obliga a definir cómo se generan derechos. Sin dato oficial de coste.",
+          "veredicto": "verde",
+          "texto": "Hoy el art. 38 ter LETA da una cuota reducida 12 meses, ampliable otros 12 si se ingresa menos del SMI. Pasar a cuota cero cabe con una ley estatal (art. 149.1.17 CE); habría que definir cómo se generan los derechos de pensión.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 20/2007, Estatuto del Trabajo Autónomo",
@@ -59,6 +59,15 @@
               "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -88,6 +97,15 @@
               "url": "https://eur-lex.europa.eu/eli/dir/2020/285/oj/spa"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -99,11 +117,15 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "La periodicidad trimestral de las liquidaciones del IVA la fija el Reglamento del IVA (art. 71), una norma estatal que el Gobierno puede modificar. Supondría que Hacienda ingresa más tarde.",
+          "texto": "La periodicidad de las declaraciones la fijan normas estatales (art. 71 del Reglamento del IVA y normas del IRPF) que el Gobierno puede cambiar. La Directiva del IVA (art. 252) permite periodos de hasta un año, así que pasar a semestral encaja.",
           "fuentes": [
             {
               "nombre": "BOE · Reglamento del IVA (RD 1624/1992)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1992-28925"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32006L0112"
             }
           ]
         },
@@ -112,6 +134,15 @@
           "texto": "Menos papeleo con coste casi nulo; Hacienda cobraría más tarde parte de los impuestos (efecto de caja). Riesgo: que el autónomo acumule pagos mayores de golpe. Sin precedente evaluado encontrado.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -122,8 +153,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Las bonificaciones a la contratación son competencia estatal y pueden aprobarse por ley. No consta estimación oficial del coste, ni de cuántas contrataciones se harían igualmente sin la ayuda. Sin dato oficial localizado.",
+          "veredicto": "verde",
+          "texto": "Las bonificaciones a la contratación son competencia estatal (art. 149.1.17 CE) y pueden aprobarse por ley o en los Presupuestos, como ya se ha hecho otras veces. Al ser una medida general para todos los autónomos, no plantea problema de ayudas de Estado.",
           "fuentes": [
             {
               "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
@@ -147,6 +178,15 @@
               "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -171,6 +211,15 @@
           "texto": "Protege al autónomo con enfermedad grave. Coste acotado por el número de casos, sin cálculo público. Sin precedente evaluado encontrado.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -183,8 +232,8 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "La Ley 2/2026 obligaba a aprobar el reglamento en un plazo máximo de tres meses desde su aprobación (julio de 2026). No hemos localizado su publicación en el BOE. Eliminar la alternatividad requeriría otra ley.",
+          "veredicto": "verde",
+          "texto": "La Ley 2/2026 obligaba a aprobar el reglamento de la pasarela al RETA en tres meses (desde julio de 2026); no hemos localizado su publicación en el BOE. Aprobarlo es competencia del Gobierno, y acabar con la alternatividad de las mutualidades cabe con otra ley estatal.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 2/2026 (mutualidades alternativas)",
@@ -197,6 +246,15 @@
           "texto": "Da a los mutualistas la protección del sistema público, pero eleva el gasto futuro en pensiones y obliga a decidir cómo se cuentan sus aportaciones anteriores. Sin cálculo oficial del coste encontrado.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -230,6 +288,15 @@
               "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -242,8 +309,8 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Hoy la LGSS (art. 308) obliga a cotizar por una tabla reducida también por debajo del SMI. Con cuota cero no se generarían periodos cotizados ni derechos de pensión y se reducirían los ingresos del sistema. Sin dato oficial de coste.",
+          "veredicto": "verde",
+          "texto": "Hoy la LGSS (art. 308) obliga a cotizar por una tabla reducida también por debajo del SMI. Cambiarlo a cuota cero cabe con una ley estatal (art. 149.1.17 CE). Consecuencia: sin cotización no se generarían periodos cotizados ni derechos de pensión.",
           "fuentes": [
             {
               "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
@@ -267,6 +334,15 @@
               "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -278,7 +354,7 @@
         },
         "verificacion": {
           "veredicto": "rojo",
-          "texto": "Es el principio de eficacia nacional de la Ley 20/2013. La STC 79/2017 lo declaró inconstitucional y nulo porque no respeta las competencias autonómicas. Tal como se plantea, choca con esa doctrina del Tribunal Constitucional.",
+          "texto": "Es el principio de «eficacia nacional» de la Ley 20/2013. La STC 79/2017 anuló esa parte de la ley porque obligaba a cada comunidad a aceptar las normas de otra en materias de su competencia. Tal como se plantea, choca con esa sentencia; solo cabría por acuerdos entre administraciones o armonización por materias.",
           "fuentes": [
             {
               "nombre": "Tribunal Constitucional · STC 79/2017",
@@ -297,6 +373,15 @@
             }
           ],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -328,6 +413,15 @@
               "url": "https://eur-lex.europa.eu/eli/dir/2020/285/oj/spa"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "De inmediato"
         }
       },
       {
@@ -338,8 +432,8 @@
           "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Hoy la LGSS ya prevé una tabla reducida de bases para rendimientos bajos (art. 308). Una cuota fija bonificada que mantenga todos los derechos traslada el coste al Estado. Sin dato oficial de coste localizado.",
+          "veredicto": "verde",
+          "texto": "Hoy la LGSS ya prevé una tabla reducida de bases para rendimientos bajos (art. 308). Una cuota fija bonificada que mantenga los derechos cabe con una ley estatal (art. 149.1.17 CE); el coste lo asumiría el Estado.",
           "fuentes": [
             {
               "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
@@ -352,6 +446,15 @@
           "texto": "Protege a autónomos con ingresos bajos sin perder derechos, pero el Estado paga la diferencia. Sin estimación pública del coste. Riesgo: infradeclarar ingresos para entrar; requiere control cruzado con Hacienda.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -363,11 +466,19 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "La LETA ya regula a los TRADE y sus acuerdos de interés profesional (art. 13). Aplicarles el convenio colectivo de la empresa cliente exige reformar esa ley y comprobar que encaja con las normas de competencia de la UE.",
+          "texto": "La LETA (art. 13) regula a los TRADE; aplicarles el convenio de la empresa cliente exige reformarla. Según el TJUE (C-413/13, FNV Kunsten), un convenio para autónomos puede chocar con el art. 101 TFUE salvo falsos autónomos; las Directrices de la Comisión de 2022 lo admiten para autónomos dependientes.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 20/2007, Estatuto del Trabajo Autónomo",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
+            },
+            {
+              "nombre": "CURIA · STJUE C-413/13, FNV Kunsten (2014)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-413/13"
+            },
+            {
+              "nombre": "EUR-Lex · Directrices sobre convenios colectivos de autónomos sin asalariados (2022/C 374/02)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:52022XC0930(02)"
             }
           ]
         },
@@ -376,6 +487,15 @@
           "texto": "Mejora las condiciones de los TRADE, pero puede llevar a clientes a cambiar de proveedor para no asumir el convenio. Coste público nulo. Sin precedente evaluado encontrado.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ]

@@ -35,11 +35,15 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "Es competencia estatal y técnicamente sencillo: basta indexar la reducción por rendimientos del trabajo al SMI, fijado en 2026 en 1.221 €/mes en 14 pagas.",
+          "texto": "Cabe: el Estado regula la base del IRPF y puede ligar por ley la reducción por rendimientos del trabajo al SMI (1.221 €/mes en 14 pagas en 2026). Afecta a las dos mitades del impuesto sin necesitar a las comunidades.",
           "fuentes": [
             {
               "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
               "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
+            },
+            {
+              "nombre": "BOE · Ley 22/2009 de financiación autonómica, art. 46",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2009-20375"
             }
           ]
         },
@@ -53,6 +57,15 @@
               "url": "https://www.eldiario.es/1_b7cc7d"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -63,9 +76,18 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su coste. El IRPF está cedido al 50 % a las CCAA: la rebaja estatal solo afectaría a la parte estatal salvo acuerdo autonómico.",
-          "fuentes": []
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado puede diseñarlo como reducción en la base, que afecta a todo el impuesto (Ley 22/2009, art. 46). Tratar distinto por edad es legal si tiene justificación objetiva, como el empleo juvenil (art. 14 CE). Como deducción en cuota, solo tocaría la mitad estatal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 22/2009 de financiación autonómica, art. 46",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2009-20375"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
@@ -83,6 +105,15 @@
               "url": "https://taxfoundation.org/blog/poland-income-tax-cut-for-young-workers-creates-dueling-incentives/"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Los 4 primeros años de cada contribuyente"
         }
       },
       {
@@ -93,8 +124,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Hay precedente: el 0 % se aplicó a alimentos básicos hasta el 30/9/2024, pero sin carne ni pescado. La normativa de la UE lo permite para alimentos; el coste no está cuantificado y la condición «mientras persista la crisis» no tiene fecha.",
+          "veredicto": "verde",
+          "texto": "Cabe: la UE permite el tipo cero para alimentos dentro de las siete partidas con tipos muy reducidos (Directiva 2006/112/CE, art. 98, reformada en 2022) y España ya lo aplicó hasta 2024. Incluir carne y pescado no lo impide la norma.",
           "fuentes": [
             {
               "nombre": "AEAT · Novedades IVA 2024 (tipo 0 % alimentos)",
@@ -103,6 +134,10 @@
             {
               "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA, arts. 97-98",
+              "url": "https://eur-lex.europa.eu/eli/dir/2006/112/oj"
             }
           ]
         },
@@ -131,6 +166,18 @@
               "url": "https://www.cnmc.es/sites/default/files/editor_contenidos/Notas%20de%20prensa/2023/20230810_NP_Estudio_IVA.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": "Referencia: la rebaja de 2023, sin carne ni pescado, costó más de 1.320 M€/año",
+            "fuente": {
+              "nombre": "Hacienda · Prórroga de la rebaja del IVA de alimentos (jun. 2023)",
+              "url": "https://www.hacienda.gob.es/GabineteMinistro/Notas%20Prensa/2023/CONSEJO-DE-MINISTROS/27-06-23-NP-CM-RDL-27-JUNIO-MEDIDAS-FISCALES.pdf"
+            }
+          },
+          "plazo": "Mientras persista la crisis de inflación"
         }
       },
       {
@@ -141,8 +188,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "El déficit cerró 2025 en el 2,18 % (2,39 % con la DANA) y la deuda estaba en el 101,4 % en el 2T 2026. El programa no fija cifras ni explica cómo lo hará a la vez que baja impuestos.",
+          "veredicto": "verde",
+          "texto": "Cabe: reducir déficit y deuda es lo que exigen el art. 135 CE y las reglas fiscales de la UE. El programa no fija cifras ni medidas, así que no se puede medir cuánto ni cómo.",
           "fuentes": [
             {
               "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
@@ -151,6 +198,10 @@
             {
               "nombre": "Banco de España · Deuda AAPP 2T 2026",
               "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -168,6 +219,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -179,7 +239,7 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "Ya está en vigor: la revalorización con el IPC medio se aplica por ley (2,7 % en 2026). La AIReF advierte de que el sistema no tiene la sostenibilidad garantizada.",
+          "texto": "Cabe y ya está en vigor: la Ley General de la Seguridad Social revaloriza cada año las pensiones con el IPC medio (2,7 % en 2026).",
           "fuentes": [
             {
               "nombre": "La Moncloa · Revalorización de pensiones 2026",
@@ -188,6 +248,10 @@
             {
               "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            },
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
         },
@@ -201,6 +265,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Cada año"
         }
       }
     ],
@@ -213,15 +286,29 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su recaudación. Basta una ley estatal; el efecto recaudatorio depende de cuánto capital se traslade fuera.",
-          "fuentes": []
+          "veredicto": "verde",
+          "texto": "Cabe: la escala del ahorro del IRPF la fija el Estado entera; las comunidades no tienen competencia sobre ella (Ley 22/2009, art. 46). Basta una ley estatal ordinaria.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 22/2009 de financiación autonómica, art. 46",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2009-20375"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
           "texto": "Afecta a pocas personas con grandes rentas del capital, por lo que recauda poco y es sensible a cambios de residencia o a retrasar la venta de activos. No consta estimación oficial de recaudación.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -233,7 +320,7 @@
         },
         "verificacion": {
           "veredicto": "verde",
-          "texto": "La Ley 5/2020 grava al 0,2 % la compra de acciones de empresas españolas que cotizan con más de 1.000 M€ de capitalización. Doblar el tipo solo requiere una ley estatal ordinaria.",
+          "texto": "Cabe: la Ley 5/2020 grava al 0,2 % la compra de acciones de empresas españolas cotizadas de más de 1.000 M€. Doblar el tipo solo requiere una ley estatal ordinaria; no hay norma UE que lo impida.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 5/2020 (Impuesto sobre Transacciones Financieras)",
@@ -251,6 +338,15 @@
               "url": "https://sede.agenciatributaria.gob.es/Sede/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2025/6-otros-impuestos.html"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -261,8 +357,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su coste. Es competencia estatal. La AEAT ya paga deducciones reembolsables, como la de maternidad.",
+          "veredicto": "verde",
+          "texto": "Cabe: los mínimos por descendiente y las deducciones reembolsables son estatales; la AEAT ya paga deducciones así, como la de maternidad. Basta una ley estatal.",
           "fuentes": []
         },
         "viabilidad": {
@@ -281,6 +377,15 @@
               "url": "https://www.census.gov/library/working-papers/2022/demo/SEHSD-wp2022-24.html"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -291,8 +396,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "El déficit bajó al 2,18 % en 2025 y la deuda al 101,4 % en el 2T 2026. Con las políticas actuales, la AIReF proyecta que la deuda subirá al 123 % del PIB en 2050.",
+          "veredicto": "verde",
+          "texto": "Cabe: bajar deuda y déficit es lo que exigen el art. 135 CE y las reglas fiscales de la UE. El programa no da cifras de la senda.",
           "fuentes": [
             {
               "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
@@ -305,6 +410,10 @@
             {
               "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -322,6 +431,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -333,7 +451,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "La reforma ordinaria (art. 167 CE) requiere tres quintos de cada Cámara. Si afecta a la sección 1.ª del capítulo II del título I, exige además disolver las Cortes y convocar referéndum (art. 168). La revalorización con el IPC ya está fijada por ley.",
+          "texto": "Exige reformar la Constitución. Las pensiones están en el art. 50 (capítulo III): basta el art. 167, tres quintos de cada Cámara. Si se llevan a la sección 1.ª del capítulo II, hace falta el art. 168: dos tercios, disolver las Cortes y referéndum.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución Española, arts. 167-168",
@@ -342,6 +460,10 @@
             {
               "nombre": "La Moncloa · Revalorización de pensiones 2026",
               "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -355,6 +477,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -368,14 +499,28 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su coste. El programa no fija tipos ni tramos. El IRPF está cedido al 50 % a las CCAA.",
-          "fuentes": []
+          "texto": "Cabe bajar el IRPF por hijos, pero la mitad autonómica de la escala la fija cada comunidad (Ley 22/2009, art. 46). El Estado puede actuar en su mitad o vía mínimos familiares; el tipo completo exige a las CCAA. No fija tipos ni tramos.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 22/2009 de financiación autonómica, art. 46",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2009-20375"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
           "texto": "Bajar el IRPF por hijos ayuda a las familias que pagan el impuesto, pero poco a las de rentas bajas que apenas tributan. Sin escala ni cifras, no se puede estimar el coste.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -387,11 +532,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "No se cuantifica. La Directiva de IVA limita los tipos inferiores al 5 % y el tipo cero a un máximo de siete partidas de necesidades básicas; sin dato oficial localizado sobre el coste.",
+          "texto": "Cabe bajar el IVA, con límites UE: el tipo general no puede bajar del 15 % y los reducidos del 5 %; por debajo, solo en siete partidas de primera necesidad (Directiva 2006/112/CE, arts. 97-98). El programa no dice qué productos ni a qué tipo.",
           "fuentes": [
             {
               "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA, arts. 97-98",
+              "url": "https://eur-lex.europa.eu/eli/dir/2006/112/oj"
             }
           ]
         },
@@ -416,6 +565,15 @@
               "url": "https://www.hacienda.gob.es/GabineteMinistro/Notas%20Prensa/2023/CONSEJO-DE-MINISTROS/27-06-23-NP-CM-RDL-27-JUNIO-MEDIDAS-FISCALES.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -426,8 +584,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "La deuda es del 101,4 % del PIB (2T 2026) y el déficit de 2025, del 2,18 %. El programa no identifica qué partidas son «gasto superfluo» ni cuánto suman frente a la rebaja fiscal.",
+          "veredicto": "verde",
+          "texto": "Cabe: controlar déficit y deuda es lo que exigen el art. 135 CE y las reglas fiscales de la UE. El programa no identifica qué es «gasto superfluo» ni cuánto suma.",
           "fuentes": [
             {
               "nombre": "Banco de España · Deuda AAPP 2T 2026",
@@ -436,6 +594,10 @@
             {
               "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
               "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -453,6 +615,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -463,8 +634,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "No concreta medidas. La AIReF calcula un gasto bruto en pensiones del 14,6 % del PIB de media entre 2022 y 2050 y unas transferencias del Estado que deben subir hasta el 3 % del PIB.",
+          "veredicto": "gris",
+          "texto": "No evaluable: no propone ninguna medida concreta, solo objetivos generales (empleo, salarios, productividad).",
           "fuentes": [
             {
               "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
@@ -482,6 +653,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -494,12 +674,16 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "La Ley 7/2024 ya fija un mínimo global del 15 % para los grupos con 750 M€ o más de facturación, en aplicación de la norma de la UE y la OCDE. Subirlo al 20 % es competencia estatal; sin dato oficial localizado sobre su recaudación ni sobre su efecto en la inversión.",
+          "veredicto": "verde",
+          "texto": "Cabe: la Directiva (UE) 2022/2523 fija un mínimo del 15 %, no un máximo, y España la aplica con la Ley 7/2024. Exigir un 20 % a grandes empresas es competencia estatal por ley ordinaria.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 7/2024 (Impuesto Complementario)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2024-26694"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2022/2523 (tipo mínimo global)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2022/2523/oj"
             }
           ]
         },
@@ -508,6 +692,15 @@
           "texto": "Va más allá del 15 % mínimo pactado en la OCDE. Puede recaudar más, pero si otros países no lo siguen, las empresas tienen incentivos a mover beneficios o sede. No consta estimación oficial.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -518,9 +711,18 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "Sin dato oficial localizado sobre su recaudación. Es competencia estatal. El riesgo de cambio de residencia es el que intenta frenar la cláusula de 5 años.",
-          "fuentes": []
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado puede crear impuestos propios (art. 133 CE) y el TC avaló el impuesto estatal de grandes fortunas, que neutraliza bonificaciones autonómicas (STC 149/2023, citada por número). Límite: no ser confiscatorio (art. 31.1 CE).",
+          "fuentes": [
+            {
+              "nombre": "TC · STC 149/2023 (impuesto de grandes fortunas)",
+              "url": "https://hj.tribunalconstitucional.es/"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
         },
         "viabilidad": {
           "coste": null,
@@ -552,6 +754,15 @@
               "url": "https://www.hacienda.gob.es/GabineteMinistro/notas%20prensa/2023/s.e.hacienda/20-09-23-np-impuesto-grandes-fortunas.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -562,8 +773,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "El tipo vigente es del 3 % (Ley 4/2020), así que la medida lo multiplica por cinco. Es una ley estatal, pero no se cuantifica su recaudación ni el riesgo de represalias comerciales; sin dato oficial localizado al respecto.",
+          "veredicto": "verde",
+          "texto": "Cabe: el impuesto sobre servicios digitales es estatal (Ley 4/2020) y no hay norma UE que fije su tipo. Subirlo al 15 % requiere ley ordinaria; el riesgo de represalias de EE. UU. es comercial, no jurídico.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 4/2020 (Servicios Digitales)",
@@ -581,6 +792,15 @@
               "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -592,7 +812,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "El SMI de 2026 suma 17.094 €/año, y la pensión mínima de jubilación de 65 años o más sin cónyuge a cargo, unos 12.400-13.100 €. Igualarlas tiene un coste sin cuantificar. Además, ubicar el derecho en la sección 2.ª exige tres quintos de cada Cámara (art. 167).",
+          "texto": "Exige reformar la Constitución por el art. 167, como propone: tres quintos de cada Cámara (o mayoría absoluta del Senado y dos tercios del Congreso). Sin ese acuerdo, la revalorización con el IPC ya puede fijarse por ley ordinaria.",
           "fuentes": [
             {
               "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
@@ -604,6 +824,10 @@
             },
             {
               "nombre": "BOE · Constitución Española, arts. 167-168",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
@@ -618,6 +842,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -628,8 +861,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "La Ley 27/2011 fija los 67 años desde 2027, salvo 38 años y medio cotizados. La AIReF proyecta una deuda del 123 % del PIB en 2050 con las políticas actuales. El programa no cuantifica el coste.",
+          "veredicto": "verde",
+          "texto": "Cabe: la edad de jubilación la fija una ley estatal ordinaria (Ley General de la Seguridad Social, art. 205, tras la Ley 27/2011). Volver a los 65 años solo requiere cambiar esa ley; el coste no cuenta para este análisis.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 27/2011 (edad de jubilación)",
@@ -638,6 +871,10 @@
             {
               "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            },
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
         },
@@ -651,6 +888,15 @@
               "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ]

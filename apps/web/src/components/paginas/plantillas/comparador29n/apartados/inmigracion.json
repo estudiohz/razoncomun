@@ -44,6 +44,10 @@
             {
               "nombre": "BOE · LO 4/2000 (LOEx)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
+            },
+            {
+              "nombre": "BOE · LO 4/2000, disp. final 4.ª (preceptos orgánicos)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544#dfcuarta"
             }
           ]
         },
@@ -52,6 +56,15 @@
           "texto": "Sin coste presupuestario relevante. El riesgo es judicial: si se aplica sin identificar a cada persona ni permitir pedir asilo, puede ser anulado por tribunales españoles o el TEDH.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -62,8 +75,8 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "verde",
-          "texto": "Competencia estatal y sin obstáculo UE: el arraigo es una figura nacional (art. 31.3 LOEx), no exigida por el derecho europeo. La última regularización extraordinaria se hizo por real decreto (RD 316/2026); una ley posterior podría volver a cambiarlo.",
+          "veredicto": "naranja",
+          "texto": "Cabe: el arraigo es figura nacional (art. 31.3 LOEx), no exigida por el derecho UE, y la regularización de 2026 se hizo por real decreto. Pero el art. 31 tiene rango de ley orgánica (disp. final 4.ª LOEx): reformarlo exige mayoría absoluta del Congreso (art. 81 CE).",
           "fuentes": [
             {
               "nombre": "BOE · LOEx art. 31.3",
@@ -72,6 +85,14 @@
             {
               "nombre": "BOE · RD 316/2026",
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-8284"
+            },
+            {
+              "nombre": "BOE · LO 4/2000, disp. final 4.ª (preceptos orgánicos)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544#dfcuarta"
+            },
+            {
+              "nombre": "BOE · Constitución",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -91,6 +112,15 @@
               "url": "https://docs.iza.org/dp10687.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -130,6 +160,15 @@
               "url": "https://en.ilsole24ore.com/art/centres-albania-two-years-without-peace-and-its-dark-actual-costs-AHg29UZD"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -141,11 +180,15 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "La Directiva 2003/109 obliga a igual trato a los residentes de larga duración en asistencia social y acceso a la vivienda. Exigir antigüedad de padrón o cotización puede ser discriminación indirecta si perjudica sobre todo a extranjeros; depende del diseño y de las CCAA, que gestionan muchas ayudas.",
+          "texto": "Cabe si no se basa en la nacionalidad, como dice. Pero a residentes de larga duración la Directiva 2003/109 (art. 11) les garantiza igual trato en ayudas básicas y vivienda, y exigir años de padrón o cotización puede ser discriminación indirecta (STJUE C-112/22). Depende del diseño y de las CCAA, que gestionan muchas ayudas.",
           "fuentes": [
             {
               "nombre": "DOUE (BOE) · Directiva 2003/109/CE art. 11",
               "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
+            },
+            {
+              "nombre": "CURIA · STJUE C-112/22 y C-223/22 (renta italiana, 2024; citada por número)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-112/22"
             }
           ]
         },
@@ -174,6 +217,15 @@
               "url": "https://www.rfberlin.com/wp-content/uploads/2024/11/dustmann-et-al-2024-refugee-benefit-cuts.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -198,6 +250,15 @@
           "texto": "Afectaría a pocas personas al año y su efecto disuasorio no está medido. Coste bajo; el reto es la proporcionalidad caso a caso que exige el derecho europeo.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -211,10 +272,10 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "Coste asumible para el Estado, pero sin dato oficial localizado de su consignación presupuestaria; buena parte de la integración (educación, sanidad, servicios sociales) la ejecutan CCAA y ayuntamientos.",
+          "texto": "Cabe: el Estado puede dotar un plan con sus presupuestos. Pero buena parte de la integración (educación, sanidad, servicios sociales) es competencia de CCAA y ayuntamientos, y el TC limita que el Estado gestione subvenciones en esas materias (STC 13/1992, citada por número): requiere colaborar con ellas.",
           "fuentes": [
             {
-              "nombre": "BOE · Constitución (reparto competencial)",
+              "nombre": "BOE · Constitución",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
@@ -235,6 +296,18 @@
               "url": "https://immigrationlab.org/project/preparing-for-the-next-crisis-lessons-from-germanys-language-programs-for-refugees"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "cifra",
+            "texto": "500 M€ de dotación inicial (cifra del propio programa)",
+            "fuente": {
+              "nombre": "Programa PSOE 29N, p. 93",
+              "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf"
+            }
+          },
+          "plazo": "Plan 2026-2030"
         }
       },
       {
@@ -270,6 +343,15 @@
               "url": "https://www.gsb.stanford.edu/insights/economic-upside-fast-tracking-refugee-asylum-claims"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -280,8 +362,8 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "verde",
-          "texto": "Viable como apoyo estatal: la tutela de menores es competencia autonómica (asistencia social, art. 148.1.20 CE) y la unidad se plantea como refuerzo a las CCAA, no como sustitución.",
+          "veredicto": "naranja",
+          "texto": "Cabe como apoyo estatal, pero la tutela de menores es competencia autonómica (asistencia social, art. 148.1.20 CE y estatutos): la unidad solo puede actuar en coordinación con las CCAA que la pidan, no sustituirlas.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución art. 148",
@@ -294,6 +376,15 @@
           "texto": "Coste probablemente bajo (equipos de apoyo), sin cifra en el programa. Su eficacia depende de la coordinación con las comunidades, que tienen la tutela.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -304,8 +395,8 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "verde",
-          "texto": "Declarativa y alineada con el Pacto Europeo en aplicación desde junio de 2026 (cribado en 7 días, procedimiento fronterizo obligatorio para ciertos casos, solidaridad). No concreta medidas propias.",
+          "veredicto": "gris",
+          "texto": "Es una declaración de principios sobre la política europea, sin medida concreta que analizar. Su orientación es compatible con el Pacto Europeo de Migración y Asilo, aplicable desde el 12/06/2026, pero no hay nada que evaluar jurídicamente.",
           "fuentes": [
             {
               "nombre": "Comisión Europea · Pacto en aplicación",
@@ -318,6 +409,15 @@
           "texto": "Declaración de principios sin medidas propias ni coste. Sus consecuencias dependen de cómo se aplique el Pacto Europeo.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -331,15 +431,27 @@
         },
         "verificacion": {
           "veredicto": "rojo",
-          "texto": "Un cierre total choca con el derecho UE: libre circulación de ciudadanos comunitarios, derecho de asilo (art. 13.4 CE y Pacto Europeo) y reagrupación familiar. Vetar de por vida a quien entró irregularmente afectaría incluso a quien obtenga protección internacional.",
+          "texto": "Rojo en parte: no se puede cerrar la entrada a ciudadanos UE (Directiva 2004/38), ni a solicitantes de asilo (art. 13.4 CE, Reglamento 2024/1347), ni negar la reagrupación (Directiva 2003/86), ni vetar de por vida a quien entró irregular y obtiene protección. Sí puede reducir la admisión de trabajadores de terceros países (art. 79.5 TFUE).",
           "fuentes": [
             {
-              "nombre": "BOE · Constitución art. 13",
+              "nombre": "BOE · Constitución",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             },
             {
-              "nombre": "Comisión Europea · Pacto en aplicación",
-              "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"
+              "nombre": "EUR-Lex · Directiva 2004/38/CE art. 24 (citada por número)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2004/38/oj"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2024/1347, cualificación (citado por número)",
+              "url": "https://eur-lex.europa.eu/eli/reg/2024/1347/oj"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2003/86/CE, reagrupación familiar (citada por número)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2003/86/oj"
+            },
+            {
+              "nombre": "DOUE (BOE) · TFUE arts. 18, 63 y 79.5",
+              "url": "https://www.boe.es/doue/2010/083/Z00047-00199.pdf"
             }
           ]
         },
@@ -348,6 +460,15 @@
           "texto": "Un cierre total no es aplicable dentro de la UE y afectaría a sectores que dependen de trabajadores extranjeros, cuyo empleo sigue creciendo. No hay precedente de cierre total en un país de la UE.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -358,12 +479,20 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "verde",
-          "texto": "El arraigo es una figura de ley nacional (art. 31.3 LOEx) y del reglamento; el derecho UE no lo exige, por lo que las Cortes pueden suprimirlo. La nacionalidad también es materia estatal regulada en el Código Civil.",
+          "veredicto": "naranja",
+          "texto": "Cabe: el arraigo no lo exige el derecho UE y la nacionalidad se regula en el Código Civil (ley ordinaria). Pero suprimir el arraigo toca el art. 31 LOEx, de rango orgánico (disp. final 4.ª): exige mayoría absoluta del Congreso (art. 81 CE).",
           "fuentes": [
             {
               "nombre": "BOE · LOEx art. 31.3",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
+            },
+            {
+              "nombre": "BOE · LO 4/2000, disp. final 4.ª (preceptos orgánicos)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544#dfcuarta"
+            },
+            {
+              "nombre": "BOE · Constitución",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -383,6 +512,15 @@
               "url": "https://docs.iza.org/dp10687.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -394,11 +532,31 @@
         },
         "verificacion": {
           "veredicto": "rojo",
-          "texto": "Una preferencia por nacionalidad choca con la Directiva 2003/109 (igual trato de residentes de larga duración en asistencia social y acceso a la vivienda) y con la prohibición de discriminar a ciudadanos UE. No puede imponerse por ley nacional.",
+          "texto": "Rojo para ciudadanos UE (art. 18 TFUE, Directiva 2004/38 art. 24), residentes de larga duración (Directiva 2003/109 art. 11: ayudas básicas y vivienda; STJUE Kamberaj) y refugiados (Reglamento 2024/1347). Para otros extranjeros con residencia temporal la ley puede fijar requisitos (art. 13.1 CE). Vivienda y guarderías son además de CCAA.",
           "fuentes": [
+            {
+              "nombre": "DOUE (BOE) · TFUE arts. 18, 63 y 79.5",
+              "url": "https://www.boe.es/doue/2010/083/Z00047-00199.pdf"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2004/38/CE art. 24 (citada por número)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2004/38/oj"
+            },
             {
               "nombre": "DOUE (BOE) · Directiva 2003/109/CE art. 11",
               "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
+            },
+            {
+              "nombre": "CURIA · STJUE C-571/10 Kamberaj (ayuda a vivienda; citada por número)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-571/10"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2024/1347, cualificación (citado por número)",
+              "url": "https://eur-lex.europa.eu/eli/reg/2024/1347/oj"
+            },
+            {
+              "nombre": "BOE · Constitución",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -427,6 +585,15 @@
               "url": "https://www.rfberlin.com/wp-content/uploads/2024/11/dustmann-et-al-2024-refugee-benefit-cuts.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -466,6 +633,15 @@
               "url": "https://www.irs.gov/node/158576"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": "Vox no fija tipo; al 1 % serían ≈107 M€/año (remesas 2023, BdE)",
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -477,7 +653,7 @@
         },
         "verificacion": {
           "veredicto": "rojo",
-          "texto": "Hoy la Ley 19/2021 exige residencia legal, no nacionalidad. Excluir a residentes de larga duración y a ciudadanos UE vulnera la igualdad de trato en asistencia social de la Directiva 2003/109 y el derecho UE.",
+          "texto": "Rojo para ciudadanos UE residentes (Directiva 2004/38 art. 24), residentes de larga duración (Directiva 2003/109 art. 11; el TJUE anuló exigir 10 años en Italia, C-112/22) y refugiados (Reglamento 2024/1347). A otros extranjeros con residencia temporal una ley sí podría excluirlos: hoy la Ley 19/2021 exige residencia legal, no nacionalidad.",
           "fuentes": [
             {
               "nombre": "BOE · Ley 19/2021 IMV",
@@ -486,6 +662,18 @@
             {
               "nombre": "DOUE (BOE) · Directiva 2003/109/CE art. 11",
               "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2004/38/CE art. 24 (citada por número)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2004/38/oj"
+            },
+            {
+              "nombre": "CURIA · STJUE C-112/22 y C-223/22 (renta italiana, 2024; citada por número)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-112/22"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2024/1347, cualificación (citado por número)",
+              "url": "https://eur-lex.europa.eu/eli/reg/2024/1347/oj"
             }
           ]
         },
@@ -505,6 +693,15 @@
               "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ],
@@ -517,8 +714,8 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "naranja",
-          "texto": "El RD 316/2026 cerró solicitudes el 30/06/2026 y fija 3 meses para resolver con silencio negativo; evitar desestimaciones por retraso exige reforzar oficinas ya. Sin dato oficial localizado del volumen pendiente.",
+          "veredicto": "verde",
+          "texto": "Cabe: resolver las solicitudes del RD 316/2026 (cerradas el 30/06/2026, 3 meses para resolver con silencio negativo) es gestión del Estado y solo exige medios. Lo que no puede es dar por estimadas las ya caducadas sin cambiar la norma.",
           "fuentes": [
             {
               "nombre": "BOE · RD 316/2026",
@@ -551,6 +748,15 @@
               "url": "https://dip.euaa.europa.eu/node/3150"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -561,12 +767,20 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "verde",
-          "texto": "Competencia estatal; el derecho UE no prohíbe regularizaciones nacionales y la LOEx ya contempla vías permanentes (arraigo, art. 31.3). Requiere mayoría absoluta del Congreso por ser ley orgánica.",
+          "veredicto": "naranja",
+          "texto": "Cabe: el derecho UE no prohíbe regularizaciones nacionales y la LOEx ya tiene vías permanentes (arraigo). Pero la reforma toca preceptos orgánicos (art. 31 y otros, disp. final 4.ª LOEx): exige mayoría absoluta del Congreso (art. 81 CE).",
           "fuentes": [
             {
               "nombre": "BOE · LOEx art. 31.3",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
+            },
+            {
+              "nombre": "BOE · LO 4/2000, disp. final 4.ª (preceptos orgánicos)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544#dfcuarta"
+            },
+            {
+              "nombre": "BOE · Constitución",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -586,6 +800,15 @@
               "url": "https://docs.iza.org/dp10687.pdf"
             }
           ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -596,12 +819,20 @@
           "nota": "Página impresa del documento. PDF localizado en copia alojada por prensa, no en la web del partido."
         },
         "verificacion": {
-          "veredicto": "verde",
-          "texto": "Posible por ley orgánica: la STC 172/2020 declaró el rechazo en frontera constitucional con condiciones, pero no obligatorio, así que el legislador puede suprimirlo.",
+          "veredicto": "naranja",
+          "texto": "Cabe: la STC 172/2020 declaró el rechazo en frontera constitucional con condiciones, pero no obligatorio, así que puede suprimirse. La disp. adicional 10.ª tiene rango orgánico (disp. final 4.ª LOEx): exige mayoría absoluta del Congreso (art. 81 CE).",
           "fuentes": [
             {
               "nombre": "BOE · STC 172/2020",
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2020-16819"
+            },
+            {
+              "nombre": "BOE · LO 4/2000, disp. final 4.ª (preceptos orgánicos)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544#dfcuarta"
+            },
+            {
+              "nombre": "BOE · Constitución",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
         },
@@ -610,6 +841,15 @@
           "texto": "Sin coste presupuestario relevante. La consecuencia práctica es volver a aplicar el procedimiento ordinario en Ceuta y Melilla, con más trámites en frontera.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -621,7 +861,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "El Pacto Europeo (en aplicación desde el 12/06/2026) hace obligatorio el procedimiento fronterizo para ciertos solicitantes, que deben permanecer en zona fronteriza, y el Reglamento de Retorno amplía el internamiento. Cerrar los CIE exige alternativas compatibles.",
+          "texto": "Cerrar los CIE cabe: la Directiva de retorno permite internar, no obliga. Pero el Pacto Europeo (Reglamento 2024/1348, aplicable desde el 12/06/2026) obliga a tramitar ciertos casos en frontera con los solicitantes localizados allí; España necesitaría alternativas compatibles. Limitar la detención a último recurso sí encaja.",
           "fuentes": [
             {
               "nombre": "Comisión Europea · Pacto en aplicación",
@@ -630,6 +870,10 @@
             {
               "nombre": "ECRE · Reglamento de Retorno",
               "url": "https://ecre.org/european-parliament-approval-of-the-return-regulation/"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2024/1348, procedimiento de asilo (citado por número)",
+              "url": "https://eur-lex.europa.eu/eli/reg/2024/1348/oj"
             }
           ]
         },
@@ -638,6 +882,15 @@
           "texto": "Ahorraría el coste de los CIE, no cifrado públicamente, pero haría más difícil ejecutar expulsiones, y el Pacto Europeo exige ciertas detenciones en frontera.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       },
       {
@@ -649,7 +902,7 @@
         },
         "verificacion": {
           "veredicto": "naranja",
-          "texto": "El art. 13.2 CE solo permite el voto municipal de extranjeros por tratado o ley «atendiendo a criterios de reciprocidad». Ampliarlo sin reciprocidad requeriría reformar la Constitución.",
+          "texto": "Cabe solo en parte: el art. 13.2 CE permite el voto municipal de extranjeros por tratado o ley «atendiendo a criterios de reciprocidad». Ampliarlo con nuevos tratados es posible; darlo sin reciprocidad, o el sufragio pasivo fuera de esos casos, exige reformar la Constitución.",
           "fuentes": [
             {
               "nombre": "BOE · Constitución art. 13.2",
@@ -662,6 +915,15 @@
           "texto": "Sin coste relevante. Requiere reforma constitucional o tratados de reciprocidad (art. 13.2 CE). No se ha localizado una evaluación de sus efectos.",
           "precedentes": [],
           "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
         }
       }
     ]
