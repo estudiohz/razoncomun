@@ -7,6 +7,7 @@ import { BloqueAfinidad, Flechas, calcularAfinidad, claveVoto, useVotos } from '
 const RC = { id: 'rc', nombre: 'Razón Común', color: '#16B8A0' };
 
 interface Ficha { clave: string; fuerza: string; texto: string }
+const POR_FUERZA = 2;
 
 function barajar<T>(xs: T[]): T[] {
   const a = [...xs];
@@ -33,9 +34,12 @@ export function Juego({
   const rondas = useMemo(
     () =>
       apartados.map((ap) => {
+        // 2 propuestas al azar de cada fuerza: rondas cortas y el mismo peso para todos.
         const fichas: Ficha[] = [];
-        for (const p of partidos) (ap.propuestas[p.id] ?? []).forEach((x, i) => fichas.push({ clave: claveVoto(ap.id, p.id, i), fuerza: p.id, texto: x.texto }));
-        (rc[ap.id] ?? []).forEach((x, i) => fichas.push({ clave: claveVoto(ap.id, 'rc', i), fuerza: 'rc', texto: x.texto }));
+        const dos = (id: string, textos: string[]) =>
+          barajar(textos.map((texto, i) => ({ clave: claveVoto(ap.id, id, i), fuerza: id, texto }))).slice(0, POR_FUERZA);
+        for (const p of partidos) fichas.push(...dos(p.id, (ap.propuestas[p.id] ?? []).map((x) => x.texto)));
+        fichas.push(...dos('rc', (rc[ap.id] ?? []).map((x) => x.texto)));
         return { ap, fichas: barajar(fichas) };
       }),
     [apartados, partidos, rc],
@@ -71,6 +75,27 @@ export function Juego({
             </div>
           </div>
         </div>
+
+        <section className="rounded-[18px] border border-linea bg-white p-6">
+          <h2 className="text-[20px] font-extrabold text-titular">Apartado por apartado</h2>
+          <ul className="mt-4 divide-y divide-linea">
+            {rondas.map(({ ap }) => {
+              const deEste = Object.fromEntries(Object.entries(votos).filter(([k]) => k.startsWith(`${ap.id}|`)));
+              const g = calcularAfinidad(deEste, fuerzas).filter((f) => f.votadas)[0];
+              return (
+                <li key={ap.id} className="flex items-center gap-3 py-2.5 text-[14px]">
+                  <span className="h-2.5 w-2.5 flex-none rounded-full" style={{ background: COLOR_APARTADO[ap.id] ?? '#1B3D9C' }} />
+                  <span className="flex-1 font-semibold text-titular">{ap.titulo}</span>
+                  {g && g.puntuacion > 0 ? (
+                    <span className="font-extrabold" style={{ color: g.color }}>{g.nombre}</span>
+                  ) : (
+                    <span className="text-gris">{g ? 'ninguna te convence' : 'sin votar'}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
         <BloqueAfinidad fuerzas={fuerzas} titulo="Tu afinidad, desvelada" texto="Me gusta menos no me gusta, entre las propuestas que votaste de cada fuerza." />
 
@@ -127,7 +152,7 @@ export function Juego({
       <div className="rounded-[18px] px-7 py-6 text-titular" style={{ background: `${color}24`, borderTop: `6px solid ${color}` }}>
         <p className="text-[12px] font-bold uppercase tracking-[.12em] opacity-85">Ronda {paso + 1} de {rondas.length}</p>
         <h2 className="mt-1 text-[clamp(24px,3.4vw,32px)] font-extrabold">{ap.titulo}</h2>
-        <p className="mt-1 text-[14px] text-cuerpo">{fichas.length} propuestas mezcladas. Vota las que quieras: no sabes de quién son.</p>
+        <p className="mt-1 text-[14px] text-cuerpo">{fichas.length} propuestas mezcladas, 2 de cada fuerza. Vota las que quieras: no sabes de quién son.</p>
       </div>
 
       <ul className="grid gap-3 min-[760px]:grid-cols-2">
@@ -142,7 +167,14 @@ export function Juego({
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button type="button" disabled={paso === 0} onClick={() => setPaso((p) => p - 1)} className="min-h-[48px] rounded-boton border border-linea px-5 text-[14px] font-bold text-titular disabled:opacity-40">← Anterior</button>
-        <span className="text-[13px] text-gris">Llevas {total} votadas</span>
+        <span className="flex items-center gap-3 text-[13px] text-gris">
+          Llevas {total} votadas
+          {!ultimo && total > 0 ? (
+            <button type="button" onClick={() => { setDesvelado(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="font-bold text-titular underline">
+              Terminar y ver resultados
+            </button>
+          ) : null}
+        </span>
         {ultimo ? (
           <button type="button" onClick={() => { setDesvelado(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="min-h-[48px] rounded-boton px-6 text-[15px] font-bold text-white shadow-boton" style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}>
             Desvelar resultados
