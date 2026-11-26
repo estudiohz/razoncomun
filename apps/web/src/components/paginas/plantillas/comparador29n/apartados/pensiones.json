@@ -12,7 +12,7 @@
       "verificado2026": true
     },
     "psoe": {
-      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
       "verificado2026": true
     },
     "vox": {
@@ -29,7 +29,7 @@
       {
         "texto": "Aseguraremos que las pensiones mantengan su poder adquisitivo y suban cada año con el IPC.",
         "cita": {
-          "pagina": 34,
+          "pagina": 42,
           "apartado": "Medida 108",
           "nota": null
         },
@@ -75,7 +75,7 @@
       {
         "texto": "Incentivaremos la jubilación activa mediante deducciones en el IRPF.",
         "cita": {
-          "pagina": 34,
+          "pagina": 43,
           "apartado": "Medida 108",
           "nota": null
         },
@@ -113,7 +113,7 @@
       {
         "texto": "Blindaremos legalmente la caja única de la Seguridad Social: las cotizaciones seguirán financiando las pensiones y prestaciones en toda España.",
         "cita": {
-          "pagina": 15,
+          "pagina": 17,
           "apartado": null,
           "nota": null
         },
@@ -150,7 +150,7 @@
       {
         "texto": "Ampliaremos el acceso a la jubilación anticipada de las personas con síndrome de Down.",
         "cita": {
-          "pagina": 35,
+          "pagina": 44,
           "apartado": "Medida 112",
           "nota": null
         },
@@ -183,7 +183,7 @@
       {
         "texto": "Haremos compatibles las pensiones de discapacidad con el empleo.",
         "cita": {
-          "pagina": 35,
+          "pagina": 44,
           "apartado": "Medida 112",
           "nota": null
         },

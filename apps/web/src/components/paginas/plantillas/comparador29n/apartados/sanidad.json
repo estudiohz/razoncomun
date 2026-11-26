@@ -12,7 +12,7 @@
       "verificado2026": true
     },
     "psoe": {
-      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
       "verificado2026": false
     },
     "vox": {
@@ -114,7 +114,7 @@
       {
         "texto": "Acabar con las listas de espera, con un gasto sanitario público del 7% del PIB.",
         "cita": {
-          "pagina": null,
+          "pagina": 49,
           "apartado": "Sanidad",
           "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
         },
@@ -160,7 +160,7 @@
       {
         "texto": "Atención psicológica gratuita, con primera consulta en un máximo de 30 días.",
         "cita": {
-          "pagina": null,
+          "pagina": 50,
           "apartado": "Sanidad",
           "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
         },
@@ -203,7 +203,7 @@
       {
         "texto": "«Plan Sonríe»: incorporar tratamientos dentales básicos de adultos y, mientras, ayudas directas de hasta 200 € por persona y año.",
         "cita": {
-          "pagina": null,
+          "pagina": 49,
           "apartado": "Sanidad",
           "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
         },

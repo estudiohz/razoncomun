@@ -8,7 +8,7 @@
       "verificado2026": false
     },
     "psoe": {
-      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
       "verificado2026": false
     },
     "vox": {
@@ -26,7 +26,7 @@
       {
         "texto": "Permitir a los municipios un tributo municipal por pernoctaciones turísticas.",
         "cita": {
-          "pagina": null,
+          "pagina": 32,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -69,7 +69,7 @@
       {
         "texto": "Impuesto progresivo contra fondos buitre y grandes propietarios con pisos vacíos o turísticos.",
         "cita": {
-          "pagina": null,
+          "pagina": 31,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -118,7 +118,7 @@
       {
         "texto": "Regular la proliferación de viviendas de uso turístico.",
         "cita": {
-          "pagina": null,
+          "pagina": 24,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-vox-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
         },
@@ -159,7 +159,7 @@
       {
         "texto": "Fin de las licencias de pisos turísticos en zonas tensionadas en un plazo de tres años.",
         "cita": {
-          "pagina": null,
+          "pagina": 12,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },

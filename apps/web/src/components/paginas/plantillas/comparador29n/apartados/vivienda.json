@@ -12,7 +12,7 @@
       "verificado2026": false
     },
     "psoe": {
-      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
       "verificado2026": false
     },
     "vox": {
@@ -29,7 +29,7 @@
       {
         "texto": "Construir un millón de viviendas movilizando suelo público y privado.",
         "cita": {
-          "pagina": null,
+          "pagina": 53,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-del-pp-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
         },
@@ -66,7 +66,7 @@
       {
         "texto": "Nueva Ley de Suelo con licencias de obra y rehabilitación resueltas en un máximo de tres meses y silencio positivo.",
         "cita": {
-          "pagina": null,
+          "pagina": 53,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-del-pp-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
         },
@@ -149,7 +149,7 @@
       {
         "texto": "Ley contra la ocupación ilegal para expulsar a los ocupas por orden judicial en un plazo no superior a 48 horas.",
         "cita": {
-          "pagina": null,
+          "pagina": 55,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-del-pp-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
         },
@@ -236,7 +236,7 @@
       {
         "texto": "Reformar la Constitución para reconocer la vivienda digna como derecho fundamental exigible.",
         "cita": {
-          "pagina": null,
+          "pagina": 27,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -275,7 +275,7 @@
       {
         "texto": "Invertir el 1 % del PIB al año en vivienda y consolidar CASA 47 con un parque estatal de 100.000 viviendas de protección permanente.",
         "cita": {
-          "pagina": null,
+          "pagina": 27,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -360,7 +360,7 @@
       {
         "texto": "Mapa estatal de zonas tensionadas elaborado por el Ministerio y congelación temporal de las rentas que superen los índices de referencia.",
         "cita": {
-          "pagina": 30,
+          "pagina": 31,
           "apartado": "Vivienda",
           "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
         },
@@ -419,7 +419,7 @@
       {
         "texto": "Derogar la Ley de Vivienda e incentivos fiscales al alquiler de larga duración.",
         "cita": {
-          "pagina": 19,
+          "pagina": 23,
           "apartado": "Vivienda",
           "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
         },
@@ -463,7 +463,7 @@
       {
         "texto": "IVA del 0 % en la compra de primera vivienda habitual de obra nueva y bonificación del 100 % del ITP en la de segunda mano.",
         "cita": {
-          "pagina": null,
+          "pagina": 24,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-vox-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
         },
@@ -505,7 +505,7 @@
       {
         "texto": "Desalojo de la vivienda okupada en menos de 24 horas.",
         "cita": {
-          "pagina": 20,
+          "pagina": 24,
           "apartado": "Vivienda",
           "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
         },
@@ -542,7 +542,7 @@
       {
         "texto": "Prohibir el arrendamiento a inmigrantes en situación ilegal, verificando la residencia legal antes de firmar el contrato.",
         "cita": {
-          "pagina": 20,
+          "pagina": 24,
           "apartado": "Vivienda",
           "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
         },
@@ -579,7 +579,7 @@
       {
         "texto": "Prioridad nacional para acceder a vivienda protegida o a ayudas al alquiler.",
         "cita": {
-          "pagina": null,
+          "pagina": 23,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-vox-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
         },
@@ -630,7 +630,7 @@
       {
         "texto": "Destinar el 1 % del PIB al año a vivienda pública para llegar a 1,5 millones de viviendas públicas en 12 años.",
         "cita": {
-          "pagina": null,
+          "pagina": 10,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -676,7 +676,7 @@
       {
         "texto": "Reformar la Constitución para que la vivienda sea un derecho fundamental exigible ante los tribunales.",
         "cita": {
-          "pagina": null,
+          "pagina": 19,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -715,7 +715,7 @@
       {
         "texto": "Ley de expropiación dirigida en primer lugar a grandes propietarios con más de 1.000 viviendas.",
         "cita": {
-          "pagina": null,
+          "pagina": 10,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -754,7 +754,7 @@
       {
         "texto": "Recargo del 200 % del ITP en segundas viviendas y del 1.000 % a partir de la tercera; exenta la primera.",
         "cita": {
-          "pagina": null,
+          "pagina": 19,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
@@ -797,7 +797,7 @@
       {
         "texto": "Topar por ley los alquileres en zonas tensionadas, con una rebaja adicional del 30 % en ciudades de más de 200.000 habitantes o con masificación turística.",
         "cita": {
-          "pagina": null,
+          "pagina": 13,
           "apartado": null,
           "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
         },
