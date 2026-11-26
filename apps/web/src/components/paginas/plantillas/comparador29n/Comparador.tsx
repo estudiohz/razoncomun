@@ -316,12 +316,9 @@ function TarjetaPartido({
             const prefijoNota = urlNota ? (x.cita.nota ?? '').split(urlNota)[0].replace(/[\s(]+$/, '').trim() : '';
             return (
               <div key={i} className="flex flex-col gap-2 border-b border-linea pb-3.5 last:border-0 last:pb-0">
-                <p className="flex gap-2.5 text-[14.5px] font-bold leading-[1.45] text-titular">
-                  <span className="mt-[5px] h-3 w-3 flex-none rounded-full" style={{ background: v.color }} title={v.etiqueta} aria-label={`Verificación: ${v.etiqueta}`} role="img" />
-                  <span>«{x.texto}»</span>
-                </p>
+                <p className="text-[14.5px] font-bold leading-[1.45] text-titular">«{x.texto}»</p>
                 {urlNota ? (
-                  <p className="pl-[22px] text-[12px] text-gris">
+                  <p className="text-[12px] text-gris">
                     {prefijoNota ? <>{prefijoNota} </> : null}(
                     <a href={urlNota} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1 font-semibold underline">
                       Fuente
@@ -330,22 +327,22 @@ function TarjetaPartido({
                     )
                   </p>
                 ) : href ? (
-                  <a href={href} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1.5 pl-[22px] text-[12px] font-semibold text-gris">
+                  <a href={href} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-gris">
                     <Icono size={14} d={['M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z', 'M14 3v5h5']} />
                     {cita}
                   </a>
                 ) : (
-                  <span className="pl-[22px] text-[12px] font-semibold text-gris" title={x.cita.nota ?? undefined}>{cita}</span>
+                  <span className="text-[12px] font-semibold text-gris" title={x.cita.nota ?? undefined}>{cita}</span>
                 )}
                 <LineaFicha f={x.ficha} />
-                <div className="ml-[22px]"><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
-                <div className="ml-[22px]"><BloqueViabilidad b={x.viabilidad} /></div>
-                <div className="ml-[22px]"><EstadoSeguimiento s={x.seguimiento} /></div>
+                <div><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
+                <div><BloqueViabilidad b={x.viabilidad} /></div>
+                <div><EstadoSeguimiento s={x.seguimiento} /></div>
               </div>
             );
           })}
           {propuestas.length > 3 ? (
-            <button onClick={() => setTodas((t) => !t)} className="self-start pl-[22px] text-[12.5px] font-bold text-titular underline">
+            <button onClick={() => setTodas((t) => !t)} className="self-start text-[12.5px] font-bold text-titular underline">
               {todas ? 'Ver menos' : `Ver ${propuestas.length - 3} más`}
             </button>
           ) : null}
@@ -362,7 +359,10 @@ function Verificacion({ v, texto, fuentes, titulo }: { v: { color: string; etiqu
   return (
     <details className="group rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
       <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
-        {titulo ?? `Análisis de Razón Común · ${v.etiqueta}`}
+        <span className="flex items-center gap-2">
+          {titulo ? null : <span className="h-3 w-3 flex-none rounded-full" style={{ background: v.color }} aria-hidden="true" />}
+          {titulo ?? `Análisis de Razón Común · ${v.etiqueta}`}
+        </span>
         <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
       </summary>
       <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{texto}</p>
@@ -454,6 +454,6 @@ function LineaFicha({ f }: { f?: Ficha }) {
     );
   partes.push(<span key="p"><b className="font-semibold">Plazo:</b> {f.plazo || 'no especificado'}</span>);
   return (
-    <p className="flex flex-wrap gap-x-3 gap-y-0.5 pl-[22px] text-[11.5px] leading-[1.4] text-gris">{partes}</p>
+    <p className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11.5px] leading-[1.4] text-gris">{partes}</p>
   );
 }
