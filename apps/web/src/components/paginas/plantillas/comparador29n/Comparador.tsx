@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useVista } from './vista';
 import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente, type Viabilidad, type Ficha } from './tipos';
 
 const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
@@ -31,6 +32,8 @@ function enlacePdf(url: string | null | undefined, pagina: number | null) {
  */
 export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[]; partidos: Partido[]; rc: Record<string, PropuestaRc[]> }) {
   const [sel, setSel] = useState(0);
+  const [vista] = useVista();
+  const columnas = vista === 'columnas';
   const [voto, setVoto] = useState<Record<string, string>>({});
   // Cara a cara: qué partidos se ven (mínimo uno).
   const [visibles, setVisibles] = useState<string[]>(partidos.map((p) => p.id));
@@ -75,6 +78,36 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
         </div>
       </div>
 
+      {columnas ? (
+        <nav aria-label="Apartados" className="hidden w-full min-[900px]:block">
+          <div className="grid grid-cols-5 gap-2.5">
+            {apartados.map((a, i) => {
+              const c = COLOR_APARTADO[a.id] ?? '#1B3D9C';
+              const activo = i === sel;
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => setSel(i)}
+                  aria-pressed={activo}
+                  className="flex min-h-[64px] flex-col items-start justify-center rounded-[14px] border px-4 py-3 text-left transition-colors"
+                  style={activo ? { background: c, borderColor: c, color: '#fff' } : { background: '#fff', borderColor: '#E4E6EE', color: '#1B3D9C' }}
+                >
+                  <span className="flex w-full items-center gap-2 text-[14px] font-extrabold">
+                    <span className="text-[12px] opacity-80">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="flex-1">{a.titulo}</span>
+                    {voto[a.id] ? <span aria-label="respondido">✓</span> : null}
+                  </span>
+                  <span className="mt-1 flex items-center gap-1.5 text-[11.5px] font-semibold" style={{ opacity: activo ? 0.9 : 0.75 }}>
+                    {activo ? null : <span className="h-2 w-2 rounded-full" style={{ background: c }} />}
+                    {Object.values(a.propuestas).reduce((n, l) => n + l.length, 0)} propuestas
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-3 max-w-[520px]"><Leyenda /></div>
+        </nav>
+      ) : (
       <nav aria-label="Apartados" className="hidden w-[250px] flex-col gap-1 min-[900px]:sticky min-[900px]:top-24 min-[900px]:flex">
         {apartados.map((a, i) => {
           const c = COLOR_APARTADO[a.id] ?? '#1B3D9C';
@@ -95,6 +128,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
         })}
         <Leyenda />
       </nav>
+      )}
 
       <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
         {/* Móvil: franja fija con el degradado corporativo detrás del header… */}
@@ -149,7 +183,10 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
           })}
         </div>
 
-        <div className="grid grid-cols-1 gap-4 min-[640px]:grid-cols-2">
+        <div
+          className={columnas ? 'grid grid-cols-1 items-start gap-4 min-[640px]:grid-cols-2 min-[1100px]:[grid-template-columns:var(--cols)]' : 'grid grid-cols-1 gap-4 min-[640px]:grid-cols-2'}
+          style={columnas ? ({ '--cols': `repeat(${visibles.length}, minmax(0, 1fr))` } as React.CSSProperties) : undefined}
+        >
           {orden.filter((p) => visibles.includes(p.id)).map((p) => (
             <TarjetaPartido
               key={p.id}
@@ -208,6 +245,16 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
             <div className="flex flex-wrap items-center gap-4">
               <a href="/manifiesto" className="text-[13px] font-bold underline">Ver los 30 puntos del manifiesto →</a>
               {rc[ap.id]?.length ? <BotonVoto activo={voto[ap.id] === 'rc'} onClick={() => elegir('rc')} /> : null}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-4 rounded-[14px] px-5 py-4" style={{ background: 'linear-gradient(120deg,rgba(139,48,217,.10),rgba(22,184,160,.12))' }}>
+              <p className="text-[15px] font-bold leading-snug text-titular">Si te gusta nuestra forma de pensar y quieres participar</p>
+              <a
+                href="/registro"
+                className="inline-flex min-h-[48px] items-center rounded-boton px-6 text-[15px] font-bold text-white no-underline shadow-boton"
+                style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}
+              >
+                Regístrate
+              </a>
             </div>
           </div>
         </article>

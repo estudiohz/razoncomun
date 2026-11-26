@@ -4,6 +4,7 @@ import { APARTADOS } from './apartados';
 import { ALTERNATIVAS_RC } from './alternativasRc';
 import { PARTIDOS } from './tipos';
 import { Comparador } from './Comparador';
+import { BotonVista } from './vista';
 
 /**
  * Plantilla «comparador-29n» (diseño A). Servidor: cabecera + intro del
@@ -19,7 +20,10 @@ export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
         <div className="flex flex-col gap-2.5">
           <div className="h-1.5 w-[120px] rounded-full" style={{ background: 'linear-gradient(90deg,#1B3D9C,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }} />
           <p className="text-[12px] font-bold uppercase tracking-[.14em] text-gris">Elecciones generales · 29 de noviembre</p>
-          <h1 className="max-w-[860px] text-[clamp(30px,4.6vw,46px)] font-extrabold leading-[1.05] text-titular">{pagina.title}</h1>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h1 className="max-w-[860px] text-[clamp(30px,4.6vw,46px)] font-extrabold leading-[1.05] text-titular">{pagina.title}</h1>
+            <BotonVista />
+          </div>
           {introHtml ? (
             <div className="prose-rc max-w-[700px]" dangerouslySetInnerHTML={{ __html: introHtml }} />
           ) : (
