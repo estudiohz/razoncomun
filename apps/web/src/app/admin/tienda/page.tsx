@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Tarjeta } from '@/components/ui/Tarjeta';
 import { requireEditor } from '@/lib/blog/guard';
 import { fichaVacia, obtenerFichas } from '@/lib/tienda/fichas';
-import { estadoPedido, listarProductos, PrintfulNoConfiguradoError } from '@/lib/tienda/printful';
+import { estadoPedido, listarProductos, PrintfulNoConfiguradoError, type EstadoPedidoPrintful } from '@/lib/tienda/printful';
 import { formatoPrecio } from '@/lib/tienda/precios';
 import { tiendaEnModoCatalogo } from '@/lib/tienda/modo';
 import { cambiarModoCatalogo } from './actions';
@@ -62,20 +62,35 @@ export default async function TiendaAdminPage() {
   // El estado VIVO de Printful: nuestra BD dice "Confirmado" en cuanto
   // Printful acepta el pedido, pero el cobro de la fabricación puede fallar
   // después (19/11/2026: "No payment method added"). Solo los 20 últimos.
-  const estadosPrintful = new Map(
+  const estadosPrintful = new Map<string, EstadoPedidoPrintful>(
     await Promise.all(
       pedidos
         .filter((p) => p.printful_order_id)
-        .slice(0, 20)
         .map(async (p) => {
           try {
-            return [p.id, await estadoPedido(p.printful_order_id as number)] as const;
+            return [p.id, await estadoPedido(p.printful_order_id as number)] as [string, EstadoPedidoPrintful];
           } catch {
-            return [p.id, { estado: 'sin respuesta', error: null }] as const;
+            return [p.id, { estado: 'sin respuesta', error: null, articulos: [], costeCents: null }] as [string, EstadoPedidoPrintful];
           }
         }),
     ),
   );
+
+  // Resumen. Ventas = todo lo cobrado (cada fila de shop_orders es un pago
+  // confirmado por Stripe). Coste = lo que Printful cobra o cobrará: no
+  // cuenta los cancelados, pero SÍ los fallidos por falta de pago, porque
+  // esos hay que pagarlos igualmente para servir al cliente. La comisión de
+  // Stripe no está incluida.
+  const ventasCents = pedidos.reduce((s, p) => s + p.total_cents, 0);
+  let costeCents = 0;
+  let sinCoste = 0;
+  for (const p of pedidos) {
+    const v = estadosPrintful.get(p.id);
+    if (v?.estado === 'canceled') continue;
+    if (v?.costeCents == null) sinCoste++;
+    else costeCents += v.costeCents;
+  }
+  const beneficioCents = ventasCents - costeCents;
 
   let productos;
   try {
@@ -113,6 +128,35 @@ export default async function TiendaAdminPage() {
           Pagos
         </Link>
       </div>
+
+      {pedidos.length > 0 && (
+        <div className="grid grid-cols-2 gap-3 min-[900px]:grid-cols-4">
+          {[
+            { titulo: 'Ventas realizadas', valor: String(pedidos.length), nota: '', negativo: false },
+            { titulo: 'Importe de las ventas', valor: formatoPrecio(ventasCents), nota: 'Cobrado a los compradores', negativo: false },
+            {
+              titulo: 'Coste y envío (Printful)',
+              valor: formatoPrecio(costeCents),
+              nota: sinCoste > 0 ? `${sinCoste} pedido(s) sin coste en Printful` : 'Producto + envío + IVA',
+              negativo: false,
+            },
+            {
+              titulo: 'Beneficio',
+              valor: formatoPrecio(beneficioCents),
+              nota: 'Sin descontar la comisión de Stripe',
+              negativo: beneficioCents < 0,
+            },
+          ].map((t) => (
+            <Tarjeta key={t.titulo} className="p-4">
+              <p className="text-[12px] font-bold uppercase tracking-wide text-gris">{t.titulo}</p>
+              <p className={`mt-1.5 text-[24px] font-extrabold tabular-nums ${t.negativo ? 'text-red-700' : 'text-titular'}`}>
+                {t.valor}
+              </p>
+              {t.nota && <p className="mt-0.5 text-[12px] text-gris">{t.nota}</p>}
+            </Tarjeta>
+          ))}
+        </div>
+      )}
 
       <Tarjeta className="flex flex-wrap items-center justify-between gap-4 p-5">
         <div>
@@ -190,11 +234,12 @@ export default async function TiendaAdminPage() {
         <section className="space-y-3">
           <h2 className="text-[18px] font-extrabold">Pedidos</h2>
           <Tarjeta className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-[13.5px]">
+            <table className="w-full min-w-[900px] text-left text-[13.5px]">
               <thead>
                 <tr className="border-b border-linea text-[12px] uppercase tracking-wide text-gris">
                   <th className="px-4 py-3">Fecha</th>
                   <th className="px-4 py-3">Comprador</th>
+                  <th className="px-4 py-3">Artículos</th>
                   <th className="px-4 py-3 text-right">Total</th>
                   <th className="px-4 py-3">Estado</th>
                   <th className="px-4 py-3">Printful</th>
@@ -216,6 +261,19 @@ export default async function TiendaAdminPage() {
                         })}
                       </td>
                       <td className="px-4 py-3 text-titular">{p.email}</td>
+                      <td className="px-4 py-3 text-cuerpo">
+                        {vivo && vivo.articulos.length > 0 ? (
+                          <ul className="space-y-0.5">
+                            {vivo.articulos.map((a, i) => (
+                              <li key={i}>
+                                {a.cantidad} × {a.nombre}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span className="text-gris">—</span>
+                        )}
+                      </td>
                       <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
                         {formatoPrecio(p.total_cents)}
                         <span className="block text-[12px] text-gris">

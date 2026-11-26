@@ -166,7 +166,27 @@ export async function confirmarPedido(printfulOrderId: number): Promise<void> {
 /** Estado actual de un pedido en Printful (para la tabla de /admin/tienda).
  *  `error` es el motivo que da Printful cuando el pedido falla (p. ej. "No
  *  payment method added"): sin él, la BD dice "confirmado" y nadie se entera. */
-export async function estadoPedido(printfulOrderId: number): Promise<{ estado: string; error: string | null }> {
-  const r = await llamar<{ status?: string; error?: string | null }>(`/orders/${printfulOrderId}`);
-  return { estado: r?.status ?? 'desconocido', error: r?.error ?? null };
+export interface EstadoPedidoPrintful {
+  estado: string;
+  error: string | null;
+  /** Lo comprado, tal cual lo nombra Printful ("Taza / 11 oz"). */
+  articulos: { nombre: string; cantidad: number }[];
+  /** Lo que Printful nos cobra (producto + envío + IVA), en céntimos. */
+  costeCents: number | null;
+}
+
+export async function estadoPedido(printfulOrderId: number): Promise<EstadoPedidoPrintful> {
+  const r = await llamar<{
+    status?: string;
+    error?: string | null;
+    items?: { name?: string; quantity?: number }[];
+    costs?: { total?: string | number };
+  }>(`/orders/${printfulOrderId}`);
+  const total = Number(r?.costs?.total);
+  return {
+    estado: r?.status ?? 'desconocido',
+    error: r?.error ?? null,
+    articulos: (r?.items ?? []).map((i) => ({ nombre: i.name ?? 'Artículo', cantidad: i.quantity ?? 1 })),
+    costeCents: Number.isFinite(total) ? Math.round(total * 100) : null,
+  };
 }
