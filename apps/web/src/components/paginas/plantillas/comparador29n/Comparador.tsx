@@ -300,6 +300,7 @@ function TarjetaPartido({
           </a>
         ) : null}
       </div>
+      <BarraVeredictos propuestas={propuestas} />
 
       {propuestas.length === 0 ? (
         <p className="text-[14px] italic text-gris">No hemos encontrado propuesta concreta sobre este apartado en su programa.</p>
@@ -455,5 +456,32 @@ function LineaFicha({ f }: { f?: Ficha }) {
   partes.push(<span key="p"><b className="font-semibold">Plazo:</b> {f.plazo || 'no especificado'}</span>);
   return (
     <p className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11.5px] leading-[1.4] text-gris">{partes}</p>
+  );
+}
+
+/** Barra tipo «loader» bajo el nombre del partido: un tramo por veredicto, con su número dentro. */
+function BarraVeredictos({ propuestas }: { propuestas: PropuestaVerificada[] }) {
+  if (!propuestas.length) return null;
+  const orden: Veredicto[] = ['verde', 'naranja', 'rojo', 'gris'];
+  const n = (k: Veredicto) => propuestas.filter((x) => (x.verificacion.veredicto ?? 'naranja') === k).length;
+  const tramos = orden.map((k) => ({ k, c: n(k) })).filter((t) => t.c > 0);
+  const resumen = tramos.map((t) => `${t.c} ${VEREDICTO[t.k].etiqueta.toLowerCase()}`).join(' · ');
+  // Texto oscuro sobre naranja/gris claro y blanco sobre verde/rojo: contraste legible.
+  const tinta: Record<Veredicto, string> = { verde: '#FFFFFF', naranja: '#2B1300', rojo: '#FFFFFF', gris: '#FFFFFF' };
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex h-[22px] gap-[3px] overflow-hidden rounded-full" role="img" aria-label={`${propuestas.length} propuestas: ${resumen}`}>
+        {tramos.map((t) => (
+          <span
+            key={t.k}
+            className="flex min-w-[26px] items-center justify-center text-[12px] font-extrabold tabular-nums"
+            style={{ flexGrow: t.c, flexBasis: 0, background: VEREDICTO[t.k].color, color: tinta[t.k] }}
+          >
+            {t.c}
+          </span>
+        ))}
+      </div>
+      <p className="text-[12px] text-gris">{resumen}</p>
+    </div>
   );
 }
