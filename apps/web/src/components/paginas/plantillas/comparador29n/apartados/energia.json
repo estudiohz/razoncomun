@@ -560,8 +560,8 @@
           "nota": null
         },
         "verificacion": {
-          "veredicto": "rojo",
-          "texto": "La comercializadora pública sí podría ofrecer esas horas. Lo que no cabe es obligar por ley a las privadas: la Directiva (UE) 2019/944, art. 5, les deja fijar libremente el precio, salvo para hogares vulnerables o en crisis declarada por la UE (criterio del STJUE C-121/15).",
+          "veredicto": "naranja",
+          "texto": "La comercializadora pública sí podría ofrecer esas horas. Lo que no cabe es obligar por ley a las privadas: la Directiva (UE) 2019/944, art. 5, les deja fijar libremente el precio, salvo para hogares vulnerables o en crisis declarada por la UE (criterio del STJUE C-121/15). Hay dudas sobre su encaje: por eso queda en naranja y no en rojo.",
           "fuentes": [
             {
               "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
