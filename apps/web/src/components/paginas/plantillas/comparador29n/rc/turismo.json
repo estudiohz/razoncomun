@@ -5,28 +5,117 @@
       "titulo": "Un solo registro de pisos turísticos, cruzado con las plataformas",
       "texto": "Todo piso turístico anunciado debe tener número de registro. El registro único que ya existe se cruza cada mes con los datos que envían las plataformas, y los anuncios sin número se retiran. Los datos se publican por municipio para que cada ayuntamiento decida con información real.",
       "punto": null,
-      "dato": {"texto": "Había más de 321.000 viviendas turísticas anunciadas (1,3 % del total) y en algunos municipios superaban el 20 % de las viviendas (agosto de 2020).", "fuente": "INE · Medición del número de viviendas turísticas", "url": "https://www.ine.es/prensa/experimental_viv_turistica.pdf"},
+      "dato": {
+        "texto": "Había más de 321.000 viviendas turísticas anunciadas (1,3 % del total) y en algunos municipios superaban el 20 % de las viviendas (agosto de 2020).",
+        "fuente": "INE · Medición del número de viviendas turísticas",
+        "url": "https://www.ine.es/prensa/experimental_viv_turistica.pdf"
+      },
       "medicion": "Porcentaje de anuncios con número de registro válido; objetivo: más del 95 % en 18 meses.",
       "competencia": "UE (reglamento), Estado (registro) y CCAA y ayuntamientos (licencias)",
-      "verificacion": {"veredicto": "naranja", "texto": "El Reglamento (UE) 2024/1028 obliga a las plataformas a compartir datos y el Real Decreto 1312/2024 creó el registro único y la ventanilla digital. Matiz: el Tribunal Supremo anuló algunas partes del real decreto en 2026; hay que ajustarse a lo vigente. Las licencias siguen siendo autonómicas.", "fuentes": [{"nombre": "BOE · Real Decreto 1312/2024", "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2024-26931"}, {"nombre": "BOE · Orden VAU/653/2025, datos de plataformas", "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2025-12679"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El Reglamento (UE) 2024/1028 obliga a las plataformas a compartir datos y el Real Decreto 1312/2024 creó el registro único y la ventanilla digital. Matiz: el Tribunal Supremo anuló algunas partes del real decreto en 2026; hay que ajustarse a lo vigente. Las licencias siguen siendo autonómicas.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Real Decreto 1312/2024",
+            "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2024-26931"
+          },
+          {
+            "nombre": "BOE · Orden VAU/653/2025, datos de plataformas",
+            "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2025-12679"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Cruzar el registro con las plataformas ya ha permitido retirar decenas de miles de anuncios ilegales. Su éxito depende de inspecciones y sanciones reales, y de que los pisos no pasen al alquiler de temporada.",
+        "precedentes": [
+          {
+            "pais": "España (registro único, 2025)",
+            "resultado": "Airbnb aceptó retirar anuncios sin número de registro y enviar datos mensuales al Ministerio de Vivienda.",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/vivienda-agenda-urbana/Paginas/2025/150725-airbnb-retirada-pisos-sin-registro.aspx"
+          },
+          {
+            "pais": "España (Consumo, 2025)",
+            "resultado": "Consumo logró que Airbnb retirara unos 65.000 anuncios ilegales y detectó otros 55.000 sin número de registro.",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/derechos-sociales-consumo-agenda-2030/paginas/2025/300725-retirada-anuncios-airbnb.aspx"
+          }
+        ],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Tasa turística municipal voluntaria y con destino fijado",
       "texto": "Cambiar la ley estatal de haciendas locales para que cada ayuntamiento pueda cobrar, si quiere, una pequeña tasa por noche. Lo recaudado solo puede ir a limpieza, transporte, vivienda y servicios que usa el visitante. Cada año se publica cuánto se cobró y en qué se gastó.",
       "punto": null,
-      "dato": {"texto": "España recibió 96,8 millones de turistas internacionales en 2025, un 3,2 % más: máximo histórico.", "fuente": "INE · FRONTUR, diciembre y año 2025", "url": "https://www.ine.es/dyngs/Prensa/FRONTUR1225.htm"},
+      "dato": {
+        "texto": "España recibió 96,8 millones de turistas internacionales en 2025, un 3,2 % más: máximo histórico.",
+        "fuente": "INE · FRONTUR, diciembre y año 2025",
+        "url": "https://www.ine.es/dyngs/Prensa/FRONTUR1225.htm"
+      },
       "medicion": "Informe anual por municipio de lo recaudado y gastado; revisión de la tasa a los 3 años.",
       "competencia": "Estado (ley de haciendas locales) y ayuntamientos",
-      "verificacion": {"veredicto": "naranja", "texto": "Hoy la ley de haciendas locales no permite un impuesto municipal por estancia: hay que reformarla, y es una ley estatal ordinaria. Algunas comunidades ya tienen impuestos propios sobre estancias, así que hay que evitar cobrar dos veces lo mismo. No hay dato oficial de recaudación prevista.", "fuentes": [{"nombre": "BOE · Texto refundido de la Ley de Haciendas Locales", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-4214"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Hoy la ley de haciendas locales no permite un impuesto municipal por estancia: hay que reformarla, y es una ley estatal ordinaria. Algunas comunidades ya tienen impuestos propios sobre estancias, así que hay que evitar cobrar dos veces lo mismo. No hay dato oficial de recaudación prevista.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Texto refundido de la Ley de Haciendas Locales",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-4214"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "No cuesta dinero público: recauda. Baleares obtiene unos 150 M€ al año con su impuesto turístico. Riesgo menor de desviar visitantes a municipios vecinos sin tasa.",
+        "precedentes": [
+          {
+            "pais": "España (Baleares, impuesto turístico)",
+            "resultado": "El impuesto de turismo sostenible aportó unos 152,5 M€ en 2024, destinados sobre todo a agua y medio ambiente.",
+            "url": "https://www.caib.es/sites/ibfonseu/es/n/06112024_/"
+          }
+        ],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Límite de pisos turísticos por barrio, decidido con datos",
       "texto": "Con los datos del registro, cada ayuntamiento fija cuántos pisos turísticos admite por barrio según la presión sobre la vivienda. No se cierran de golpe las licencias que cumplen la ley: las nuevas solo se dan donde hay margen. El criterio y los datos son públicos.",
       "punto": 15,
-      "dato": {"texto": "Eixample y Ciutat Vella (Barcelona) sumaban casi 10.000 viviendas turísticas y el Distrito Centro de Madrid más de 7.500 (agosto de 2020).", "fuente": "INE · Medición del número de viviendas turísticas", "url": "https://www.ine.es/prensa/experimental_viv_turistica.pdf"},
+      "dato": {
+        "texto": "Eixample y Ciutat Vella (Barcelona) sumaban casi 10.000 viviendas turísticas y el Distrito Centro de Madrid más de 7.500 (agosto de 2020).",
+        "fuente": "INE · Medición del número de viviendas turísticas",
+        "url": "https://www.ine.es/prensa/experimental_viv_turistica.pdf"
+      },
       "medicion": "Viviendas turísticas por cada 100 viviendas en cada barrio, publicado cada año; revisión del límite cada 2 años.",
       "competencia": "CCAA (turismo) y ayuntamientos (urbanismo)",
-      "verificacion": {"veredicto": "naranja", "texto": "Turismo y urbanismo son autonómicos (art. 148.1.3ª y 18ª CE) y los ayuntamientos ya pueden limitar usos por zonas; el Estado solo aporta datos. Retirar de golpe licencias vigentes podría obligar a indemnizar (art. 33 CE), por eso se limita a las nuevas.", "fuentes": [{"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Turismo y urbanismo son autonómicos (art. 148.1.3ª y 18ª CE) y los ayuntamientos ya pueden limitar usos por zonas; el Estado solo aporta datos. Retirar de golpe licencias vigentes podría obligar a indemnizar (art. 33 CE), por eso se limita a las nuevas.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Limitar por barrio con datos ataca donde más suben los alquileres. El Constitucional ha avalado restricciones similares. Riesgo de reclamaciones de propietarios y de desplazar pisos a barrios vecinos.",
+        "precedentes": [
+          {
+            "pais": "España (Cataluña, 2025)",
+            "resultado": "El Constitucional avaló (STC 64/2025) limitar los pisos turísticos; en Barcelona unas 10.000 licencias no se renovarán en 2028.",
+            "url": "https://boe.es/boe/dias/2025/04/11/pdfs/BOE-A-2025-7430.pdf"
+          },
+          {
+            "pais": "España (Barcelona, 2012-2016)",
+            "resultado": "Un estudio académico estima que Airbnb subió el alquiler un 1,9 % de media y un 7 % en los barrios con más pisos turísticos.",
+            "url": "https://discovery.ucl.ac.uk/id/eprint/10172148/"
+          }
+        ],
+        "fuentes": []
+      }
     }
   ]
 }

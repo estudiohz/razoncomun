@@ -42,6 +42,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Premia a quien despide poco sin subir la recaudación total si se diseña neutral. En EE. UU. funciona algo parecido desde hace décadas; en Francia el efecto medido es modesto. Riesgo: castigar a sectores estacionales si no se compara por sector.",
+          "precedentes": [
+            {
+              "pais": "Estados Unidos",
+              "resultado": "Cobrar más seguro de paro a quien más despide reduce los despidos temporales; un estudio estima casi un millón de empleos salvados en 2008-09.",
+              "url": "https://nber.org/papers/w30651"
+            },
+            {
+              "pais": "Francia (2021-2024)",
+              "resultado": "Bonus-malus por contratos cortos en 7 sectores: las bajas de contrato cayeron un 8 %, pero la Unédic atribuye al sistema un papel «limitado».",
+              "url": "https://www.unedic.org/publications/reforme-2019-2021-premiers-resultats-d-evaluation-du-bonus-malus"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -60,6 +77,12 @@
               "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Coste casi nulo: el SEPE ya tiene los datos. Mejora la transparencia del paro, pero no cambia el empleo por sí sola. No hemos encontrado una evaluación publicada de una medida igual.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -78,6 +101,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mejora la renta de enfermos graves de larga duración. No hay cálculo público de su coste; dependerá de cuántas bajas se incluyan y de cómo se defina «enfermedad severa». Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -98,6 +127,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Puede repartir trabajo y mejorar el bienestar, pero sube el coste por hora a las empresas, sobre todo pymes. Las experiencias son mixtas: en Francia el efecto en empleo sigue discutido; en Islandia funcionó en el sector público sin perder productividad.",
+          "precedentes": [
+            {
+              "pais": "Francia (35 horas, 1998-2002)",
+              "resultado": "El Gobierno habló de 220.000-300.000 empleos; el Senado sostuvo que explicaban menos del 30 % del empleo creado y que el efecto real no se puede medir.",
+              "url": "https://www.senat.fr/rap/r00-414/r00-4146.html"
+            },
+            {
+              "pais": "Islandia (2015-2019)",
+              "resultado": "Pruebas de 35-36 h sin bajar sueldo en el sector público: productividad igual o mejor y más bienestar; luego el 86 % de la plantilla ganó jornada más corta.",
+              "url": "https://autonomy.work/portfolio/icelandsww/"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -116,6 +162,23 @@
               "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-3815"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sube la renta de los peor pagados sin gasto público directo. El riesgo es menos empleo o menos horas para los menos cualificados si la subida es rápida: en España 2019 se vio un freno; en Alemania 2015 el efecto fue pequeño.",
+          "precedentes": [
+            {
+              "pais": "España (SMI 2019)",
+              "resultado": "La subida del 22 % se asoció a un menor crecimiento del empleo de los peor pagados (6-11 puntos menos en el grupo afectado), según el Banco de España.",
+              "url": "https://ideas.repec.org/p/bde/opaper/2113.html"
+            },
+            {
+              "pais": "Alemania (2015)",
+              "resultado": "El salario mínimo subió sueldos sin pérdidas de empleo significativas en la mayoría de sectores, aunque redujo horas y minijobs.",
+              "url": "https://link.springer.com/10.1186/s12651-019-0258-z"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -138,6 +201,18 @@
               "url": "https://rm.coe.int/cc207casedoc5-es/1680ac5cb8"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cumpliría lo que pide el Consejo de Europa, sin coste público directo. A cambio, despedir sería más caro e incierto, lo que puede frenar contrataciones fijas. El impacto depende de cuánto suba la indemnización y de quién la fije.",
+          "precedentes": [
+            {
+              "pais": "España (Consejo de Europa, 2024)",
+              "resultado": "El Comité Europeo de Derechos Sociales dijo que el tope de indemnización español no repara bien el despido injustificado; no es vinculante.",
+              "url": "https://www.cuatrecasas.com/es/global/art/debate-indemnizacion-despido-improcedente-espana"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -156,6 +231,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Frena el uso de contratos a tiempo parcial con horas extra encubiertas. Coste público bajo. Riesgo: que algunas empresas reduzcan las horas pactadas para no pasar del 80 %. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -180,6 +261,12 @@
               "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Propuesta genérica: su efecto depende de qué norma sustituya a la reforma de 2021. Volver al marco anterior podría reactivar la temporalidad que esa reforma redujo. No hay coste cuantificable sin conocer el texto.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -200,6 +287,23 @@
               "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-3815"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sube la renta de los peor pagados sin gasto público directo. El riesgo es menos empleo o menos horas para los menos cualificados si la subida es rápida: en España 2019 se vio un freno; en Alemania 2015 el efecto fue pequeño.",
+          "precedentes": [
+            {
+              "pais": "España (SMI 2019)",
+              "resultado": "La subida del 22 % se asoció a un menor crecimiento del empleo de los peor pagados (6-11 puntos menos en el grupo afectado), según el Banco de España.",
+              "url": "https://ideas.repec.org/p/bde/opaper/2113.html"
+            },
+            {
+              "pais": "Alemania (2015)",
+              "resultado": "El salario mínimo subió sueldos sin pérdidas de empleo significativas en la mayoría de sectores, aunque redujo horas y minijobs.",
+              "url": "https://link.springer.com/10.1186/s12651-019-0258-z"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -218,6 +322,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Impuesto sin precedente claro en Europa. Es difícil de medir (qué es que «los salarios se queden atrás») y fácil de esquivar repartiendo beneficios entre sociedades. La recaudación es incierta; no hay estimación pública.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -236,6 +346,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más renta para los parados los primeros meses, pero encarece una de las mayores partidas del gasto social, sin estimación pública del coste. Prestaciones más altas pueden alargar algo el tiempo en paro si no se combinan con orientación y control.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -254,6 +370,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ambiciosa: bajar a 32 h sin perder sueldo sube mucho el coste por hora. Solo hay pruebas con jornadas de 35-36 h (Islandia) y resultados discutidos en Francia. Riesgo alto en sectores de baja productividad y pymes.",
+          "precedentes": [
+            {
+              "pais": "Islandia (2015-2019)",
+              "resultado": "Pruebas de 35-36 h sin bajar sueldo en el sector público: productividad igual o mejor y más bienestar; luego el 86 % de la plantilla ganó jornada más corta.",
+              "url": "https://autonomy.work/portfolio/icelandsww/"
+            },
+            {
+              "pais": "Francia (35 horas, 1998-2002)",
+              "resultado": "El Gobierno habló de 220.000-300.000 empleos; el Senado sostuvo que explicaban menos del 30 % del empleo creado y que el efecto real no se puede medir.",
+              "url": "https://www.senat.fr/rap/r00-414/r00-4146.html"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -276,6 +409,18 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cataluña ya gestiona la inspección laboral desde 2010; lo nuevo sería la parte de Seguridad Social, que es caja única estatal. Eso choca con el control centralizado del fraude en cotizaciones y requeriría reforma legal.",
+          "precedentes": [
+            {
+              "pais": "Cataluña (2010)",
+              "resultado": "La Generalitat ya gestiona la inspección laboral desde 2010 (RD 206/2010); el Estado se reservó lo de su competencia, como parte de Seguridad Social.",
+              "url": "https://www.boe.es/eli/es/rd/2010/02/26/206"
+            }
+          ],
+          "fuentes": []
         }
       }
     ]

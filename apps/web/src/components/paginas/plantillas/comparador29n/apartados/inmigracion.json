@@ -46,6 +46,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin coste presupuestario relevante. El riesgo es judicial: si se aplica sin identificar a cada persona ni permitir pedir asilo, puede ser anulado por tribunales españoles o el TEDH.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -66,6 +72,23 @@
             {
               "nombre": "BOE · RD 316/2026",
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-8284"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cerraría la vía habitual de regularizar a quien ya trabaja. La evidencia española indica que regularizar aumenta cotizaciones; restringirlo mantiene ese empleo en la economía sumergida, aunque puede reducir el incentivo a entrar de forma irregular.",
+          "precedentes": [
+            {
+              "pais": "España (2005)",
+              "resultado": "Regularización de ~600.000 personas: cada una aportó ≈4.400 € más al año en cotizaciones; empeoró algo a trabajadores poco cualificados.",
+              "url": "https://docs.iza.org/dp10687.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "IZA DP 10687 · Monras, Vázquez-Grenno y Elias (2017)",
+              "url": "https://docs.iza.org/dp10687.pdf"
             }
           ]
         }
@@ -90,6 +113,23 @@
               "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más tiempo de internamiento cuesta plazas y personal, y solo sirve si el país de origen acepta el retorno. Los centros en terceros países han resultado caros y poco usados en el caso italiano.",
+          "precedentes": [
+            {
+              "pais": "Italia-Albania (2024-2026)",
+              "resultado": "Centros fuera de la UE con ≈650 M€ previstos en 5 años; solo ≈1.000 personas pasaron por ellos frente a 3.000 plazas.",
+              "url": "https://en.ilsole24ore.com/art/centres-albania-two-years-without-peace-and-its-dark-actual-costs-AHg29UZD"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Il Sole 24 Ore · Coste de los centros en Albania",
+              "url": "https://en.ilsole24ore.com/art/centres-albania-two-years-without-peace-and-its-dark-actual-costs-AHg29UZD"
+            }
+          ]
         }
       },
       {
@@ -106,6 +146,32 @@
             {
               "nombre": "DOUE (BOE) · Directiva 2003/109/CE art. 11",
               "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Un requisito de antigüedad que excluya de hecho a extranjeros puede ser anulado: el TJUE lo hizo con Italia. En Dinamarca, recortar ayudas a recién llegados aumentó pobreza y delitos de subsistencia.",
+          "precedentes": [
+            {
+              "pais": "Italia (TJUE, 2024)",
+              "resultado": "El TJUE anuló exigir 10 años de residencia para la renta básica: discrimina a residentes de larga duración.",
+              "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
+            },
+            {
+              "pais": "Dinamarca (2002-2012)",
+              "resultado": "Recortar ayudas a refugiados subió el empleo solo a corto plazo y aumentó la pobreza y los delitos de subsistencia.",
+              "url": "https://www.rfberlin.com/wp-content/uploads/2024/11/dustmann-et-al-2024-refugee-benefit-cuts.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "TJUE · Nota de prensa 115/24 (C-112/22 y C-223/22)",
+              "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
+            },
+            {
+              "nombre": "Dustmann, Landersø y Andersen · AEJ: Economic Policy 2024",
+              "url": "https://www.rfberlin.com/wp-content/uploads/2024/11/dustmann-et-al-2024-refugee-benefit-cuts.pdf"
             }
           ]
         }
@@ -126,6 +192,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Afectaría a pocas personas al año y su efecto disuasorio no está medido. Coste bajo; el reto es la proporcionalidad caso a caso que exige el derecho europeo.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -146,6 +218,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "500 M€ de dotación inicial para 2026-2030 (cifra del propio programa)",
+          "texto": "El efecto depende del diseño: los cursos intensivos con certificado han mejorado el empleo; los programas exprés, no. Falta saber cómo se evaluará el gasto.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2015-2016)",
+              "resultado": "El curso de integración de 600 h con certificado subió el empleo 4,4 puntos; un curso exprés sin certificado no tuvo efecto.",
+              "url": "https://immigrationlab.org/project/preparing-for-the-next-crisis-lessons-from-germanys-language-programs-for-refugees"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Immigration Policy Lab · Programas de idioma en Alemania",
+              "url": "https://immigrationlab.org/project/preparing-for-the-next-crisis-lessons-from-germanys-language-programs-for-refugees"
+            }
+          ]
         }
       },
       {
@@ -162,6 +251,23 @@
             {
               "nombre": "Comisión Europea · Pacto en aplicación",
               "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más acogida y reasentamiento exigen plazas y personal, sin cifra en el programa. Tramitar rápido importa: las esperas largas reducen el empleo posterior de los refugiados.",
+          "precedentes": [
+            {
+              "pais": "Suiza (1994-2004)",
+              "resultado": "Cada año extra de espera de asilo bajó el empleo posterior 4-5 puntos; acortar plazos ahorra en ayudas.",
+              "url": "https://www.gsb.stanford.edu/insights/economic-upside-fast-tracking-refugee-asylum-claims"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Stanford GSB · Hainmueller, Hangartner y Lawrence (Science Advances 2016)",
+              "url": "https://www.gsb.stanford.edu/insights/economic-upside-fast-tracking-refugee-asylum-claims"
             }
           ]
         }
@@ -182,6 +288,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Coste probablemente bajo (equipos de apoyo), sin cifra en el programa. Su eficacia depende de la coordinación con las comunidades, que tienen la tutela.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -200,6 +312,12 @@
               "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Declaración de principios sin medidas propias ni coste. Sus consecuencias dependen de cómo se aplique el Pacto Europeo.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -224,6 +342,12 @@
               "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Un cierre total no es aplicable dentro de la UE y afectaría a sectores que dependen de trabajadores extranjeros, cuyo empleo sigue creciendo. No hay precedente de cierre total en un país de la UE.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -240,6 +364,23 @@
             {
               "nombre": "BOE · LOEx art. 31.3",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Quienes ya viven y trabajan aquí sin papeles seguirían en la economía sumergida, sin cotizar. La regularización de 2005 mostró un aumento de ingresos por cotizaciones de ≈4.400 € por persona.",
+          "precedentes": [
+            {
+              "pais": "España (2005)",
+              "resultado": "Regularización de ~600.000 personas: cada una aportó ≈4.400 € más al año en cotizaciones; empeoró algo a trabajadores poco cualificados.",
+              "url": "https://docs.iza.org/dp10687.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "IZA DP 10687 · Monras, Vázquez-Grenno y Elias (2017)",
+              "url": "https://docs.iza.org/dp10687.pdf"
             }
           ]
         }
@@ -260,6 +401,32 @@
               "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Dar preferencia por nacionalidad choca con el derecho UE: el TJUE anuló un requisito así en Italia. Recortes dirigidos a inmigrantes en Dinamarca subieron pobreza y delitos de subsistencia.",
+          "precedentes": [
+            {
+              "pais": "Italia (TJUE, 2024)",
+              "resultado": "El TJUE anuló exigir 10 años de residencia para la renta básica: discrimina a residentes de larga duración.",
+              "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
+            },
+            {
+              "pais": "Dinamarca (2002-2012)",
+              "resultado": "Recortar ayudas a refugiados subió el empleo solo a corto plazo y aumentó la pobreza y los delitos de subsistencia.",
+              "url": "https://www.rfberlin.com/wp-content/uploads/2024/11/dustmann-et-al-2024-refugee-benefit-cuts.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "TJUE · Nota de prensa 115/24 (C-112/22 y C-223/22)",
+              "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
+            },
+            {
+              "nombre": "Dustmann, Landersø y Andersen · AEJ: Economic Policy 2024",
+              "url": "https://www.rfberlin.com/wp-content/uploads/2024/11/dustmann-et-al-2024-refugee-benefit-cuts.pdf"
+            }
+          ]
         }
       },
       {
@@ -276,6 +443,27 @@
             {
               "nombre": "DOUE (BOE) · TFUE art. 63",
               "url": "https://www.boe.es/doue/2010/083/Z00047-00199.pdf"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "Recaudaría ≈107 M€/año si el tipo fuera del 1 % (Vox no lo concreta; remesas de 2023: ≈10.700 M€, Banco de España)",
+          "texto": "Recaudaría poco y es fácil de esquivar con envíos por banco o informales. EE. UU. lo aplica desde 2026 solo a pagos en efectivo; aún no hay evaluación.",
+          "precedentes": [
+            {
+              "pais": "EE. UU. (2026)",
+              "resultado": "Impuesto del 1 % a remesas desde enero de 2026, solo si se paga en efectivo o similar; aún sin evaluación de efectos.",
+              "url": "https://www.irs.gov/node/158576"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Banco de España · Remesas enviadas desde España (Boletín 2025/T2)",
+              "url": "https://www.bde.es/wbe/es/publicaciones/analisis-economico-investigacion/boletin-economico/2025t2-articulo-01-las-remesas-enviadas-desde-espana-hacia-america-latina-algunas-cifras-basicas.html"
+            },
+            {
+              "nombre": "IRS · Impuesto sobre remesas (IR-2026-48)",
+              "url": "https://www.irs.gov/node/158576"
             }
           ]
         }
@@ -300,6 +488,23 @@
               "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Excluir por nacionalidad a residentes legales de una prestación de mínimos sería probablemente anulado: el TJUE ya rechazó exigir 10 años de residencia para la renta básica italiana.",
+          "precedentes": [
+            {
+              "pais": "Italia (TJUE, 2024)",
+              "resultado": "El TJUE anuló exigir 10 años de residencia para la renta básica: discrimina a residentes de larga duración.",
+              "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "TJUE · Nota de prensa 115/24 (C-112/22 y C-223/22)",
+              "url": "https://curia.europa.eu/jcms/upload/docs/application/pdf/2024-07/cp240115en.pdf"
+            }
+          ]
         }
       }
     ],
@@ -320,6 +525,32 @@
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-8284"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Resolver a tiempo requiere personal; el coste no está cifrado. Regularizar aumentó las cotizaciones en España en 2005; en Italia (2020) la falta de medios dejó solicitudes años bloqueadas.",
+          "precedentes": [
+            {
+              "pais": "España (2005)",
+              "resultado": "Regularización de ~600.000 personas: cada una aportó ≈4.400 € más al año en cotizaciones; empeoró algo a trabajadores poco cualificados.",
+              "url": "https://docs.iza.org/dp10687.pdf"
+            },
+            {
+              "pais": "Italia (2020)",
+              "resultado": "Regularización con ~230.000 solicitudes: años de retraso; el Consejo de Estado condenó en 2025 la mala organización.",
+              "url": "https://dip.euaa.europa.eu/node/3150"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "IZA DP 10687 · Monras, Vázquez-Grenno y Elias (2017)",
+              "url": "https://docs.iza.org/dp10687.pdf"
+            },
+            {
+              "nombre": "EUAA · Consejo de Estado italiano, sentencia 1596/2025",
+              "url": "https://dip.euaa.europa.eu/node/3150"
+            }
+          ]
         }
       },
       {
@@ -336,6 +567,23 @@
             {
               "nombre": "BOE · LOEx art. 31.3",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ganaría cotizaciones y reduciría la economía sumergida, según la experiencia de 2005, pero podría empeorar a corto plazo a trabajadores poco cualificados. Su efecto sobre nuevas llegadas no está medido en España.",
+          "precedentes": [
+            {
+              "pais": "España (2005)",
+              "resultado": "Regularización de ~600.000 personas: cada una aportó ≈4.400 € más al año en cotizaciones; empeoró algo a trabajadores poco cualificados.",
+              "url": "https://docs.iza.org/dp10687.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "IZA DP 10687 · Monras, Vázquez-Grenno y Elias (2017)",
+              "url": "https://docs.iza.org/dp10687.pdf"
             }
           ]
         }
@@ -356,6 +604,12 @@
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2020-16819"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin coste presupuestario relevante. La consecuencia práctica es volver a aplicar el procedimiento ordinario en Ceuta y Melilla, con más trámites en frontera.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -378,6 +632,12 @@
               "url": "https://ecre.org/european-parliament-approval-of-the-return-regulation/"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ahorraría el coste de los CIE, no cifrado públicamente, pero haría más difícil ejecutar expulsiones, y el Pacto Europeo exige ciertas detenciones en frontera.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -396,6 +656,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin coste relevante. Requiere reforma constitucional o tratados de reciprocidad (art. 13.2 CE). No se ha localizado una evaluación de sus efectos.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ]

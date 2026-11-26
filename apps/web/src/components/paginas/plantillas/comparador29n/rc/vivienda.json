@@ -5,37 +5,148 @@
       "titulo": "Licencias de obra en plazo: trámite digital y silencio positivo",
       "texto": "El Estado fija unas bases comunes: la licencia de obra y de rehabilitación se pide por internet y se resuelve en 3 meses como máximo. Si la administración no contesta, se entiende concedida, salvo en suelo protegido. Cada comunidad lo adapta a su ley y el Estado ayuda a los ayuntamientos a digitalizar el trámite.",
       "punto": 13,
-      "dato": {"texto": "El precio de la vivienda subió un 12,8 % en un año (tercer trimestre de 2025).", "fuente": "INE · Índice de Precios de Vivienda", "url": "https://www.ine.es/prensa/ipv_prensa.htm"},
+      "dato": {
+        "texto": "El precio de la vivienda subió un 12,8 % en un año (tercer trimestre de 2025).",
+        "fuente": "INE · Índice de Precios de Vivienda",
+        "url": "https://www.ine.es/prensa/ipv_prensa.htm"
+      },
       "medicion": "Días medios de concesión de licencia por municipio, publicados cada año; objetivo: menos de 90 días en 2 años.",
       "competencia": "Estado (bases) y CCAA y ayuntamientos (ejecución)",
-      "verificacion": {"veredicto": "naranja", "texto": "El urbanismo es autonómico (art. 148.1.3ª CE): el Estado solo puede fijar bases del procedimiento administrativo (art. 149.1.18ª CE). El plazo real depende de que cada comunidad lo incorpore. El silencio positivo no puede cubrir suelo protegido ni obras con impacto ambiental; por eso se excluyen.", "fuentes": [{"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}, {"nombre": "BOE · Ley 12/2023, por el derecho a la vivienda", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El urbanismo es autonómico (art. 148.1.3ª CE): el Estado solo puede fijar bases del procedimiento administrativo (art. 149.1.18ª CE). El plazo real depende de que cada comunidad lo incorpore. El silencio positivo no puede cubrir suelo protegido ni obras con impacto ambiental; por eso se excluyen.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Plazos cortos y silencio positivo aceleran obras, pero si la administración no revisa a tiempo pueden darse por buenas obras con defectos. El coste de digitalizar los ayuntamientos no está cifrado.",
+        "precedentes": [
+          {
+            "pais": "España (Comunidad de Madrid, 2020)",
+            "resultado": "Sustituyó la mayoría de licencias urbanísticas por declaración responsable para evitar esperas de hasta 12 meses.",
+            "url": "https://www.comunidad.madrid/node/57907"
+          }
+        ],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Sacar al alquiler las viviendas vacías con garantía pública",
       "texto": "Quien ponga una vivienda vacía en alquiler de larga duración a precio moderado recibe un seguro público contra impagos y daños y una rebaja en el IRPF. Se empieza por las zonas con demanda, porque casi la mitad de las vacías está en pueblos pequeños.",
       "punto": 15,
-      "dato": {"texto": "En 2021 había 3.837.328 viviendas vacías en España, según su consumo eléctrico.", "fuente": "INE · Censo de Población y Viviendas 2021", "url": "https://www.ine.es/prensa/censo_2021_jun.pdf"},
+      "dato": {
+        "texto": "En 2021 había 3.837.328 viviendas vacías en España, según su consumo eléctrico.",
+        "fuente": "INE · Censo de Población y Viviendas 2021",
+        "url": "https://www.ine.es/prensa/censo_2021_jun.pdf"
+      },
       "medicion": "Viviendas que pasan de vacías a alquiladas (consumo eléctrico y contratos); evaluación a los 3 años.",
       "competencia": "Estado (IRPF y seguro) y CCAA (gestión)",
-      "verificacion": {"veredicto": "naranja", "texto": "El IRPF y los avales son instrumentos estatales posibles (la Ley 12/2023 invoca el art. 149.1.13ª CE). Matiz: el coste del seguro no está cuantificado en ninguna fuente oficial, así que debe empezar como prueba piloto. La cifra del INE incluye viviendas en mal estado o en zonas sin demanda.", "fuentes": [{"nombre": "BOE · Ley 12/2023, por el derecho a la vivienda", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"}, {"nombre": "INE · Censo 2021, nota de prensa", "url": "https://www.ine.es/prensa/censo_2021_jun.pdf"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El IRPF y los avales son instrumentos estatales posibles (la Ley 12/2023 invoca el art. 149.1.13ª CE). Matiz: el coste del seguro no está cuantificado en ninguna fuente oficial, así que debe empezar como prueba piloto. La cifra del INE incluye viviendas en mal estado o en zonas sin demanda.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+          },
+          {
+            "nombre": "INE · Censo 2021, nota de prensa",
+            "url": "https://www.ine.es/prensa/censo_2021_jun.pdf"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Saca vacías al alquiler sin expropiar, pero el seguro y la rebaja fiscal tienen un coste que no está cifrado y el efecto suele ser modesto: decenas de miles de pisos frente a millones de vacías, muchas en pueblos sin demanda.",
+        "precedentes": [
+          {
+            "pais": "España (Euskadi, Bizigune)",
+            "resultado": "El programa público que alquila pisos vacíos con garantía captó 6.451 viviendas en 2018-2020, el 100,8 % de su objetivo.",
+            "url": "https://www.euskadi.eus/contenidos/informacion/eval_2018_2020/es_ovv_admi/adjuntos/evaluacion_integral_2018_2020_es.pdf"
+          },
+          {
+            "pais": "Canadá (Vancouver, impuesto a vacías 2017)",
+            "resultado": "Las viviendas vacías bajaron al 0,49 %; un estudio del C.D. Howe no halla efecto en asequibilidad ni en nueva construcción.",
+            "url": "https://vancouver.ca/files/cov/2025-empty-homes-tax-annual-report.pdf"
+          }
+        ],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Recuperar viviendas ocupadas en días, con juez y audiencia",
       "texto": "Juzgados con turno preferente para recuperar viviendas ocupadas sin título. El ocupante tiene un plazo breve para presentar un contrato. Si no lo tiene, el juez ordena la entrega. Los servicios sociales actúan desde el primer día si hay menores o personas vulnerables.",
       "punto": 9,
-      "dato": {"texto": "La ley vigente ya da al ocupante 5 días para aportar título; el retraso está en la carga de los juzgados.", "fuente": "BOE · Ley 5/2018, ocupación ilegal de viviendas", "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2018-7833"},
+      "dato": {
+        "texto": "La ley vigente ya da al ocupante 5 días para aportar título; el retraso está en la carga de los juzgados.",
+        "fuente": "BOE · Ley 5/2018, ocupación ilegal de viviendas",
+        "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2018-7833"
+      },
       "medicion": "Días desde la demanda hasta la entrega, publicados por el poder judicial; objetivo: menos de 30 días en 2 años.",
       "competencia": "Estado (ley procesal) y CCAA (medios judiciales y servicios sociales)",
-      "verificacion": {"veredicto": "naranja", "texto": "Respeta la audiencia y la tutela judicial (art. 24 CE), por eso no fija un plazo de horas. La ley procesal es estatal (art. 149.1.6ª CE), pero los medios de muchos juzgados son autonómicos. No hay dato oficial de duración media localizado: hay que publicarlo para poder medir.", "fuentes": [{"nombre": "BOE · Ley 5/2018", "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2018-7833"}, {"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Respeta la audiencia y la tutela judicial (art. 24 CE), por eso no fija un plazo de horas. La ley procesal es estatal (art. 149.1.6ª CE), pero los medios de muchos juzgados son autonómicos. No hay dato oficial de duración media localizado: hay que publicarlo para poder medir.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 5/2018",
+            "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2018-7833"
+          },
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Un turno preferente acorta plazos si se dota de jueces y personal, cuyo coste no está cifrado. El plazo real dependerá de esos medios, no solo de la ley.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Simular el impacto antes de cada medida de vivienda",
       "texto": "Ninguna ayuda, impuesto o tope de vivienda se aprueba sin simular antes qué hará con los precios y con la oferta. Las ayudas a la compra se prueban primero en zonas piloto: si no aumenta la oferta, pueden acabar subiendo el precio. Los resultados se publican.",
       "punto": 29,
-      "dato": {"texto": "El precio de la vivienda subió un 12,8 % en un año (tercer trimestre de 2025).", "fuente": "INE · Índice de Precios de Vivienda", "url": "https://www.ine.es/prensa/ipv_prensa.htm"},
+      "dato": {
+        "texto": "El precio de la vivienda subió un 12,8 % en un año (tercer trimestre de 2025).",
+        "fuente": "INE · Índice de Precios de Vivienda",
+        "url": "https://www.ine.es/prensa/ipv_prensa.htm"
+      },
       "medicion": "Informe público previo y evaluación a los 2 años de cada medida, comparando precio y oferta con zonas sin ella.",
       "competencia": "Estado y CCAA, cada uno en sus medidas",
-      "verificacion": {"veredicto": "verde", "texto": "La ley ya obliga a acompañar cada norma de un análisis de impacto. Basta con hacerlo con datos públicos y pilotos medibles. No necesita reformar la Constitución ni choca con el derecho de la UE.", "fuentes": [{"nombre": "BOE · Ley 50/1997, del Gobierno (art. 26)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-25336"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "La ley ya obliga a acompañar cada norma de un análisis de impacto. Basta con hacerlo con datos públicos y pilotos medibles. No necesita reformar la Constitución ni choca con el derecho de la UE.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 50/1997, del Gobierno (art. 26)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-25336"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Probar antes y medir evita errores caros, como ayudas a la compra que acaban en el precio. El riesgo es que la simulación retrase decisiones urgentes o se use para no decidir.",
+        "precedentes": [
+          {
+            "pais": "Reino Unido (Help to Buy, 2013-2023)",
+            "resultado": "Aumentó compras y construcción, pero según la auditoría pública unos 3 de cada 5 beneficiarios habrían comprado igualmente.",
+            "url": "https://www.nao.org.uk/press-releases/help-to-buy-equity-loan-scheme-progress-review/"
+          }
+        ],
+        "fuentes": []
+      }
     }
   ]
 }

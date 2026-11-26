@@ -5,37 +5,140 @@
       "titulo": "Ninguna rebaja ni gasto nuevo sin su cuenta publicada",
       "texto": "Toda bajada de impuestos o gasto nuevo llega al Congreso con su coste calculado por la Autoridad Fiscal independiente (AIReF) y con la forma de pagarlo. Así nadie promete bajar impuestos y reducir deuda a la vez sin explicar cómo.",
       "punto": 29,
-      "dato": {"texto": "Con las políticas actuales, la deuda pública subiría al 123 % del PIB en 2050.", "fuente": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)", "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"},
+      "dato": {
+        "texto": "Con las políticas actuales, la deuda pública subiría al 123 % del PIB en 2050.",
+        "fuente": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+        "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+      },
       "medicion": "Todas las leyes con impacto fiscal tramitadas con informe de coste previo, revisado cada año.",
       "competencia": "Estado",
-      "verificacion": {"veredicto": "naranja", "texto": "Basta una ley estatal que amplíe las funciones de la AIReF. Matices: necesitaría más medios, y el informe solo puede ser requisito de tramitación, no impedir el voto, porque las Cortes son soberanas.", "fuentes": [{"nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)", "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Basta una ley estatal que amplíe las funciones de la AIReF. Matices: necesitaría más medios, y el informe solo puede ser requisito de tramitación, no impedir el voto, porque las Cortes son soberanas.",
+        "fuentes": [
+          {
+            "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+            "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Hace más honradas las promesas, pero la AIReF necesitaría más medios, y un cálculo de coste no obliga a decidir bien. Si se convierte en trámite, se puede retrasar o ignorar.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Presupuestos sin déficit estructural, con una senda fija",
       "texto": "La deuda ya supera lo que produce el país en un año. Proponemos una senda por ley para eliminar el déficit estructural (el que no depende de si hay crisis) en dos legislaturas. En recesión se puede gastar más; en bonanza, se ahorra.",
       "punto": 26,
-      "dato": {"texto": "La deuda pública era del 101,4 % del PIB (unos 1,763 billones de euros) en el segundo trimestre de 2026.", "fuente": "Banco de España", "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"},
+      "dato": {
+        "texto": "La deuda pública era del 101,4 % del PIB (unos 1,763 billones de euros) en el segundo trimestre de 2026.",
+        "fuente": "Banco de España",
+        "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+      },
       "medicion": "Déficit estructural en el 0 % del PIB en 2034, verificado cada año por la AIReF.",
       "competencia": "Estado, CCAA y UE",
-      "verificacion": {"veredicto": "naranja", "texto": "El déficit de 2025 fue del 2,18 % y hubo superávit primario por primera vez desde 2007: se parte de una base mejor. Encaja con las reglas fiscales de la UE. Matiz: CCAA y Seguridad Social también tienen déficit y deben sumarse.", "fuentes": [{"nombre": "Hacienda/La Moncloa · Cierre del déficit 2025", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"}, {"nombre": "Banco de España · Deuda AAPP 2T 2026", "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El déficit de 2025 fue del 2,18 % y hubo superávit primario por primera vez desde 2007: se parte de una base mejor. Encaja con las reglas fiscales de la UE. Matiz: CCAA y Seguridad Social también tienen déficit y deben sumarse.",
+        "fuentes": [
+          {
+            "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"
+          },
+          {
+            "nombre": "Banco de España · Deuda AAPP 2T 2026",
+            "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Una senda por ley da credibilidad, pero eliminar el déficit estructural en ocho años exige subir ingresos o recortar gasto, y la propuesta no dice cuáles. La deuda ronda el 101 % del PIB y la AIReF prevé que vuelva a subir.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "Banco de España · Deuda pública en 2025",
+            "url": "https://www.bde.es/wbe/es/publicaciones/informacion-estadistica/notas-estadisticas/la-evolucion-de-la-deuda-publica-en-espana-en-2025.html"
+          },
+          {
+            "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+            "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+          }
+        ]
+      }
     },
     {
       "titulo": "Quien cobra el salario mínimo no paga IRPF, de forma automática",
       "texto": "Que el mínimo libre de IRPF suba solo cada vez que sube el salario mínimo, sin depender de que cada año alguien se acuerde. Afecta a la parte estatal del impuesto, la que decide el Estado.",
       "punto": null,
-      "dato": {"texto": "El salario mínimo de 2026 es de 1.221 € al mes en 14 pagas.", "fuente": "BOE · Real Decreto 126/2026", "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"},
+      "dato": {
+        "texto": "El salario mínimo de 2026 es de 1.221 € al mes en 14 pagas.",
+        "fuente": "BOE · Real Decreto 126/2026",
+        "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
+      },
       "medicion": "IRPF estatal de 0 € para un salario igual al mínimo, comprobado en cada campaña de la renta.",
       "competencia": "Estado",
-      "verificacion": {"veredicto": "verde", "texto": "Competencia estatal y técnicamente sencillo: basta ligar la reducción por rendimientos del trabajo al salario mínimo en la ley del IRPF. No se crea una ayuda nueva, se actualiza una que ya existe.", "fuentes": [{"nombre": "BOE · Real Decreto 126/2026 (SMI 2026)", "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Competencia estatal y técnicamente sencillo: basta ligar la reducción por rendimientos del trabajo al salario mínimo en la ley del IRPF. No se crea una ayuda nueva, se actualiza una que ya existe.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+            "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": "≈ 750 M€/año (cálculo: la mitad de los ≈1.500 M€ estimados para todo el IRPF, porque solo toca la parte estatal)",
+        "texto": "Evita que quien cobra el SMI pague IRPF por olvido, pero el coste crece con cada subida del salario mínimo. Al aplicarse solo a la parte estatal, quien cobra el SMI podría seguir pagando la parte autonómica.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "elDiario.es · Coste de elevar el mínimo exento al SMI",
+            "url": "https://www.eldiario.es/1_b7cc7d"
+          }
+        ]
+      }
     },
     {
       "titulo": "Pensiones con el IPC y una revisión independiente cada 3 años",
       "texto": "Las pensiones siguen subiendo con los precios, como ya marca la ley. A la vez, la AIReF revisa cada tres años si el sistema se sostiene y propone ajustes antes de que el problema crezca. Con los datos públicos.",
       "punto": 29,
-      "dato": {"texto": "El gasto bruto en pensiones será del 14,6 % del PIB de media entre 2022 y 2050; la AIReF avisa de que la regla actual no garantiza la sostenibilidad.", "fuente": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)", "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"},
+      "dato": {
+        "texto": "El gasto bruto en pensiones será del 14,6 % del PIB de media entre 2022 y 2050; la AIReF avisa de que la regla actual no garantiza la sostenibilidad.",
+        "fuente": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+        "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+      },
       "medicion": "Gasto neto en pensiones por debajo del 13,3 % del PIB, revisado cada 3 años.",
       "competencia": "Estado",
-      "verificacion": {"veredicto": "verde", "texto": "La subida con el IPC ya es ley (2,7 % en 2026). La propia AIReF pide poder evaluar de forma previa e independiente los compromisos de pensiones: hacerlo periódico solo exige una ley ordinaria, sin reformar la Constitución.", "fuentes": [{"nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)", "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"}, {"nombre": "La Moncloa · Revalorización de pensiones 2026", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "La subida con el IPC ya es ley (2,7 % en 2026). La propia AIReF pide poder evaluar de forma previa e independiente los compromisos de pensiones: hacerlo periódico solo exige una ley ordinaria, sin reformar la Constitución.",
+        "fuentes": [
+          {
+            "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+            "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+          },
+          {
+            "nombre": "La Moncloa · Revalorización de pensiones 2026",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Revisar cada tres años es prudente, pero no cambia que, según la AIReF, a políticas constantes el déficit llegue al 6,6 % del PIB y la deuda al 123 % en 2050. La clave es qué ajustes se aceptan cuando la revisión los pida.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+            "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+          }
+        ]
+      }
     }
   ]
 }

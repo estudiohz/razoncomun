@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente } from './tipos';
+import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaRc, type PropuestaVerificada, type Seguimiento, type Veredicto, type Fuente, type Viabilidad } from './tipos';
 
 const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
   verde: { color: '#1E9E5A', etiqueta: 'Posible' },
@@ -48,7 +48,28 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
 
   return (
     <div className="flex flex-wrap items-start gap-8">
-      <nav aria-label="Apartados" className="flex w-full flex-col gap-1 min-[900px]:sticky min-[900px]:top-24 min-[900px]:w-[250px]">
+      <div className="w-full min-[900px]:hidden">
+        <label htmlFor="apartado-29n" className="mb-1.5 block text-[12px] font-bold uppercase tracking-[.1em] text-gris">Apartado</label>
+        <div className="relative">
+          <span className="pointer-events-none absolute left-4 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full" style={{ background: color }} />
+          <select
+            id="apartado-29n"
+            value={sel}
+            onChange={(e) => setSel(Number(e.target.value))}
+            className="h-[52px] w-full appearance-none rounded-[14px] border-2 bg-white pl-10 pr-10 text-[16px] font-bold text-titular"
+            style={{ borderColor: color }}
+          >
+            {apartados.map((a, i) => (
+              <option key={a.id} value={i}>
+                {String(i + 1).padStart(2, '0')} · {a.titulo}{voto[a.id] ? ' ✓' : ''}
+              </option>
+            ))}
+          </select>
+          <span aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-titular">▾</span>
+        </div>
+      </div>
+
+      <nav aria-label="Apartados" className="hidden w-[250px] flex-col gap-1 min-[900px]:sticky min-[900px]:top-24 min-[900px]:flex">
         {apartados.map((a, i) => {
           const c = COLOR_APARTADO[a.id] ?? '#1B3D9C';
           const activo = i === sel;
@@ -70,6 +91,21 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
       </nav>
 
       <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
+        <div className="sticky top-[86px] z-40 -mx-4 bg-white/95 px-4 py-2 backdrop-blur min-[900px]:hidden" role="navigation" aria-label="Ir a un partido">
+          <div className="flex gap-2 overflow-x-auto [scrollbar-width:none]">
+            {[...partidos.map((p) => ({ id: p.id, sigla: p.sigla, color: p.color })), { id: 'rc', sigla: 'RC', color: RC_COLOR }].map((p) => (
+              <a
+                key={p.id}
+                href={`#partido-${p.id}`}
+                className="inline-flex min-h-[40px] flex-none items-center gap-1.5 rounded-full border-2 bg-white px-3.5 text-[13px] font-extrabold text-titular no-underline"
+                style={{ borderColor: p.color }}
+              >
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: p.color }} />
+                {p.sigla}
+              </a>
+            ))}
+          </div>
+        </div>
         <div className="rounded-[18px] px-7 py-6 text-titular" style={{ background: `${color}24`, borderTop: `6px solid ${color}` }}>
           <p className="text-[12px] font-bold uppercase tracking-[.12em] opacity-85">Apartado {String(sel + 1).padStart(2, '0')}</p>
           <h2 className="mt-1 text-[clamp(26px,3.4vw,34px)] font-extrabold">{ap.titulo}</h2>
@@ -98,7 +134,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
           ))}
         </div>
 
-        <article className="rounded-[18px] p-[3px]" style={{ background: 'linear-gradient(120deg,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }}>
+        <article id="partido-rc" className="scroll-mt-[150px] rounded-[18px] p-[3px]" style={{ background: 'linear-gradient(120deg,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }}>
           <div className="flex flex-col gap-3 rounded-[15px] bg-white px-6 py-6">
             <p className="text-[12px] font-bold uppercase tracking-[.12em]" style={{ color: '#0E8C7A' }}>La alternativa de Razón Común</p>
             {rc[ap.id]?.length ? (
@@ -125,6 +161,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
                         {x.punto ? <> · <a href="/manifiesto" className="underline">Punto {x.punto} del manifiesto</a></> : null}
                       </p>
                       <Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} />
+                      <BloqueViabilidad b={x.viabilidad} />
                     </div>
                   );
                 })}
@@ -197,7 +234,8 @@ function TarjetaPartido({
 }: { partido: Partido; propuestas: PropuestaVerificada[]; pdf: string | null; elegido: boolean; onElegir: () => void }) {
   return (
     <article
-      className="flex flex-col gap-3.5 rounded-[16px] bg-white px-5 py-5"
+      id={`partido-${partido.id}`}
+      className="flex scroll-mt-[150px] flex-col gap-3.5 rounded-[16px] bg-white px-5 py-5"
       style={{ border: `1px solid ${elegido ? partido.color : '#E4E6EE'}`, boxShadow: elegido ? `0 0 0 2px ${partido.color}` : '0 1px 2px rgba(27,61,156,.06)' }}
     >
       <div className="flex items-center gap-2.5">
@@ -249,6 +287,7 @@ function TarjetaPartido({
                   <span className="pl-[22px] text-[12px] font-semibold text-gris">{cita}</span>
                 )}
                 <div className="ml-[22px]"><Verificacion v={v} texto={x.verificacion.texto} fuentes={x.verificacion.fuentes} /></div>
+                <div className="ml-[22px]"><BloqueViabilidad b={x.viabilidad} /></div>
                 <div className="ml-[22px]"><EstadoSeguimiento s={x.seguimiento} /></div>
               </div>
             );
@@ -297,5 +336,37 @@ function EstadoSeguimiento({ s }: { s?: Seguimiento }) {
       {s?.fuente ? <> · <a href={s.fuente.url} target="_blank" rel="noopener nofollow" className="underline">{s.fuente.nombre}</a></> : null}
       {s?.nota ? <span className="font-normal text-gris"> — {s.nota}</span> : null}
     </p>
+  );
+}
+
+/** Acordeón «Viabilidad»: coste estimado, consecuencias y precedentes en otros países. */
+function BloqueViabilidad({ b }: { b?: Viabilidad }) {
+  if (!b || (!b.texto && !b.coste)) return null;
+  return (
+    <details className="group rounded-[10px] border border-linea bg-white px-3 py-2.5">
+      <summary className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-[10.5px] font-extrabold uppercase tracking-[.1em] text-titular">
+        Viabilidad: coste y consecuencias
+        <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
+      </summary>
+      {b.coste ? <p className="mt-1.5 text-[13px] font-bold text-titular">Coste: {b.coste}</p> : null}
+      {b.texto ? <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{b.texto}</p> : null}
+      {b.precedentes?.length ? (
+        <ul className="mt-2 space-y-1.5">
+          {b.precedentes.map((p, i) => (
+            <li key={i} className="text-[12.5px] leading-[1.4] text-cuerpo">
+              <span className="font-bold">{p.pais}:</span> {p.resultado}{' '}
+              <a href={p.url} target="_blank" rel="noopener nofollow" className="text-[11.5px] underline">fuente</a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {b.fuentes?.length ? (
+        <p className="mt-1.5 flex flex-wrap gap-x-3 text-[11.5px]">
+          {b.fuentes.map((f, j) => (
+            <a key={j} href={f.url} target="_blank" rel="noopener nofollow" className="underline">{f.nombre}</a>
+          ))}
+        </p>
+      ) : null}
+    </details>
   );
 }

@@ -42,6 +42,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "Más que la tarifa plana actual, que costó 635 M€ en 2018 (AIReF)",
+          "texto": "Ampliar la cuota cero anima a darse de alta. Pero la AIReF vio que con la tarifa plana los nuevos autónomos aguantan mientras dura la ayuda y luego se igualan con los demás. Riesgo de altas ficticias si no hay control.",
+          "precedentes": [
+            {
+              "pais": "España (tarifa plana, 2013-2018)",
+              "resultado": "Aumentó las altas y la supervivencia mientras duraba; al acabar la ayuda, los beneficiarios aguantaban igual que el resto (AIReF).",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
         }
       },
       {
@@ -58,6 +75,17 @@
             {
               "nombre": "Unión Europea · Directiva (UE) 2020/285",
               "url": "https://publications.europa.eu/resource/celex/32020L0285.SPA.xhtml"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Es lo que permite la directiva europea, que España aún no aplica. Ahorra papeleo a pequeños negocios; Hacienda pierde algo de IVA y crece el riesgo de partir la actividad para no pasar del umbral. Sin cálculo oficial del coste.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Directiva (UE) 2020/285 (franquicia de IVA para pequeñas empresas)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2020/285/oj/spa"
             }
           ]
         }
@@ -78,6 +106,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1992-28925"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Menos papeleo con coste casi nulo; Hacienda cobraría más tarde parte de los impuestos (efecto de caja). Riesgo: que el autónomo acumule pagos mayores de golpe. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -94,6 +128,23 @@
             {
               "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Abarata contratar al primer empleado. La AIReF concluye que estas bonificaciones tienen efecto pequeño y que el empleo extra suele desaparecer al acabar la ayuda; también hay contratos que se habrían hecho igual.",
+          "precedentes": [
+            {
+              "pais": "España (bonificaciones, 2012-2018)",
+              "resultado": "Efecto pequeño en encontrar empleo y nulo en poco cualificados y mayores de 45; el empleo extra desaparece al acabar la ayuda (AIReF).",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
             }
           ]
         }
@@ -114,6 +165,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Protege al autónomo con enfermedad grave. Coste acotado por el número de casos, sin cálculo público. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -134,6 +191,12 @@
               "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-16653"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Da a los mutualistas la protección del sistema público, pero eleva el gasto futuro en pensiones y obliga a decidir cómo se cuentan sus aportaciones anteriores. Sin cálculo oficial del coste encontrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -156,6 +219,17 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Continúa el sistema por ingresos reales que la AIReF recomendó y que existe desde 2023. Bien hecho, es más justo; el riesgo es que suban las cuotas a autónomos con ingresos medios.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
         }
       }
     ],
@@ -176,6 +250,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Alivia a quien gana poco, pero si no cotiza no genera derechos (pensión, baja) o el Estado tendría que pagarlos. Sin estimación pública. La AIReF vio que ayudas parecidas no mejoran la supervivencia del negocio a largo plazo.",
+          "precedentes": [
+            {
+              "pais": "España (tarifa plana, 2013-2018)",
+              "resultado": "Aumentó las altas y la supervivencia mientras duraba; al acabar la ayuda, los beneficiarios aguantaban igual que el resto (AIReF).",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
         }
       },
       {
@@ -194,6 +285,18 @@
               "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/25387"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Facilitaría operar en todo el país, pero una idea así (licencia única) ya fue anulada por el Constitucional en 2017. Necesitaría reforma constitucional o acuerdo con las comunidades.",
+          "precedentes": [
+            {
+              "pais": "España (Ley 20/2013)",
+              "resultado": "La «licencia única» válida en toda España fue anulada por el Constitucional en 2017 por invadir competencias autonómicas.",
+              "url": "https://www.osborneclarke.com/es/insights/el-alto-tribunal-se-reafirma-sobre-la-inconstitucionalidad-del-principio-de-eficacia-nacional-de-la-ley-de-unidad-de-mercado"
+            }
+          ],
+          "fuentes": []
         }
       }
     ],
@@ -214,6 +317,17 @@
               "url": "https://publications.europa.eu/resource/celex/32020L0285.SPA.xhtml"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Es lo que permite la directiva europea, que España aún no aplica. Ahorra papeleo a pequeños negocios; Hacienda pierde algo de IVA y crece el riesgo de partir la actividad para no pasar del umbral. Sin cálculo oficial del coste.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Directiva (UE) 2020/285 (franquicia de IVA para pequeñas empresas)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2020/285/oj/spa"
+            }
+          ]
         }
       },
       {
@@ -232,6 +346,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Protege a autónomos con ingresos bajos sin perder derechos, pero el Estado paga la diferencia. Sin estimación pública del coste. Riesgo: infradeclarar ingresos para entrar; requiere control cruzado con Hacienda.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -250,6 +370,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mejora las condiciones de los TRADE, pero puede llevar a clientes a cambiar de proveedor para no asumir el convenio. Coste público nulo. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ]

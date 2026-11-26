@@ -5,37 +5,130 @@
       "titulo": "Plazo máximo común de espera y datos por hospital",
       "texto": "Una norma estatal fija el mismo plazo máximo para operarse y para ver al especialista en toda España. Si se supera, el paciente puede elegir otro centro público de su comunidad. Cada hospital publica cada tres meses su espera real, en abierto.",
       "punto": 16,
-      "dato": {"texto": "853.509 pacientes esperaban una operación en diciembre de 2025, con 121 días de media.", "fuente": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025", "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"},
+      "dato": {
+        "texto": "853.509 pacientes esperaban una operación en diciembre de 2025, con 121 días de media.",
+        "fuente": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+        "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+      },
       "medicion": "Demora quirúrgica media por debajo de 90 días y espera por hospital publicada cada trimestre, en 2 años",
       "competencia": "Estado (bases) y CCAA (gestión)",
-      "verificacion": {"veredicto": "naranja", "texto": "El Estado puede fijar garantías básicas comunes (art. 149.1.16 CE) y ya publica la espera cada semestre (RD 605/2003). Pero contratar plantilla y operar lo hacen las CCAA, que gestionan el 93,6% del gasto: sin acuerdo y financiación en el Consejo Interterritorial, el plazo sería papel.", "fuentes": [{"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}, {"nombre": "Ministerio de Sanidad · Gasto sanitario público 2024", "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El Estado puede fijar garantías básicas comunes (art. 149.1.16 CE) y ya publica la espera cada semestre (RD 605/2003). Pero contratar plantilla y operar lo hacen las CCAA, que gestionan el 93,6% del gasto: sin acuerdo y financiación en el Consejo Interterritorial, el plazo sería papel.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+            "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Publicar esperas por hospital es barato y da información al paciente. Dejar elegir otro centro solo funciona si hay plazas libres: sin más capacidad, la espera se reparte pero no baja. No hemos encontrado una evaluación publicada de un plan comparable.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Más plazas para formar médicos de familia, desde ya",
       "texto": "Formar especialistas es tarea del Estado. Proponemos subir cada año las plazas de Medicina de Familia en la convocatoria de residentes, según un cálculo público de jubilaciones y población por zona. Un médico de familia tarda 4 años en formarse: hay que empezar hoy.",
       "punto": null,
-      "dato": {"texto": "La oferta de formación sanitaria especializada 2027 es de 9.676 plazas de Medicina para todas las especialidades juntas.", "fuente": "Ministerio de Sanidad · Oferta FSE 2027", "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6963"},
+      "dato": {
+        "texto": "La oferta de formación sanitaria especializada 2027 es de 9.676 plazas de Medicina para todas las especialidades juntas.",
+        "fuente": "Ministerio de Sanidad · Oferta FSE 2027",
+        "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6963"
+      },
       "medicion": "Plazas de Familia ofertadas y cubiertas en cada convocatoria; médicos de familia por habitante en 6 años",
       "competencia": "Estado (formación) y CCAA (centros acreditados y contratos)",
-      "verificacion": {"veredicto": "naranja", "texto": "La convocatoria de residentes la aprueba el Ministerio, así que subir plazas es viable. El límite son las unidades docentes acreditadas y que las CCAA contraten al terminar. El efecto llega a partir de 4 años.", "fuentes": [{"nombre": "Ministerio de Sanidad · Oferta FSE 2027", "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6963"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "La convocatoria de residentes la aprueba el Ministerio, así que subir plazas es viable. El límite son las unidades docentes acreditadas y que las CCAA contraten al terminar. El efecto llega a partir de 4 años.",
+        "fuentes": [
+          {
+            "nombre": "Ministerio de Sanidad · Oferta FSE 2027",
+            "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6963"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Es la medida correcta a largo plazo, pero no da resultados hasta dentro de 4-5 años. Además hay que lograr que las plazas se cubran y que los médicos se queden en las zonas con falta. Coste no cifrado.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Tu historial médico, accesible en cualquier comunidad",
       "texto": "La historia clínica digital común ya existe, pero no todas las comunidades la tienen completa. Proponemos fechas obligatorias y un fondo para que cualquier médico de España vea tus informes y recetas. Menos pruebas repetidas y menos papeleo.",
       "punto": 13,
-      "dato": {"texto": "La Historia Clínica Digital del SNS comparte informes entre comunidades, pero su implantación depende de que cada una cumpla los requisitos técnicos.", "fuente": "Ministerio de Sanidad · Historia Clínica Digital del SNS", "url": "https://www.sanidad.gob.es/areas/saludDigital/historiaClinicaSNS/home.htm"},
+      "dato": {
+        "texto": "La Historia Clínica Digital del SNS comparte informes entre comunidades, pero su implantación depende de que cada una cumpla los requisitos técnicos.",
+        "fuente": "Ministerio de Sanidad · Historia Clínica Digital del SNS",
+        "url": "https://www.sanidad.gob.es/areas/saludDigital/historiaClinicaSNS/home.htm"
+      },
       "medicion": "Todas las comunidades con historia clínica y receta interoperables al completo en 2 años",
       "competencia": "Estado (coordinación) y CCAA (sistemas)",
-      "verificacion": {"veredicto": "verde", "texto": "Es coordinación, competencia estatal (art. 149.1.16 CE), sobre un sistema que ya funciona. Exige acuerdo en el Consejo Interterritorial y un coste técnico acotado. Encaja con la protección de datos si el paciente mantiene el control de quién ve su historial.", "fuentes": [{"nombre": "Ministerio de Sanidad · Historia Clínica Digital del SNS", "url": "https://www.sanidad.gob.es/areas/saludDigital/historiaClinicaSNS/home.htm"}, {"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Es coordinación, competencia estatal (art. 149.1.16 CE), sobre un sistema que ya funciona. Exige acuerdo en el Consejo Interterritorial y un coste técnico acotado. Encaja con la protección de datos si el paciente mantiene el control de quién ve su historial.",
+        "fuentes": [
+          {
+            "nombre": "Ministerio de Sanidad · Historia Clínica Digital del SNS",
+            "url": "https://www.sanidad.gob.es/areas/saludDigital/historiaClinicaSNS/home.htm"
+          },
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Coincide con la propuesta de Vox: coste bajo y sobre todo técnico, pero depende de que cada comunidad cumpla. El ahorro en pruebas repetidas no está medido oficialmente.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Dinero estatal ligado a resultados medidos",
       "texto": "Antes de prometer un porcentaje del PIB, medir. Los fondos estatales extra para sanidad irán a planes pactados con cada comunidad, con metas públicas (espera, plantilla) y evaluación independiente. Si funciona, se amplía; si no, se corrige.",
       "punto": 29,
-      "dato": {"texto": "El gasto sanitario público fue de 101.739 M€ en 2024 (6,4% del PIB). Las comunidades gestionan el 93,6%.", "fuente": "Ministerio de Sanidad · Gasto sanitario público 2024", "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"},
+      "dato": {
+        "texto": "El gasto sanitario público fue de 101.739 M€ en 2024 (6,4% del PIB). Las comunidades gestionan el 93,6%.",
+        "fuente": "Ministerio de Sanidad · Gasto sanitario público 2024",
+        "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+      },
       "medicion": "Informe anual público de cada plan con metas cumplidas o no, desde el primer año",
       "competencia": "Estado y CCAA",
-      "verificacion": {"veredicto": "naranja", "texto": "El Estado puede dar fondos finalistas con condiciones pactadas, pero no imponer cómo gestionan las CCAA (art. 149.1.16 CE). Requiere convenio con cada una. El coste depende de cuánto dinero extra se ponga; no hay cifra cerrada.", "fuentes": [{"nombre": "Ministerio de Sanidad · Gasto sanitario público 2024", "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"}, {"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El Estado puede dar fondos finalistas con condiciones pactadas, pero no imponer cómo gestionan las CCAA (art. 149.1.16 CE). Requiere convenio con cada una. El coste depende de cuánto dinero extra se ponga; no hay cifra cerrada.",
+        "fuentes": [
+          {
+            "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+            "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+          },
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Condicionar fondos a metas es sensato, pero no fija cuánto dinero: no se puede estimar coste. Riesgo: que se «maquillen» los indicadores para cobrar si la evaluación no es realmente independiente.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
+            "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+          }
+        ]
+      }
     }
   ]
 }

@@ -50,6 +50,17 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Un pacto es útil si fija metas medibles; sin dinero ni plazos concretos, su efecto sobre las esperas no se puede estimar. La gestión es de las comunidades (93,6 % del gasto), así que depende de que se sumen.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
         }
       },
       {
@@ -72,6 +83,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más plazas no garantizan más médicos a corto plazo: un médico de familia tarda 4 años en formarse tras el MIR y hay que cubrir jubilaciones. El coste depende del salario que pague cada comunidad; el programa no lo cifra.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -96,6 +113,17 @@
               "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "≈ 9.600 M€/año más (pasar del 6,4 % al 7 % de un PIB de ≈1,59 billones; cálculo sobre datos del Ministerio de Sanidad)",
+          "texto": "Más gasto no acaba por sí solo con las listas: depende de en qué se gaste (plantillas, quirófanos, primaria). La meta de «acabar» con las esperas no tiene precedente en ningún país de nuestro entorno.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
         }
       },
       {
@@ -114,6 +142,18 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Hay demanda alta. La experiencia inglesa muestra que el acceso rápido es posible, pero muchos pacientes abandonan y la recuperación ronda la mitad de quienes terminan. Requiere muchos más psicólogos clínicos; el coste no está cifrado.",
+          "precedentes": [
+            {
+              "pais": "Reino Unido (NHS Talking Therapies)",
+              "resultado": "1,8 millones de derivaciones en 2023/24; solo el 37 % acabó el tratamiento y, de ellos, el 47 % se recuperó de forma fiable.",
+              "url": "https://www.nuffieldtrust.org.uk/news-item/does-the-nhs-talking-therapies-service-have-an-attrition-problem"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -136,6 +176,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "El coste depende de cuántas personas cobren la ayuda de 200 €; el programa no da la cifra. Ayudas directas sin dentistas públicos suficientes pueden acabar en clínicas privadas con precios libres. No hemos encontrado una evaluación publicada de un plan comparable.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -160,6 +206,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "La historia clínica digital común ya existe pero está desigualmente implantada; completarla es sobre todo tarea técnica y de coordinación con las comunidades. Coste bajo en relación con el gasto sanitario, sin cifra oficial.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -178,6 +230,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "El ahorro esperado no aparece en las evaluaciones: cuando España lo hizo en 2012 subió la mortalidad de este grupo, y en Alemania limitar el acceso salió más caro porque se atiende tarde y en urgencias.",
+          "precedentes": [
+            {
+              "pais": "España (2012-2018)",
+              "resultado": "Retirar la tarjeta sanitaria a los inmigrantes sin papeles subió su mortalidad ≈15 %: unas 82 muertes más al año (Univ. Barcelona/UPF).",
+              "url": "https://diposit.ub.edu/items/a0496561-283d-4df0-9806-1e684153fa31/full"
+            },
+            {
+              "pais": "Alemania (1994-2013)",
+              "resultado": "Restringir la sanidad a solicitantes de asilo costó ≈40 % más por persona que darles acceso normal: la urgencia sale más cara.",
+              "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0131483"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -200,6 +269,12 @@
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Concertar con la privada puede bajar esperas rápido si hay capacidad libre, pero no crea médicos nuevos y puede trasladar profesionales de un sector a otro. Su eficacia depende de controlar precios y resultados.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -217,6 +292,17 @@
           "fuentes": [
             {
               "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "≈ 25.500 M€/año más (pasar del 6,4 % al 8 % de un PIB de ≈1,59 billones; cálculo sobre datos del Ministerio de Sanidad)",
+          "texto": "Es un aumento de una cuarta parte del gasto actual. El Estado solo gestiona el 6,4 % del gasto sanitario: financiarlo desde los Presupuestos del Estado exigiría más impuestos o deuda, y transferencias a las comunidades.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
@@ -238,6 +324,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "No hay una evaluación concluyente de qué modelo es más barato: en el caso de Alzira (revertido en 2018) la empresa alegó ahorro y los sindicatos, sobrecostes. Pasar a gestión directa implica asumir plantillas y posibles indemnizaciones.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -256,6 +348,23 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Las evaluaciones indican que excluir a los sin papeles no ahorra y empeora su salud; garantizar el acceso tiene un coste moderado frente al gasto total, sin cifra oficial reciente.",
+          "precedentes": [
+            {
+              "pais": "España (2012-2018)",
+              "resultado": "Retirar la tarjeta sanitaria a los inmigrantes sin papeles subió su mortalidad ≈15 %: unas 82 muertes más al año (Univ. Barcelona/UPF).",
+              "url": "https://diposit.ub.edu/items/a0496561-283d-4df0-9806-1e684153fa31/full"
+            },
+            {
+              "pais": "Alemania (1994-2013)",
+              "resultado": "Restringir la sanidad a solicitantes de asilo costó ≈40 % más por persona que darles acceso normal: la urgencia sale más cara.",
+              "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0131483"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -274,6 +383,18 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin coste económico directo. Exige reforma constitucional con mayorías de 3/5 en ambas cámaras, hoy difíciles de reunir. Francia es el único precedente explícito.",
+          "precedentes": [
+            {
+              "pais": "Francia (2024)",
+              "resultado": "Incluyó la libertad de abortar en su Constitución el 4/3/2024 con 780 votos de diputados y senadores en Versalles.",
+              "url": "https://www.eldiario.es/1_a78804"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -296,6 +417,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Medir desde la indicación del médico y sumar primaria y salud mental hará que las listas oficiales parezcan más largas al principio: más transparencia, pero no menos espera por sí sola.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ]

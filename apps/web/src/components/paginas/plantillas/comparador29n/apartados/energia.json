@@ -42,6 +42,23 @@
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mantener nucleares evita sustituirlas por gas o carbón y ayuda a contener emisiones y precios a corto plazo; a cambio hay que pagar inversiones de seguridad y gestionar más residuos. Depende de que el CSN lo avale y de que las eléctricas quieran seguir.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ]
         }
       },
       {
@@ -60,6 +77,17 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2012-15649"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "≈ 900 M€/año (lo que aportó el impuesto en 2024 al restablecerse, según la AEAT)",
+          "texto": "Bajaría algo el recibo si la rebaja se traslada al precio, pero Hacienda pierde unos 900 M€/año. Como la ley ya lo elimina en 2028, el coste real es adelantarlo uno o dos años.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+            }
+          ]
         }
       },
       {
@@ -73,6 +101,23 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su coste. Es competencia estatal y viable por norma con rango de ley, pero el programa no cuantifica la mejora ni su financiación.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Unificar ayudas reduce trámites. Lo decisivo es que se conceda de oficio: cuando hay que pedirlo, muchos hogares con derecho no lo solicitan. El coste depende de cuántos hogares entren y de la cuantía, aún sin definir.",
+          "precedentes": [
+            {
+              "pais": "Italia (bono social automático, 2021)",
+              "resultado": "Al darse de oficio, los bonos eléctricos pasaron de 2,5 M (2021) a 4,6 M (2023).",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "ARERA · Bonos sociales 2023",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ]
         }
       }
     ],
@@ -97,6 +142,17 @@
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "≈ 308.000 M€ de inversión hasta 2030 para todo el plan energético (82 % privada), según el PNIEC",
+          "texto": "El Gobierno estima un PIB un 3,2 % mayor y menos gasto energético de los hogares. Riesgos: que redes y almacenamiento no lleguen a tiempo, horas a precio cero que frenan la inversión y rechazo local a nuevos parques.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "MITECO · Actualización del PNIEC 2023-2030",
+              "url": "https://www.miteco.gob.es/es/prensa/ultimas-noticias/2024/septiembre/el-gobierno-aprueba-la-actualizacion-del-plan-nacional-integrado.html"
+            }
+          ]
         }
       },
       {
@@ -115,6 +171,23 @@
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cerrar nucleares sin tener lista su sustitución limpia puede obligar a usar más gas, con más emisiones y precios más altos; los planes de transición justa intentan amortiguar el golpe en las comarcas. El efecto depende de cuánta renovable y almacenamiento haya entonces.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ]
         }
       },
       {
@@ -128,6 +201,23 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su coste. Las tarifas de agua dependen de ayuntamientos y las de telecomunicaciones de operadores, por eso el propio texto las condiciona a convenios.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Reconocer el derecho de oficio sube mucho el número de hogares que lo reciben, y por tanto el coste. Integrar ayudas de distintas administraciones (agua, telecomunicaciones) exige cruzar datos y pactar con comunidades y ayuntamientos.",
+          "precedentes": [
+            {
+              "pais": "Italia (bono social automático, 2021)",
+              "resultado": "Al darse de oficio, los bonos eléctricos pasaron de 2,5 M (2021) a 4,6 M (2023).",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "ARERA · Bonos sociales 2023",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ]
         }
       }
     ],
@@ -152,6 +242,21 @@
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "Sin cifra total: cada 11 puntos menos de IVA de la luz cuestan ≈1.100-1.300 M€/año (AIReF, 2021); quitar el impuesto del 7 %, ≈900 M€/año",
+          "texto": "Bajar impuestos abarata el recibo, pero el programa no dice cuánto ni cómo se compensa. Una rebaja general beneficia más a quien más consume y tiene el límite de los tipos mínimos que fija la UE.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "El Independiente · AIReF sobre la rebaja del IVA de la luz",
+              "url": "https://www.elindependiente.com/economia/2021/06/22/la-airef-cifra-en-1-300-millones-de-euros-el-impacto-recaudatorio-de-la-rebaja-del-iva-de-la-luz/amp/"
+            },
+            {
+              "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+            }
+          ]
         }
       },
       {
@@ -170,6 +275,32 @@
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mantener las centrales evita sustituirlas por gas o carbón. Construir nuevas es otra cosa: los últimos reactores europeos han costado varias veces lo previsto y han tardado más de una década.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            },
+            {
+              "pais": "Francia (Flamanville 3)",
+              "resultado": "Presupuestado en 3.300 M€; el Tribunal de Cuentas lo eleva a 23.700 M€ y llegó a la red con 12 años de retraso.",
+              "url": "https://www.connaissancedesenergies.org/afp/programme-depr-la-cour-des-comptes-publie-un-rapport-critique-et-recalcule-le-cout-de-flamanville-3-250114"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            },
+            {
+              "nombre": "Connaissance des Énergies · Cour des comptes sobre el EPR",
+              "url": "https://www.connaissancedesenergies.org/afp/programme-depr-la-cour-des-comptes-publie-un-rapport-critique-et-recalcule-le-cout-de-flamanville-3-250114"
+            }
+          ]
         }
       },
       {
@@ -183,6 +314,17 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado. Quitar el tope a la inversión regulada eleva los costes que pagan los consumidores en peajes. El silencio positivo exige compatibilizarlo con la evaluación ambiental obligatoria.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más inversión en redes acelera conexiones, pero las redes se pagan en el recibo: sin tope, sube la factura. La CNMC acaba de fijar una rentabilidad del 6,58 % y retribuye inversiones hasta el 0,13 % del PIB. El silencio positivo choca con evaluaciones ambientales que exige la UE.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "CNMC · Circulares de retribución de redes (dic. 2025)",
+              "url": "https://www.cnmc.es/prensa/circulares-retribucion-electrica-20251222"
+            }
+          ]
         }
       }
     ],
@@ -203,6 +345,23 @@
               "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cerrar Almaraz en 2027-2028 obliga a cubrir su producción; si no hay suficiente renovable y almacenamiento, entra gas, con más emisiones y riesgo de precios más altos. Además habría que revocar la prórroga ya aprobada hasta 2030.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ]
         }
       },
       {
@@ -221,6 +380,12 @@
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Premia a quien consume poco, pero el consumo depende de cosas como la calefacción eléctrica o el tamaño del hogar, no solo de la renta. Exige saber cuántas personas viven en cada casa y encaja mal con las reglas europeas del IVA. No hay cálculo de coste.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -234,6 +399,23 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su coste. El programa financia los peajes de esas horas con el gravamen a las energéticas y crea una comercializadora pública que aún no existe.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Puede mover el consumo a las horas de sol, cuando la luz es más barata. El riesgo: la energía «gratis» se paga subiendo el precio del resto de horas, y beneficia más a quien puede desplazar consumo (coche eléctrico, batería).",
+          "precedentes": [
+            {
+              "pais": "Australia (Solar Sharer, 2026)",
+              "resultado": "Desde julio de 2026, tres horas gratis al mediodía en tres regiones; las eléctricas avisan de efectos no deseados.",
+              "url": "https://www.pv-magazine.com/2025/11/04/australia-plans-nationwide-three-hour-free-solar-power-offer-from-july-2026/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "pv magazine · Solar Sharer Offer",
+              "url": "https://www.pv-magazine.com/2025/11/04/australia-plans-nationwide-three-hour-free-solar-power-offer-from-july-2026/"
+            }
+          ]
         }
       }
     ]

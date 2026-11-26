@@ -42,6 +42,17 @@
               "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "≈ 1.500 M€/año (estimación de un técnico de la AEAT citada por elDiario.es)",
+          "texto": "Ligar por ley la exención al SMI evita que quien cobra el mínimo pague IRPF. El coste crece con cada subida del SMI y beneficia también a rentas cercanas; parte del impuesto es de las comunidades.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "elDiario.es · Coste de elevar el mínimo exento al SMI",
+              "url": "https://www.eldiario.es/1_b7cc7d"
+            }
+          ]
         }
       },
       {
@@ -55,6 +66,23 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su coste. El IRPF está cedido al 50 % a las CCAA: la rebaja estatal solo afectaría a la parte estatal salvo acuerdo autonómico.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más renta disponible para jóvenes, pero el salto fiscal al acabar el periodo puede crear incentivos raros. En Polonia una exención parecida a menores de 26 años se criticó por reducir la base fiscal y crear saltos bruscos de tipo. Sin cálculo de coste.",
+          "precedentes": [
+            {
+              "pais": "Polonia (2019)",
+              "resultado": "Exención de IRPF a menores de 26: críticas por reducir la base fiscal y crear un salto de 18 puntos al cumplir 26.",
+              "url": "https://taxfoundation.org/blog/poland-income-tax-cut-for-young-workers-creates-dueling-incentives/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Tax Foundation · Polonia y los jóvenes",
+              "url": "https://taxfoundation.org/blog/poland-income-tax-cut-for-young-workers-creates-dueling-incentives/"
+            }
+          ]
         }
       },
       {
@@ -75,6 +103,32 @@
             {
               "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "Más de 1.320 M€/año: es lo que costó en 2023 la rebaja de los básicos; incluir carne y pescado lo encarece",
+          "texto": "La rebaja de 2023 sí llegó al precio, pero beneficia a todos los hogares por igual, también a los de renta alta; una ayuda directa a hogares pobres es más barata. Al retirarla, los precios suben de golpe.",
+          "precedentes": [
+            {
+              "pais": "España (IVA alimentos, 2023)",
+              "resultado": "La CNMC no halló problemas sistemáticos en que la rebaja llegara al precio del súper.",
+              "url": "https://www.cnmc.es/sites/default/files/editor_contenidos/Notas%20de%20prensa/2023/20230810_NP_Estudio_IVA.pdf"
+            },
+            {
+              "pais": "Portugal (IVA 0 %, 2023)",
+              "resultado": "La rebaja llegó casi entera (99 %) al precio; el anuncio subió antes los precios un 1,27 %. Costó 521 M€.",
+              "url": "https://eco.sapo.pt/2024/04/03/anuncio-do-iva-zero-levou-a-aumento-de-precos-de-127"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Hacienda · Prórroga de la rebaja del IVA de alimentos (jun. 2023)",
+              "url": "https://www.hacienda.gob.es/GabineteMinistro/Notas%20Prensa/2023/CONSEJO-DE-MINISTROS/27-06-23-NP-CM-RDL-27-JUNIO-MEDIDAS-FISCALES.pdf"
+            },
+            {
+              "nombre": "CNMC · Estudio de traslación de la rebaja del IVA",
+              "url": "https://www.cnmc.es/sites/default/files/editor_contenidos/Notas%20de%20prensa/2023/20230810_NP_Estudio_IVA.pdf"
             }
           ]
         }
@@ -99,6 +153,21 @@
               "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Objetivo necesario: la deuda ronda el 101 % del PIB, por encima del 87 % de la zona euro. Sin decir cuánto ni con qué medidas no se puede evaluar, y choca con las rebajas de impuestos del mismo programa.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Banco de España · Deuda pública en 2025",
+              "url": "https://www.bde.es/wbe/es/publicaciones/informacion-estadistica/notas-estadisticas/la-evolucion-de-la-deuda-publica-en-espana-en-2025.html"
+            },
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
         }
       },
       {
@@ -121,6 +190,17 @@
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Subir con el IPC protege el poder de compra, pero la AIReF calcula que, sin otros cambios, el déficit llegaría al 6,6 % del PIB y la deuda al 123 % en 2050. Falta decir de dónde sale el dinero.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
         }
       }
     ],
@@ -135,6 +215,12 @@
         "verificacion": {
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su recaudación. Basta una ley estatal; el efecto recaudatorio depende de cuánto capital se traslade fuera.",
+          "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Afecta a pocas personas con grandes rentas del capital, por lo que recauda poco y es sensible a cambios de residencia o a retrasar la venta de activos. No consta estimación oficial de recaudación.",
+          "precedentes": [],
           "fuentes": []
         }
       },
@@ -154,6 +240,17 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2020-12356"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Duplicar el tipo no duplica la recaudación si bajan las compraventas. La tasa española recaudó menos de lo previsto en sus primeros años, aunque crece (+36,5 % en 2025).",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AEAT · Informe anual de recaudación 2025",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2025/6-otros-impuestos.html"
+            }
+          ]
         }
       },
       {
@@ -167,6 +264,23 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su coste. Es competencia estatal. La AEAT ya paga deducciones reembolsables, como la de maternidad.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Al ser reembolsable llega a familias que hoy no pagan IRPF suficiente para aprovechar el mínimo. En EE. UU. un crédito similar redujo mucho la pobreza infantil en 2021, que volvió a subir al retirarlo. Coste no cuantificado.",
+          "precedentes": [
+            {
+              "pais": "EE. UU. (2021)",
+              "resultado": "El crédito por hijo ampliado y reembolsable sacó de la pobreza a 2,1 millones de niños.",
+              "url": "https://www.census.gov/library/working-papers/2022/demo/SEHSD-wp2022-24.html"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "US Census Bureau · Impacto del Child Tax Credit 2021",
+              "url": "https://www.census.gov/library/working-papers/2022/demo/SEHSD-wp2022-24.html"
+            }
+          ]
         }
       },
       {
@@ -193,6 +307,21 @@
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "La deuda bajó al 100,7 % del PIB en 2025 sobre todo porque creció el PIB nominal, no por ajuste. La AIReF avisa de que, a políticas constantes, vuelve a subir hasta el 123 % en 2050.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Banco de España · Deuda pública en 2025",
+              "url": "https://www.bde.es/wbe/es/publicaciones/informacion-estadistica/notas-estadisticas/la-evolucion-de-la-deuda-publica-en-espana-en-2025.html"
+            },
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
         }
       },
       {
@@ -215,6 +344,17 @@
               "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Blindarlo en la Constitución da seguridad al pensionista, pero quita margen si cambia la demografía. Además, la AIReF calcula que, sin otros cambios, el déficit llegaría al 6,6 % del PIB y la deuda al 123 % en 2050.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
         }
       }
     ],
@@ -229,6 +369,12 @@
         "verificacion": {
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su coste. El programa no fija tipos ni tramos. El IRPF está cedido al 50 % a las CCAA.",
+          "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Bajar el IRPF por hijos ayuda a las familias que pagan el impuesto, pero poco a las de rentas bajas que apenas tributan. Sin escala ni cifras, no se puede estimar el coste.",
+          "precedentes": [],
           "fuentes": []
         }
       },
@@ -246,6 +392,28 @@
             {
               "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
               "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "La rebaja del IVA de alimentos en 2023 llegó al precio, pero no distingue rentas. Bajar el tipo general (21 %) costaría mucho más y la UE fija un mínimo del 15 %. Sin cifras.",
+          "precedentes": [
+            {
+              "pais": "España (IVA alimentos, 2023)",
+              "resultado": "La CNMC no halló problemas sistemáticos en que la rebaja llegara al precio del súper.",
+              "url": "https://www.cnmc.es/sites/default/files/editor_contenidos/Notas%20de%20prensa/2023/20230810_NP_Estudio_IVA.pdf"
+            },
+            {
+              "pais": "Portugal (IVA 0 %, 2023)",
+              "resultado": "La rebaja llegó casi entera (99 %) al precio; el anuncio subió antes los precios un 1,27 %. Costó 521 M€.",
+              "url": "https://eco.sapo.pt/2024/04/03/anuncio-do-iva-zero-levou-a-aumento-de-precos-de-127"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "Hacienda · Prórroga de la rebaja del IVA de alimentos (jun. 2023)",
+              "url": "https://www.hacienda.gob.es/GabineteMinistro/Notas%20Prensa/2023/CONSEJO-DE-MINISTROS/27-06-23-NP-CM-RDL-27-JUNIO-MEDIDAS-FISCALES.pdf"
             }
           ]
         }
@@ -270,6 +438,21 @@
               "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Bajar impuestos y deuda a la vez exige recortes concretos. Hablar de «gasto superfluo e ideológico» sin cifrarlo no permite saber si cuadra; el gasto grande está en pensiones, sanidad e intereses.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Banco de España · Deuda pública en 2025",
+              "url": "https://www.bde.es/wbe/es/publicaciones/informacion-estadistica/notas-estadisticas/la-evolucion-de-la-deuda-publica-en-espana-en-2025.html"
+            },
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
         }
       },
       {
@@ -286,6 +469,17 @@
             {
               "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más empleo y productividad ayudan, pero la AIReF calcula que aun así el gasto en pensiones y la deuda siguen subiendo hasta 2050. La propuesta no concreta ninguna medida.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
         }
@@ -308,6 +502,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2024-26694"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Va más allá del 15 % mínimo pactado en la OCDE. Puede recaudar más, pero si otros países no lo siguen, las empresas tienen incentivos a mover beneficios o sede. No consta estimación oficial.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -321,6 +521,37 @@
           "veredicto": "naranja",
           "texto": "Sin dato oficial localizado sobre su recaudación. Es competencia estatal. El riesgo de cambio de residencia es el que intenta frenar la cláusula de 5 años.",
           "fuentes": []
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Afecta a muy pocas personas, así que lo recaudado depende de que no cambien de residencia ni infravaloren su patrimonio. Francia la rechazó dos veces; en Noruega una subida hizo salir a unas 100 grandes fortunas, con poco efecto en lo recaudado.",
+          "precedentes": [
+            {
+              "pais": "Noruega (2022)",
+              "resultado": "Subida del impuesto al patrimonio: como mucho unas 100 salidas; la recaudación subió ≈71 % frente al 75 % esperado.",
+              "url": "https://www.nber.org/papers/w35854"
+            },
+            {
+              "pais": "Francia (2025)",
+              "resultado": "El Senado rechazó la «tasa Zucman» del 2 % en junio y noviembre, alegando riesgos constitucionales y de elusión.",
+              "url": "https://www.publicsenat.fr/actualites/parlementaire/budget-2026-le-senat-rejette-a-nouveau-la-taxe-zucman"
+            },
+            {
+              "pais": "España (2023)",
+              "resultado": "El impuesto temporal a grandes fortunas recaudó 623 M€ de 12.010 contribuyentes.",
+              "url": "https://www.hacienda.gob.es/GabineteMinistro/notas%20prensa/2023/s.e.hacienda/20-09-23-np-impuesto-grandes-fortunas.pdf"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Ring, impuesto al patrimonio en Noruega",
+              "url": "https://www.nber.org/papers/w35854"
+            },
+            {
+              "nombre": "Hacienda · Recaudación del impuesto de grandes fortunas",
+              "url": "https://www.hacienda.gob.es/GabineteMinistro/notas%20prensa/2023/s.e.hacienda/20-09-23-np-impuesto-grandes-fortunas.pdf"
+            }
+          ]
         }
       },
       {
@@ -337,6 +568,17 @@
             {
               "nombre": "BOE · Ley 4/2020 (Servicios Digitales)",
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2020-12355"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Subir del 3 % al 15 % puede recaudar más, pero la tasa ya recaudó menos de lo previsto y puede trasladarse a precios de anunciantes y usuarios. Además, expone a represalias comerciales de EE. UU.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AEAT · Informe anual de recaudación 2024",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
             }
           ]
         }
@@ -365,6 +607,17 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Que ninguna pensión baje del SMI supone subir mucho las mínimas y no contributivas, sin cifra de coste. Además, la AIReF calcula que, sin otros cambios, el déficit llegaría al 6,6 % del PIB y la deuda al 123 % en 2050.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+            }
+          ]
         }
       },
       {
@@ -385,6 +638,17 @@
             {
               "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
               "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Bajar la edad de jubilación aumenta el gasto y reduce cotizantes justo cuando se jubila el baby boom. La AIReF ya prevé déficit del 6,6 % del PIB y deuda del 123 % en 2050 con la edad actual. Sin cifra de coste.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+              "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
             }
           ]
         }

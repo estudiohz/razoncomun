@@ -46,6 +46,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Otra ley educativa sumaría un nuevo cambio a los muchos desde 1980. Los cambios frecuentes desorientan a centros y familias; un acuerdo amplio es precisamente lo que podría frenarlos, si se logra.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -61,6 +67,17 @@
           "fuentes": [
             {
               "nombre": "La Moncloa · Gasto público en educación 2024",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Convertir la beca en derecho obliga a pagar a todo el que cumpla requisitos, sin tope de presupuesto: el gasto (3.304,5 M€ en 2024) podría crecer y es difícil de prever.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Gasto público en educación 2024 (71.348,8 M€; becas 3.304,5 M€)",
               "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
             }
           ]
@@ -82,6 +99,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Da estabilidad a la concertada, pero puede limitar a las comunidades para ajustar plazas cuando baja la natalidad. Coste: mantener los conciertos existentes, sin gasto nuevo.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -102,6 +125,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Abarata el acceso, pero quien tiene menos renta ya suele tener beca de matrícula, así que el ahorro puede ir sobre todo a familias que ya iban a matricularse. El coste depende de las tasas de cada comunidad; no está cifrado.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -124,6 +153,18 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Facilita el empleo de las madres, pero la calidad importa: en Quebec un sistema masivo empeoró indicadores infantiles. Exige muchas plazas y educadores; coste no cifrado en el programa.",
+          "precedentes": [
+            {
+              "pais": "Canadá (Quebec, guarderías a 5 $/día, 1997)",
+              "resultado": "Subió el empleo de las madres, pero un estudio del NBER halló peores indicadores de conducta y salud en los niños.",
+              "url": "https://www.nber.org/papers/w11832"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -142,6 +183,18 @@
               "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/280126-abandono-educativo-minimo-historico.aspx"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Es una meta, no una medida: su coste depende de cómo se consiga. España ha bajado el abandono, pero sigue lejos de Portugal, que ya está por debajo del 7 %.",
+          "precedentes": [
+            {
+              "pais": "Portugal (2015-2024)",
+              "resultado": "Redujo el abandono temprano hasta el 6,6 % en 2024, por debajo de la media UE (9,4 %); España seguía en el 13,0 %.",
+              "url": "https://www.ine.pt/ine_novidades/PIN2025/30/"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -160,6 +213,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Su efecto depende del contenido (acceso, carrera, evaluación). Sin texto concreto no se puede estimar coste ni consecuencias.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -184,6 +243,12 @@
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2010-11409"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Las reválidas de la LOMCE (2013) se suspendieron en 2016 por el rechazo de comunidades y comunidad educativa. Unificar currículo choca con competencias autonómicas; coste bajo, conflicto alto.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -206,6 +271,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Derogar sin ley alternativa pactada repetiría el vaivén normativo. Limitar móviles ya lo hacen varias comunidades; su efecto sobre el aprendizaje aún se está evaluando.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -228,6 +299,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Requiere redistribuir alumnado entre centros (transporte, plazas) y choca con la libre elección. Las aulas de nivelación pueden ayudar con el idioma si son temporales; si se alargan, segregan. No hemos encontrado una evaluación publicada de un plan comparable.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -250,6 +327,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Dar prioridad por nacionalidad en becas y plazas choca con la Constitución y el Derecho de la UE, lo que hace probable su anulación judicial. No hemos encontrado una evaluación publicada de un plan comparable.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ],
@@ -274,6 +357,17 @@
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "≈ 40.000 M€/año más (pasar del 4,48 % al 7 % de un PIB de ≈1,59 billones; cálculo sobre datos del Ministerio de Educación)",
+          "texto": "Supondría aumentar más de la mitad el gasto educativo actual (71.349 M€). Requiere más impuestos o deuda y que las comunidades, que gestionan la mayor parte, lo absorban.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Gasto público en educación 2024 (71.348,8 M€; becas 3.304,5 M€)",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+            }
+          ]
         }
       },
       {
@@ -292,6 +386,18 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "La evidencia de Tennessee indica mejoras reales con clases pequeñas, sobre todo en los primeros cursos, pero el coste en docentes y aulas es muy alto; no hay cifra oficial para España.",
+          "precedentes": [
+            {
+              "pais": "EE. UU. (Tennessee, proyecto STAR, 1985-89)",
+              "resultado": "Clases de 13-17 alumnos mejoraron lectura y cálculo y el efecto duró años, pero exige muchos más docentes y aulas.",
+              "url": "https://www.harvardmagazine.com/2019/08/case-for-smaller-classes"
+            }
+          ],
+          "fuentes": []
         }
       },
       {
@@ -314,6 +420,17 @@
               "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": "≈ 3.700 M€/año más (0,44 % de ≈1,59 billones de PIB ≈ 7.000 M€ frente a 3.304,5 M€ en 2024; cálculo sobre datos oficiales)",
+          "texto": "Más que duplica las becas. Pagar al inicio de curso evita que el alumno con menos renta abandone; las becas-salario ayudan a quien tiene que trabajar, pero su coste final depende de los requisitos.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Gasto público en educación 2024 (71.348,8 M€; becas 3.304,5 M€)",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+            }
+          ]
         }
       },
       {
@@ -332,6 +449,12 @@
               "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2010-11409"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin coste relevante. La inmersión ha sido objeto de sentencias que exigen un mínimo de castellano; garantizarla por plan estatal reabre ese conflicto judicial.",
+          "precedentes": [],
+          "fuentes": []
         }
       },
       {
@@ -350,6 +473,12 @@
               "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
             }
           ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Imponer un mínimo de gasto a las comunidades choca con su autonomía financiera. El coste depende de cuánto gasta hoy cada una; no hay cifra oficial agregada.",
+          "precedentes": [],
+          "fuentes": []
         }
       }
     ]

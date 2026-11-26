@@ -5,37 +5,162 @@
       "titulo": "Asilo resuelto en 6 meses, con garantías",
       "texto": "Quien pide asilo debe saber pronto si se queda o no. Reforzaremos la Oficina de Asilo con más personal y expediente digital para resolver en un máximo de 6 meses, como fija la norma europea. Así se protege antes a quien lo necesita y se evita que el sistema se use para ganar tiempo.",
       "punto": 13,
-      "dato": {"texto": "En 2025 se pidieron 144.396 asilos y se resolvieron 160.951 expedientes; solo el 11,2 % obtuvo refugio o protección subsidiaria.", "fuente": "Ministerio del Interior (La Moncloa) · Balance Oficina de Asilo 2025", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/interior/paginas/2026/160126-balance-oficina-asilo-2025.aspx"},
+      "dato": {
+        "texto": "En 2025 se pidieron 144.396 asilos y se resolvieron 160.951 expedientes; solo el 11,2 % obtuvo refugio o protección subsidiaria.",
+        "fuente": "Ministerio del Interior (La Moncloa) · Balance Oficina de Asilo 2025",
+        "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/interior/paginas/2026/160126-balance-oficina-asilo-2025.aspx"
+      },
       "medicion": "Plazo medio de resolución de asilo por debajo de 6 meses en 2028, publicado cada trimestre.",
       "competencia": "Estado (dentro del marco UE)",
-      "verificacion": {"veredicto": "verde", "texto": "Asilo es competencia estatal y el Pacto Europeo, aplicable desde el 12/06/2026, ya exige plazos cortos. Es gestión, no cambio legal. Coste en personal asumible. Matiz: no consta un dato oficial de expedientes pendientes, que debe publicarse para medir.", "fuentes": [{"nombre": "Comisión Europea · Pacto en aplicación", "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"}, {"nombre": "La Moncloa · Balance asilo 2025", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/interior/paginas/2026/160126-balance-oficina-asilo-2025.aspx"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Asilo es competencia estatal y el Pacto Europeo, aplicable desde el 12/06/2026, ya exige plazos cortos. Es gestión, no cambio legal. Coste en personal asumible. Matiz: no consta un dato oficial de expedientes pendientes, que debe publicarse para medir.",
+        "fuentes": [
+          {
+            "nombre": "Comisión Europea · Pacto en aplicación",
+            "url": "https://home-affairs.ec.europa.eu/news/new-migration-and-asylum-rules-enter-application-what-changing-2026-06-12_en"
+          },
+          {
+            "nombre": "La Moncloa · Balance asilo 2025",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/interior/paginas/2026/160126-balance-oficina-asilo-2025.aspx"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Necesita más personal, sin coste cifrado. Resolver antes mejora el empleo de quien se queda y ahorra ayudas, según la evidencia suiza; el riesgo es perder garantías por ir rápido.",
+        "precedentes": [
+          {
+            "pais": "Suiza (1994-2004)",
+            "resultado": "Cada año extra de espera de asilo bajó el empleo posterior 4-5 puntos; acortar plazos ahorra en ayudas.",
+            "url": "https://www.gsb.stanford.edu/insights/economic-upside-fast-tracking-refugee-asylum-claims"
+          }
+        ],
+        "fuentes": [
+          {
+            "nombre": "Stanford GSB · Hainmueller, Hangartner y Lawrence (Science Advances 2016)",
+            "url": "https://www.gsb.stanford.edu/insights/economic-upside-fast-tracking-refugee-asylum-claims"
+          }
+        ]
+      }
     },
     {
       "titulo": "Que una orden de salida firme se cumpla, caso a caso",
       "texto": "Una ley que no se cumple pierde sentido. Quien tenga una orden de salida firme, revisada por un juez, volverá a su país con acuerdos de retorno y ayudas al retorno voluntario. Siempre caso a caso, sin expulsiones colectivas, protegiendo a menores y a quien pida asilo.",
       "punto": 21,
-      "dato": {"texto": "En el 4.º trimestre de 2025 España dictó 12.380 órdenes de salida a extranjeros de fuera de la UE, la tercera cifra más alta de la Unión.", "fuente": "Eurostat · Returns to third countries Q4 2025", "url": "https://ec.europa.eu/eurostat/web/products-eurostat-news/w/ddn-20260331-1"},
+      "dato": {
+        "texto": "En el 4.º trimestre de 2025 España dictó 12.380 órdenes de salida a extranjeros de fuera de la UE, la tercera cifra más alta de la Unión.",
+        "fuente": "Eurostat · Returns to third countries Q4 2025",
+        "url": "https://ec.europa.eu/eurostat/web/products-eurostat-news/w/ddn-20260331-1"
+      },
       "medicion": "Porcentaje de órdenes firmes ejecutadas (Eurostat), con subida anual hasta 2030 y cero condenas por vulnerar garantías.",
       "competencia": "Estado y UE",
-      "verificacion": {"veredicto": "naranja", "texto": "Viable con la ley actual, pero depende de que los países de origen acepten el retorno y del nuevo Reglamento europeo de Retorno, aún pendiente del Consejo. La STC 172/2020 exige control judicial y respeto a asilo y menores: la propuesta lo incorpora.", "fuentes": [{"nombre": "BOE · STC 172/2020", "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2020-16819"}, {"nombre": "ECRE · Reglamento de Retorno", "url": "https://ecre.org/european-parliament-approval-of-the-return-regulation/"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Viable con la ley actual, pero depende de que los países de origen acepten el retorno y del nuevo Reglamento europeo de Retorno, aún pendiente del Consejo. La STC 172/2020 exige control judicial y respeto a asilo y menores: la propuesta lo incorpora.",
+        "fuentes": [
+          {
+            "nombre": "BOE · STC 172/2020",
+            "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2020-16819"
+          },
+          {
+            "nombre": "ECRE · Reglamento de Retorno",
+            "url": "https://ecre.org/european-parliament-approval-of-the-return-regulation/"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Depende de acuerdos con países de origen que a menudo no colaboran. Coste no cifrado (vuelos, ayudas al retorno). No se ha localizado una evaluación aplicable a España.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Entrada legal según el trabajo que falta",
       "texto": "Que venir con papeles sea más fácil que venir sin ellos. Ampliaremos la contratación en origen y los visados para buscar empleo en los oficios donde faltan trabajadores, medidos cada año con datos de empleo. Así la llegada se ordena y se cubre lo que la economía necesita.",
       "punto": 21,
-      "dato": {"texto": "En el 3T 2026 los ocupados extranjeros crecieron en 75.400 y su tasa de actividad fue del 70,33 %, frente al 57,62 % de los españoles.", "fuente": "INE · Encuesta de Población Activa, 3T 2026", "url": "https://www.ine.es/dyngs/Prensa/EPA3T26.htm"},
+      "dato": {
+        "texto": "En el 3T 2026 los ocupados extranjeros crecieron en 75.400 y su tasa de actividad fue del 70,33 %, frente al 57,62 % de los españoles.",
+        "fuente": "INE · Encuesta de Población Activa, 3T 2026",
+        "url": "https://www.ine.es/dyngs/Prensa/EPA3T26.htm"
+      },
       "medicion": "Proporción de primeros permisos de trabajo concedidos en origen frente a regularizaciones, revisada cada año.",
       "competencia": "Estado",
-      "verificacion": {"veredicto": "verde", "texto": "Extranjería e inmigración son competencia exclusiva del Estado (art. 149.1.2 CE) y la ley ya prevé contratación en origen; se trata de ampliarla y ligarla a datos. Compatible con el derecho UE, que deja a cada país fijar cuántos trabajadores admite.", "fuentes": [{"nombre": "BOE · Constitución art. 149", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}, {"nombre": "BOE · LO 4/2000 (Ley de Extranjería)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Extranjería e inmigración son competencia exclusiva del Estado (art. 149.1.2 CE) y la ley ya prevé contratación en origen; se trata de ampliarla y ligarla a datos. Compatible con el derecho UE, que deja a cada país fijar cuántos trabajadores admite.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución art. 149",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · LO 4/2000 (Ley de Extranjería)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2000-544"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Los visados ligados a una oferta de empleo han funcionado en Alemania, con buena integración laboral. El riesgo es que los cupos no se ajusten a la demanda real o tarden en tramitarse.",
+        "precedentes": [
+          {
+            "pais": "Alemania (Regla Balcanes Occidentales)",
+            "resultado": "Visado ligado a oferta de empleo: alta demanda e integración laboral sólida según el instituto de empleo IAB (2020).",
+            "url": "https://ideas.repec.org/p/iab/iabkbe/202016(en).html"
+          }
+        ],
+        "fuentes": [
+          {
+            "nombre": "IAB-Kurzbericht 16/2020",
+            "url": "https://ideas.repec.org/p/iab/iabkbe/202016(en).html"
+          }
+        ]
+      }
     },
     {
       "titulo": "Integración con idioma, trabajo y resultados públicos",
       "texto": "Integrar es aprender el idioma, trabajar y conocer las leyes. Ofreceremos cursos de idioma y valores constitucionales y agilizaremos la validación de títulos. Cada euro del plan de integración se evaluará y sus resultados se publicarán: lo que funcione se amplía, lo que no, se cambia.",
       "punto": 29,
-      "dato": {"texto": "A 1 de octubre de 2026 residían en España 7.518.237 extranjeros, el 15,1 % de la población.", "fuente": "INE · Estadística Continua de Población, 3T 2026", "url": "https://www.ine.es/dyngs/Prensa/ECP3T26.htm"},
+      "dato": {
+        "texto": "A 1 de octubre de 2026 residían en España 7.518.237 extranjeros, el 15,1 % de la población.",
+        "fuente": "INE · Estadística Continua de Población, 3T 2026",
+        "url": "https://www.ine.es/dyngs/Prensa/ECP3T26.htm"
+      },
       "medicion": "Tasa de empleo y nivel de idioma de los participantes a los 2 años, publicada anualmente por comunidad.",
       "competencia": "Estado y CCAA",
-      "verificacion": {"veredicto": "naranja", "texto": "Viable, pero educación y servicios sociales los gestionan las comunidades, así que hace falta acuerdo y financiación compartida. Los cursos deben ser una oferta, no un requisito que discrimine a residentes de larga duración protegidos por la Directiva 2003/109.", "fuentes": [{"nombre": "BOE · Constitución (reparto competencial)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}, {"nombre": "DOUE (BOE) · Directiva 2003/109/CE", "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Viable, pero educación y servicios sociales los gestionan las comunidades, así que hace falta acuerdo y financiación compartida. Los cursos deben ser una oferta, no un requisito que discrimine a residentes de larga duración protegidos por la Directiva 2003/109.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución (reparto competencial)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "DOUE (BOE) · Directiva 2003/109/CE",
+            "url": "https://boe.es/doue/2004/016/L00044-00053.pdf"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Los cursos intensivos con certificado elevan el empleo; los exprés, no. Exige financiación con comunidades, sin cifra en la propuesta.",
+        "precedentes": [
+          {
+            "pais": "Alemania (2015-2016)",
+            "resultado": "El curso de integración de 600 h con certificado subió el empleo 4,4 puntos; un curso exprés sin certificado no tuvo efecto.",
+            "url": "https://immigrationlab.org/project/preparing-for-the-next-crisis-lessons-from-germanys-language-programs-for-refugees"
+          }
+        ],
+        "fuentes": [
+          {
+            "nombre": "Immigration Policy Lab · Programas de idioma en Alemania",
+            "url": "https://immigrationlab.org/project/preparing-for-the-next-crisis-lessons-from-germanys-language-programs-for-refugees"
+          }
+        ]
+      }
     }
   ]
 }

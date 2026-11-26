@@ -5,7 +5,15 @@ export interface Fuente { nombre: string; url: string }
 export type EstadoCumplimiento = 'pendiente' | 'en_curso' | 'cumplida' | 'parcial' | 'incumplida';
 export interface Seguimiento { estado: EstadoCumplimiento; fecha?: string | null; nota?: string | null; fuente?: Fuente | null }
 
+export interface Viabilidad {
+  coste: string | null;
+  texto: string;
+  precedentes: { pais: string; resultado: string; url: string }[];
+  fuentes: Fuente[];
+}
+
 export interface PropuestaVerificada {
+  viabilidad?: Viabilidad;
   texto: string;
   seguimiento?: Seguimiento;
   cita: { pagina: number | null; apartado: string | null; nota?: string | null };
@@ -41,6 +49,7 @@ export interface PropuestaRc {
   medicion: string;
   competencia: string;
   verificacion: { veredicto: Veredicto; texto: string; fuentes: Fuente[] };
+  viabilidad?: Viabilidad;
   seguimiento?: Seguimiento;
 }
 export interface ApartadoRc { id: string; propuestas: PropuestaRc[] }

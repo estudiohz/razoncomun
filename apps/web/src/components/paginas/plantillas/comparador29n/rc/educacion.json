@@ -5,28 +5,108 @@
       "titulo": "Abandono escolar al 9% en 2030, con refuerzo donde hace falta",
       "texto": "Casi uno de cada ocho jóvenes deja pronto los estudios, y los chicos mucho más que las chicas. El Estado cofinancia con cada comunidad tutorías y refuerzo en los centros con más abandono, con metas por centro y evaluación pública.",
       "punto": 30,
-      "dato": {"texto": "El abandono educativo temprano fue del 12,8% en 2025: 15,9% en hombres y 9,5% en mujeres. El objetivo de la UE para 2030 es el 9%.", "fuente": "La Moncloa · Ministerio de Educación, FP y Deportes", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/280126-abandono-educativo-minimo-historico.aspx"},
+      "dato": {
+        "texto": "El abandono educativo temprano fue del 12,8% en 2025: 15,9% en hombres y 9,5% en mujeres. El objetivo de la UE para 2030 es el 9%.",
+        "fuente": "La Moncloa · Ministerio de Educación, FP y Deportes",
+        "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/280126-abandono-educativo-minimo-historico.aspx"
+      },
       "medicion": "Tasa de abandono temprano (Encuesta de Población Activa) en el 9% o menos en 2030",
       "competencia": "Estado (cooperación territorial) y CCAA (centros)",
-      "verificacion": {"veredicto": "naranja", "texto": "El Estado puede cofinanciar programas de cooperación territorial (LOE), pero los aplican las CCAA. Bajar 3,8 puntos en 5 años exige ir mucho más rápido que el último año (-0,2 puntos). No consta estimación oficial de coste.", "fuentes": [{"nombre": "La Moncloa · Abandono educativo temprano 2025", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/280126-abandono-educativo-minimo-historico.aspx"}, {"nombre": "BOE · Ley Orgánica 2/2006 de Educación", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El Estado puede cofinanciar programas de cooperación territorial (LOE), pero los aplican las CCAA. Bajar 3,8 puntos en 5 años exige ir mucho más rápido que el último año (-0,2 puntos). No consta estimación oficial de coste.",
+        "fuentes": [
+          {
+            "nombre": "La Moncloa · Abandono educativo temprano 2025",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/280126-abandono-educativo-minimo-historico.aspx"
+          },
+          {
+            "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Portugal muestra que bajar del 9 % es alcanzable. Centrar el refuerzo en los centros con más abandono es eficiente, pero la propuesta no cifra cuánto pondrá el Estado.",
+        "precedentes": [
+          {
+            "pais": "Portugal (2015-2024)",
+            "resultado": "Redujo el abandono temprano hasta el 6,6 % en 2024, por debajo de la media UE (9,4 %); España seguía en el 13,0 %.",
+            "url": "https://www.ine.pt/ine_novidades/PIN2025/30/"
+          }
+        ],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Pacto educativo estable en vez de una ley por Gobierno",
       "texto": "Cambiar de ley educativa con cada Gobierno desorienta a docentes y familias. Proponemos reformar solo lo que las evaluaciones muestren que falla, con un pacto amplio, un calendario de al menos 8 años y probando antes los cambios en centros piloto.",
       "punto": 29,
-      "dato": {"texto": "La Ley Orgánica de Educación de 2006 ha sido reformada a fondo por la LOMCE (2013) y la LOMLOE (2020), según su texto consolidado.", "fuente": "BOE · Ley Orgánica 2/2006 de Educación (texto consolidado)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"},
+      "dato": {
+        "texto": "La Ley Orgánica de Educación de 2006 ha sido reformada a fondo por la LOMCE (2013) y la LOMLOE (2020), según su texto consolidado.",
+        "fuente": "BOE · Ley Orgánica 2/2006 de Educación (texto consolidado)",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+      },
       "medicion": "Reforma aprobada con más de 3/5 del Congreso y sin cambios de base en 8 años",
       "competencia": "Estado (normas básicas) y CCAA (desarrollo)",
-      "verificacion": {"veredicto": "naranja", "texto": "Modificar una ley orgánica requiere mayoría absoluta del Congreso (art. 81 CE). Un pacto más amplio no es obligatorio: depende de la voluntad de los grupos. Los pilotos caben en la autonomía de los centros que ya prevé la LOE.", "fuentes": [{"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}, {"nombre": "BOE · Ley Orgánica 2/2006 de Educación", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"}]}
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Modificar una ley orgánica requiere mayoría absoluta del Congreso (art. 81 CE). Un pacto más amplio no es obligatorio: depende de la voluntad de los grupos. Los pilotos caben en la autonomía de los centros que ya prevé la LOE.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          },
+          {
+            "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Sin coste relevante. Coincide con el PP en pedir un pacto; su dificultad es política: ningún Gobierno lo ha logrado desde 1980, y probar en centros piloto retrasa los cambios.",
+        "precedentes": [],
+        "fuentes": []
+      }
     },
     {
       "titulo": "Becas con umbrales al día y cobradas a tiempo",
       "texto": "Una beca que llega a mitad de curso no sirve a quien la necesita para empezar. Proponemos actualizar cada año los umbrales de renta con los precios y pagar la parte fija antes de empezar las clases, con presupuesto cerrado y revisable cada año.",
       "punto": null,
-      "dato": {"texto": "Las becas y ayudas sumaron 3.304,5 M€ en 2024, un 0,9% más que en 2023, mientras el gasto educativo total subió un 4,8%.", "fuente": "La Moncloa · Gasto público en educación 2024", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"},
+      "dato": {
+        "texto": "Las becas y ayudas sumaron 3.304,5 M€ en 2024, un 0,9% más que en 2023, mientras el gasto educativo total subió un 4,8%.",
+        "fuente": "La Moncloa · Gasto público en educación 2024",
+        "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+      },
       "medicion": "% de becarios que cobran antes de octubre y umbrales actualizados cada año, desde el curso siguiente",
       "competencia": "Estado",
-      "verificacion": {"veredicto": "verde", "texto": "Las becas generales las regula y paga el Ministerio cada curso con su real decreto de umbrales: es competencia estatal. Con presupuesto cerrado se evita un gasto sin tope. Adelantar el pago exige agilizar la tramitación, que es gestión propia del Ministerio.", "fuentes": [{"nombre": "La Moncloa · Gasto público en educación 2024", "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"}, {"nombre": "BOE · Constitución Española", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"}]}
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Las becas generales las regula y paga el Ministerio cada curso con su real decreto de umbrales: es competencia estatal. Con presupuesto cerrado se evita un gasto sin tope. Adelantar el pago exige agilizar la tramitación, que es gestión propia del Ministerio.",
+        "fuentes": [
+          {
+            "nombre": "La Moncloa · Gasto público en educación 2024",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+          },
+          {
+            "nombre": "BOE · Constitución Española",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Pagar al inicio de curso ayuda a quien más lo necesita. Actualizar los umbrales con los precios aumenta el número de becarios y el gasto (3.304,5 M€ en 2024); con presupuesto cerrado, podría bajar la cuantía por persona.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "La Moncloa · Gasto público en educación 2024 (71.348,8 M€; becas 3.304,5 M€)",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+          }
+        ]
+      }
     }
   ]
 }
