@@ -1,0 +1,115 @@
+{
+  "id": "trabajo",
+  "propuestas": [
+    {
+      "titulo": "Paga menos por desempleo quien despide menos",
+      "texto": "Las empresas que rotan poco su plantilla pagarán menos cotización por desempleo, y las que encadenan altas y bajas, más. Lo recaudado en total no cambia: quien más usa el paro, más lo financia. Se compara dentro de cada sector para no castigar a la hostelería o el campo por su temporada.",
+      "punto": null,
+      "dato": {
+        "texto": "Los asalariados con contrato temporal subieron en 68.000 en el tercer trimestre de 2026.",
+        "fuente": "INE · EPA 3T 2026",
+        "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+      },
+      "medicion": "Peso de los temporales en la afiliación (hoy 12,1 %) y bajas por empresa, revisado cada año durante 4 años.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "El Estado fija por ley los tipos de cotización por desempleo, así que puede diferenciarlos. Para no subir el coste laboral debe ser neutro en recaudación, y la media por sector exige datos de la Seguridad Social que hoy no se publican así. Sin estimación oficial del efecto.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley General de la Seguridad Social",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+          },
+          {
+            "nombre": "Seguridad Social · Afiliación octubre 2026",
+            "url": "https://revista.seg-social.es/-/afiliacion-octubre-2026"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Premia a quien despide poco sin subir la recaudación total. En EE. UU. funciona algo parecido desde hace décadas; en Francia el efecto medido es modesto y hubo quejas por la comparación sectorial. Riesgo: diseño complejo y litigios.",
+        "precedentes": [
+          {
+            "pais": "Estados Unidos",
+            "resultado": "Cobrar más seguro de paro a quien más despide reduce los despidos temporales; un estudio estima casi un millón de empleos salvados en 2008-09.",
+            "url": "https://nber.org/papers/w30651"
+          },
+          {
+            "pais": "Francia (2021-2024)",
+            "resultado": "Bonus-malus por contratos cortos en 7 sectores: las bajas de contrato cayeron un 8 %, pero la Unédic atribuye al sistema un papel «limitado».",
+            "url": "https://www.unedic.org/publications/reforme-2019-2021-premiers-resultats-d-evaluation-du-bonus-malus"
+          }
+        ],
+        "fuentes": []
+      }
+    },
+    {
+      "titulo": "Primero, los hogares donde nadie trabaja",
+      "texto": "Las oficinas de empleo darán prioridad a las casas donde todos los que buscan trabajo están en paro: orientador asignado en menos de un mes, formación pagada y aviso directo de ofertas cercanas. No es más gasto: es ordenar la cola por urgencia real.",
+      "punto": null,
+      "dato": {
+        "texto": "786.100 hogares tienen en paro a todos sus miembros activos, 21.800 más que el trimestre anterior.",
+        "fuente": "INE · EPA 3T 2026",
+        "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+      },
+      "medicion": "Hogares con todos sus activos en paro (EPA): bajar de 786.100 a menos de 650.000 en 3 años.",
+      "competencia": "CCAA (servicios de empleo) y Estado (marco y fondos)",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Las políticas activas de empleo las gestionan las comunidades autónomas. El Estado puede fijar esta prioridad en los fondos que reparte, pero no imponer cómo atiende cada oficina. Cruzar datos de hogares exige cumplir la protección de datos. Sin dato oficial de coste.",
+        "fuentes": [
+          {
+            "nombre": "INE · EPA tercer trimestre 2026",
+            "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Ordenar por urgencia no es gratis: hacen falta orientadores, y los servicios de empleo ya van justos de personal. La AIReF ve que las ayudas a la contratación apenas llegan a los poco cualificados; el acompañamiento es lo que suele funcionar.",
+        "precedentes": [
+          {
+            "pais": "España (bonificaciones, 2012-2018)",
+            "resultado": "Efecto pequeño en encontrar empleo y nulo en poco cualificados y mayores de 45; el empleo extra desaparece al acabar la ayuda (AIReF).",
+            "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+          }
+        ],
+        "fuentes": [
+          {
+            "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+            "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+          }
+        ]
+      }
+    },
+    {
+      "titulo": "Un paro sin maquillaje: todas las cifras, cada mes",
+      "texto": "Cada mes se publicará, junto al paro registrado, cuántos fijos discontinuos no están trabajando y cuántas personas cobran prestación sin contar como paradas. Una tabla, con la misma regla siempre, para que nadie pueda maquillar el dato.",
+      "punto": 20,
+      "dato": {
+        "texto": "El peso de los temporales en la afiliación pasó del 28,3 % (octubre 2021) al 12,1 % (octubre 2026): ha cambiado cómo se reparte el empleo y el paro.",
+        "fuente": "Seguridad Social · Afiliación octubre 2026",
+        "url": "https://revista.seg-social.es/-/afiliacion-octubre-2026"
+      },
+      "medicion": "Publicación mensual en datos abiertos desde el primer trimestre tras aprobarse; revisión del INE al año.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Es una decisión estadística del Estado y no necesita ley. El INE ya publica cada trimestre el paro de su encuesta (10,18 % en el 3T 2026), con un método distinto del paro registrado. La tabla nueva no lo sustituye: lo completa.",
+        "fuentes": [
+          {
+            "nombre": "INE · EPA tercer trimestre 2026",
+            "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Coste casi nulo: los datos ya existen. Mejora la transparencia, pero no cambia el empleo por sí sola. No hemos encontrado una evaluación publicada de una medida igual.",
+        "precedentes": [],
+        "fuentes": []
+      }
+    }
+  ]
+}

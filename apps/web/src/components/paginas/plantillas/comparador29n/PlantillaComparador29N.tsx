@@ -1,36 +1,64 @@
 import { Contenedor } from '@/components/layout/Contenedor';
 import type { PropsPlantilla } from '../index';
-import datos from './datos-partidos.json';
+import { APARTADOS } from './apartados';
 import { ALTERNATIVAS_RC } from './alternativasRc';
-import { Comparador, type DatosComparador } from './Comparador';
+import { PARTIDOS } from './tipos';
+import { BotonJuego, Modos } from './Modos';
+import { LeyendaSiColumnas } from './Comparador';
+import { BotonVista } from './vista';
 
 /**
- * Plantilla «comparador-29n». Servidor: monta cabecera + intro del editor y
- * pasa los datos (JSON con fuentes) al comparador interactivo de cliente.
+ * Plantilla «comparador-29n» (diseño A). Servidor: cabecera + intro del
+ * editor; los apartados (JSON con cita y verificación) van al comparador.
  */
+/** Fecha y hora de la última revisión de los datos: actualizar al tocar los JSON. */
+const REVISADO = '27/11/2026';
+
 export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
-  const d = datos as DatosComparador;
   return (
     <>
-      <section className="border-b border-linea bg-[linear-gradient(120deg,rgba(43,199,232,.10),rgba(139,48,217,.08)_45%,rgba(232,121,47,.08))]">
-        <Contenedor className="py-12 min-[720px]:py-16">
-          <p className="text-[12px] font-bold uppercase tracking-[.12em] text-accion">Elecciones generales · 29 de noviembre</p>
-          <h1 className="mt-3 max-w-[820px] text-[clamp(30px,4.6vw,52px)] font-extrabold leading-[1.05] text-titular">
-            {pagina.title}
-          </h1>
+      <Contenedor as="section" className="pt-12 min-[720px]:pt-16">
+        <div className="flex flex-col gap-2.5">
+          <div className="h-1.5 w-[120px] rounded-full" style={{ background: 'linear-gradient(90deg,#1B3D9C,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }} />
+          <p className="text-[12px] font-bold uppercase tracking-[.14em] text-gris">Elecciones generales · 29 de noviembre</p>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h1 className="max-w-[860px] text-[clamp(30px,4.6vw,46px)] font-extrabold leading-[1.05] text-titular">{pagina.title}</h1>
+            <BotonVista />
+          </div>
           {introHtml ? (
-            <div className="prose-rc mt-5 max-w-[720px]" dangerouslySetInnerHTML={{ __html: introHtml }} />
+            <div className="prose-rc max-w-[700px]" dangerouslySetInnerHTML={{ __html: introHtml }} />
           ) : (
-            <p className="mt-5 max-w-[720px] text-[17px] text-cuerpo">
-              Lo que proponen las principales fuerzas, tema a tema, con enlace a la fuente. Y al lado, la alternativa de Razón Común.
+            <p className="max-w-[680px] text-[16px] leading-[1.55] text-cuerpo">
+              Lo que propone cada fuerza, citado de su programa y analizado con fuentes oficiales. Debajo, la propuesta de Razón Común.
             </p>
           )}
-        </Contenedor>
-      </section>
-      <Contenedor className="py-10 min-[720px]:py-14">
-        <Comparador datos={d} alternativas={ALTERNATIVAS_RC} />
-        <p className="mt-10 text-[12.5px] text-gris">
-          Datos recopilados a {d.actualizado}. Cada propuesta enlaza a su fuente; si un partido no recoge nada sobre un tema lo indicamos sin rellenar. Tu selección se calcula solo en tu navegador: no guardamos nada.
+          <p className="text-[12.5px] text-gris">
+            PP, PSOE, Vox y Frente Amplio · Revisado el {REVISADO}
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+          <details className="group min-w-[280px] max-w-[760px] flex-1 rounded-[12px] border border-linea bg-white px-4 py-3">
+            <summary className="flex min-h-[32px] cursor-pointer list-none items-center justify-between text-[13px] font-bold text-titular">
+              Cómo lo hemos hecho
+              <span aria-hidden="true" className="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[13.5px] leading-[1.5] text-cuerpo">
+              <li><b>Quién:</b> el equipo de Razón Común, con ayuda de IA y revisión humana.</li>
+              <li><b>Qué partidos:</b> las cuatro fuerzas con más diputados y candidatura en toda España. Por falta de medios no hemos podido analizar al resto.</li>
+              <li><b>Las propuestas</b> salen del programa oficial 2026 de cada partido, con su página.</li>
+              <li><b>El círculo es nuestro análisis</b> y solo mide si la medida cabe en la ley y en las competencias de quien la propone: verde, posible; naranja, necesita a otra administración, reformar una ley o cumplir condiciones; rojo, choca con una norma o sentencia concreta, siempre citada; gris, no evaluable por falta de concreción o de base. Mismo criterio para todos.</li>
+              <li><b>Competencia, coste y plazo</b> se muestran aparte y no cambian el color: que un partido no dé coste no hace inviable su propuesta.</li>
+              <li><b>Nuestras propuestas</b> van aparte y sin círculo: no nos ponemos nota.</li>
+            </ul>
+          </details>
+          <BotonJuego />
+          <LeyendaSiColumnas />
+          </div>
+        </div>
+      </Contenedor>
+      <Contenedor className="py-10 min-[720px]:py-12">
+        <Modos apartados={APARTADOS} partidos={PARTIDOS} rc={ALTERNATIVAS_RC} />
+        <p className="mt-10 max-w-[820px] text-[12.5px] leading-relaxed text-gris">
+          Cada propuesta enlaza a la página de su programa oficial. Durante la legislatura marcaremos cada propuesta como cumplida, en parte o incumplida, con su fuente; en las próximas elecciones ese historial medirá la credibilidad de cada fuerza, la nuestra incluida.
         </p>
       </Contenedor>
     </>

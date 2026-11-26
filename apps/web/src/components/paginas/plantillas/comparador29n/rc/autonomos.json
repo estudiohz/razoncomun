@@ -1,0 +1,100 @@
+{
+  "id": "autonomos",
+  "propuestas": [
+    {
+      "titulo": "Cuota casi cero si ganas poco, sin perder la pensión",
+      "texto": "Quien gane menos del salario mínimo pagará una cuota simbólica y el Estado pondrá el resto, para que ese tiempo cuente igual para pensión, baja y paro. Al superar el umbral, cotizará por lo que gana de verdad. Así no se crea una bolsa de autónomos sin derechos.",
+      "punto": 17,
+      "dato": {
+        "texto": "3.501.598 autónomos afiliados en octubre de 2026, 79.163 más que un año antes.",
+        "fuente": "Seguridad Social · Afiliación octubre 2026",
+        "url": "https://revista.seg-social.es/-/afiliacion-octubre-2026"
+      },
+      "medicion": "Autónomos que siguen de alta a los 3 años y coste anual de la ayuda, publicado cada año.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "La ley ya obliga a fijar cada año una tabla reducida de cuotas para rendimientos bajos, con cifras que pone el Presupuesto. Bajarla casi a cero es posible por ley, pero el hueco lo paga el Estado. No hay dato oficial de coste: hay que calcularlo y votarlo en el Presupuesto.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Real Decreto-ley 13/2022 (cotización por ingresos reales)",
+            "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2022-12482"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": "Más que la tarifa plana actual, que costó 635 M€ en 2018 (AIReF)",
+        "texto": "Que el Estado pague la cotización de quien gana poco mantiene sus derechos, pero tiene coste público y no hay estimación oficial. Riesgo de infradeclarar ingresos. La AIReF vio que ayudas parecidas no alargan la vida del negocio tras acabar.",
+        "precedentes": [
+          {
+            "pais": "España (tarifa plana, 2013-2018)",
+            "resultado": "Aumentó las altas y la supervivencia mientras duraba; al acabar la ayuda, los beneficiarios aguantaban igual que el resto (AIReF).",
+            "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+          }
+        ],
+        "fuentes": [
+          {
+            "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+            "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+          }
+        ]
+      }
+    },
+    {
+      "titulo": "Ajuste de cuota automático y sin sorpresas",
+      "texto": "Hacienda y la Seguridad Social cruzarán los datos de la renta y ajustarán la cuota solas. Si pagaste de más, te lo devuelven sin pedirlo. Si pagaste de menos, lo pagas a plazos sin recargo. El autónomo no tendrá que rellenar nada.",
+      "punto": 13,
+      "dato": {
+        "texto": "La ley ya prevé regularizar cada año la cuota de todos los autónomos según los rendimientos reales que declaran a Hacienda.",
+        "fuente": "BOE · Real Decreto-ley 13/2022",
+        "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2022-12482"
+      },
+      "medicion": "Porcentaje de ajustes hechos de oficio y plazo medio de devolución: menos de 60 días en 2 años.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "La regularización anual ya está en la ley y se apoya en datos fiscales. Hacerla de oficio y fraccionar sin recargo es gestión y reglamento estatal. Coste bajo: se adelantan devoluciones que ya se deben.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Real Decreto-ley 13/2022",
+            "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2022-12482"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Profundiza en la regularización anual que ya prevé la ley; coste bajo si Hacienda y Seguridad Social cruzan datos. Riesgo: errores automáticos y cuotas a plazos que se acumulen. Sin precedente evaluado encontrado.",
+        "precedentes": [],
+        "fuentes": []
+      }
+    },
+    {
+      "titulo": "Paso de las mutualidades a autónomos: el reglamento, ya",
+      "texto": "Ya hay una ley que deja pasar a los profesionales de las mutualidades al régimen de autónomos, pero falta el reglamento que la pone en marcha. Lo aprobaremos en 30 días para que puedan pedir el cambio sin perder lo que ya aportaron.",
+      "punto": null,
+      "dato": {
+        "texto": "La Ley 2/2026 exigía el reglamento en un máximo de tres meses; el plazo para pedir el traspaso no empieza hasta que entre en vigor.",
+        "fuente": "BOE · Ley 2/2026",
+        "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-16653"
+      },
+      "medicion": "Reglamento en el BOE en 30 días y número de solicitudes de traspaso al cerrar el primer año.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Es desarrollar una ley ya aprobada, tarea del Gobierno, con el plazo legal vencido. El traspaso es voluntario e irreversible y convierte lo aportado en tiempo cotizado con un coeficiente de 0,67 a 0,87. La ley no dice a cuántas personas afecta.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 2/2026 (mutualidades alternativas)",
+            "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-16653"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Da a los mutualistas la protección pública, pero eleva el gasto futuro en pensiones y obliga a decidir cómo se cuentan sus aportaciones previas. Aprobar el reglamento en 30 días es muy ajustado. Sin cálculo oficial del coste.",
+        "precedentes": [],
+        "fuentes": []
+      }
+    }
+  ]
+}

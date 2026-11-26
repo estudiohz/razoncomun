@@ -1,0 +1,575 @@
+{
+  "id": "trabajo",
+  "titulo": "Trabajo: empleo, salarios, jornada, paro",
+  "dato": {
+    "texto": "Tercer trimestre de 2026: tasa de paro del 10,18 %, con 2.591.200 parados y 22.852.600 ocupados.",
+    "fuente": "INE, Encuesta de Población Activa (EPA) 3T 2026",
+    "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Las empresas que mantengan sus plantillas más estables que la media de su sector cotizarán menos por desempleo.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 174",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Los tipos de cotización por desempleo los fija el Estado por ley (LGSS y Presupuestos), así que puede diferenciarlos por estabilidad de plantilla. Falta concretar el coste y cómo se mide la media sectorial.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Premia a quien despide poco sin subir la recaudación total si se diseña neutral. En EE. UU. funciona algo parecido desde hace décadas; en Francia el efecto medido es modesto. Riesgo: castigar a sectores estacionales si no se compara por sector.",
+          "precedentes": [
+            {
+              "pais": "Estados Unidos",
+              "resultado": "Cobrar más seguro de paro a quien más despide reduce los despidos temporales; un estudio estima casi un millón de empleos salvados en 2008-09.",
+              "url": "https://nber.org/papers/w30651"
+            },
+            {
+              "pais": "Francia (2021-2024)",
+              "resultado": "Bonus-malus por contratos cortos en 7 sectores: las bajas de contrato cayeron un 8 %, pero la Unédic atribuye al sistema un papel «limitado».",
+              "url": "https://www.unedic.org/publications/reforme-2019-2021-premiers-resultats-d-evaluation-du-bonus-malus"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Publicaremos cada mes, junto al paro registrado, cuántos fijos discontinuos no están trabajando.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 174",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Es una decisión estadística de la Administración del Estado y no requiere ley. Hoy el INE ya publica el paro EPA cada trimestre (10,18 % en el 3T 2026), con una metodología distinta del paro registrado.",
+          "fuentes": [
+            {
+              "nombre": "INE · EPA tercer trimestre 2026",
+              "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Coste casi nulo: el SEPE ya tiene los datos. Mejora la transparencia del paro, pero no cambia el empleo por sí sola. No hemos encontrado una evaluación publicada de una medida igual.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Protegeremos mejor a quien padezca enfermedades severas y de larga duración con hasta el 100% de la base reguladora.",
+        "cita": {
+          "pagina": 60,
+          "apartado": "4.3 · Medida 175",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La cuantía de la incapacidad temporal la fija la LGSS (art. 171 y desarrollo), de competencia estatal (art. 149.1.17 CE). Subirla al 100 % para enfermedades graves cabe con una ley o reforma reglamentaria. Falta definir qué enfermedades entrarían.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mejora la renta de enfermos graves de larga duración. No hay cálculo público de su coste; dependerá de cuántas bajas se incluyan y de cómo se defina «enfermedad severa». Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Completar la reducción de la jornada a 37,5 horas e incentivar los avances en la negociación colectiva hacia las 35 horas, sin perder salario.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Trabajo digno · Compromiso 108",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La jornada máxima la fija el art. 34 del Estatuto de los Trabajadores, legislación laboral estatal (art. 149.1.7 CE). Bajarla a 37,5 h cabe con una ley ordinaria; en septiembre de 2025 un proyecto así no superó el debate de totalidad, pero eso es un obstáculo político, no jurídico.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Puede repartir trabajo y mejorar el bienestar, pero sube el coste por hora a las empresas, sobre todo pymes. Las experiencias son mixtas: en Francia el efecto en empleo sigue discutido; en Islandia funcionó en el sector público sin perder productividad. Las pymes, con menos margen y productividad, serían las más afectadas: la patronal CEPYME estima un coste directo de 13.900 M€. Para no ser contraproducente en empresas de margen estrecho, debería ir acompañada de una rebaja fiscal o de cotizaciones que compense el coste por hora; sin ella, el riesgo es destruir empleo o aumentar la economía sumergida.",
+          "precedentes": [
+            {
+              "pais": "Francia (35 horas, 1998-2002)",
+              "resultado": "El Gobierno habló de 220.000-300.000 empleos; el Senado sostuvo que explicaban menos del 30 % del empleo creado y que el efecto real no se puede medir.",
+              "url": "https://www.senat.fr/rap/r00-414/r00-4146.html"
+            },
+            {
+              "pais": "Islandia (2015-2019)",
+              "resultado": "Pruebas de 35-36 h sin bajar sueldo en el sector público: productividad igual o mejor y más bienestar; luego el 86 % de la plantilla ganó jornada más corta.",
+              "url": "https://autonomy.work/portfolio/icelandsww/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "CEPYME · Impacto de la reducción de jornada (estimación de la patronal, 2025)",
+              "url": "https://cepyme.es/storage/2025/05/NdP-CEPYME-rechaza-la-reduccion-de-la-jornada-que-tendra-un-impacto-directo-de-13.900-millones-especialmente-en-la-pyme-y-que-de.pdf"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Blindar por ley el SMI por encima del 60% del salario medio y actualizarlo periódicamente.",
+        "cita": {
+          "pagina": 37,
+          "apartado": "Coste de vida · Compromiso 87",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El SMI es competencia estatal (art. 149.1.7 CE) y hoy lo fija el Gobierno por real decreto: 1.221 €/mes en 14 pagas para 2026. Una ley puede fijarle un suelo. El efecto sobre el empleo es objeto de debate.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-3815"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sube la renta de los peor pagados sin gasto público directo. El riesgo es menos empleo o menos horas para los menos cualificados si la subida es rápida: en España 2019 se vio un freno; en Alemania 2015 el efecto fue pequeño.",
+          "precedentes": [
+            {
+              "pais": "España (SMI 2019)",
+              "resultado": "La subida del 22 % se asoció a un menor crecimiento del empleo de los peor pagados (6-11 puntos menos en el grupo afectado), según el Banco de España.",
+              "url": "https://ideas.repec.org/p/bde/opaper/2113.html"
+            },
+            {
+              "pais": "Alemania (2015)",
+              "resultado": "El salario mínimo subió sueldos sin pérdidas de empleo significativas en la mayoría de sectores, aunque redujo horas y minijobs.",
+              "url": "https://link.springer.com/10.1186/s12651-019-0258-z"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Reformar el despido improcedente para garantizar una reparación efectiva, proporcionada y disuasoria, conforme al art. 24.b de la Carta Social Europea revisada.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Trabajo digno · Compromiso 110",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El art. 56 ET tasa hoy la indemnización en 33 días por año, con tope de 24 mensualidades. Cambiarlo cabe con una ley ordinaria estatal y va en la línea del art. 24 de la Carta Social Europea revisada, que España ratificó (reclamación 207/2022 ante el CEDS). El diseño concreto está por definir.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            },
+            {
+              "nombre": "Consejo de Europa · CEDS, reclamación 207/2022 UGT c. España",
+              "url": "https://rm.coe.int/cc207casedoc5-es/1680ac5cb8"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cumpliría lo que pide el Consejo de Europa, sin coste público directo. A cambio, despedir sería más caro e incierto, lo que puede frenar contrataciones fijas. El impacto depende de cuánto suba la indemnización y de quién la fije.",
+          "precedentes": [
+            {
+              "pais": "España (Consejo de Europa, 2024)",
+              "resultado": "El Comité Europeo de Derechos Sociales dijo que el tope de indemnización español no repara bien el despido injustificado; no es vinculante.",
+              "url": "https://www.cuatrecasas.com/es/global/art/debate-indemnizacion-despido-improcedente-espana"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Cuando la jornada pactada, incluidas las horas complementarias, supere el 80 % de la ordinaria, el contrato se considerará a jornada completa.",
+        "cita": {
+          "pagina": 43,
+          "apartado": "Trabajo digno · Compromiso 123",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El contrato a tiempo parcial se regula en el art. 12 del Estatuto de los Trabajadores, de competencia estatal. Cambiarlo requiere reformar ese artículo por ley ordinaria, y no consta ningún obstáculo europeo.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Frena el uso de contratos a tiempo parcial con horas extra encubiertas. Coste público bajo. Riesgo: que algunas empresas reduzcan las horas pactadas para no pasar del 80 %. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Derogar la legislación laboral de Sánchez que ha agravado la precariedad y desincentivado la contratación.",
+        "cita": {
+          "pagina": 13,
+          "apartado": "Economía, industria y energía · punto 8",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Derogar o cambiar la reforma laboral (RDL 32/2021) cabe con una ley estatal. Pero fue un hito del Plan de Recuperación: el Reglamento (UE) 2021/241 (art. 24) permite a la Comisión suspender o reducir pagos si se revierte un hito ya cumplido. Además, el programa no concreta qué normas derogaría.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 32/2021 (reforma laboral)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2021-21788"
+            },
+            {
+              "nombre": "INE · EPA tercer trimestre 2026",
+              "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2021/241 (Mecanismo de Recuperación)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32021R0241"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Propuesta genérica: su efecto depende de qué norma sustituya a la reforma de 2021. Volver al marco anterior podría reactivar la temporalidad que esa reforma redujo. No hay coste cuantificable sin conocer el texto.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Garantizaremos por ley una subida progresiva del SMI manteniendo un suelo permanente equivalente al 60 % del salario medio neto.",
+        "cita": {
+          "pagina": 58,
+          "apartado": "4.1 Salarios que deben crecer",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La competencia es estatal y hoy el SMI se fija por real decreto (1.221 €/mes en 2026), así que una ley puede fijar ese suelo. Tomar como referencia el salario medio neto da una cifra distinta que el bruto.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-3815"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sube la renta de los peor pagados sin gasto público directo. El riesgo es menos empleo o menos horas para los menos cualificados si la subida es rápida: en España 2019 se vio un freno; en Alemania 2015 el efecto fue pequeño.",
+          "precedentes": [
+            {
+              "pais": "España (SMI 2019)",
+              "resultado": "La subida del 22 % se asoció a un menor crecimiento del empleo de los peor pagados (6-11 puntos menos en el grupo afectado), según el Banco de España.",
+              "url": "https://ideas.repec.org/p/bde/opaper/2113.html"
+            },
+            {
+              "pais": "Alemania (2015)",
+              "resultado": "El salario mínimo subió sueldos sin pérdidas de empleo significativas en la mayoría de sectores, aunque redujo horas y minijobs.",
+              "url": "https://link.springer.com/10.1186/s12651-019-0258-z"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Gravamen estatal del 30 % a empresas con facturación superior a 50 millones cuyo beneficio crezca mientras los salarios de su plantilla se quedan atrás.",
+        "cita": {
+          "pagina": 58,
+          "apartado": "4.1 Salarios que deben crecer",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Crear un tributo estatal cabe con una ley (arts. 31 y 133 CE). No conocemos sentencia que impida un gravamen así, aunque, al no tener precedente, su diseño tendría que respetar el principio de capacidad económica (art. 31 CE) y podría ser recurrido.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Impuesto sin precedente claro en Europa. Es difícil de medir (qué es que «los salarios se queden atrás») y fácil de esquivar repartiendo beneficios entre sociedades. La recaudación es incierta; no hay estimación pública.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Elevaremos la prestación contributiva por desempleo del 70 % al 80 % de la base reguladora en los primeros seis meses y subiremos un 25 % los topes máximos.",
+        "cita": {
+          "pagina": 60,
+          "apartado": "Protección por desempleo e inserción laboral",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El art. 270 LGSS fija hoy la prestación en el 70 % de la base durante 180 días y el 60 % después, con un tope del 175-225 % del IPREM. Subirla cabe con una ley estatal (art. 149.1.17 CE); el coste no cuenta para este color.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más renta para los parados los primeros meses, pero encarece una de las mayores partidas del gasto social, sin estimación pública del coste. Prestaciones más altas pueden alargar algo el tiempo en paro si no se combinan con orientación y control.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Reduciremos la jornada laboral limitando el tiempo de trabajo efectivo de forma progresiva hasta las 32 horas semanales.",
+        "cita": {
+          "pagina": 63,
+          "apartado": "Hacia una jornada laboral máxima de 32 horas",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La jornada máxima la fija el art. 34 ET, legislación laboral estatal (art. 149.1.7 CE). Bajarla progresivamente a 32 h cabe con una ley ordinaria; ninguna norma de la UE lo impide (la Directiva 2003/88/CE solo fija un máximo de 48 h).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ambiciosa: bajar a 32 h sin perder sueldo sube mucho el coste por hora. Solo hay pruebas con jornadas de 35-36 h (Islandia) y resultados discutidos en Francia. Riesgo alto en sectores de baja productividad y pymes. Las pymes, con menos margen y productividad, serían las más afectadas (la patronal CEPYME estima 13.900 M€ solo por bajar a 37,5 h; a 32 h el impacto sería mayor). Para no ser contraproducente debería ir acompañada de una rebaja fiscal o de cotizaciones que compense el coste por hora; sin ella, el riesgo es destruir empleo o aumentar la economía sumergida.",
+          "precedentes": [
+            {
+              "pais": "Islandia (2015-2019)",
+              "resultado": "Pruebas de 35-36 h sin bajar sueldo en el sector público: productividad igual o mejor y más bienestar; luego el 86 % de la plantilla ganó jornada más corta.",
+              "url": "https://autonomy.work/portfolio/icelandsww/"
+            },
+            {
+              "pais": "Francia (35 horas, 1998-2002)",
+              "resultado": "El Gobierno habló de 220.000-300.000 empleos; el Senado sostuvo que explicaban menos del 30 % del empleo creado y que el efecto real no se puede medir.",
+              "url": "https://www.senat.fr/rap/r00-414/r00-4146.html"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "CEPYME · Impacto de la reducción de jornada (estimación de la patronal, 2025)",
+              "url": "https://cepyme.es/storage/2025/05/NdP-CEPYME-rechaza-la-reduccion-de-la-jornada-que-tendra-un-impacto-directo-de-13.900-millones-especialmente-en-la-pyme-y-que-de.pdf"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Traspasaremos por completo las funciones inspectoras (incluida Seguridad Social) a la Generalitat de Cataluña.",
+        "cita": {
+          "pagina": 61,
+          "apartado": "Derechos sindicales, delegado compartido e inspección",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cataluña ya gestiona la inspección laboral (RD 206/2010). La Seguridad Social es distinta: su legislación básica y régimen económico son competencia exclusiva del Estado (art. 149.1.17 CE; STC 124/1989, caja única). Traspasar esa inspección exigiría al menos una ley orgánica de delegación (art. 150.2 CE) y sería recurrible.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 206/2010 (Inspección a Cataluña)",
+              "url": "https://www.boe.es/eli/es/rd/2010/02/26/206"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "Tribunal Constitucional · STC 124/1989 (citada por número, no abierta)",
+              "url": "https://hj.tribunalconstitucional.es/"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cataluña ya gestiona la inspección laboral desde 2010; lo nuevo sería la parte de Seguridad Social, que es caja única estatal. Eso choca con el control centralizado del fraude en cotizaciones y requeriría reforma legal.",
+          "precedentes": [
+            {
+              "pais": "Cataluña (2010)",
+              "resultado": "La Generalitat ya gestiona la inspección laboral desde 2010 (RD 206/2010); el Estado se reservó lo de su competencia, como parte de Seguridad Social.",
+              "url": "https://www.boe.es/eli/es/rd/2010/02/26/206"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ]
+  }
+}

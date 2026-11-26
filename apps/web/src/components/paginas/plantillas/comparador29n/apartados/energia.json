@@ -1,0 +1,605 @@
+{
+  "id": "energia",
+  "titulo": "Energía",
+  "dato": {
+    "texto": "El Gobierno prorrogó en agosto de 2026 la autorización de Almaraz I y II hasta el 8 de junio de 2030 (antes: noviembre de 2027 y octubre de 2028), con informe favorable del CSN.",
+    "fuente": "BOE, Orden TED/864/2026",
+    "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Eliminaremos el calendario de cierre de Almaraz, Ascó, Vandellós, Cofrentes y Trillo. En los primeros cien días tramitaremos la extensión de su vida útil con el visto bueno del CSN.",
+        "cita": {
+          "pagina": 71,
+          "apartado": "4.9 España puede ser potencia energética · medida 228",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe: decidir la vida de las centrales es del Estado. Pero cada prórroga exige que la pida la eléctrica titular y un informe favorable del CSN, vinculante si es negativo (Ley 15/1980). El Gobierno no puede imponerla solo. Almaraz ya tiene permiso hasta el 8/6/2030.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+              "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 15/1980 de creación del CSN",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-8927"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mantener nucleares evita sustituirlas por gas o carbón y ayuda a contener emisiones y precios a corto plazo; a cambio hay que pagar inversiones de seguridad y gestionar más residuos. Depende de que el CSN lo avale y de que las eléctricas quieran seguir.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Tramitar en los primeros 100 días"
+        }
+      },
+      {
+        "texto": "Eliminaremos de inmediato el impuesto del 7% a la producción eléctrica y reduciremos la carga fiscal del recibo.",
+        "cita": {
+          "pagina": 71,
+          "apartado": "4.9 · medida 229",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: es un impuesto estatal (Ley 15/2012) y basta una ley de las Cortes para suprimirlo. La propia ley ya lo baja al 3,5 % en 2027 y al 0 % desde 2028, así que la medida adelanta lo legislado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 15/2012, art. 8 (IVPEE)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2012-15649"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "≈ 900 M€/año (lo que aportó el impuesto en 2024 al restablecerse, según la AEAT)",
+          "texto": "Bajaría algo el recibo si la rebaja se traslada al precio, pero Hacienda pierde unos 900 M€/año. Como la ley ya lo elimina en 2028, el coste real es adelantarlo uno o dos años.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "cifra",
+            "texto": "≈900 M€/año: lo que recaudó el impuesto en 2024 (AEAT)",
+            "fuente": {
+              "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+            }
+          },
+          "plazo": "De inmediato"
+        }
+      },
+      {
+        "texto": "Los hogares más vulnerables tendrán una Tarifa Social Única que sustituirá y mejorará los actuales bonos eléctrico y térmico.",
+        "cita": {
+          "pagina": 71,
+          "apartado": "4.9 · medida 229",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: el bono social eléctrico y el térmico son estatales (Ley 24/2013, art. 45) y pueden fundirse por ley o reglamento. La Directiva (UE) 2019/944 permite precios protegidos para hogares vulnerables.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 24/2013 del Sector Eléctrico",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2013-13645"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
+              "url": "https://eur-lex.europa.eu/eli/dir/2019/944/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Unificar ayudas reduce trámites. Lo decisivo es que se conceda de oficio: cuando hay que pedirlo, muchos hogares con derecho no lo solicitan. El coste depende de cuántos hogares entren y de la cuantía, aún sin definir.",
+          "precedentes": [
+            {
+              "pais": "Italia (bono social automático, 2021)",
+              "resultado": "Al darse de oficio, los bonos eléctricos pasaron de 2,5 M (2021) a 4,6 M (2023).",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "ARERA · Bonos sociales 2023",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Impulsar el despliegue de energías renovables, para alcanzar el 81% de generación eléctrica en 2030, priorizando su ubicación en las Zonas de Aceleración Renovable.",
+        "cita": {
+          "pagina": 65,
+          "apartado": "Economía verde · compromiso 234",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe como objetivo (es el del PNIEC), pero el Estado no lo cumple solo: autoriza las plantas de más de 50 MW y las comunidades las menores (Ley 24/2013, art. 3.13). Las Zonas de Aceleración Renovable de la Directiva (UE) 2023/2413 exigen planificarlas con las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "MITECO · PNIEC 2023-2030",
+              "url": "https://www.miteco.gob.es/es/energia/estrategia-normativa/pniec-23-30.html"
+            },
+            {
+              "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+              "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 24/2013 del Sector Eléctrico",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2013-13645"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2023/2413 (renovables)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2023/2413/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "≈ 308.000 M€ de inversión hasta 2030 para todo el plan energético (82 % privada), según el PNIEC",
+          "texto": "El Gobierno estima un PIB un 3,2 % mayor y menos gasto energético de los hogares. Riesgos: que redes y almacenamiento no lleguen a tiempo, horas a precio cero que frenan la inversión y rechazo local a nuevos parques.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "MITECO · Actualización del PNIEC 2023-2030",
+              "url": "https://www.miteco.gob.es/es/prensa/ultimas-noticias/2024/septiembre/el-gobierno-aprueba-la-actualizacion-del-plan-nacional-integrado.html"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "cifra",
+            "texto": "≈308.000 M€ de inversión hasta 2030, 82 % privada (PNIEC)",
+            "fuente": {
+              "nombre": "MITECO · Actualización del PNIEC 2023-2030",
+              "url": "https://www.miteco.gob.es/es/prensa/ultimas-noticias/2024/septiembre/el-gobierno-aprueba-la-actualizacion-del-plan-nacional-integrado.html"
+            }
+          },
+          "plazo": "2030"
+        }
+      },
+      {
+        "texto": "Mantener el calendario de cierre de las centrales nucleares hasta 2035 y desarrollar proyectos de transición justa en las comarcas afectadas.",
+        "cita": {
+          "pagina": 66,
+          "apartado": "Economía verde · compromiso 240",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado decide si concede o niega cada renovación de las centrales, previo informe del CSN. Mantener el cierre en 2035 es legal; las fechas intermedias ya cambiaron con la Orden TED/864/2026, que alargó Almaraz hasta junio de 2030.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+              "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 15/1980 de creación del CSN",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-8927"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cerrar nucleares sin tener lista su sustitución limpia puede obligar a usar más gas, con más emisiones y precios más altos; los planes de transición justa intentan amortiguar el golpe en las comarcas. El efecto depende de cuánta renovable y almacenamiento haya entonces.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Cierre completo en 2035"
+        }
+      },
+      {
+        "texto": "Crear un bono social único y automático. Integrar el bono social eléctrico, el térmico, las bonificaciones de transporte y las tarifas sociales de telecomunicaciones y agua en un único derecho que se reconozca de oficio.",
+        "cita": {
+          "pagina": 38,
+          "apartado": "Coste de vida y poder adquisitivo · compromiso 93",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe la parte estatal (bonos eléctrico y térmico). Pero el agua es competencia municipal (Ley 7/1985, arts. 25-26), algunas ayudas de transporte son autonómicas y las tarifas de telecomunicaciones son de operadores privados: integrarlas exige convenios, como admite el propio texto.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 7/1985 de Bases de Régimen Local, arts. 25-26",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Reconocer el derecho de oficio sube mucho el número de hogares que lo reciben, y por tanto el coste. Integrar ayudas de distintas administraciones (agua, telecomunicaciones) exige cruzar datos y pactar con comunidades y ayuntamientos.",
+          "precedentes": [
+            {
+              "pais": "Italia (bono social automático, 2021)",
+              "resultado": "Al darse de oficio, los bonos eléctricos pasaron de 2,5 M (2021) a 4,6 M (2023).",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "ARERA · Bonos sociales 2023",
+              "url": "https://www.arera.it/comunicati-stampa/dettaglio/energia-nel-2023-oltre-75-milioni-di-bonus-sociali-24"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Bajada masiva de los impuestos de la energía eléctrica a familias, empresas e industrias españolas. Fin de la doble imposición.",
+        "cita": {
+          "pagina": 11,
+          "apartado": "Economía, industria y energía · punto 8",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe bajar impuestos estatales de la luz por ley. Límite UE: el IVA por debajo del 5 % o a tipo cero solo se permite en un máximo de siete partidas de primera necesidad (Directiva 2006/112/CE, art. 98, reformada por la 2022/542). «Doble imposición» no se concreta.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 15/2012, art. 8 (IVPEE)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2012-15649"
+            },
+            {
+              "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA, arts. 97-98",
+              "url": "https://eur-lex.europa.eu/eli/dir/2006/112/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "Sin cifra total: cada 11 puntos menos de IVA de la luz cuestan ≈1.100-1.300 M€/año (AIReF, 2021); quitar el impuesto del 7 %, ≈900 M€/año",
+          "texto": "Bajar impuestos abarata el recibo, pero el programa no dice cuánto ni cómo se compensa. Una rebaja general beneficia más a quien más consume y tiene el límite de los tipos mínimos que fija la UE.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "El Independiente · AIReF sobre la rebaja del IVA de la luz",
+              "url": "https://www.elindependiente.com/economia/2021/06/22/la-airef-cifra-en-1-300-millones-de-euros-el-impacto-recaudatorio-de-la-rebaja-del-iva-de-la-luz/amp/"
+            },
+            {
+              "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Recuperar urgentemente el plan nuclear nacional. Se garantizará la supervivencia de las centrales nucleares actuales, derogando el calendario de cierre. Se promoverán estudios urgentes para instalar centrales nucleares.",
+        "cita": {
+          "pagina": 12,
+          "apartado": "Economía, industria y energía · punto 8",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe: ninguna ley prohíbe prorrogar ni construir nucleares, y es competencia estatal. Pero cada prórroga exige solicitud del titular e informe favorable del CSN, y una central nueva exige un promotor y todas las autorizaciones nucleares (Ley 15/1980). El Gobierno no puede imponerlas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+              "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 15/1980 de creación del CSN",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-8927"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mantener las centrales evita sustituirlas por gas o carbón. Construir nuevas es otra cosa: los últimos reactores europeos han costado varias veces lo previsto y han tardado más de una década.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            },
+            {
+              "pais": "Francia (Flamanville 3)",
+              "resultado": "Presupuestado en 3.300 M€; el Tribunal de Cuentas lo eleva a 23.700 M€ y llegó a la red con 12 años de retraso.",
+              "url": "https://www.connaissancedesenergies.org/afp/programme-depr-la-cour-des-comptes-publie-un-rapport-critique-et-recalcule-le-cout-de-flamanville-3-250114"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            },
+            {
+              "nombre": "Connaissance des Énergies · Cour des comptes sobre el EPR",
+              "url": "https://www.connaissancedesenergies.org/afp/programme-depr-la-cour-des-comptes-publie-un-rapport-critique-et-recalcule-le-cout-de-flamanville-3-250114"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Fin del tope regulatorio a la inversión en redes eléctricas. Las autorizaciones de líneas, subestaciones y puntos de conexión a la red se resolverán en plazos máximos cerrados y con silencio administrativo positivo.",
+        "cita": {
+          "pagina": 11,
+          "apartado": "Economía, industria y energía · punto 8",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Quitar el tope de inversión en redes cabe (es norma estatal), pero la retribución la fija la CNMC con la independencia que exige la UE. El silencio positivo solo vale para obras sin evaluación ambiental: para líneas grandes lo impide el STJUE (C-230/00) por la Directiva 2011/92/UE.",
+          "fuentes": [
+            {
+              "nombre": "EUR-Lex · Directiva 2011/92/UE (evaluación ambiental)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2011/92/oj"
+            },
+            {
+              "nombre": "CURIA · STJUE C-230/00, Comisión/Bélgica (2001)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-230/00"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
+              "url": "https://eur-lex.europa.eu/eli/dir/2019/944/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más inversión en redes acelera conexiones, pero las redes se pagan en el recibo: sin tope, sube la factura. La CNMC acaba de fijar una rentabilidad del 6,58 % y retribuye inversiones hasta el 0,13 % del PIB. El silencio positivo choca con evaluaciones ambientales que exige la UE.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "CNMC · Circulares de retribución de redes (dic. 2025)",
+              "url": "https://www.cnmc.es/prensa/circulares-retribucion-electrica-20251222"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Cumpliremos el calendario de cierre de las centrales nucleares. Almaraz I y II cerrarán en los plazos previstos (2027-2028), sin beneficios fiscales.",
+        "cita": {
+          "pagina": 71,
+          "apartado": "5.1 Energía limpia, pública y al alcance de todas las familias",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe revisar el calendario, pero la Orden TED/864/2026 ya autoriza Almaraz hasta el 8/6/2030. Anular un permiso favorable exige que la empresa renuncie o declararlo lesivo y recurrirlo ante los tribunales (Ley 39/2015, art. 107), con posible indemnización.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+              "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+            },
+            {
+              "nombre": "BOE · Ley 39/2015, art. 107 (lesividad)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10565"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Cerrar Almaraz en 2027-2028 obliga a cubrir su producción; si no hay suficiente renovable y almacenamiento, entra gas, con más emisiones y riesgo de precios más altos. Además habría que revocar la prórroga ya aprobada hasta 2030.",
+          "precedentes": [
+            {
+              "pais": "Alemania (2011-2017)",
+              "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+              "url": "https://www.nber.org/papers/w26598"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "Cierre de Almaraz en 2027-2028"
+        }
+      },
+      {
+        "texto": "Haremos progresivo el IVA de la luz. El IVA de la electricidad dependerá del consumo por persona: empezará en el 0 % para los consumos más bajos y personas vulnerables y el autoconsumo y subirá hasta el 21 %.",
+        "cita": {
+          "pagina": 54,
+          "apartado": "3.4 Fiscalidad del consumo",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe en parte: la UE permite IVA reducido para la luz, pero el tipo cero o inferior al 5 % solo en un máximo de siete partidas (Directiva 2006/112/CE, art. 98). Un IVA distinto según consumo por persona tiene encaje dudoso con la neutralidad del impuesto y no hay sentencia que lo avale.",
+          "fuentes": [
+            {
+              "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA, arts. 97-98",
+              "url": "https://eur-lex.europa.eu/eli/dir/2006/112/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Premia a quien consume poco, pero el consumo depende de cosas como la calefacción eléctrica o el tamaño del hogar, no solo de la renta. Exige saber cuántas personas viven en cada casa y encaja mal con las reglas europeas del IVA. No hay cálculo de coste.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Tres horas de luz gratis al día en la franja solar: la comercializadora pública las ofrecerá de partida y las grandes comercializadoras estarán obligadas por ley a incluirlas en su oferta.",
+        "cita": {
+          "pagina": 71,
+          "apartado": "5.1 · Reforma del mercado eléctrico e intervención estatal",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La comercializadora pública sí podría ofrecer esas horas. Lo que no cabe es obligar por ley a las privadas: la Directiva (UE) 2019/944, art. 5, les deja fijar libremente el precio, salvo para hogares vulnerables o en crisis declarada por la UE (criterio del STJUE C-121/15). Hay dudas sobre su encaje: por eso queda en naranja y no en rojo.",
+          "fuentes": [
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2019/944, art. 5",
+              "url": "https://eur-lex.europa.eu/eli/dir/2019/944/oj"
+            },
+            {
+              "nombre": "CURIA · STJUE C-121/15, ANODE (2016)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-121/15"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Puede mover el consumo a las horas de sol, cuando la luz es más barata. El riesgo: la energía «gratis» se paga subiendo el precio del resto de horas, y beneficia más a quien puede desplazar consumo (coche eléctrico, batería).",
+          "precedentes": [
+            {
+              "pais": "Australia (Solar Sharer, 2026)",
+              "resultado": "Desde julio de 2026, tres horas gratis al mediodía en tres regiones; las eléctricas avisan de efectos no deseados.",
+              "url": "https://www.pv-magazine.com/2025/11/04/australia-plans-nationwide-three-hour-free-solar-power-offer-from-july-2026/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "pv magazine · Solar Sharer Offer",
+              "url": "https://www.pv-magazine.com/2025/11/04/australia-plans-nationwide-three-hour-free-solar-power-offer-from-july-2026/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ]
+  }
+}

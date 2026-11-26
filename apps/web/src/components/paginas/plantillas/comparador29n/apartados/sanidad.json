@@ -1,0 +1,579 @@
+{
+  "id": "sanidad",
+  "titulo": "Sanidad",
+  "dato": {
+    "texto": "El gasto sanitario público fue de 101.739 M€ en 2024 (6,4% del PIB; 2.084 € por habitante). Las comunidades autónomas gestionan el 93,6%.",
+    "fuente": "Ministerio de Sanidad, Estadística de Gasto Sanitario Público 2024",
+    "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
+      "verificado2026": false
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Pacto de Estado por la Sanidad Pública con las CCAA y plan urgente de reducción de listas de espera, respetando sus competencias de gestión.",
+        "cita": {
+          "pagina": 68,
+          "apartado": "4.8 Seremos referente mundial en sanidad y cuidados · medida 219",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede impulsar el pacto y fijar bases y coordinación (art. 149.1.16 CE), pero las listas de espera las gestionan los servicios de salud de las CCAA: el plan solo funciona si cada comunidad lo asume.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Un pacto es útil si fija metas medibles; sin dinero ni plazos concretos, su efecto sobre las esperas no se puede estimar. La gestión es de las comunidades (93,6 % del gasto), así que depende de que se sumen.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Incorporaremos, en coordinación con las CCAA, más profesionales al SNS. En Atención Primaria, al menos 4.500 médicos más.",
+        "cita": {
+          "pagina": 69,
+          "apartado": "4.8 · medida 220",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe en la ley, pero contratar médicos de primaria corresponde a los servicios autonómicos de salud. El Estado puede ampliar plazas MIR y cofinanciar; la incorporación real depende de las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Oferta FSE 2027",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6963"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más plazas no garantizan más médicos a corto plazo: un médico de familia tarda 4 años en formarse tras el MIR y hay que cubrir jubilaciones. El coste depende del salario que pague cada comunidad; el programa no lo cifra.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Acabar con las listas de espera, con un gasto sanitario público del 7% del PIB.",
+        "cita": {
+          "pagina": 49,
+          "apartado": "Sanidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede subir su gasto y las transferencias, pero el 93,6 % del gasto sanitario lo deciden y ejecutan las CCAA, que tienen autonomía financiera (art. 156 CE). Llegar al 7 % exige acuerdo con ellas o reformar la financiación autonómica.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "≈ 9.600 M€/año más (pasar del 6,4 % al 7 % de un PIB de ≈1,59 billones; cálculo sobre datos del Ministerio de Sanidad)",
+          "texto": "Más gasto no acaba por sí solo con las listas: depende de en qué se gaste (plantillas, quirófanos, primaria). La meta de «acabar» con las esperas no tiene precedente en ningún país de nuestro entorno.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Atención psicológica gratuita, con primera consulta en un máximo de 30 días.",
+        "cita": {
+          "pagina": 50,
+          "apartado": "Sanidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede fijar en la cartera común un plazo máximo garantizado (art. 149.1.16 CE; Ley 16/2003), pero los psicólogos los contratan y gestionan los servicios autonómicos de salud.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 16/2003 de cohesión y calidad del SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-10715"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Hay demanda alta. La experiencia inglesa muestra que el acceso rápido es posible, pero muchos pacientes abandonan y la recuperación ronda la mitad de quienes terminan. Requiere muchos más psicólogos clínicos; el coste no está cifrado.",
+          "precedentes": [
+            {
+              "pais": "Reino Unido (NHS Talking Therapies)",
+              "resultado": "1,8 millones de derivaciones en 2023/24; solo el 37 % acabó el tratamiento y, de ellos, el 47 % se recuperó de forma fiable.",
+              "url": "https://www.nuffieldtrust.org.uk/news-item/does-the-nhs-talking-therapies-service-have-an-attrition-problem"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "«Plan Sonríe»: incorporar tratamientos dentales básicos de adultos y, mientras, ayudas directas de hasta 200 € por persona y año.",
+        "cita": {
+          "pagina": 49,
+          "apartado": "Sanidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Ampliar la cartera común de servicios es competencia estatal (Ley 16/2003), y una ayuda directa estatal también cabe. La prestación dental la tendrían que organizar y, en parte, financiar las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 16/2003 de cohesión y calidad del SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-10715"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "El coste depende de cuántas personas cobren la ayuda de 200 €; el programa no da la cifra. Ayudas directas sin dentistas públicos suficientes pueden acabar en clínicas privadas con precios libres. No hemos encontrado una evaluación publicada de un plan comparable.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Tarjeta sanitaria única con historia clínica compartida en todo el territorio nacional.",
+        "cita": {
+          "pagina": 37,
+          "apartado": "Sanidad · medida 60",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede fijar estándares comunes de tarjeta e historia clínica (art. 149.1.16 CE; Ley 16/2003); ya existe la Historia Clínica Digital del SNS. Pero emitir la tarjeta y aplicar el sistema es tarea de cada comunidad.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Historia Clínica Digital del SNS",
+              "url": "https://www.sanidad.gob.es/areas/saludDigital/historiaClinicaSNS/home.htm"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 16/2003 de cohesión y calidad del SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-10715"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "La historia clínica digital común ya existe pero está desigualmente implantada; completarla es sobre todo tarea técnica y de coordinación con las comunidades. Coste bajo en relación con el gasto sanitario, sin cifra oficial.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Excluir a los extranjeros en situación ilegal del sistema sanitario salvo casos de urgencia grave. Auditoría del coste de la inmigración en la sanidad.",
+        "cita": {
+          "pagina": 19,
+          "apartado": "Prioridad nacional · medida 20",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe por ley: el TC avaló la restricción de 2012 (STC 139/2016). Pero hay mínimos: menores (Convención sobre los Derechos del Niño, art. 24) y, para quien espera su expulsión, urgencias y tratamiento básico (Directiva 2008/115, art. 14). «Solo urgencia grave» quedaría por debajo de eso.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 7/2018, acceso universal al SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
+            },
+            {
+              "nombre": "TC · STC 139/2016 (citada por número; no abierta)",
+              "url": "https://hj.tribunalconstitucional.es/"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2008/115/CE (retorno), art. 14",
+              "url": "https://eur-lex.europa.eu/eli/dir/2008/115/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "El ahorro esperado no aparece en las evaluaciones: cuando España lo hizo en 2012 subió la mortalidad de este grupo, y en Alemania limitar el acceso salió más caro porque se atiende tarde y en urgencias.",
+          "precedentes": [
+            {
+              "pais": "España (2012-2018)",
+              "resultado": "Retirar la tarjeta sanitaria a los inmigrantes sin papeles subió su mortalidad ≈15 %: unas 82 muertes más al año (Univ. Barcelona/UPF).",
+              "url": "https://diposit.ub.edu/items/a0496561-283d-4df0-9806-1e684153fa31/full"
+            },
+            {
+              "pais": "Alemania (1994-2013)",
+              "resultado": "Restringir la sanidad a solicitantes de asilo costó ≈40 % más por persona que darles acceso normal: la urgencia sale más cara.",
+              "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0131483"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Plan nacional de reducción de listas de espera, con colaboración público-privada cuando ayude a reducir demoras e indicadores periódicos comparables.",
+        "cita": {
+          "pagina": 37,
+          "apartado": "Sanidad · medida 62",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede aprobar un plan y fijar indicadores comunes (art. 149.1.16 CE; RD 605/2003). Derivar pacientes a centros privados lo deciden y pagan las CCAA, que gestionan el 93,6 % del gasto.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Concertar con la privada puede bajar esperas rápido si hay capacidad libre, pero no crea médicos nuevos y puede trasladar profesionales de un sector a otro. Su eficacia depende de controlar precios y resultados.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Blindaje del gasto sanitario público: compromiso desde los Presupuestos Generales del Estado del 8% del PIB estatal para la sanidad pública.",
+        "cita": {
+          "pagina": 26,
+          "apartado": "2.4 Una sanidad pública más fuerte",
+          "nota": "Folio impreso 30 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado decide sus Presupuestos, pero gestiona solo una parte pequeña del gasto sanitario; el resto lo deciden las CCAA con autonomía financiera (art. 156 CE). Llegar al 8 % exige trasladarlo vía financiación autonómica y acuerdo con ellas.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "≈ 25.500 M€/año más (pasar del 6,4 % al 8 % de un PIB de ≈1,59 billones; cálculo sobre datos del Ministerio de Sanidad)",
+          "texto": "Es un aumento de una cuarta parte del gasto actual. El Estado solo gestiona el 6,4 % del gasto sanitario: financiarlo desde los Presupuestos del Estado exigiría más impuestos o deuda, y transferencias a las comunidades.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024 (101.739 M€, 6,4 % del PIB)",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Ley de Gestión Pública del SNS: gestión pública directa como vía general y derogación de la Ley 15/1997 sobre nuevas formas de gestión.",
+        "cita": {
+          "pagina": 26,
+          "apartado": "2.4 · Financiación, gobernanza y gestión",
+          "nota": "Folio impreso 30 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Derogar la Ley 15/1997 y fijar la gestión directa como regla general cabe como legislación básica (art. 149.1.16 CE). Pero los centros los gestionan las CCAA y los contratos vigentes deben respetarse hasta su fin o indemnizarse.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "No hay una evaluación concluyente de qué modelo es más barato: en el caso de Alzira (revertido en 2018) la empresa alegó ahorro y los sindicatos, sobrecostes. Pasar a gestión directa implica asumir plantillas y posibles indemnizaciones.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Blindar por ley la universalidad de la atención sanitaria para residentes en España, independientemente de su estatus administrativo.",
+        "cita": {
+          "pagina": 26,
+          "apartado": "2.4 · Financiación, gobernanza y gestión",
+          "nota": "Folio impreso 30 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe con mayoría simple: el Estado regula quién tiene derecho a la asistencia (art. 149.1.16 CE). El RDL 7/2018 ya la reconoce; pasarla a una ley específica refuerza esa garantía.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 7/2018, acceso universal al SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Las evaluaciones indican que excluir a los sin papeles no ahorra y empeora su salud; garantizar el acceso tiene un coste moderado frente al gasto total, sin cifra oficial reciente.",
+          "precedentes": [
+            {
+              "pais": "España (2012-2018)",
+              "resultado": "Retirar la tarjeta sanitaria a los inmigrantes sin papeles subió su mortalidad ≈15 %: unas 82 muertes más al año (Univ. Barcelona/UPF).",
+              "url": "https://diposit.ub.edu/items/a0496561-283d-4df0-9806-1e684153fa31/full"
+            },
+            {
+              "pais": "Alemania (1994-2013)",
+              "resultado": "Restringir la sanidad a solicitantes de asilo costó ≈40 % más por persona que darles acceso normal: la urgencia sale más cara.",
+              "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0131483"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Reformar el artículo 43 de la Constitución para incluir el derecho al aborto.",
+        "cita": {
+          "pagina": 28,
+          "apartado": "2.4 · Salud sexual, reproductiva, obstétrica y duelo perinatal",
+          "nota": "Folio impreso 32 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El art. 43 está en el Capítulo III del Título I: se reforma por el art. 167 CE, con tres quintos de cada Cámara (210 diputados y 159 senadores) o la vía alternativa de ese artículo, y referéndum si lo pide una décima parte de una Cámara.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin coste económico directo. Exige reforma constitucional con mayorías de 3/5 en ambas cámaras, hoy difíciles de reunir. Francia es el único precedente explícito.",
+          "precedentes": [
+            {
+              "pais": "Francia (2024)",
+              "resultado": "Incluyó la libertad de abortar en su Constitución el 4/3/2024 con 780 votos de diputados y senadores en Versalles.",
+              "url": "https://www.eldiario.es/1_a78804"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Aprobar el Real Decreto de listas de espera: cómputo desde la indicación facultativa, prohibir listas paralelas e incluir tiempos de Atención Primaria y Salud Mental.",
+        "cita": {
+          "pagina": 29,
+          "apartado": "2.4 · Tiempos de espera, listas de espera y diagnóstico",
+          "nota": "Folio impreso 33 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Fijar criterios comunes para medir y publicar las listas de espera es coordinación estatal (art. 149.1.16 CE), como ya hizo el RD 605/2003. Basta un real decreto del Gobierno; la calidad del dato sigue dependiendo de cada comunidad.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Medir desde la indicación del médico y sumar primaria y salud mental hará que las listas oficiales parezcan más largas al principio: más transparencia, pero no menos espera por sí sola.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ]
+  }
+}

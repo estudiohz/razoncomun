@@ -1,0 +1,732 @@
+{
+  "id": "medioambiente",
+  "titulo": "Medio ambiente y agua",
+  "dato": {
+    "texto": "España emitió 270,7 millones de toneladas de CO2 equivalente en 2025, un 1,1 % más que en 2024 y solo un 4,8 % menos que en 1990 (avance provisional).",
+    "fuente": "MITECO · Avance del Inventario de GEI 2025",
+    "url": "https://www.miteco.gob.es/content/dam/miteco/es/calidad-y-evaluacion-ambiental/temas/sistema-espanol-de-inventario-sei-/Nota-Avance-GEI-2025.pdf"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/PROGRAMA-ELECTORAL-PP-2026-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Pacto Nacional del Agua: movilizaremos hasta 40.000 millones de euros en inversiones hasta 2030. Modernizaremos los regadíos y generaremos recursos nuevos con infraestructuras, desalación y reutilización.",
+        "cita": {
+          "pagina": 46,
+          "apartado": "3.3 · medida 126 Promoveremos un Pacto Nacional del Agua",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: las obras hidráulicas de interés general y las cuencas que pasan por varias comunidades son del Estado (art. 149.1.22ª y 24ª CE; Ley de Aguas). Puede financiarlas y ejecutarlas; cada obra debe pasar evaluación ambiental.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "40.000 M€ hasta 2030 (cifra del propio programa).",
+          "texto": "Unos 10.000 M€ al año durante 4 años, muy por encima de la inversión hidráulica estatal habitual. Desalar y reutilizar da agua estable, pero gasta mucha electricidad; el programa no dice cómo se financia ni el reparto por obra.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "cifra",
+            "texto": "Hasta 40.000 M€ hasta 2030 (programa)",
+            "fuente": {
+              "nombre": "Programa PP 2026, medida 126",
+              "url": "https://www.pp.es/wp-content/uploads/2026/11/PROGRAMA-ELECTORAL-PP-2026-RECONSTRUCCION-NACIONAL.pdf"
+            }
+          },
+          "plazo": "Hasta 2030"
+        }
+      },
+      {
+        "texto": "Renovaremos los regadíos para reducir su consumo de agua y energía, definiremos nuevos regadíos, ampliaremos el uso de agua depurada y reforzaremos la desalación donde sea necesaria.",
+        "cita": {
+          "pagina": 65,
+          "apartado": "Campo y mar · medida 199 Garantizaremos el agua que necesitan el campo y la industria",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe, con condiciones: los nuevos regadíos necesitan agua asignada en los planes de cuenca y no pueden empeorar ríos ni acuíferos (Directiva 2000/60/CE, art. 4). La agricultura es autonómica (art. 148.1.7ª CE): hace falta acuerdo con las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "EUR-Lex · Directiva 2000/60/CE marco del agua",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32000L0060"
+            },
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Modernizar ahorra agua por hectárea, pero si el ahorro se usa para regar más superficie el consumo total puede no bajar (efecto rebote). Abrir regadíos en cuencas sobreexplotadas choca con los planes vigentes.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Reformaremos la Ley de Montes para facilitar la prevención (...). Adaptaremos la fiscalidad al ciclo del monte para que pague menos quien lo cuide.",
+        "cita": {
+          "pagina": 66,
+          "apartado": "Campo y mar · medida 206 Quien cuide su monte tendrá menos papeles y pagará menos impuestos",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede reformar la legislación básica de montes (art. 149.1.23ª CE; Ley 43/2003) y sus impuestos. La gestión forestal y la extinción de incendios las ejercen las CCAA: la prevención real depende de ellas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 43/2003 de Montes",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-21339"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Hacer rentable el monte (biomasa, ganadería extensiva) reduce combustible y riesgo de grandes incendios. Sin cifra del beneficio fiscal no se puede estimar su coste.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Ha llegado el momento de revisar los ritmos de cada sector (...). Pondremos freno a la imposición de calendarios imposibles. (...) retiraremos las que perjudiquen la competitividad, la industria o el empleo.",
+        "cita": {
+          "pagina": 72,
+          "apartado": "4.9 · medida 232 Afrontaremos el cambio climático con rigor científico",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Las Cortes pueden cambiar los objetivos y calendarios propios de la Ley 7/2021. Los que vienen de la UE obligan igual: la neutralidad en 2050 (Reglamento 2021/1119) o los topes de CO2 de los coches (Reglamento 2023/851) solo se cambian en Bruselas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 7/2021 de cambio climático y transición energética",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2021-8447"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2021/1119, Ley Europea del Clima",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32021R1119"
+            },
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2023/851 (CO2 de turismos)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32023R0851"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "No dice qué calendarios ni qué obligaciones retiraría, así que no se puede medir el efecto. Incumplir los objetivos europeos de reducción obliga a comprar derechos a otros Estados o expone a sanciones.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Garantizar el acceso universal al agua potable (...) mediante un mínimo vital para los hogares vulnerables con su blindaje en la Constitución.",
+        "cita": {
+          "pagina": 68,
+          "apartado": "Agua garantizada en cantidad y en calidad · compromiso 261",
+          "nota": "Leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); el PDF oficial devolvió una página HTML. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Un mínimo vital puede aprobarse por ley. Llevarlo a la Constitución exige reforma: 3/5 de cada Cámara (art. 167 CE), o 2/3 y referéndum si va entre los derechos fundamentales (art. 168 CE). El servicio de agua lo prestan los ayuntamientos.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 7/1985 de Bases del Régimen Local (arts. 25, 26 y 85)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ya hay mínimos vitales y tarifas sociales en muchos municipios; el coste es bajo si se limita a hogares vulnerables. La reforma constitucional exige un acuerdo amplio que hoy no existe.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Crear bancos públicos de agua en las confederaciones hidrográficas para mejorar la gestión, disponibilidad y reasignación de recursos hídricos.",
+        "cita": {
+          "pagina": 68,
+          "apartado": "Agua garantizada en cantidad y en calidad · compromiso 263",
+          "nota": "Leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); el PDF oficial devolvió una página HTML. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: la Ley de Aguas ya permite centros de intercambio de derechos en las confederaciones estatales (art. 71 TRLA). El Gobierno puede crearlos en las cuencas que gestiona; las cuencas internas son de las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Permite mover agua a donde más se necesita en sequía. Funciona si hay registro fiable de derechos y control de pozos; si no, se compra agua que solo existe en el papel.",
+          "precedentes": [
+            {
+              "pais": "Australia (cuenca Murray-Darling)",
+              "resultado": "Mercado regulado de derechos de agua con tope de extracción por cuenca; reasigna agua en sequía, pero exige registro público y control estricto.",
+              "url": "https://www.mdba.gov.au/water-management/water-markets-and-trade"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Modernizar los regadíos, mejorando la eficiencia hídrica y energética sin aumentar el consumo total de agua.",
+        "cita": {
+          "pagina": 68,
+          "apartado": "Agua garantizada en cantidad y en calidad · compromiso 264",
+          "nota": "Leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); el PDF oficial devolvió una página HTML. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado financia obras de regadío de interés general y puede condicionar la ayuda a no aumentar el consumo, lo que encaja con la Directiva marco del agua. Las CCAA gestionan sus propios planes de regadío.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2000/60/CE marco del agua",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32000L0060"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "La condición «sin aumentar el consumo total» corrige el efecto rebote de modernizaciones anteriores. Exige medir con contadores el agua realmente usada.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Incrementar los medios aéreos y terrestres estatales para la lucha contra los incendios forestales.",
+        "cita": {
+          "pagina": 67,
+          "apartado": "Resiliencia climática · compromiso 257",
+          "nota": "Leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); el PDF oficial devolvió una página HTML. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado ya tiene medios propios de apoyo a las CCAA en incendios (Ley 43/2003 de Montes; protección civil, art. 149.1.29ª CE). Ampliarlos es una decisión presupuestaria; la dirección de la extinción sigue siendo autonómica.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 43/2003 de Montes",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2003-21339"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Más medios aéreos ayudan a extinguir, pero los grandes incendios se frenan sobre todo gestionando antes el combustible. No da cifra ni número de aeronaves.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Aprobar una Ley de Adaptación al Cambio Climático y reforzar la ejecución del Plan Nacional de Adaptación con más recursos y mecanismos de seguimiento.",
+        "cita": {
+          "pagina": 67,
+          "apartado": "Resiliencia climática · compromiso 253",
+          "nota": "Leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); el PDF oficial devolvió una página HTML. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "gris",
+          "texto": "No evaluable: anuncia una ley sin decir qué obligaciones tendría ni para quién. Aprobar una ley ordinaria es posible; su encaje competencial depende de un contenido que no se conoce.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 7/2021 de cambio climático y transición energética",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2021-8447"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin contenido concreto no se puede estimar coste ni efecto.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Revertir las normativas que atacan frontalmente a la industria nacional (prohibición de motores de combustión, impuestos a las emisiones de CO2) inspiradas en el Pacto Verde Europeo, la Agenda 2030.",
+        "cita": {
+          "pagina": 11,
+          "apartado": "8. Reindustrialización radical · Revolucionar la política energética",
+          "nota": "El texto sigue en la página 12 del PDF."
+        },
+        "verificacion": {
+          "veredicto": "rojo",
+          "texto": "Un solo país no puede: el fin de la venta de coches nuevos con emisiones en 2035 está en el Reglamento (UE) 2023/851 y el comercio de CO2 en la Directiva 2003/87/CE. Un reglamento obliga directamente (art. 288 TFUE); España solo puede pedir su cambio en la UE.",
+          "fuentes": [
+            {
+              "nombre": "EUR-Lex · Reglamento (UE) 2023/851 (CO2 de turismos)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32023R0851"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2003/87/CE (comercio de derechos de emisión)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32003L0087"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "España sí podría tocar normas propias (impuestos nacionales, partes de la Ley 7/2021). Saltarse las europeas abre procedimientos de infracción y multas del TJUE.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Plan Nacional del Agua. Interconexión de todas las cuencas que permita una gestión más eficiente del agua y pueda servir para reactivar económicamente a nuestro sector primario.",
+        "cita": {
+          "pagina": 61,
+          "apartado": "Infraestructuras y transportes · medida 115",
+          "nota": "El texto sigue en la página 62 del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede aprobar trasvases por ley del Plan Hidrológico Nacional (art. 45 TRLA; Ley 10/2001). Cada uno exige justificar que la cuenca cedente tiene excedentes y no deteriorar sus ríos (Directiva 2000/60/CE, art. 4.7).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            },
+            {
+              "nombre": "BOE · Ley 10/2001 del Plan Hidrológico Nacional",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-13042"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2000/60/CE marco del agua",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32000L0060"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Interconectar todas las cuencas no tiene presupuesto ni trazado. El trasvase del Ebro de la Ley 10/2001 se derogó en 2005; las cuencas cedentes y sus CCAA suelen oponerse.",
+          "precedentes": [
+            {
+              "pais": "España (trasvase Tajo-Segura, desde 1979)",
+              "resultado": "Riega el Levante, pero sus envíos se recortan en sequía y las reglas de caudal ecológico del Tajo han acabado en los tribunales.",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1971-1096"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Lucha contra los incendios. Limpieza y aprovechamiento de los montes. Revisión de las restricciones ambientales (...). Endurecimiento de las penas a los incendiarios.",
+        "cita": {
+          "pagina": 34,
+          "apartado": "Sector primario · medida 55",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Endurecer penas exige reformar el Código Penal (arts. 352-358), que es ley orgánica: mayoría absoluta del Congreso (art. 81 CE). Las restricciones que vienen de directivas europeas (Red Natura 2000) no se pueden rebajar solo desde España.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Código Penal (LO 10/1995), arts. 352-358",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "No hay evidencia oficial de que subir penas reduzca incendios. La limpieza y el aprovechamiento del monte sí reducen combustible.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Obras contra las inundaciones para proteger vidas y hogares. Conclusión de las obras pendientes, conservación de cauces, adecuación de barrancos y desarrollo de las infraestructuras hidráulicas necesarias.",
+        "cita": {
+          "pagina": 61,
+          "apartado": "Infraestructuras y transportes · medida 114",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: las obras hidráulicas de interés general y la conservación de cauces en cuencas intercomunitarias son del Estado (art. 149.1.24ª CE; Ley de Aguas). Cada obra pasa evaluación ambiental.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "No cifra las obras pendientes ni da plazo. Las obras protegen, pero si se sigue construyendo en zonas inundables el riesgo vuelve a crecer.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Derecho humano al agua: (...) Garantizaremos un mínimo vital de agua gratuito para las personas y hogares en situación de vulnerabilidad y la prohibición legal de cortes de suministro por motivos económicos.",
+        "cita": {
+          "pagina": 80,
+          "apartado": "5.6 Agua como bien público",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Puede aprobarse por ley estatal como condición básica de igualdad (art. 149.1.1ª CE). Reconocerlo «al más alto nivel» en la Constitución exige reforma (art. 167 o 168 CE). Las tarifas las fijan los ayuntamientos, que tendrían que aplicarlo.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 7/1985 de Bases del Régimen Local (arts. 25, 26 y 85)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Varias CCAA ya prohíben cortar el agua a hogares vulnerables. El coste lo pagan los demás usuarios o el municipio si no hay compensación.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Agua como bien público: Ciclo del agua 100 % de gestión pública directa.",
+        "cita": {
+          "pagina": 80,
+          "apartado": "5.6 Agua como bien público",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El abastecimiento es municipal (art. 25 LBRL) y la Constitución garantiza la autonomía local (art. 140 CE): hoy cada ayuntamiento elige gestión directa o concesión (art. 85 LBRL). Imponer la directa exige cambiar esa ley y respetar o indemnizar las concesiones vigentes.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 7/1985 de Bases del Régimen Local (arts. 25, 26 y 85)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Rescatar concesiones antes de plazo obliga a indemnizar; el programa no lo cifra.",
+          "precedentes": [
+            {
+              "pais": "Francia (París, 2010)",
+              "resultado": "El ayuntamiento recuperó la gestión al acabar los contratos y creó Eau de Paris, empresa pública municipal.",
+              "url": "https://www.eaudeparis.fr/"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + Ayuntamientos",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Creación de un canon hídrico progresivo para el regadío industrial en zonas con acuíferos sobreexplotados y/o contaminados.",
+        "cita": {
+          "pagina": 81,
+          "apartado": "5.6 Agua como bien público",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: el Estado puede crear tributos por ley (art. 133 CE) y la Ley de Aguas ya prevé cánones en las cuencas estatales. Las CCAA tienen sus propios cánones en sus cuencas internas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Encarecer el agua en acuíferos sobreexplotados reduce extracciones, pero solo si se controlan los pozos ilegales; si no, el consumo se desplaza a ellos.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Moratoria a la expansión de infraestructuras de alto impacto, tales como las grandes infraestructuras hidráulicas, como nuevos proyectos de embalses, trasvases o megabalsas que agraven la sobreexplotación (...).",
+        "cita": {
+          "pagina": 81,
+          "apartado": "5.6 Agua como bien público",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Cabe: decidir no construir obras de interés general o no incluirlas en la planificación hidrológica es competencia del Estado (art. 149.1.22ª y 24ª CE). Las obras ya adjudicadas generan derechos que habría que respetar.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Aguas (RDL 1/2001)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-14276"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ahorra inversión, pero deja sin agua nueva a zonas con déficit si no se compensa con ahorro, reutilización o desalación.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Prohibiendo nuevas construcciones en terrenos con riesgo de inundación y en los primeros 500 metros del litoral.",
+        "cita": {
+          "pagina": 81,
+          "apartado": "5.6 Agua como bien público",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley de Costas fija una servidumbre de protección de 100 metros (ampliable a 200), avalada por la STC 149/1991. Llevarla a 500 metros entra en el urbanismo autonómico (art. 148.1.3ª CE) y exige respetar o indemnizar derechos ya consolidados.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 22/1988 de Costas",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1988-18762"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "TC · STC 149/1991 sobre la Ley de Costas (citada por número; no abierta)",
+              "url": "https://hj.tribunalconstitucional.es/"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Evita daños futuros en zonas de riesgo, pero puede bloquear suelo con derechos urbanísticos y generar indemnizaciones no cifradas.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ]
+  }
+}

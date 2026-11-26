@@ -1,0 +1,771 @@
+{
+  "id": "corrupcion",
+  "titulo": "Corrupción y regeneración",
+  "dato": null,
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/PROGRAMA-ELECTORAL-PP-2026-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Reformaremos el suplicatorio y revisaremos los aforamientos. Corregiremos su extensión excesiva para devolverlos a una concepción limitada y justificada.",
+        "cita": {
+          "pagina": 29,
+          "apartado": "2.1 · Medida 61",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El aforamiento de diputados, senadores y miembros del Gobierno está en la Constitución (arts. 71.3 y 102.1 CE): quitarlo o limitarlo exige reformarla. El resto (jueces, fiscales, cargos autonómicos) está en la LOPJ y los Estatutos: ley orgánica. No precisa a quién se lo quitaría.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin lista de cargos afectados no se puede medir el alcance. España tiene muchos más aforados que sus vecinos europeos.",
+          "precedentes": [
+            {
+              "pais": "Italia, Alemania, Reino Unido",
+              "resultado": "Los parlamentarios no tienen fuero especial: los juzgan los tribunales ordinarios (Italia y Alemania mantienen la inmunidad frente a detención).",
+              "url": "https://www.venice.coe.int/webforms/documents/?pdf=CDL-AD(2014)011-e"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "El fiscal general tendrá un mandato único de cinco años y no cesará con el Gobierno que lo propuso. El informe del CGPJ sobre su idoneidad será preceptivo y vinculante.",
+        "cita": {
+          "pagina": 31,
+          "apartado": "2.3 · Medida 70",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El mandato fijo y no ligado al Gobierno cabe reformando el Estatuto del Ministerio Fiscal (art. 124.3 CE). El informe vinculante es dudoso: la Constitución dice que el Gobierno propone «oído» el CGPJ (art. 124.4 CE); convertirlo en veto podría exigir reformarla.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 50/1981, Estatuto Orgánico del Ministerio Fiscal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1982-837"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Desligar el mandato del Gobierno es lo que pide la Comisión Europea en sus informes sobre el Estado de Derecho. Coste administrativo bajo.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Los jueces y magistrados de todas las categorías elegirán a los doce vocales judiciales del Consejo General del Poder Judicial.",
+        "cita": {
+          "pagina": 32,
+          "apartado": "2.3 · Medida 72",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe: la Constitución deja a la ley orgánica cómo se eligen los 12 vocales de origen judicial (art. 122.3 CE) y el TC admitió ambos sistemas (STC 108/1986). Exige reformar la LOPJ por mayoría absoluta.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+            },
+            {
+              "nombre": "TC · STC 108/1986, sobre la elección del CGPJ",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Es el modelo que recomiendan el Consejo de Europa y la Comisión Europea. Riesgo: trasladar la pugna partidista a las asociaciones judiciales.",
+          "precedentes": [
+            {
+              "pais": "España (1980-1985)",
+              "resultado": "Los jueces eligieron a los 12 vocales judiciales hasta la reforma de la LOPJ de 1985.",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Refundaremos el CIS: dirección científica y profesional, menos puestos de confianza y un presidente con mandato propio que no dependerá de quien gobierne.",
+        "cita": {
+          "pagina": 33,
+          "apartado": "2.3 · Medida 75",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El CIS es un organismo autónomo regulado por ley ordinaria (Ley 39/1995). Fijar un mandato y requisitos técnicos para su presidente está al alcance de las Cortes.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 39/1995, de organización del CIS (citada por número; no abierta)",
+              "url": "https://www.boe.es/buscar/legislacion.php"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Coste bajo. La independencia real depende de quién nombra y de publicar método y microdatos, que el programa también menciona.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Restableceremos las penas por malversación. Reforzaremos la Oficina de Recuperación y Gestión de Activos e incorporaremos el marco penal europeo contra la corrupción.",
+        "cita": {
+          "pagina": 34,
+          "apartado": "2.4 · Medida 82",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe, pero el Código Penal es ley orgánica (art. 81 CE): exige mayoría absoluta. La LO 14/2022 rebajó la malversación sin ánimo de lucro; volver a endurecerla no se aplica a hechos anteriores (arts. 9.3 y 25 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 14/2022 (reforma de la malversación)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2022-21800"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Endurecer penas no recupera dinero por sí solo; reforzar la Oficina de Recuperación de Activos sí ayuda a localizar bienes.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Suprimir los aforamientos de los cargos públicos para los delitos ajenos al ejercicio de su cargo.",
+        "cita": {
+          "pagina": 90,
+          "apartado": "Calidad democrática",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Para diputados, senadores y Gobierno el fuero está en la Constitución (arts. 71.3 y 102.1 CE) y no distingue delitos: exige reformarla. Para el resto basta reformar la LOPJ y los Estatutos de Autonomía.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mantiene el fuero para los delitos cometidos en el cargo, donde está la mayoría de casos de corrupción. El Gobierno ya lo anunció en 2018 sin llegar a aprobarlo.",
+          "precedentes": [
+            {
+              "pais": "Italia, Alemania, Reino Unido",
+              "resultado": "Los parlamentarios no tienen fuero especial: los juzgan los tribunales ordinarios (Italia y Alemania mantienen la inmunidad frente a detención).",
+              "url": "https://www.venice.coe.int/webforms/documents/?pdf=CDL-AD(2014)011-e"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Aprobar una Ley Orgánica de Integridad Pública y una Estrategia Nacional Anticorrupción, y crear una Agencia Independiente de Integridad Pública que refuerce la protección de quienes denuncian.",
+        "cita": {
+          "pagina": 102,
+          "apartado": "Integridad pública · 445",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe por ley orgánica (mayoría absoluta). La Agencia no puede investigar delitos, tarea de jueces y fiscales (arts. 117 y 124 CE). Ya existen la Autoridad del Informante (Ley 2/2023) y la Oficina de Conflictos de Intereses: habría que fusionarlas o coordinarlas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 2/2023, de protección del informante y lucha contra la corrupción",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-4513"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Las agencias anticorrupción funcionan cuando tienen independencia y medios. No da coste.",
+          "precedentes": [
+            {
+              "pais": "Francia (2016)",
+              "resultado": "La Ley Sapin II creó la Agence française anticorruption, que controla los programas de cumplimiento de empresas y administraciones.",
+              "url": "https://www.agence-francaise-anticorruption.gouv.fr/fr"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Aprobar una ley de grupos de interés, con registro obligatorio, publicidad de sus reuniones y huella normativa.",
+        "cita": {
+          "pagina": 102,
+          "apartado": "Integridad pública · 446",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Ley ordinaria de las Cortes; no choca con ninguna norma. Para aplicarla en el Congreso y el Senado habría que reformar también sus reglamentos (art. 72 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 19/2013, de transparencia",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2013-12887"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "España no tiene registro estatal obligatorio de lobbies; varias CCAA sí. Coste bajo.",
+          "precedentes": [
+            {
+              "pais": "Unión Europea (2021)",
+              "resultado": "Registro de transparencia obligatorio para reunirse con la Comisión, el Parlamento y el Consejo.",
+              "url": "https://transparency-register.europa.eu/index_es"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Reforzar el control de la contratación, las subvenciones y la financiación política con análisis de datos y trazabilidad del gasto.",
+        "cita": {
+          "pagina": 102,
+          "apartado": "Integridad pública · 448",
+          "nota": "PDF leído en la copia de Demócrata (https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf); la web del PSOE no sirvió el fichero. Página = posición en esa copia."
+        },
+        "verificacion": {
+          "veredicto": "gris",
+          "texto": "Demasiado genérico para evaluarlo: no dice qué órgano, qué datos ni qué cambio legal. La herramienta en sí (cruzar datos de contratos) es legal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 9/2017, de Contratos del Sector Público",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2017-12902"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin medidas concretas no se puede valorar coste ni efecto.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Modificar la LOPJ para que los doce vocales de procedencia judicial del CGPJ sean elegidos mediante voto personal, directo y secreto por y entre los propios jueces y magistrados.",
+        "cita": {
+          "pagina": 55,
+          "apartado": "Justicia · Medida 100",
+          "nota": "La página impresa coincide con la posición en el PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe: el art. 122.3 CE remite a la ley orgánica y el TC admitió los dos sistemas (STC 108/1986). Exige mayoría absoluta para reformar la LOPJ.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+            },
+            {
+              "nombre": "TC · STC 108/1986, sobre la elección del CGPJ",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Coincide con las recomendaciones europeas. Riesgo: corporativismo y peso de las asociaciones judiciales.",
+          "precedentes": [
+            {
+              "pais": "España (1980-1985)",
+              "resultado": "Los jueces eligieron a los 12 vocales judiciales hasta la reforma de la LOPJ de 1985.",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Liberar el Tribunal Constitucional de las manos de los políticos. El control de la constitucionalidad de las leyes no puede depender de un órgano político.",
+        "cita": {
+          "pagina": 55,
+          "apartado": "Justicia · Medida 101",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "gris",
+          "texto": "No dice cómo. Los magistrados los proponen Congreso, Senado, Gobierno y CGPJ por mandato constitucional (art. 159.1 CE): cambiarlo exigiría reformar la Constitución, pero sin propuesta concreta no se puede evaluar.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Sin diseño concreto no hay coste ni efecto que estimar.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Reforma constitucional",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Agravar el tipo delictivo de la malversación de caudales públicos y prohibir los indultos para delitos relacionados con la corrupción política.",
+        "cita": {
+          "pagina": 56,
+          "apartado": "Justicia · Medida 103",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Endurecer la malversación exige reformar el Código Penal (ley orgánica). Excluir delitos del indulto cabe reformando la ley de 1870; la Constitución solo prohíbe los indultos generales (art. 62.i CE). La pena más dura no se aplica a hechos pasados (art. 25 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            },
+            {
+              "nombre": "BOE · Ley de 18 de junio de 1870, de indulto",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1870-4759"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Coste nulo. El efecto disuasorio depende de que lleguen las condenas.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Auditoría integral de todas las Administraciones; responsabilidad patrimonial personal de los condenados por corrupción con todos sus bienes presentes y futuros.",
+        "cita": {
+          "pagina": 57,
+          "apartado": "Justicia · Medida 107",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Que el condenado responda con todos sus bienes ya es ley (art. 1911 del Código Civil y responsabilidad civil del Código Penal). El Tribunal de Cuentas puede fiscalizar todo el sector público (art. 136 CE), pero las CCAA tienen sus propios órganos de control: exige coordinarse con ellas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 2/1982, del Tribunal de Cuentas",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1982-11584"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Auditar todo el sector público exige medios que el Tribunal de Cuentas no tiene. No da coste ni plazo.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Si en dos meses no hay acuerdo, las Cámaras podrán elegir a los vocales del turno judicial del CGPJ en segunda votación por mayoría absoluta.",
+        "cita": {
+          "pagina": 155,
+          "apartado": "18.7 · Sistema judicial",
+          "nota": "Página = posición en el PDF oficial (la numeración impresa es distinta)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Constitución no fija la mayoría para los 12 vocales judiciales (art. 122.3 CE): cabe por ley orgánica. Pero contradice la recomendación europea de que los jueces elijan a los jueces, y el TC advirtió del riesgo de reparto partidista (STC 108/1986).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 6/1985, del Poder Judicial",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-12666"
+            },
+            {
+              "nombre": "TC · STC 108/1986, sobre la elección del CGPJ",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/671"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Evita bloqueos, pero permite que la mayoría que sostiene al Gobierno elija sola el CGPJ.",
+          "precedentes": [
+            {
+              "pais": "Polonia (2017)",
+              "resultado": "El TJUE consideró contrario al Derecho de la UE el régimen disciplinario surgido de la reforma que dio al Parlamento la elección de los vocales judiciales (C-791/19).",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-791/19"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Crearemos la figura del decomiso administrativo o preventivo, que permitirá incautar bienes vinculados a actividades delictivas sin necesidad de condena previa.",
+        "cita": {
+          "pagina": 149,
+          "apartado": "18.2 · Corrupción",
+          "nota": "Página = posición en el PDF oficial (la numeración impresa es distinta)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El decomiso sin condena ya existe en casos tasados (art. 127 ter CP) y la Directiva (UE) 2024/1260 lo amplía, siempre por decisión de un juez. Hacerlo por vía administrativa, sin juez, chocaría con la tutela judicial y la presunción de inocencia (art. 24 CE) y con la propiedad (art. 33 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva (UE) 2024/1260, recuperación y decomiso de activos (citada por número; no abierta)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2024/1260/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Con control judicial es una herramienta útil para recuperar activos.",
+          "precedentes": [
+            {
+              "pais": "Italia",
+              "resultado": "Las medidas de prevención patrimonial antimafia permiten decomisar sin condena, siempre por decisión judicial.",
+              "url": "https://www.giustizia.it/giustizia/it/mg_1_12_1.page"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Eliminaremos la atenuante de dilaciones indebidas en los casos de corrupción.",
+        "cita": {
+          "pagina": 149,
+          "apartado": "18.2 · Corrupción",
+          "nota": "Página = posición en el PDF oficial (la numeración impresa es distinta)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cabe reformando el art. 21.6 del Código Penal (ley orgánica). Matiz: el derecho a un proceso sin dilaciones (art. 24.2 CE) sigue vigente, y sin atenuante el acusado podría reclamar una indemnización al Estado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Ataca un síntoma; la causa es la lentitud de los juzgados, que el mismo programa aborda con más plazas.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Haremos efectivas las sanciones en casos de corrupción para que las empresas y personas condenadas no puedan contratar con el sector público durante veinte años.",
+        "cita": {
+          "pagina": 149,
+          "apartado": "18.2 · Corrupción",
+          "nota": "Página = posición en el PDF oficial (la numeración impresa es distinta)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Solo cabe si lo impone un juez en sentencia, reformando el Código Penal (hoy hasta 15 años para empresas, art. 33.7 CP). Por vía administrativa la Directiva 2014/24/UE limita la exclusión a 5 años (art. 57.7).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley Orgánica 10/1995, del Código Penal",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444"
+            },
+            {
+              "nombre": "BOE · Ley 9/2017, de Contratos del Sector Público",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2017-12902"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2014/24/UE, contratación pública, art. 57.7 (citada por número; no abierta)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2014/24/oj"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Fuerte efecto disuasorio, pero en sectores con pocas empresas puede reducir la competencia en las licitaciones.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Crearemos una Oficina Independiente contra la Corrupción, dotada con recursos suficientes y plena capacidad para investigar y sancionar.",
+        "cita": {
+          "pagina": 149,
+          "apartado": "18.2 · Corrupción",
+          "nota": "Página = posición en el PDF oficial (la numeración impresa es distinta)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Puede investigar y sancionar infracciones administrativas. Investigar delitos corresponde a jueces y fiscales (arts. 117, 124 y 126 CE): la Oficina tendría que pasarles los indicios.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 2/2023, de protección del informante y lucha contra la corrupción",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-4513"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "No da coste. Se solapa con la Autoridad del Informante (Ley 2/2023) y la Oficina de Conflictos de Intereses.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "partido_no_da",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ]
+  }
+}

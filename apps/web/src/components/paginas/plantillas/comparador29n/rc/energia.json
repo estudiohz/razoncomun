@@ -1,0 +1,118 @@
+{
+  "id": "energia",
+  "propuestas": [
+    {
+      "titulo": "Cada central nuclear, decidida por su informe de seguridad",
+      "texto": "Ni cierre por calendario ni prórroga a ciegas. Cada central se mantiene o se cierra según el informe del Consejo de Seguridad Nuclear y un estudio público de qué pasa con el precio y el suministro sin ella. La decisión se publica con sus números.",
+      "punto": 28,
+      "dato": {
+        "texto": "Almaraz I y II, que debían cerrar en 2027 y 2028, ya están autorizadas hasta el 8 de junio de 2030, con informe favorable del Consejo de Seguridad Nuclear.",
+        "fuente": "BOE · Orden TED/864/2026",
+        "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+      },
+      "medicion": "Estudio de impacto publicado para cada central al menos 2 años antes de que venza su autorización.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Es el procedimiento que ya existe: solicitud de la empresa, informe del CSN y orden ministerial (en Almaraz, unos 9 meses). Solo añade publicar el estudio de impacto antes de decidir, algo que el Gobierno puede hacer sin cambiar ninguna ley.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+            "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Decidir central a central con números públicos evita cierres o prórrogas por ideología. El riesgo es la incertidumbre: las eléctricas necesitan saber con años de antelación si invertir. Si se cierra sin sustituto limpio, se tira de gas.",
+        "precedentes": [
+          {
+            "pais": "Alemania (2011-2017)",
+            "resultado": "El apagón nuclear se cubrió sobre todo con carbón e importaciones; coste social estimado ≈12.000 M$/año, en gran parte por contaminación.",
+            "url": "https://www.nber.org/papers/w26598"
+          }
+        ],
+        "fuentes": [
+          {
+            "nombre": "NBER · Jarvis, Deschenes y Jha, cierre nuclear alemán",
+            "url": "https://www.nber.org/papers/w26598"
+          }
+        ]
+      }
+    },
+    {
+      "titulo": "Bajar el recibo con lo que ya es ley, y comprobar que llega",
+      "texto": "El impuesto del 7 % a la producción eléctrica ya baja por ley al 3,5 % en 2027 y desaparece en 2028. Lo cumplimos sin marcha atrás y la comisión de la competencia (CNMC) publica si esa rebaja llega de verdad a la factura.",
+      "punto": null,
+      "dato": {
+        "texto": "La ley fija el impuesto a la producción eléctrica en el 3,5 % en 2027 y en el 0 % desde el 1 de enero de 2028.",
+        "fuente": "BOE · Ley 15/2012, art. 8",
+        "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2012-15649"
+      },
+      "medicion": "Informe de la CNMC sobre el traslado de la rebaja al precio final, en 2028 y en 2029.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "No añade coste: es lo ya aprobado. No toca el IVA, así que no choca con la Directiva europea que limita los tipos por debajo del 5 %. Vigilar precios encaja en las funciones de la CNMC.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 15/2012, art. 8 (IVPEE)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2012-15649"
+          },
+          {
+            "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
+            "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": "≈ 900 M€/año (lo que aportó el impuesto en 2024 al restablecerse, según la AEAT)",
+        "texto": "No añade coste nuevo: la rebaja ya está en la ley. Hacienda deja de ingresar unos 900 M€/año. Que la CNMC vigile si llega a la factura es útil, porque nada obliga a trasladar el ahorro al precio; pero vigilar no lo garantiza.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "AEAT · Informe anual de recaudación 2024, otros impuestos",
+            "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2024/6-otros-impuestos.html"
+          }
+        ]
+      }
+    },
+    {
+      "titulo": "Menos energía importada: un informe público cada año",
+      "texto": "España se ha marcado bajar su dependencia de energía de fuera al 50 % en 2030. Proponemos un informe anual, público y sencillo, que diga si vamos en camino y qué falla (redes, almacenamiento, permisos), para corregir a tiempo y no al final.",
+      "punto": 28,
+      "dato": {
+        "texto": "El plan oficial de energía fija para 2030 un 81 % de renovables en la generación eléctrica y bajar la dependencia energética exterior al 50 %.",
+        "fuente": "MITECO · PNIEC 2023-2030",
+        "url": "https://www.miteco.gob.es/es/energia/estrategia-normativa/pniec-23-30.html"
+      },
+      "medicion": "Dependencia energética exterior en el 50 % o menos en 2030, con informe de avance cada año.",
+      "competencia": "Estado y CCAA",
+      "verificacion": {
+        "veredicto": "naranja",
+        "texto": "Publicar el seguimiento es viable y barato. El matiz: no hemos localizado un dato oficial actualizado de avance, y el propio Gobierno calcula que la prórroga de Almaraz reduce un 1,4 % la generación renovable de 2030. Los permisos de muchas instalaciones son autonómicos.",
+        "fuentes": [
+          {
+            "nombre": "MITECO · PNIEC 2023-2030",
+            "url": "https://www.miteco.gob.es/es/energia/estrategia-normativa/pniec-23-30.html"
+          },
+          {
+            "nombre": "BOE · Orden TED/864/2026 (Almaraz)",
+            "url": "https://www.boe.es/boe/dias/2026/08/14/pdfs/BOE-A-2026-17756.pdf"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Un informe anual es barato y ayuda a corregir a tiempo, pero no resuelve por sí solo los cuellos de botella (redes, permisos). Su utilidad depende de que alguien esté obligado a actuar ante lo que diga.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "MITECO · Actualización del PNIEC 2023-2030",
+            "url": "https://www.miteco.gob.es/es/prensa/ultimas-noticias/2024/septiembre/el-gobierno-aprueba-la-actualizacion-del-plan-nacional-integrado.html"
+          }
+        ]
+      }
+    }
+  ]
+}

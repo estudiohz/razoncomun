@@ -1,0 +1,503 @@
+{
+  "id": "autonomos",
+  "titulo": "Autónomos: cuotas, RETA, fiscalidad del autónomo",
+  "dato": {
+    "texto": "Octubre de 2026: 3.501.598 afiliados al Régimen Especial de Trabajadores Autónomos, 79.163 más que un año antes (+2,3 %).",
+    "fuente": "Seguridad Social, afiliación media de octubre de 2026",
+    "url": "https://revista.seg-social.es/-/afiliacion-octubre-2026"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.democrata.es/uploads/s1/35/40/05/6/programapsoe29n26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Los nuevos autónomos no pagarán cuota a la Seguridad Social durante su primer año, ni durante el segundo si sus ingresos no llegan al salario mínimo.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 170",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Hoy el art. 38 ter LETA da una cuota reducida 12 meses, ampliable otros 12 si se ingresa menos del SMI. Pasar a cuota cero cabe con una ley estatal (art. 149.1.17 CE); habría que definir cómo se generan los derechos de pensión.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 20/2007, Estatuto del Trabajo Autónomo",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": "Más que la tarifa plana actual, que costó 635 M€ en 2018 (AIReF)",
+          "texto": "Ampliar la cuota cero anima a darse de alta. Pero la AIReF vio que con la tarifa plana los nuevos autónomos aguantan mientras dura la ayuda y luego se igualan con los demás. Riesgo de altas ficticias si no hay control.",
+          "precedentes": [
+            {
+              "pais": "España (tarifa plana, 2013-2018)",
+              "resultado": "Aumentó las altas y la supervivencia mientras duraba; al acabar la ayuda, los beneficiarios aguantaban igual que el resto (AIReF).",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Si eres autónomo y facturas menos de 85.000 euros, no tendrás que cobrar ni declarar el IVA.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 171",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Directiva (UE) 2020/285 permite eximir del IVA a las pequeñas empresas con un umbral de hasta 85.000 € anuales. España no la ha transpuesto aún. La medida encaja en el derecho de la UE.",
+          "fuentes": [
+            {
+              "nombre": "Unión Europea · Directiva (UE) 2020/285",
+              "url": "https://publications.europa.eu/resource/celex/32020L0285.SPA.xhtml"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Es lo que permite la directiva europea, que España aún no aplica. Ahorra papeleo a pequeños negocios; Hacienda pierde algo de IVA y crece el riesgo de partir la actividad para no pasar del umbral. Sin cálculo oficial del coste.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Directiva (UE) 2020/285 (franquicia de IVA para pequeñas empresas)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2020/285/oj/spa"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Los autónomos podrán pasar de cuatro declaraciones trimestrales a dos semestrales en todos los impuestos sujetos a esa obligación.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 171",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La periodicidad de las declaraciones la fijan normas estatales (art. 71 del Reglamento del IVA y normas del IRPF) que el Gobierno puede cambiar. La Directiva del IVA (art. 252) permite periodos de hasta un año, así que pasar a semestral encaja.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Reglamento del IVA (RD 1624/1992)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1992-28925"
+            },
+            {
+              "nombre": "EUR-Lex · Directiva 2006/112/CE del IVA",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32006L0112"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Menos papeleo con coste casi nulo; Hacienda cobraría más tarde parte de los impuestos (efecto de caja). Riesgo: que el autónomo acumule pagos mayores de golpe. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Bonificaremos el 100% de las cotizaciones empresariales por el primer trabajador durante un año y el 50% por el segundo.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 171",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Las bonificaciones a la contratación son competencia estatal (art. 149.1.17 CE) y pueden aprobarse por ley o en los Presupuestos, como ya se ha hecho otras veces. Al ser una medida general para todos los autónomos, no plantea problema de ayudas de Estado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Abarata contratar al primer empleado. La AIReF concluye que estas bonificaciones tienen efecto pequeño y que el empleo extra suele desaparecer al acabar la ayuda; también hay contratos que se habrían hecho igual.",
+          "precedentes": [
+            {
+              "pais": "España (bonificaciones, 2012-2018)",
+              "resultado": "Efecto pequeño en encontrar empleo y nulo en poco cualificados y mayores de 45; el empleo extra desaparece al acabar la ayuda (AIReF).",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "El autónomo con una enfermedad grave tendrá bonificada su cuota desde el primer día de baja.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 172",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Hoy, pasados 60 días de baja, las cuotas del autónomo las paga la mutua o el SEPE (LGSS). Adelantar esa cobertura al primer día para enfermedades graves es una reforma estatal de alcance limitado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Protege al autónomo con enfermedad grave. Coste acotado por el número de casos, sin cálculo público. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Desarrollar reglamentariamente la pasarela al RETA prevista en la Ley 2/2026 y poner fin progresivamente a la alternatividad de las mutualidades.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Trabajo digno · Compromiso 116",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Ley 2/2026 obligaba a aprobar el reglamento de la pasarela al RETA en tres meses (desde julio de 2026); no hemos localizado su publicación en el BOE. Aprobarlo es competencia del Gobierno, y acabar con la alternatividad de las mutualidades cabe con otra ley estatal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 2/2026 (mutualidades alternativas)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-16653"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Da a los mutualistas la protección del sistema público, pero eleva el gasto futuro en pensiones y obliga a decidir cómo se cuentan sus aportaciones anteriores. Sin cálculo oficial del coste encontrado.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Avanzar en la cotización por ingresos reales y simplificar el acceso a la prestación por cese de actividad.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Trabajo digno · Compromiso 117",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El sistema por tramos de rendimientos netos ya está en vigor (RDL 13/2022). Las bases definitivas por ingresos reales están previstas a partir de 2032. El cese de actividad se regula en la LGSS y es competencia estatal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 13/2022 (cotización por ingresos reales)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2022-12482"
+            },
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Continúa el sistema por ingresos reales que la AIReF recomendó y que existe desde 2023. Bien hecho, es más justo; el riesgo es que suban las cuotas a autónomos con ingresos medios.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Cuota de cero euros si los ingresos no llegan al Salario Mínimo Interprofesional y, superado dicho umbral, una cuota progresiva desde los 50 euros.",
+        "cita": {
+          "pagina": 9,
+          "apartado": "Economía, industria y energía · punto 2",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Hoy la LGSS (art. 308) obliga a cotizar por una tabla reducida también por debajo del SMI. Cambiarlo a cuota cero cabe con una ley estatal (art. 149.1.17 CE). Consecuencia: sin cotización no se generarían periodos cotizados ni derechos de pensión.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Alivia a quien gana poco, pero si no cotiza no genera derechos (pensión, baja) o el Estado tendría que pagarlos. Sin estimación pública. La AIReF vio que ayudas parecidas no mejoran la supervivencia del negocio a largo plazo.",
+          "precedentes": [
+            {
+              "pais": "España (tarifa plana, 2013-2018)",
+              "resultado": "Aumentó las altas y la supervivencia mientras duraba; al acabar la ayuda, los beneficiarios aguantaban igual que el resto (AIReF).",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ],
+          "fuentes": [
+            {
+              "nombre": "AIReF — Incentivos a la contratación y al trabajo autónomo (2020)",
+              "url": "https://www.airef.es/es/estudios-observatorio/incentivos-a-la-contratacion-y-al-trabajo-autonomo/"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Cualquier empresa, profesional o producto que ya opere legalmente en una Comunidad Autónoma podrá hacerlo en el resto sin trámites, licencias ni registros adicionales.",
+        "cita": {
+          "pagina": 28,
+          "apartado": "Desregulación",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "rojo",
+          "texto": "Es el principio de «eficacia nacional» de la Ley 20/2013. La STC 79/2017 anuló esa parte de la ley porque obligaba a cada comunidad a aceptar las normas de otra en materias de su competencia. Tal como se plantea, choca con esa sentencia; solo cabría por acuerdos entre administraciones o armonización por materias.",
+          "fuentes": [
+            {
+              "nombre": "Tribunal Constitucional · STC 79/2017",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/25387"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Facilitaría operar en todo el país, pero una idea así (licencia única) ya fue anulada por el Constitucional en 2017. Necesitaría reforma constitucional o acuerdo con las comunidades.",
+          "precedentes": [
+            {
+              "pais": "España (Ley 20/2013)",
+              "resultado": "La «licencia única» válida en toda España fue anulada por el Constitucional en 2017 por invadir competencias autonómicas.",
+              "url": "https://www.osborneclarke.com/es/insights/el-alto-tribunal-se-reafirma-sobre-la-inconstitucionalidad-del-principio-de-eficacia-nacional-de-la-ley-de-unidad-de-mercado"
+            }
+          ],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + CCAA",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Transpondremos de inmediato la directiva del IVA franquiciado: quienes facturen menos de 85.000 euros anuales quedarán exentos de liquidaciones periódicas.",
+        "cita": {
+          "pagina": 99,
+          "apartado": "8.1 Simplificación burocrática y fiscalidad",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Directiva (UE) 2020/285 fija un umbral máximo de 85.000 € para eximir del IVA a las pequeñas empresas, así que la medida encaja en el derecho de la UE. España no ha completado aún la transposición.",
+          "fuentes": [
+            {
+              "nombre": "Unión Europea · Directiva (UE) 2020/285",
+              "url": "https://publications.europa.eu/resource/celex/32020L0285.SPA.xhtml"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Es lo que permite la directiva europea, que España aún no aplica. Ahorra papeleo a pequeños negocios; Hacienda pierde algo de IVA y crece el riesgo de partir la actividad para no pasar del umbral. Sin cálculo oficial del coste.",
+          "precedentes": [],
+          "fuentes": [
+            {
+              "nombre": "Directiva (UE) 2020/285 (franquicia de IVA para pequeñas empresas)",
+              "url": "https://eur-lex.europa.eu/eli/dir/2020/285/oj/spa"
+            }
+          ]
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": "De inmediato"
+        }
+      },
+      {
+        "texto": "Si los ingresos reales del autónomo son inferiores al SMI anual por causas objetivas, podrá acogerse a una cotización fija bonificada sin pérdida de derechos de protección.",
+        "cita": {
+          "pagina": 99,
+          "apartado": "8.1 Simplificación burocrática y fiscalidad",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Hoy la LGSS ya prevé una tabla reducida de bases para rendimientos bajos (art. 308). Una cuota fija bonificada que mantenga los derechos cabe con una ley estatal (art. 149.1.17 CE); el coste lo asumiría el Estado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Protege a autónomos con ingresos bajos sin perder derechos, pero el Estado paga la diferencia. Sin estimación pública del coste. Riesgo: infradeclarar ingresos para entrar; requiere control cruzado con Hacienda.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      },
+      {
+        "texto": "Garantizaremos la aplicación de las condiciones del convenio de la empresa cliente para los autónomos dependientes (TRADE).",
+        "cita": {
+          "pagina": 101,
+          "apartado": "8.3 Impulsar la economía social",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La LETA (art. 13) regula a los TRADE; aplicarles el convenio de la empresa cliente exige reformarla. Según el TJUE (C-413/13, FNV Kunsten), un convenio para autónomos puede chocar con el art. 101 TFUE salvo falsos autónomos; las Directrices de la Comisión de 2022 lo admiten para autónomos dependientes.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 20/2007, Estatuto del Trabajo Autónomo",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
+            },
+            {
+              "nombre": "CURIA · STJUE C-413/13, FNV Kunsten (2014)",
+              "url": "https://curia.europa.eu/juris/liste.jsf?num=C-413/13"
+            },
+            {
+              "nombre": "EUR-Lex · Directrices sobre convenios colectivos de autónomos sin asalariados (2022/C 374/02)",
+              "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:52022XC0930(02)"
+            }
+          ]
+        },
+        "viabilidad": {
+          "coste": null,
+          "texto": "Mejora las condiciones de los TRADE, pero puede llevar a clientes a cambiar de proveedor para no asumir el convenio. Coste público nulo. Sin precedente evaluado encontrado.",
+          "precedentes": [],
+          "fuentes": []
+        },
+        "ficha": {
+          "competencia": "Estado + UE",
+          "coste": {
+            "estado": "pendiente",
+            "texto": null,
+            "fuente": null
+          },
+          "plazo": null
+        }
+      }
+    ]
+  }
+}

@@ -33,6 +33,15 @@ interface MenuMovilProps {
 export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
   const [abierto, setAbierto] = useState(false);
   const [montado, setMontado] = useState(false);
+  const [instrucciones, setInstrucciones] = useState(false);
+  // Si ya se abre como app instalada, el botón «Instalar app» sobra.
+  const [instalada, setInstalada] = useState(false);
+  useEffect(() => {
+    setInstalada(
+      window.matchMedia('(display-mode: standalone)').matches ||
+        (navigator as Navigator & { standalone?: boolean }).standalone === true,
+    );
+  }, []);
 
   // El overlay se renderiza con portal a <body> (ver más abajo). Solo podemos
   // portalar en cliente: marcamos el montaje para no tocar `document` en SSR.
@@ -44,7 +53,10 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
     const overflowPrevio = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     function alEscape(e: KeyboardEvent) {
-      if (e.key === 'Escape') setAbierto(false);
+      if (e.key === 'Escape') {
+        setInstrucciones(false);
+        setAbierto(false);
+      }
     }
     document.addEventListener('keydown', alEscape);
     return () => {
@@ -53,7 +65,10 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
     };
   }, [abierto]);
 
-  const cerrar = () => setAbierto(false);
+  const cerrar = () => {
+    setInstrucciones(false);
+    setAbierto(false);
+  };
 
   return (
     <div className="min-[960px]:hidden">
@@ -198,21 +213,85 @@ export function MenuMovil({ navItems, redes, sesion }: MenuMovilProps) {
             )}
           </div>
 
-          {/* Redes sociales */}
-          <div className="flex flex-wrap items-center gap-3 border-t border-linea px-6 py-5">
-            {redes.map((red) => (
-              <a
-                key={red.nombre}
-                href={red.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={red.aria}
-                className="grid h-11 w-11 place-items-center rounded-full border border-linea bg-white text-titular transition-colors hover:border-titular hover:text-tinta"
+          {/* Redes sociales: una sola fila (8 iconos caben en 312 px) */}
+          <div className="border-t border-linea px-6 py-5">
+            <div className="flex flex-nowrap items-center justify-between gap-1">
+              {redes.map((red) => (
+                <a
+                  key={red.nombre}
+                  href={red.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={red.aria}
+                  className="grid h-[38px] w-[38px] flex-none place-items-center rounded-full border border-linea bg-white text-titular transition-colors hover:border-titular hover:text-tinta"
+                >
+                  <IconoRed nombre={red.icono} className={cn('h-4 w-4')} />
+                </a>
+              ))}
+            </div>
+            {!instalada && (
+              <button
+                type="button"
+                onClick={() => setInstrucciones(true)}
+                className="mt-4 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-boton text-base font-bold text-white shadow-boton"
+                style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}
               >
-                <IconoRed nombre={red.icono} className={cn('h-[18px] w-[18px]')} />
-              </a>
-            ))}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><rect x="4" y="18" width="16" height="3" rx="1.5" />
+                </svg>
+                Instalar app
+              </button>
+            )}
           </div>
+
+          {instrucciones && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="titulo-instalar"
+              className="fixed inset-0 z-[70] flex flex-col overflow-y-auto px-6 pb-10 pt-6 text-white motion-safe:animate-[sube_.3s_ease]"
+              style={{ background: 'linear-gradient(150deg,#1B3D9C 0%,#8B30D9 35%,#C3369E 60%,#E8792F 80%,#16B8A0 100%)' }}
+            >
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setInstrucciones(false)}
+                  aria-label="Cerrar instrucciones"
+                  className="grid h-11 w-11 place-items-center rounded-full bg-white/20 text-white backdrop-blur hover:bg-white/30"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <h2 id="titulo-instalar" className="mt-6 text-[30px] font-extrabold leading-tight">Lleva Razón Común en tu móvil</h2>
+              <p className="mt-3 text-[16px] leading-relaxed text-white/90">Se instala en 10 segundos, sin pasar por ninguna tienda de apps.</p>
+
+              <ol className="mt-8 space-y-4">
+                {[
+                  ['1', 'Pulsa «Compartir» en tu navegador', 'En iPhone (Safari) es el cuadrado con la flecha hacia arriba, abajo en la pantalla. En Android (Chrome) son los tres puntos de arriba a la derecha.'],
+                  ['2', 'Elige «Añadir a pantalla de inicio»', 'En Android también puede aparecer como «Instalar aplicación».'],
+                  ['3', 'Confirma con «Añadir»', 'El icono de Razón Común aparecerá junto a tus otras apps.'],
+                ].map(([n, t, d]) => (
+                  <li key={n} className="flex gap-4 rounded-[16px] bg-white/15 p-4 backdrop-blur">
+                    <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-white text-[16px] font-extrabold text-[#8B30D9]">{n}</span>
+                    <span>
+                      <span className="block text-[17px] font-bold">{t}</span>
+                      <span className="mt-1 block text-[14px] leading-snug text-white/85">{d}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+
+              <button
+                type="button"
+                onClick={() => setInstrucciones(false)}
+                className="mt-8 min-h-[48px] rounded-boton bg-white text-base font-bold text-[#6A1FB8]"
+              >
+                Entendido
+              </button>
+            </div>
+          )}
           </div>,
           document.body,
         )}

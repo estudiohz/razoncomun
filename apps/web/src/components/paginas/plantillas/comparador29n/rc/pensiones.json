@@ -1,0 +1,199 @@
+{
+  "id": "pensiones",
+  "propuestas": [
+    {
+      "titulo": "Mantener el IPC, con las cuentas a la vista cada año",
+      "texto": "Las pensiones siguen subiendo con el IPC. A cambio, la AIReF publica cada año cuánto cuesta el sistema hasta 2050 y, si el gasto neto supera el umbral legal, el Gobierno lleva al Congreso en tres meses un plan con medidas y cifras, en vez de esperar a la revisión de cada tres años.",
+      "punto": 26,
+      "dato": {
+        "texto": "Gasto bruto en pensiones del 14,6 % del PIB de media en 2022-2050; deuda del 123 % del PIB en 2050 sin más cambios.",
+        "fuente": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+        "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+      },
+      "medicion": "Gasto neto en pensiones (% del PIB, media 2022-2050) frente al umbral del 13,3 %; informe de la AIReF cada mayo.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe por ley estatal: la revalorización está en la LGSS y la regla de gasto con su umbral del 13,3 % en el RDL 2/2023, que puede modificarse para que la revisión sea anual.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+          },
+          {
+            "nombre": "BOE · Real Decreto-ley 2/2023 (MEI, cuota de solidaridad, regla de gasto)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-6967"
+          },
+          {
+            "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+            "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "No sube el gasto; obliga a decidir antes y con datos. Si hay que ajustar, las medidas concretas seguirán siendo una decisión política difícil.",
+        "precedentes": [],
+        "fuentes": [
+          {
+            "nombre": "AIReF · Estudio de la regla de gasto de pensiones (mayo 2026)",
+            "url": "https://www.airef.es/wp-content/uploads/2026/05/Pensiones/AIReF.-Estudio-de-evaluacion-de-la-regla-de-gasto-de-pensiones.pdf"
+          }
+        ]
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": "Primer informe anual en mayo de 2027"
+      }
+    },
+    {
+      "titulo": "Jubilarse poco a poco, de forma voluntaria",
+      "texto": "Quien quiera puede seguir trabajando a tiempo parcial y cobrar a la vez parte de su pensión, con un trámite sencillo, y cada año extra trabajado mejora su pensión futura. Toma la idea de la jubilación activa, pero sin depender de deducciones fiscales que restan recaudación.",
+      "punto": null,
+      "dato": {
+        "texto": "Gasto bruto en pensiones del 14,6 % del PIB de media en 2022-2050; deuda del 123 % del PIB en 2050 sin más cambios.",
+        "fuente": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+        "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+      },
+      "medicion": "Edad efectiva media de jubilación y personas en jubilación activa o flexible (Seguridad Social); revisión a los 3 años.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe: la jubilación flexible, activa y demorada están en la LGSS; ampliarlas solo exige reformar esa ley estatal.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Alargar la vida laboral por elección propia aporta cotizaciones sin obligar a nadie. Su efecto depende de cuánta gente se acoja; no hay estimación oficial.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Jubilación anticipada por desgaste real, medido con datos",
+      "texto": "La edad se rebaja según el desgaste real de cada trabajo, medido con datos de siniestralidad y bajas, y cada persona acumula sus años en trabajos penosos. Quien lleva más de 40 años cotizados y pierde el empleo sin quererlo no sufre recortes en su pensión.",
+      "punto": null,
+      "dato": null,
+      "medicion": "Personas que se jubilan antes por penosidad y siniestralidad de sus actividades; evaluación pública a los 2 años.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe: los coeficientes reductores por penosidad y las penalizaciones por anticipación los fija la LGSS (arts. 206 y 207) con su reglamento, competencia del Estado.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Es más justo que bajar la edad a todos, pero cuesta: exige registrar bien los datos laborales y financiar el adelanto, como ya prevé la ley, con cotizaciones del sector. Sin cifra oficial.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": null
+      }
+    },
+    {
+      "titulo": "Pensiones mínimas que saquen de la pobreza, pagadas con impuestos",
+      "texto": "Las pensiones mínimas y no contributivas suben por fases hasta un umbral de pobreza fijado con datos del INE. Se pagan con impuestos generales, no con cotizaciones, para no cargar las cuentas de la Seguridad Social.",
+      "punto": null,
+      "dato": {
+        "texto": "La pensión mínima de jubilación con 65 años y sin cónyuge es de 12.441,80 € al año en 2026; la no contributiva, de 8.803,20 €.",
+        "fuente": "La Moncloa · Revalorización de pensiones 2026",
+        "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+      },
+      "medicion": "Tasa de riesgo de pobreza de los mayores de 65 años (INE, Encuesta de Condiciones de Vida); revisión anual.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe: las cuantías mínimas y no contributivas las fijan la LGSS y la ley de Presupuestos, normas estatales; la separación de fuentes ya está prevista por ley.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley General de la Seguridad Social (RDL 8/2015)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+          },
+          {
+            "nombre": "La Moncloa · Revalorización de pensiones 2026",
+            "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Protege a quien menos tiene, pero sube el gasto del Estado. Se haría por fases, con el coste de cada subida publicado en los Presupuestos.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": "Por fases, en la legislatura"
+      }
+    },
+    {
+      "titulo": "Publicar la auditoría de las cuentas de la Seguridad Social",
+      "texto": "Se publica la auditoría de las cuentas de la Seguridad Social desde 1967 que prevé la Ley 21/2021, para saber qué gastos ajenos a las pensiones se pagaron con cotizaciones. Cada cotizante puede consultar en línea lo que ha aportado y una estimación de lo que recibirá.",
+      "punto": 16,
+      "dato": null,
+      "medicion": "Fecha de publicación de la auditoría y uso del servicio de consulta en línea; en 6 meses.",
+      "competencia": "Estado",
+      "verificacion": {
+        "veredicto": "verde",
+        "texto": "Cabe: la auditoría ya está prevista en la Ley 21/2021 y publicarla depende del Gobierno.",
+        "fuentes": [
+          {
+            "nombre": "BOE · Ley 21/2021 (revalorización con el IPC y auditoría de cuentas)",
+            "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2021-21652"
+          }
+        ]
+      },
+      "viabilidad": {
+        "coste": null,
+        "texto": "Coste bajo y más confianza en el sistema. No mejora por sí sola las cuentas, pero ayuda a debatir con datos.",
+        "precedentes": [],
+        "fuentes": []
+      },
+      "ficha": {
+        "competencia": "Estado",
+        "coste": {
+          "estado": "sin_estimacion_oficial",
+          "texto": null,
+          "fuente": null
+        },
+        "plazo": "6 meses"
+      }
+    }
+  ]
+}
