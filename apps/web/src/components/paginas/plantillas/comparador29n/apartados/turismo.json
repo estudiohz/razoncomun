@@ -1,0 +1,108 @@
+{
+  "id": "turismo",
+  "titulo": "Turismo",
+  "dato": null,
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": false
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": false
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": false
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": false
+    }
+  },
+  "propuestas": {
+    "pp": [],
+    "psoe": [
+      {
+        "texto": "Permitir a los municipios un tributo municipal por pernoctaciones turísticas.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El art. 59 del TRLRHL no contempla hoy un impuesto municipal sobre estancias: haría falta reformar esa ley estatal. Ya existe un recargo de IBI para viviendas turísticas en zonas tensionadas (art. 72.4 ter).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Haciendas Locales (arts. 59 y 72.4 ter)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-4214"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Impuesto progresivo contra fondos buitre y grandes propietarios con pisos vacíos o turísticos.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El TRLRHL ya permite recargos de IBI sobre viviendas desocupadas y turísticas en zonas tensionadas. Un impuesto estatal nuevo es posible por ley; sin dato oficial de recaudación localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Texto refundido de la Ley de Haciendas Locales (arts. 59 y 72.4 ter)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-4214"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Regular la proliferación de viviendas de uso turístico.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-vox-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La regulación de las viviendas turísticas es competencia autonómica (turismo, art. 148.1.18ª CE) y municipal por la vía urbanística; el programa no concreta qué haría el Estado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Fin de las licencias de pisos turísticos en zonas tensionadas en un plazo de tres años.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Las licencias de vivienda turística las otorgan CCAA y ayuntamientos (art. 148.1.3ª y 18ª CE), así que el Estado no puede revocarlas directamente. Las zonas tensionadas las declaran las CCAA (Ley 12/2023).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

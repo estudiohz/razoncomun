@@ -1,36 +1,37 @@
 import { Contenedor } from '@/components/layout/Contenedor';
+import { sanearHtml } from '@/lib/blog/html';
 import type { PropsPlantilla } from '../index';
-import datos from './datos-partidos.json';
+import { APARTADOS } from './apartados';
 import { ALTERNATIVAS_RC } from './alternativasRc';
-import { Comparador, type DatosComparador } from './Comparador';
+import { PARTIDOS } from './tipos';
+import { Comparador } from './Comparador';
 
 /**
- * Plantilla «comparador-29n». Servidor: monta cabecera + intro del editor y
- * pasa los datos (JSON con fuentes) al comparador interactivo de cliente.
+ * Plantilla «comparador-29n» (diseño A). Servidor: cabecera + intro del
+ * editor; los apartados (JSON con cita y verificación) van al comparador.
  */
 export function PlantillaComparador29N({ pagina, introHtml }: PropsPlantilla) {
-  const d = datos as DatosComparador;
+  const rcHtml = Object.fromEntries(Object.entries(ALTERNATIVAS_RC).map(([k, v]) => [k, sanearHtml(v)]));
   return (
     <>
-      <section className="border-b border-linea bg-[linear-gradient(120deg,rgba(43,199,232,.10),rgba(139,48,217,.08)_45%,rgba(232,121,47,.08))]">
-        <Contenedor className="py-12 min-[720px]:py-16">
-          <p className="text-[12px] font-bold uppercase tracking-[.12em] text-accion">Elecciones generales · 29 de noviembre</p>
-          <h1 className="mt-3 max-w-[820px] text-[clamp(30px,4.6vw,52px)] font-extrabold leading-[1.05] text-titular">
-            {pagina.title}
-          </h1>
+      <Contenedor as="section" className="pt-12 min-[720px]:pt-16">
+        <div className="flex flex-col gap-2.5">
+          <div className="h-1.5 w-[120px] rounded-full" style={{ background: 'linear-gradient(90deg,#1B3D9C,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }} />
+          <p className="text-[12px] font-bold uppercase tracking-[.14em] text-gris">Elecciones generales · 29 de noviembre</p>
+          <h1 className="max-w-[860px] text-[clamp(30px,4.6vw,46px)] font-extrabold leading-[1.05] text-titular">{pagina.title}</h1>
           {introHtml ? (
-            <div className="prose-rc mt-5 max-w-[720px]" dangerouslySetInnerHTML={{ __html: introHtml }} />
+            <div className="prose-rc max-w-[700px]" dangerouslySetInnerHTML={{ __html: introHtml }} />
           ) : (
-            <p className="mt-5 max-w-[720px] text-[17px] text-cuerpo">
-              Lo que proponen las principales fuerzas, tema a tema, con enlace a la fuente. Y al lado, la alternativa de Razón Común.
+            <p className="max-w-[680px] text-[16px] leading-[1.55] text-cuerpo">
+              Lo que propone cada fuerza, citado de su programa y verificado con fuentes oficiales. Y al lado, la alternativa de Razón Común.
             </p>
           )}
-        </Contenedor>
-      </section>
-      <Contenedor className="py-10 min-[720px]:py-14">
-        <Comparador datos={d} alternativas={ALTERNATIVAS_RC} />
-        <p className="mt-10 text-[12.5px] text-gris">
-          Datos recopilados a {d.actualizado}. Cada propuesta enlaza a su fuente; si un partido no recoge nada sobre un tema lo indicamos sin rellenar. Tu selección se calcula solo en tu navegador: no guardamos nada.
+        </div>
+      </Contenedor>
+      <Contenedor className="py-10 min-[720px]:py-12">
+        <Comparador apartados={APARTADOS} partidos={PARTIDOS} rcHtml={rcHtml} />
+        <p className="mt-10 max-w-[820px] text-[12.5px] leading-relaxed text-gris">
+          Cada propuesta enlaza a la página de su programa oficial. La verificación aplica el mismo criterio a todas las fuerzas, con fuentes oficiales: verde, viable tal como se plantea; naranja, viable con matices; rojo, inviable tal cual o en conflicto con la ley o la normativa europea. ¿Ves un error? Escríbenos y lo corregimos.
         </p>
       </Contenedor>
     </>

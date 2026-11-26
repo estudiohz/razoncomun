@@ -1,205 +1,248 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { AlternativaRc } from './alternativasRc';
+import { COLOR_APARTADO, type Apartado, type Partido, type PropuestaVerificada, type Veredicto } from './tipos';
 
-interface Propuesta { texto: string; url?: string | null }
-interface Partido { id: string; nombre: string; color: string }
-interface Tema {
-  id: string;
-  titulo: string;
-  dato?: { texto: string; fuente?: string; url?: string } | null;
-  propuestas: Record<string, Propuesta[] | null>;
+const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
+  verde: { color: '#1E9E5A', etiqueta: 'Posible' },
+  naranja: { color: '#E8792F', etiqueta: 'Con matices' },
+  rojo: { color: '#D0342C', etiqueta: 'Inviable tal cual' },
+};
+const RC_COLOR = '#16B8A0';
+
+function Icono({ d, size = 16 }: { d: string[]; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {d.map((p, i) => <path key={i} d={p} />)}
+    </svg>
+  );
 }
-export interface DatosComparador { actualizado: string; partidos: Partido[]; temas: Tema[] }
 
-const RC = { id: 'rc', nombre: 'Razón Común', color: '#16B8A0' };
+function enlacePdf(url: string | null | undefined, pagina: number | null) {
+  if (!url) return null;
+  return pagina ? `${url}#page=${pagina}` : url;
+}
 
 /**
- * Comparador interactivo. La afinidad se calcula SOLO en el navegador (estado
- * React, ni localStorage ni servidor): una opinión política es dato de
- * categoría especial (RGPD Art. 9) y aquí no se recoge.
+ * Comparador por apartados (diseño A). «Me convence» = voto privado del
+ * visitante: estado React, ni localStorage ni servidor (RGPD Art. 9).
  */
-export function Comparador({ datos, alternativas }: { datos: DatosComparador; alternativas: Record<string, AlternativaRc> }) {
-  const [temaId, setTemaId] = useState(datos.temas[0]?.id);
-  const [visibles, setVisibles] = useState<string[]>(datos.partidos.map((p) => p.id));
-  const [eleccion, setEleccion] = useState<Record<string, string>>({});
-  // Orden de columnas barajado una vez por visita: nadie sale siempre el primero.
-  // (en un efecto, no en el render, para no romper la hidratación).
-  const [orden, setOrden] = useState(datos.partidos);
-  useEffect(() => {
-    setOrden([...datos.partidos].sort(() => Math.random() - 0.5));
-  }, [datos.partidos]);
+export function Comparador({ apartados, partidos, rcHtml }: { apartados: Apartado[]; partidos: Partido[]; rcHtml: Record<string, string> }) {
+  const [sel, setSel] = useState(0);
+  const [voto, setVoto] = useState<Record<string, string>>({});
+  // Orden barajado una vez por visita, tras montar (no rompe la hidratación).
+  const [orden, setOrden] = useState(partidos);
+  useEffect(() => setOrden([...partidos].sort(() => Math.random() - 0.5)), [partidos]);
 
-  const tema = datos.temas.find((t) => t.id === temaId) ?? datos.temas[0];
-  const columnas = orden.filter((p) => visibles.includes(p.id));
-  const rc = alternativas[tema?.id ?? ''];
-
+  const ap = apartados[sel];
+  const color = COLOR_APARTADO[ap?.id ?? ''] ?? '#1B3D9C';
   const recuento = useMemo(() => {
     const r: Record<string, number> = {};
-    for (const v of Object.values(eleccion)) r[v] = (r[v] ?? 0) + 1;
+    for (const v of Object.values(voto)) if (v) r[v] = (r[v] ?? 0) + 1;
     return r;
-  }, [eleccion]);
-  const respondidos = Object.keys(eleccion).length;
-  const todos = [...datos.partidos, RC];
+  }, [voto]);
+  const respondidos = Object.values(voto).filter(Boolean).length;
+  if (!ap) return null;
 
-  if (!tema) return null;
-
-  function elegir(id: string) {
-    setEleccion((e) => ({ ...e, [tema.id]: e[tema.id] === id ? '' : id }));
-  }
-  const elegido = eleccion[tema.id];
+  const elegir = (id: string) => setVoto((v) => ({ ...v, [ap.id]: v[ap.id] === id ? '' : id }));
 
   return (
-    <div>
-      {/* Temas */}
-      <div className="-mx-1 flex flex-wrap gap-2" role="tablist" aria-label="Temas">
-        {datos.temas.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            aria-selected={t.id === tema.id}
-            onClick={() => setTemaId(t.id)}
-            className={`rounded-full border px-4 py-2 text-[13.5px] font-bold transition ${
-              t.id === tema.id ? 'border-titular bg-titular text-white' : 'border-linea bg-white text-cuerpo hover:border-titular'
-            }`}
-          >
-            {t.titulo}
-            {eleccion[t.id] ? ' ✓' : ''}
-          </button>
-        ))}
-      </div>
-
-      {/* Filtro de partidos */}
-      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-gris">
-        <span className="font-bold uppercase tracking-wide">Comparar:</span>
-        {datos.partidos.map((p) => (
-          <label key={p.id} className="flex items-center gap-1.5">
-            <input
-              type="checkbox"
-              checked={visibles.includes(p.id)}
-              onChange={() =>
-                setVisibles((v) => (v.includes(p.id) ? v.filter((x) => x !== p.id) : [...v, p.id]))
-              }
-              style={{ accentColor: p.color }}
-            />
-            {p.nombre}
-          </label>
-        ))}
-      </div>
-
-      {/* Dato real del tema */}
-      {tema.dato ? (
-        <div className="mt-6 rounded-tarjeta border border-linea bg-white px-5 py-4">
-          <p className="text-[11px] font-bold uppercase tracking-[.1em] text-gris">El dato</p>
-          <p className="mt-1 text-[16px] font-semibold text-titular">{tema.dato.texto}</p>
-          {tema.dato.fuente ? (
-            <p className="mt-1 text-[12px] text-gris">
-              Fuente:{' '}
-              {tema.dato.url ? (
-                <a href={tema.dato.url} target="_blank" rel="noopener nofollow" className="underline">
-                  {tema.dato.fuente}
-                </a>
-              ) : (
-                tema.dato.fuente
-              )}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-
-      {/* Columnas */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {columnas.map((p) => {
-          const props = tema.propuestas[p.id];
+    <div className="flex flex-wrap items-start gap-8">
+      <nav aria-label="Apartados" className="flex w-full flex-col gap-1 min-[900px]:sticky min-[900px]:top-24 min-[900px]:w-[250px]">
+        {apartados.map((a, i) => {
+          const c = COLOR_APARTADO[a.id] ?? '#1B3D9C';
+          const activo = i === sel;
           return (
-            <Tarjeta key={p.id} nombre={p.nombre} color={p.color} activa={elegido === p.id} onElegir={() => elegir(p.id)}>
-              {props && props.length ? (
-                <ul className="space-y-3">
-                  {props.map((x, i) => (
-                    <li key={i} className="text-[14.5px] leading-snug text-cuerpo">
-                      {x.texto}{' '}
-                      {x.url ? (
-                        <a href={x.url} target="_blank" rel="noopener nofollow" className="text-[12px] text-gris underline">
-                          fuente
-                        </a>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-[14px] italic text-gris">No hemos encontrado propuesta concreta sobre este tema en su programa.</p>
-              )}
-            </Tarjeta>
+            <button
+              key={a.id}
+              onClick={() => setSel(i)}
+              aria-pressed={activo}
+              className="flex min-h-[44px] items-center gap-3 rounded-[10px] px-3.5 text-left text-[14.5px] text-titular"
+              style={{ fontWeight: activo ? 800 : 600, background: activo ? `${c}1F` : 'transparent' }}
+            >
+              <span className="h-2.5 w-2.5 flex-none rounded-full" style={{ background: c }} />
+              <span className="flex-1">{a.titulo}</span>
+              <span className="text-[11px] font-semibold text-gris">{voto[a.id] ? '✓' : String(i + 1).padStart(2, '0')}</span>
+            </button>
           );
         })}
-      </div>
+        <Leyenda />
+      </nav>
 
-      {/* Alternativa RC */}
-      {rc ? (
-        <div className="mt-6">
-          <Tarjeta nombre="La alternativa de Razón Común" color={RC.color} destacada activa={elegido === RC.id} onElegir={() => elegir(RC.id)}>
-            <ul className="space-y-3">
-              {rc.puntos.map((pt) => (
-                <li key={pt.n} className="text-[14.5px] leading-snug text-cuerpo">
-                  <span className="font-bold text-titular">Punto {pt.n} · {pt.titulo}.</span> {pt.texto}
-                </li>
-              ))}
-            </ul>
-            <a href="/manifiesto" className="mt-4 inline-block text-[13px] font-bold text-accion underline">
-              Ver los 30 puntos del manifiesto →
-            </a>
-          </Tarjeta>
+      <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
+        <div className="rounded-[18px] px-7 py-6 text-titular" style={{ background: `${color}24`, borderTop: `6px solid ${color}` }}>
+          <p className="text-[12px] font-bold uppercase tracking-[.12em] opacity-85">Apartado {String(sel + 1).padStart(2, '0')}</p>
+          <h2 className="mt-1 text-[clamp(26px,3.4vw,34px)] font-extrabold">{ap.titulo}</h2>
         </div>
-      ) : null}
 
-      {/* Afinidad */}
-      <div className="mt-10 rounded-tarjeta border border-linea bg-white p-6">
-        <h2 className="text-[20px] font-extrabold text-titular">Tu afinidad</h2>
-        <p className="mt-1 text-[13.5px] text-gris">
-          Marca en cada tema la propuesta con la que más estás de acuerdo. Llevas {respondidos} de {datos.temas.length} temas.
-        </p>
-        {respondidos > 0 ? (
-          <div className="mt-5 space-y-2.5">
-            {todos
-              .map((p) => ({ ...p, n: recuento[p.id] ?? 0 }))
-              .sort((a, b) => b.n - a.n)
-              .map((p) => (
-                <div key={p.id} className="flex items-center gap-3 text-[13.5px]">
-                  <span className="w-[120px] shrink-0 font-semibold text-titular">{p.nombre}</span>
-                  <div className="h-3 flex-1 overflow-hidden rounded-full bg-linea/60">
-                    <div className="h-full rounded-full" style={{ width: `${(p.n / respondidos) * 100}%`, background: p.color }} />
-                  </div>
-                  <span className="w-[34px] text-right tabular-nums text-gris">{p.n}</span>
-                </div>
-              ))}
+        {ap.dato ? (
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-[14px] border border-linea bg-white px-5 py-4">
+            <span className="text-[11px] font-bold uppercase tracking-[.12em] text-gris">El dato</span>
+            <span className="text-[16px] font-semibold text-titular">{ap.dato.texto}</span>
+            <a href={ap.dato.url} target="_blank" rel="noopener nofollow" className="ml-auto text-[12px] underline">
+              Fuente: {ap.dato.fuente}
+            </a>
           </div>
         ) : null}
+
+        <div className="grid gap-4 min-[760px]:grid-cols-2">
+          {orden.map((p) => (
+            <TarjetaPartido
+              key={p.id}
+              partido={p}
+              propuestas={ap.propuestas[p.id] ?? []}
+              pdf={ap.programas?.[p.id]?.url ?? null}
+              elegido={voto[ap.id] === p.id}
+              onElegir={() => elegir(p.id)}
+            />
+          ))}
+        </div>
+
+        <article className="rounded-[18px] p-[3px]" style={{ background: 'linear-gradient(120deg,#8B30D9,#C3369E,#E8792F,#16B8A0,#2BC7E8)' }}>
+          <div className="flex flex-col gap-3 rounded-[15px] bg-white px-6 py-6">
+            <p className="text-[12px] font-bold uppercase tracking-[.12em]" style={{ color: '#0E8C7A' }}>La alternativa de Razón Común</p>
+            {rcHtml[ap.id] ? (
+              <div className="prose-rc" dangerouslySetInnerHTML={{ __html: rcHtml[ap.id] }} />
+            ) : (
+              <p className="text-[15px] italic text-gris">En desarrollo: la estamos elaborando con datos y la publicaremos aquí.</p>
+            )}
+            <div className="flex flex-wrap items-center gap-4">
+              <a href="/manifiesto" className="text-[13px] font-bold underline">Ver los 30 puntos del manifiesto →</a>
+              {rcHtml[ap.id] ? <BotonVoto activo={voto[ap.id] === 'rc'} onClick={() => elegir('rc')} /> : null}
+            </div>
+          </div>
+        </article>
+
+        <section className="rounded-[18px] border border-linea bg-white p-6">
+          <h2 className="text-[20px] font-extrabold text-titular">Tu afinidad</h2>
+          <p className="mt-1 text-[13.5px] text-gris">
+            Pulsa «Me convence» en la propuesta que prefieras de cada apartado. Llevas {respondidos} de {apartados.length}. Solo lo ves tú: no se guarda.
+          </p>
+          {respondidos > 0 ? (
+            <div className="mt-5 space-y-2.5">
+              {[...partidos, { id: 'rc', nombre: 'Razón Común', color: RC_COLOR, sigla: 'RC' }]
+                .map((p) => ({ ...p, n: recuento[p.id] ?? 0 }))
+                .sort((a, b) => b.n - a.n)
+                .map((p) => (
+                  <div key={p.id} className="flex items-center gap-3 text-[13.5px]">
+                    <span className="w-[120px] shrink-0 font-semibold text-titular">{p.nombre}</span>
+                    <div className="h-3 flex-1 overflow-hidden rounded-full bg-linea/60">
+                      <div className="h-full rounded-full" style={{ width: `${(p.n / respondidos) * 100}%`, background: p.color }} />
+                    </div>
+                    <span className="w-[34px] text-right tabular-nums text-gris">{p.n}</span>
+                  </div>
+                ))}
+            </div>
+          ) : null}
+        </section>
       </div>
     </div>
   );
 }
 
-function Tarjeta({
-  nombre, color, activa, destacada, onElegir, children,
-}: {
-  nombre: string; color: string; activa: boolean; destacada?: boolean; onElegir: () => void; children: React.ReactNode;
-}) {
+function Leyenda() {
   return (
-    <div
-      className={`flex flex-col rounded-tarjeta border bg-white p-5 ${destacada ? 'border-2' : ''}`}
-      style={{ borderColor: activa || destacada ? color : undefined, borderTopWidth: 4, borderTopColor: color }}
-    >
-      <h3 className="mb-3 text-[16px] font-extrabold text-titular">{nombre}</h3>
-      <div className="flex-1">{children}</div>
-      <button
-        onClick={onElegir}
-        aria-pressed={activa}
-        className="mt-4 self-start rounded-boton border px-3.5 py-1.5 text-[12.5px] font-bold"
-        style={activa ? { background: color, borderColor: color, color: '#fff' } : { borderColor: color, color }}
-      >
-        {activa ? '✓ Me convence' : 'Me convence esta'}
-      </button>
+    <div className="mt-4 space-y-1.5 rounded-[12px] border border-linea bg-white px-3.5 py-3 text-[12px] text-cuerpo">
+      <p className="font-bold uppercase tracking-wide text-gris">Verificación</p>
+      {(Object.keys(VEREDICTO) as Veredicto[]).map((k) => (
+        <p key={k} className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full" style={{ background: VEREDICTO[k].color }} /> {VEREDICTO[k].etiqueta}
+        </p>
+      ))}
     </div>
+  );
+}
+
+function BotonVoto({ activo, onClick }: { activo: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={activo}
+      className="min-h-[44px] self-start rounded-[10px] border-[1.5px] border-titular px-4 text-[13px] font-bold"
+      style={activo ? { background: '#1B3D9C', color: '#fff' } : { background: '#fff', color: '#1B3D9C' }}
+    >
+      {activo ? '✓ Me convence' : 'Me convence esta'}
+    </button>
+  );
+}
+
+function TarjetaPartido({
+  partido, propuestas, pdf, elegido, onElegir,
+}: { partido: Partido; propuestas: PropuestaVerificada[]; pdf: string | null; elegido: boolean; onElegir: () => void }) {
+  return (
+    <article
+      className="flex flex-col gap-3.5 rounded-[16px] bg-white px-5 py-5"
+      style={{ border: `1px solid ${elegido ? partido.color : '#E4E6EE'}`, boxShadow: elegido ? `0 0 0 2px ${partido.color}` : '0 1px 2px rgba(27,61,156,.06)' }}
+    >
+      <div className="flex items-center gap-2.5">
+        <span className="inline-flex h-[26px] min-w-[44px] items-center justify-center rounded-full px-2 text-[11px] font-extrabold text-white" style={{ background: partido.color }}>
+          {partido.sigla}
+        </span>
+        <h3 className="text-[16px] font-extrabold text-titular">{partido.nombre}</h3>
+        {pdf ? (
+          <a
+            href={pdf}
+            target="_blank"
+            rel="noopener nofollow"
+            aria-label={`Descargar el programa de ${partido.nombre} en PDF`}
+            className="ml-auto inline-flex min-h-[44px] items-center gap-1.5 rounded-[10px] px-2.5 text-[11.5px] font-extrabold tracking-[.08em] no-underline"
+            style={{ color: '#B3261E' }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <path d="M14 2v6h6" />
+              <text x="12" y="17.5" textAnchor="middle" fontSize="6" fontWeight="800" fill="currentColor" stroke="none">PDF</text>
+            </svg>
+            DESCARGAR
+          </a>
+        ) : null}
+      </div>
+
+      {propuestas.length === 0 ? (
+        <p className="text-[14px] italic text-gris">No hemos encontrado propuesta concreta sobre este apartado en su programa.</p>
+      ) : (
+        <div className="flex flex-col gap-3.5">
+          {propuestas.map((x, i) => {
+            const v = VEREDICTO[x.verificacion.veredicto] ?? VEREDICTO.naranja;
+            const href = enlacePdf(pdf, x.cita.pagina);
+            const cita = x.cita.pagina
+              ? `Programa ${partido.nombre} 2026 · pág. ${x.cita.pagina}${x.cita.apartado ? `, ${x.cita.apartado}` : ''}`
+              : x.cita.nota || 'Programa 2026';
+            return (
+              <div key={i} className="flex flex-col gap-2 border-b border-linea pb-3.5 last:border-0 last:pb-0">
+                <p className="flex gap-2.5 text-[14.5px] leading-[1.45] text-cuerpo">
+                  <span className="mt-[5px] h-3 w-3 flex-none rounded-full" style={{ background: v.color }} title={v.etiqueta} aria-label={`Verificación: ${v.etiqueta}`} role="img" />
+                  <span>«{x.texto}»</span>
+                </p>
+                {href ? (
+                  <a href={href} target="_blank" rel="noopener nofollow" className="inline-flex items-center gap-1.5 pl-[22px] text-[12px] font-semibold text-gris">
+                    <Icono size={14} d={['M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z', 'M14 3v5h5']} />
+                    {cita}
+                  </a>
+                ) : (
+                  <span className="pl-[22px] text-[12px] font-semibold text-gris">{cita}</span>
+                )}
+                <details className="ml-[22px] rounded-[10px] px-3 py-2.5" style={{ background: `${v.color}14` }}>
+                  <summary className="cursor-pointer text-[10.5px] font-extrabold uppercase tracking-[.1em]" style={{ color: v.color === '#E8792F' ? '#A2470F' : v.color }}>
+                    Verificación · {v.etiqueta}
+                  </summary>
+                  <p className="mt-1.5 text-[13px] leading-[1.45] text-cuerpo">{x.verificacion.texto}</p>
+                  {x.verificacion.fuentes?.length ? (
+                    <p className="mt-1.5 flex flex-wrap gap-x-3 text-[11.5px]">
+                      {x.verificacion.fuentes.map((f, j) => (
+                        <a key={j} href={f.url} target="_blank" rel="noopener nofollow" className="underline">{f.nombre}</a>
+                      ))}
+                    </p>
+                  ) : null}
+                </details>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <div className="mt-auto pt-1">
+        <BotonVoto activo={elegido} onClick={onElegir} />
+      </div>
+    </article>
   );
 }

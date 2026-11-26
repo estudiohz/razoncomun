@@ -1,0 +1,399 @@
+{
+  "id": "vivienda",
+  "titulo": "Vivienda y urbanismo",
+  "dato": {
+    "texto": "El Índice de Precios de Vivienda subió un 12,8 % interanual en el tercer trimestre de 2025, último dato que mostraba la página de prensa del INE al consultarla.",
+    "fuente": "INE · Índice de Precios de Vivienda",
+    "url": "https://www.ine.es/prensa/ipv_prensa.htm"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": false
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": false
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": false
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": false
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Construir un millón de viviendas movilizando suelo público y privado.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-del-pp-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La competencia en urbanismo y vivienda es autonómica (art. 148.1.3ª CE) y la Ley 12/2023 la reconoce como plena de las CCAA: el Estado no puede ejecutarlo solo. Sin dato oficial de coste ni de plazo localizado para esa cifra.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Nueva Ley de Suelo con licencias de obra y rehabilitación resueltas en un máximo de tres meses y silencio positivo.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-del-pp-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Las licencias urbanísticas las regulan las CCAA y las conceden los ayuntamientos (art. 148.1.3ª CE); una ley estatal solo puede fijar bases, así que el plazo real dependería de la normativa autonómica.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Derogar la Ley de Vivienda y suprimir las zonas tensionadas y el índice de precios.",
+        "cita": {
+          "pagina": 53,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Ley 12/2023 es ordinaria y puede derogarse por mayoría simple. Las zonas tensionadas las declaran las administraciones autonómicas competentes, que podrían mantener normas propias.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Ley contra la ocupación ilegal para expulsar a los ocupas por orden judicial en un plazo no superior a 48 horas.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-del-pp-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 5/2018 da hoy al ocupante 5 días para aportar título antes de que el juez ordene la entrega. Reducirlo a 48 h es posible por ley, pero debe respetar la audiencia y la tutela judicial (art. 24 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 5/2018, ocupación ilegal de viviendas",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2018-7833"
+            },
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Aval público de hasta el 20 % del valor de la vivienda, ampliable al 50 %, para compradores menores de 40 años; deducción en IRPF para inquilinos.",
+        "cita": {
+          "pagina": 55,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Avales e IRPF son instrumentos estatales posibles (Ley 12/2023 invoca el art. 149.1.11ª y 13ª CE). Sin dato oficial de coste ni de riesgo de impago localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            }
+          ]
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Reformar la Constitución para reconocer la vivienda digna como derecho fundamental exigible.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La vivienda está hoy en el art. 47 (principios rectores). Llevarla a la Sección 1ª del Cap. II exige el art. 168: 2/3 de cada Cámara, disolución de las Cortes, nueva aprobación y referéndum.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Invertir el 1 % del PIB al año en vivienda y consolidar CASA 47 con un parque estatal de 100.000 viviendas de protección permanente.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-psoe-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial de coste localizado. El suelo y las licencias son de CCAA y ayuntamientos (art. 148.1.3ª CE), lo que condiciona los plazos de construcción.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Programa TUCASA: préstamos públicos sin intereses de hasta 50.000 € para la entrada de la primera vivienda de jóvenes.",
+        "cita": {
+          "pagina": 31,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Un crédito público estatal es posible (la Ley 12/2023 invoca el art. 149.1.11ª y 13ª CE). Sin dato oficial de coste ni de demanda localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Mapa estatal de zonas tensionadas elaborado por el Ministerio y congelación temporal de las rentas que superen los índices de referencia.",
+        "cita": {
+          "pagina": 30,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 12/2023 atribuye la declaración de zonas tensionadas a las administraciones competentes en vivienda (CCAA). Un mapa estatal vinculante chocaría con esa competencia y exigiría cambiar la ley.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            },
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Derogar la Ley de Vivienda e incentivos fiscales al alquiler de larga duración.",
+        "cita": {
+          "pagina": 19,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Ley 12/2023 es ordinaria y derogable por mayoría simple; los incentivos en el IRPF son competencia estatal, salvo el tramo autonómico.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "IVA del 0 % en la compra de primera vivienda habitual de obra nueva y bonificación del 100 % del ITP en la de segunda mano.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-vox-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El ITP está cedido a las CCAA, que fijan las bonificaciones; el Estado tendría que reformar la cesión. El IVA al 0 % depende de lo que permita la Directiva del IVA de la UE: sin texto oficial de la UE consultado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Desalojo de la vivienda okupada en menos de 24 horas.",
+        "cita": {
+          "pagina": 20,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 5/2018 da hoy 5 días al ocupante para aportar título. Bajar a 24 h es posible por ley, pero debe preservar la audiencia y la tutela judicial (art. 24 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 5/2018, ocupación ilegal de viviendas",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2018-7833"
+            },
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Prohibir el arrendamiento a inmigrantes en situación ilegal, verificando la residencia legal antes de firmar el contrato.",
+        "cita": {
+          "pagina": 20,
+          "apartado": "Vivienda",
+          "nota": "Página según el extractor de Demócrata (https://www.democrata.es/elecciones-generales-espana/herramientas/programas?tema=vivienda); el PDF oficial no se pudo descargar ni verificar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Obligar a particulares a comprobar la residencia legal no tiene precedente en la ley de arrendamientos y podría chocar con el art. 14 CE y la protección de datos. Sin dato oficial localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Prioridad nacional para acceder a vivienda protegida o a ayudas al alquiler.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-vox-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261116.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "rojo",
+          "texto": "Excluir por nacionalidad a residentes legales de ayudas sociales choca con el art. 14 CE y con la igualdad de trato de los ciudadanos de la UE (art. 18 TFUE). La vivienda protegida la gestionan las CCAA (art. 148.1.3ª CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Destinar el 1 % del PIB al año a vivienda pública para llegar a 1,5 millones de viviendas públicas en 12 años.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial de coste localizado. Implica unas 125.000 viviendas al año y depende de suelo y licencias autonómicas y municipales (art. 148.1.3ª CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reformar la Constitución para que la vivienda sea un derecho fundamental exigible ante los tribunales.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Exige el procedimiento agravado del art. 168 CE: 2/3 de cada Cámara, disolución de las Cortes, ratificación por las nuevas y referéndum.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Ley de expropiación dirigida en primer lugar a grandes propietarios con más de 1.000 viviendas.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El art. 33.3 CE permite expropiar por utilidad pública o interés social con la indemnización correspondiente; el coste de las indemnizaciones no está cuantificado en ninguna fuente oficial localizada.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Recargo del 200 % del ITP en segundas viviendas y del 1.000 % a partir de la tercera; exenta la primera.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El ITP está cedido a las CCAA, con capacidad normativa sobre los tipos; el Estado tendría que reformar la ley de cesión. Un recargo de esa magnitud puede discutirse por su posible alcance confiscatorio (art. 31 CE).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Topar por ley los alquileres en zonas tensionadas, con una rebaja adicional del 30 % en ciudades de más de 200.000 habitantes o con masificación turística.",
+        "cita": {
+          "pagina": null,
+          "apartado": null,
+          "nota": "Tomado de prensa (https://www.articulo14.es/politica/programa-electoral-de-frente-amplio-para-las-elecciones-del-29n-propuestas-sobre-vivienda-inmigracion-sanidad-y-pensiones-20261117.html); el PDF oficial no se pudo consultar."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 12/2023 ya prevé la contención de rentas, pero la declaración de zona tensionada corresponde a las administraciones autonómicas competentes, así que su aplicación depende de ellas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 12/2023, por el derecho a la vivienda",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2023-12203"
+            },
+            {
+              "nombre": "BOE · Constitución Española (arts. 14, 24, 33, 47, 148.1, 168)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

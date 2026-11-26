@@ -1,0 +1,357 @@
+{
+  "id": "educacion",
+  "titulo": "Educación",
+  "dato": {
+    "texto": "El gasto público en educación fue de 71.348,8 M€ en 2024 (+4,8%); las becas y ayudas sumaron 3.304,5 M€. El abandono educativo temprano bajó al 12,8% en 2025 (20% en 2015).",
+    "fuente": "Ministerio de Educación, FP y Deportes (notas de prensa en La Moncloa)",
+    "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": false
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Acordaremos con docentes, inspectores, expertos y familias un nuevo marco educativo que sustituya a la LOMLOE.",
+        "cita": {
+          "pagina": 67,
+          "apartado": "4.7 España tendrá su mejor resultado en PISA · medida 209",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sustituir una ley orgánica exige otra ley orgánica, con mayoría absoluta del Congreso. El Estado fija las normas básicas (art. 149.1.30 CE) y las CCAA desarrollan currículo y gestión: el efecto en las aulas tarda varios cursos.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "La beca será un derecho por ley para quien la necesite y apruebe, con los mismos umbrales en la universidad que en la FP.",
+        "cita": {
+          "pagina": 68,
+          "apartado": "4.7 · medida 218",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Viable por ley estatal, pero convertirla en derecho subjetivo la vuelve un gasto sin tope. En 2024 las becas y ayudas sumaron 3.304,5 M€. El programa no estima el coste adicional.",
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Gasto público en educación 2024",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Ningún concierto educativo se eliminará donde haya demanda suficiente; los conciertos durarán al menos seis años en todas las etapas.",
+        "cita": {
+          "pagina": 67,
+          "apartado": "4.7 · medida 212",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La LOE obliga a programar la oferta teniendo en cuenta centros públicos y concertados (art. 109), pero la firma y duración de los conciertos las aplica cada administración educativa autonómica.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Primer curso de los grados en las universidades públicas gratuito.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Educación · Universidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Los precios públicos de matrícula los fijan las CCAA dentro de los límites estatales; la gratuidad exige compensar a las comunidades o a las universidades. Sin dato oficial localizado sobre su coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Universalizar la educación de 0 a 3 años, con más escuelas infantiles públicas.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Educación",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La creación de plazas depende de CCAA y ayuntamientos; el Estado solo puede cofinanciar mediante programas de cooperación territorial. El programa no fija plazo ni coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reducir el abandono escolar temprano por debajo del 10% antes de 2030.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Educación",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La tasa fue del 12,8% en 2025 (20% en 2015) y bajó 0,2 puntos en el último año. Para llegar al 10% en 2030 haría falta bajar unos 0,6 puntos al año. El objetivo de la UE para 2030 es el 9%.",
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Abandono educativo temprano 2025",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/280126-abandono-educativo-minimo-historico.aspx"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Aprobar un Estatuto del Docente.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Educación",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La regulación básica de la función pública docente es estatal (arts. 149.1.18 y 149.1.30 CE). Es viable por ley; su efecto en retribuciones dependería de cada comunidad.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Unificar currículo, evaluaciones nacionales e inspección. Reválidas y EVAU única. Se garantizará la educación en español en todo el territorio nacional.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Educación, cultura y deporte · medida 66",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado fija la parte básica del currículo, que completan las CCAA (art. 149.1.30 CE). El TC ya ha dicho que el castellano «no puede dejar de ser también lengua vehicular» (STC 31/2010). Una EVAU única exige pactarla con universidades y CCAA.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · STC 31/2010 (Estatuto de Cataluña)",
+              "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2010-11409"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Derogación de la LOMLOE y recuperación de una enseñanza basada en el esfuerzo, el mérito y la exigencia. Fin de los móviles en clase.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Educación, cultura y deporte · medida 69",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Derogar una ley orgánica exige otra ley orgánica, con mayoría absoluta del Congreso. Las CCAA aplican currículo y normas de convivencia, así que el cambio en las aulas tarda varios cursos.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Número máximo por aula de alumnos procedentes de otras culturas o con dominio insuficiente del español; aulas específicas de nivelación.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Educación, cultura y deporte · medida 70",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "rojo",
+          "texto": "Un tope por «procedencia de otras culturas» distingue por origen, lo que choca con la igualdad del art. 14 CE. La LOE (art. 84) obliga a evitar la segregación y repartir de forma equilibrada al alumnado con necesidades. Las aulas de refuerzo de idioma sí caben, pero las organizan las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Prioridad nacional para escoger centro para los hijos y en la concesión de ayudas, becas comedor y transporte. Distrito único.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Educación, cultura y deporte · medida 74",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "rojo",
+          "texto": "Dar prioridad por nacionalidad en la admisión choca con el derecho a la educación de «todos» (art. 27 CE), la igualdad (art. 14 CE) y el art. 84 LOE, que fija los criterios de admisión y prohíbe la segregación. El distrito único lo deciden las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Ley de Financiación Educativa que blinde un porcentaje mínimo de inversión estatal, que deberá llegar al 7% del PIB en 2030.",
+        "cita": {
+          "pagina": 31,
+          "apartado": "2.5 Una educación pública para la igualdad de oportunidades",
+          "nota": "Folio impreso 35 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "En 2024 el gasto fue de 71.349 M€, cerca del 4,5% del PIB. Llegar al 7% supone unos 40.000 M€ más al año, y las administraciones autonómicas ejecutan casi todo ese gasto. Una ley estatal no puede imponer ese gasto a las CCAA.",
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Gasto público en educación 2024",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Ratios máximas por ley: 15 en Primaria y FP, 20 en Secundaria y 23 en Bachillerato; el alumnado NEAE computa el doble.",
+        "cita": {
+          "pagina": 31,
+          "apartado": "2.5 · Financiación y modelo",
+          "nota": "Folio impreso 35 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La LOE fija hoy un máximo de 25 alumnos en Primaria y 30 en ESO (art. 157). El Estado puede bajarlas, pero las plazas y el profesorado los financian las CCAA. El programa no estima el coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley Orgánica 2/2006 de Educación",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-7899"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Aumentar las becas postobligatorias hasta el 0,44% del PIB, garantizando el cobro al inicio de curso y creando becas-salario.",
+        "cita": {
+          "pagina": 32,
+          "apartado": "2.5 · Becas, ayudas y equidad educativa",
+          "nota": "Folio impreso 36 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "En 2024 las becas y ayudas sumaron 3.304,5 M€, cerca del 0,2% del PIB. El 0,44% supone multiplicarlas por más de dos (unos 7.000 M€). Es competencia estatal, pero el coste no se cuantifica.",
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Gasto público en educación 2024",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/educacion-fp-deportes/Paginas/2026/180326-gasto-educacion-2024.aspx"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Plan Estatal de lenguas cooficiales, garantizando la inmersión lingüística en catalán como lengua vehicular en Cataluña.",
+        "cita": {
+          "pagina": 32,
+          "apartado": "2.5 · Lenguas cooficiales y modelo lingüístico",
+          "nota": "Folio impreso 36 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El TC admite el catalán como lengua vehicular, pero no como única: según la STC 31/2010, el castellano «no puede dejar de ser también lengua vehicular». Una inmersión que excluya el castellano chocaría con esa doctrina.",
+          "fuentes": [
+            {
+              "nombre": "BOE · STC 31/2010 (Estatuto de Cataluña)",
+              "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2010-11409"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Modificar la LOSU para que las CCAA destinen al menos el 1% de su PIB regional a la financiación de sus universidades públicas.",
+        "cita": {
+          "pagina": 33,
+          "apartado": "2.5 · Sistema universitario, UNED y universidades privadas",
+          "nota": "Folio impreso 37 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Las CCAA tienen autonomía financiera para decidir su gasto, y una ley estatal que les imponga un porcentaje de gasto podría ser impugnada ante el TC. Sin dato oficial localizado sobre el gasto universitario actual por comunidad.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

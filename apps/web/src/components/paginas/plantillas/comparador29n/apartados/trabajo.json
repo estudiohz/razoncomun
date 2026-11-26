@@ -1,0 +1,283 @@
+{
+  "id": "trabajo",
+  "titulo": "Trabajo: empleo, salarios, jornada, paro",
+  "dato": {
+    "texto": "Tercer trimestre de 2026: tasa de paro del 10,18 %, con 2.591.200 parados y 22.852.600 ocupados.",
+    "fuente": "INE, Encuesta de Población Activa (EPA) 3T 2026",
+    "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Las empresas que mantengan sus plantillas más estables que la media de su sector cotizarán menos por desempleo.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 174",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Los tipos de cotización por desempleo los fija el Estado por ley (LGSS y Presupuestos), así que puede diferenciarlos por estabilidad de plantilla. Falta concretar el coste y cómo se mide la media sectorial.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Publicaremos cada mes, junto al paro registrado, cuántos fijos discontinuos no están trabajando.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 174",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Es una decisión estadística de la Administración del Estado y no requiere ley. Hoy el INE ya publica el paro EPA cada trimestre (10,18 % en el 3T 2026), con una metodología distinta del paro registrado.",
+          "fuentes": [
+            {
+              "nombre": "INE · EPA tercer trimestre 2026",
+              "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Protegeremos mejor a quien padezca enfermedades severas y de larga duración con hasta el 100% de la base reguladora.",
+        "cita": {
+          "pagina": 60,
+          "apartado": "4.3 · Medida 175",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La cuantía del subsidio de incapacidad temporal la fija la LGSS (art. 171) y su normativa de desarrollo, y es competencia estatal. No hay dato oficial de coste localizado, ni una definición de qué enfermedades entrarían.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Completar la reducción de la jornada a 37,5 horas e incentivar los avances en la negociación colectiva hacia las 35 horas, sin perder salario.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Trabajo digno · Compromiso 108",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Exige reformar el art. 34 del Estatuto de los Trabajadores, que fija un máximo de 40 h semanales, mediante una ley con mayoría en el Congreso. Un proyecto equivalente no superó el debate de totalidad en septiembre de 2025.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Blindar por ley el SMI por encima del 60% del salario medio y actualizarlo periódicamente.",
+        "cita": {
+          "pagina": 37,
+          "apartado": "Coste de vida · Compromiso 87",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El SMI es competencia estatal (art. 149.1.7 CE) y hoy lo fija el Gobierno por real decreto: 1.221 €/mes en 14 pagas para 2026. Una ley puede fijarle un suelo. El efecto sobre el empleo es objeto de debate.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-3815"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reformar el despido improcedente para garantizar una reparación efectiva, proporcionada y disuasoria, conforme al art. 24.b de la Carta Social Europea revisada.",
+        "cita": {
+          "pagina": 41,
+          "apartado": "Trabajo digno · Compromiso 110",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El art. 56 ET tasa la indemnización en 33 días por año, con un tope de 24 mensualidades. El Comité Europeo de Derechos Sociales tramitó la reclamación 207/2022 sobre ese sistema. Cambiarlo requiere ley y el diseño está por concretar.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            },
+            {
+              "nombre": "Consejo de Europa · CEDS, reclamación 207/2022 UGT c. España",
+              "url": "https://rm.coe.int/cc207casedoc5-es/1680ac5cb8"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Cuando la jornada pactada, incluidas las horas complementarias, supere el 80 % de la ordinaria, el contrato se considerará a jornada completa.",
+        "cita": {
+          "pagina": 43,
+          "apartado": "Trabajo digno · Compromiso 123",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El contrato a tiempo parcial se regula en el art. 12 del Estatuto de los Trabajadores, de competencia estatal. Cambiarlo requiere reformar ese artículo por ley ordinaria, y no consta ningún obstáculo europeo.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Derogar la legislación laboral de Sánchez que ha agravado la precariedad y desincentivado la contratación.",
+        "cita": {
+          "pagina": 11,
+          "apartado": "Economía, industria y energía · punto 8",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La reforma laboral (RDL 32/2021) se aprobó como compromiso del Plan de Recuperación pactado con la UE. Derogarla puede afectar a esos compromisos. La EPA registra 22,85 millones de ocupados y más empleo indefinido.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 32/2021 (reforma laboral)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2021-21788"
+            },
+            {
+              "nombre": "INE · EPA tercer trimestre 2026",
+              "url": "https://ine.es/dyngs/Prensa/EPA3T26.htm"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Garantizaremos por ley una subida progresiva del SMI manteniendo un suelo permanente equivalente al 60 % del salario medio neto.",
+        "cita": {
+          "pagina": 51,
+          "apartado": "4.1 Salarios que deben crecer",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La competencia es estatal y hoy el SMI se fija por real decreto (1.221 €/mes en 2026), así que una ley puede fijar ese suelo. Tomar como referencia el salario medio neto da una cifra distinta que el bruto.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-3815"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Gravamen estatal del 30 % a empresas con facturación superior a 50 millones cuyo beneficio crezca mientras los salarios de su plantilla se quedan atrás.",
+        "cita": {
+          "pagina": 51,
+          "apartado": "4.1 Salarios que deben crecer",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Crear un tributo requiere ley (arts. 31 y 133 CE) y es posible. Al no tener precedente, su encaje con el principio de capacidad económica y su recaudación son inciertos. Sin dato oficial de recaudación localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Elevaremos la prestación contributiva por desempleo del 70 % al 80 % de la base reguladora en los primeros seis meses y subiremos un 25 % los topes máximos.",
+        "cita": {
+          "pagina": 53,
+          "apartado": "Protección por desempleo e inserción laboral",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Hoy el art. 270 LGSS fija la prestación en el 70 % de la base durante 180 días y el 60 % después, con un tope del 175-225 % del IPREM. Cambiarlo requiere ley y más gasto del SEPE. Sin dato oficial de coste localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reduciremos la jornada laboral limitando el tiempo de trabajo efectivo de forma progresiva hasta las 32 horas semanales.",
+        "cita": {
+          "pagina": 55,
+          "apartado": "Hacia una jornada laboral máxima de 32 horas",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Requiere reformar por ley el art. 34 ET, que fija hoy un máximo de 40 h semanales. La rebaja a 37,5 h no prosperó en el Congreso en 2025. Ningún dato oficial localizado cuantifica el impacto de llegar a 32 h.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Estatuto de los Trabajadores (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-7730"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Traspasaremos por completo las funciones inspectoras (incluida Seguridad Social) a la Generalitat de Cataluña.",
+        "cita": {
+          "pagina": 54,
+          "apartado": "Derechos sindicales, delegado compartido e inspección",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Cataluña ya asumió en 2010 la función inspectora en materia laboral (RD 206/2010). El régimen económico de la Seguridad Social es competencia exclusiva del Estado (art. 149.1.17 CE), así que traspasar esa parte es jurídicamente discutible.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 206/2010 (Inspección a Cataluña)",
+              "url": "https://www.boe.es/eli/es/rd/2010/02/26/206"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

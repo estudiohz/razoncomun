@@ -1,0 +1,303 @@
+{
+  "id": "sanidad",
+  "titulo": "Sanidad",
+  "dato": {
+    "texto": "El gasto sanitario público fue de 101.739 M€ en 2024 (6,4% del PIB; 2.084 € por habitante). Las comunidades autónomas gestionan el 93,6%.",
+    "fuente": "Ministerio de Sanidad, Estadística de Gasto Sanitario Público 2024",
+    "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": false
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Pacto de Estado por la Sanidad Pública con las CCAA y plan urgente de reducción de listas de espera, respetando sus competencias de gestión.",
+        "cita": {
+          "pagina": 68,
+          "apartado": "4.8 Seremos referente mundial en sanidad y cuidados · medida 219",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado solo fija bases y coordinación (art. 149.1.16 CE); las CCAA gestionan el 93,6% del gasto. A dic. 2025 había 853.509 pacientes en lista quirúrgica, 121 días de media. El plan depende de acuerdos con cada comunidad; no fija plazos ni coste.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Incorporaremos, en coordinación con las CCAA, más profesionales al SNS. En Atención Primaria, al menos 4.500 médicos más.",
+        "cita": {
+          "pagina": 69,
+          "apartado": "4.8 · medida 220",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Contratar es competencia de los servicios autonómicos de salud. La oferta MIR 2027 es de 9.676 plazas de Medicina para todas las especialidades y la residencia de Familia dura 4 años: la cifra no se cubre a corto plazo solo con nuevos especialistas. No fija coste.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Oferta FSE 2027",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6963"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Acabar con las listas de espera, con un gasto sanitario público del 7% del PIB.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Sanidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "En 2024 el gasto fue del 6,4% del PIB (101.739 M€). Subir al 7% supone unos 9.500 M€ más al año, que ejecutarían sobre todo las CCAA (93,6% del gasto). A dic. 2025 la espera quirúrgica media era de 121 días.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Atención psicológica gratuita, con primera consulta en un máximo de 30 días.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Sanidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La asistencia la prestan los servicios autonómicos de salud; un plazo garantizado exige norma básica estatal y plantillas que contratan las CCAA (art. 149.1.16 CE). Sin dato oficial localizado sobre la demora actual en salud mental ni sobre el coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "«Plan Sonríe»: incorporar tratamientos dentales básicos de adultos y, mientras, ayudas directas de hasta 200 € por persona y año.",
+        "cita": {
+          "pagina": null,
+          "apartado": "Sanidad",
+          "nota": "PDF oficial bloqueado a descargas automáticas (protección Incapsula); texto tomado de la reseña del programa en politicaelectoral.com, sin página verificada."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Ampliar la cartera común es competencia estatal, pero la prestación la financian y gestionan las CCAA, que gestionan el 93,6% del gasto sanitario. Sin dato oficial localizado sobre el coste de la ayuda de 200 €.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Tarjeta sanitaria única con historia clínica compartida en todo el territorio nacional.",
+        "cita": {
+          "pagina": 37,
+          "apartado": "Sanidad · medida 60",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Ya existe la Historia Clínica Digital del SNS, que comparte informes entre CCAA, pero su implantación depende de que cada comunidad cumpla los requisitos técnicos. Unificar la tarjeta exige acuerdo en el Consejo Interterritorial; el Estado solo tiene la coordinación (art. 149.1.16 CE).",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Historia Clínica Digital del SNS",
+              "url": "https://www.sanidad.gob.es/areas/saludDigital/historiaClinicaSNS/home.htm"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Excluir a los extranjeros en situación ilegal del sistema sanitario salvo casos de urgencia grave. Auditoría del coste de la inmigración en la sanidad.",
+        "cita": {
+          "pagina": 19,
+          "apartado": "Prioridad nacional · medida 20",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Hoy rige el RDL 7/2018, que reconoce la asistencia a extranjeros no registrados en las mismas condiciones que a los españoles. Revertirlo exige una norma con rango de ley; en 2012 ya se hizo (RDL 16/2012). Sin dato oficial localizado sobre su coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 7/2018, acceso universal al SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Plan nacional de reducción de listas de espera, con colaboración público-privada cuando ayude a reducir demoras e indicadores periódicos comparables.",
+        "cita": {
+          "pagina": 37,
+          "apartado": "Sanidad · medida 62",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "A dic. 2025: 853.509 pacientes y 121 días de media. Los datos ya se publican cada semestre por el RD 605/2003. La concertación con centros privados la deciden y pagan las CCAA, que gestionan el 93,6% del gasto.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Blindaje del gasto sanitario público: compromiso desde los Presupuestos Generales del Estado del 8% del PIB estatal para la sanidad pública.",
+        "cita": {
+          "pagina": 26,
+          "apartado": "2.4 Una sanidad pública más fuerte",
+          "nota": "Folio impreso 30 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "En 2024 el gasto fue del 6,4% del PIB. Llegar al 8% supone unos 25.000 M€ más al año. Las CCAA gestionan el 93,6% del gasto y los PGE no lo fijan directamente: haría falta trasladarlo vía financiación autonómica.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · Gasto sanitario público 2024",
+              "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Ley de Gestión Pública del SNS: gestión pública directa como vía general y derogación de la Ley 15/1997 sobre nuevas formas de gestión.",
+        "cita": {
+          "pagina": 26,
+          "apartado": "2.4 · Financiación, gobernanza y gestión",
+          "nota": "Folio impreso 30 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El Estado puede dictar legislación básica (art. 149.1.16 CE), pero la gestión de los centros y los contratos vigentes son de las CCAA; la internalización tendría que respetar los contratos en vigor y su coste no consta.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Blindar por ley la universalidad de la atención sanitaria para residentes en España, independientemente de su estatus administrativo.",
+        "cita": {
+          "pagina": 26,
+          "apartado": "2.4 · Financiación, gobernanza y gestión",
+          "nota": "Folio impreso 30 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El RDL 7/2018 ya reconoce esa asistencia en las mismas condiciones que a los españoles. Elevarla a una ley específica es viable con mayoría simple.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 7/2018, acceso universal al SNS",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-10752"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reformar el artículo 43 de la Constitución para incluir el derecho al aborto.",
+        "cita": {
+          "pagina": 28,
+          "apartado": "2.4 · Salud sexual, reproductiva, obstétrica y duelo perinatal",
+          "nota": "Folio impreso 32 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El art. 43 está en el Capítulo III del Título I: su reforma va por el art. 167 CE, que exige tres quintos de cada Cámara (210 diputados) o, si no, la vía alternativa de ese artículo. Es jurídicamente posible, pero exige una mayoría amplia.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Aprobar el Real Decreto de listas de espera: cómputo desde la indicación facultativa, prohibir listas paralelas e incluir tiempos de Atención Primaria y Salud Mental.",
+        "cita": {
+          "pagina": 29,
+          "apartado": "2.4 · Tiempos de espera, listas de espera y diagnóstico",
+          "nota": "Folio impreso 33 (página del PDF = folio - 4)."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Fijar criterios homogéneos de información es competencia estatal de coordinación; así se hizo con el RD 605/2003, con el que hoy se publica el SISLE. La calidad de los datos sigue dependiendo de lo que envíe cada comunidad.",
+          "fuentes": [
+            {
+              "nombre": "Ministerio de Sanidad · SISLE-SNS, diciembre 2025",
+              "url": "https://www.sanidad.gob.es/gl/estadEstudios/estadisticas/inforRecopilaciones/docs/Nota_Resumen_SISLE__dic25.pdf"
+            },
+            {
+              "nombre": "BOE · Constitución Española",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

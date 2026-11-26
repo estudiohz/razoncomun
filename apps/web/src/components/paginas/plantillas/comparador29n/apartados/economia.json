@@ -1,0 +1,394 @@
+{
+  "id": "economia",
+  "titulo": "Economía: impuestos, déficit y pensiones",
+  "dato": {
+    "texto": "La deuda de las Administraciones Públicas era del 101,4 % del PIB (unos 1,763 billones de euros) en el segundo trimestre de 2026.",
+    "fuente": "Banco de España",
+    "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Quien cobre el salario mínimo no pagará IRPF: por ley, el umbral subirá automáticamente cada vez que suba el SMI.",
+        "cita": {
+          "pagina": 60,
+          "apartado": "4.4 Los españoles pagarán menos impuestos · medida 177",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Es competencia estatal y técnicamente sencillo: basta indexar la reducción por rendimientos del trabajo al SMI, fijado en 2026 en 1.221 €/mes en 14 pagas.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reduciremos el IRPF de los trabajadores y autónomos de 18 a 35 años durante los cuatro primeros años en que paguen IRPF: 100% el primer año, 75% el segundo, 50% el tercero y 25% el cuarto.",
+        "cita": {
+          "pagina": 60,
+          "apartado": "4.4 · medida 179",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial localizado sobre su coste. El IRPF está cedido al 50 % a las CCAA: la rebaja estatal solo afectaría a la parte estatal salvo acuerdo autonómico.",
+          "fuentes": []
+        }
+      },
+      {
+        "texto": "Mientras persista la actual crisis de inflación, aplicaremos un IVA del 0% a los alimentos básicos, incluidos la carne, el pescado y las conservas.",
+        "cita": {
+          "pagina": 61,
+          "apartado": "4.4 · medida 180",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Hay precedente: el 0 % se aplicó a alimentos básicos hasta el 30/9/2024, pero sin carne ni pescado. La normativa de la UE lo permite para alimentos; el coste no está cuantificado y la condición «mientras persista la crisis» no tiene fecha.",
+          "fuentes": [
+            {
+              "nombre": "AEAT · Novedades IVA 2024 (tipo 0 % alimentos)",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/iva/novedades-iva/novedades-normativa-2024/principales-novedades-tributarias-orden-hac-noviembre.html"
+            },
+            {
+              "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reduciremos el déficit estructural y la deuda.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Reconstruiremos el pacto entre generaciones · medida 107",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El déficit cerró 2025 en el 2,18 % (2,39 % con la DANA) y la deuda estaba en el 101,4 % en el 2T 2026. El programa no fija cifras ni explica cómo lo hará a la vez que baja impuestos.",
+          "fuentes": [
+            {
+              "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"
+            },
+            {
+              "nombre": "Banco de España · Deuda AAPP 2T 2026",
+              "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Aseguraremos que las pensiones mantengan su poder adquisitivo y suban cada año con el IPC.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Medida 108",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Ya está en vigor: la revalorización con el IPC medio se aplica por ley (2,7 % en 2026). La AIReF advierte de que el sistema no tiene la sostenibilidad garantizada.",
+          "fuentes": [
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            },
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Mantener intactos los dos primeros tramos del ahorro (19% y 21%) y elevar los tipos a partir de 50.000 €, llegando a un tipo máximo del 35% para rentas del capital superiores a 300.000€.",
+        "cita": {
+          "pagina": 48,
+          "apartado": "Fiscalidad justa · compromiso 130",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial localizado sobre su recaudación. Basta una ley estatal; el efecto recaudatorio depende de cuánto capital se traslade fuera.",
+          "fuentes": []
+        }
+      },
+      {
+        "texto": "Reforzar la tasa Tobin aumentando el tipo impositivo del 0,2% al 0,4%.",
+        "cita": {
+          "pagina": 49,
+          "apartado": "Fiscalidad justa · compromiso 135",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Ley 5/2020 grava al 0,2 % la compra de acciones de empresas españolas que cotizan con más de 1.000 M€ de capitalización. Doblar el tipo solo requiere una ley estatal ordinaria.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 5/2020 (Impuesto sobre Transacciones Financieras)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2020-12356"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Convertiremos el mínimo exento por descendiente en el IRPF en un crédito fiscal reembolsable, del que se beneficiarán 2 millones de hogares de ingresos medios y bajos.",
+        "cita": {
+          "pagina": 49,
+          "apartado": "Fiscalidad justa · compromiso 134",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial localizado sobre su coste. Es competencia estatal. La AEAT ya paga deducciones reembolsables, como la de maternidad.",
+          "fuentes": []
+        }
+      },
+      {
+        "texto": "Mantendremos una senda decreciente de las ratios de deuda y déficit sobre PIB.",
+        "cita": {
+          "pagina": 48,
+          "apartado": "Senda y responsabilidad fiscal · compromiso 126",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El déficit bajó al 2,18 % en 2025 y la deuda al 101,4 % en el 2T 2026. Con las políticas actuales, la AIReF proyecta que la deuda subirá al 123 % del PIB en 2050.",
+          "fuentes": [
+            {
+              "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"
+            },
+            {
+              "nombre": "Banco de España · Deuda AAPP 2T 2026",
+              "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+            },
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Blindar constitucionalmente el sistema público de pensiones y su revalorización conforme al IPC.",
+        "cita": {
+          "pagina": 40,
+          "apartado": "Pensiones · compromiso 100",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La reforma ordinaria (art. 167 CE) requiere tres quintos de cada Cámara. Si afecta a la sección 1.ª del capítulo II del título I, exige además disolver las Cortes y convocar referéndum (art. 168). La revalorización con el IPC ya está fijada por ley.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Constitución Española, arts. 167-168",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Simplificación y bajada del IRPF. Reducción del tipo aplicable del IRPF para cada contribuyente o familia en función del número de hijos.",
+        "cita": {
+          "pagina": 7,
+          "apartado": "Economía, industria y energía · punto 2",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial localizado sobre su coste. El programa no fija tipos ni tramos. El IRPF está cedido al 50 % a las CCAA.",
+          "fuentes": []
+        }
+      },
+      {
+        "texto": "Rebaja del tipo reducido y del tipo general del IVA atendiendo prioritariamente a productos esenciales y de primera necesidad.",
+        "cita": {
+          "pagina": 7,
+          "apartado": "Economía, industria y energía · punto 2",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "No se cuantifica. La Directiva de IVA limita los tipos inferiores al 5 % y el tipo cero a un máximo de siete partidas de necesidades básicas; sin dato oficial localizado sobre el coste.",
+          "fuentes": [
+            {
+              "nombre": "AEAT · Directiva (UE) 2022/542 de tipos de IVA",
+              "url": "https://sede.agenciatributaria.gob.es/Sede/en_gb/iva/novedades-iva/novedades-normativa/directiva-2022-542-consejo-5-2022.html"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Reducción de la deuda pública. Compatibilizar la rebaja de impuestos con la financiación de los servicios públicos esenciales, mediante el control del déficit y la eliminación del gasto superfluo e ideológico.",
+        "cita": {
+          "pagina": 7,
+          "apartado": "Economía, industria y energía · punto 3",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La deuda es del 101,4 % del PIB (2T 2026) y el déficit de 2025, del 2,18 %. El programa no identifica qué partidas son «gasto superfluo» ni cuánto suman frente a la rebaja fiscal.",
+          "fuentes": [
+            {
+              "nombre": "Banco de España · Deuda AAPP 2T 2026",
+              "url": "https://www.bde.es/wbe/es/noticias-eventos/actualidad-banco-espana/deuda-aapp-2026t2.html"
+            },
+            {
+              "nombre": "Hacienda/La Moncloa · Cierre del déficit 2025",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/hacienda/paginas/2026/310326-cierre-deficit-2025.aspx"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Garantizar la sostenibilidad del sistema de pensiones. Revitalizar la economía, impulsar el empleo, mejorar los salarios. Una economía más productiva es la garantía de sostenibilidad de las pensiones.",
+        "cita": {
+          "pagina": 8,
+          "apartado": "Economía, industria y energía · punto 7",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "No concreta medidas. La AIReF calcula un gasto bruto en pensiones del 14,6 % del PIB de media entre 2022 y 2050 y unas transferencias del Estado que deben subir hasta el 3 % del PIB.",
+          "fuentes": [
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Impondremos un tipo mínimo efectivo del 20 % sobre el resultado contable ajustado para las grandes empresas y grupos corporativos, avanzando sobre el mínimo previo del 15 %.",
+        "cita": {
+          "pagina": 44,
+          "apartado": "3.1 Que las grandes empresas paguen lo que les corresponde",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 7/2024 ya fija un mínimo global del 15 % para los grupos con 750 M€ o más de facturación, en aplicación de la norma de la UE y la OCDE. Subirlo al 20 % es competencia estatal; sin dato oficial localizado sobre su recaudación ni sobre su efecto en la inversión.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 7/2024 (Impuesto Complementario)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2024-26694"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Implantaremos la Tasa Zucman, un impuesto estatal, permanente y finalista del 3 % anual sobre el patrimonio neto individual que supere los 50 millones de euros, sin bonificaciones autonómicas.",
+        "cita": {
+          "pagina": 45,
+          "apartado": "3.2 Más contribución de los grandes patrimonios",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Sin dato oficial localizado sobre su recaudación. Es competencia estatal. El riesgo de cambio de residencia es el que intenta frenar la cláusula de 5 años.",
+          "fuentes": []
+        }
+      },
+      {
+        "texto": "Elevación de la «tasa Google» al 15 %: Incrementaremos el tipo impositivo del Impuesto sobre Servicios Digitales del tipo actual hasta el 15 %.",
+        "cita": {
+          "pagina": 45,
+          "apartado": "3.1 Que las grandes empresas paguen lo que les corresponde",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El tipo vigente es del 3 % (Ley 4/2020), así que la medida lo multiplica por cinco. Es una ley estatal, pero no se cuantifica su recaudación ni el riesgo de represalias comerciales; sin dato oficial localizado al respecto.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 4/2020 (Servicios Digitales)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2020-12355"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Blindaje constitucional de las pensiones: revalorización automática con arreglo al IPC y que ninguna pensión sea inferior al SMI, por el procedimiento del artículo 167 CE.",
+        "cita": {
+          "pagina": 57,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "El SMI de 2026 suma 17.094 €/año, y la pensión mínima de jubilación de 65 años o más sin cónyuge a cargo, unos 12.400-13.100 €. Igualarlas tiene un coste sin cuantificar. Además, ubicar el derecho en la sección 2.ª exige tres quintos de cada Cámara (art. 167).",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto 126/2026 (SMI 2026)",
+              "url": "https://www.boe.es/eli/es/rd/2026/02/18/126/con"
+            },
+            {
+              "nombre": "La Moncloa · Revalorización de pensiones 2026",
+              "url": "https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/subida-pensiones-2026.aspx"
+            },
+            {
+              "nombre": "BOE · Constitución Española, arts. 167-168",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Devolveremos la edad de jubilación a los 65 años, que nos fue arrebatada en la reforma realizada en 2011.",
+        "cita": {
+          "pagina": 57,
+          "apartado": "4.3 Pensiones públicas dignas",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 27/2011 fija los 67 años desde 2027, salvo 38 años y medio cotizados. La AIReF proyecta una deuda del 123 % del PIB en 2050 con las políticas actuales. El programa no cuantifica el coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 27/2011 (edad de jubilación)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2011-13242"
+            },
+            {
+              "nombre": "AIReF · Estudio regla de gasto de pensiones (29/05/2026)",
+              "url": "https://www.airef.es/es/noticias/la-airef-ratifica-el-resultado-de-2025-la-regla-de-gasto-de-pensiones-se-cumple-formalmente-pero-no-garantiza-la-sostenibilidad/"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

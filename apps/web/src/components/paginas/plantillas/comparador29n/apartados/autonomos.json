@@ -1,0 +1,257 @@
+{
+  "id": "autonomos",
+  "titulo": "Autónomos: cuotas, RETA, fiscalidad del autónomo",
+  "dato": {
+    "texto": "Octubre de 2026: 3.501.598 afiliados al Régimen Especial de Trabajadores Autónomos, 79.163 más que un año antes (+2,3 %).",
+    "fuente": "Seguridad Social, afiliación media de octubre de 2026",
+    "url": "https://revista.seg-social.es/-/afiliacion-octubre-2026"
+  },
+  "programas": {
+    "pp": {
+      "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+      "verificado2026": true
+    },
+    "psoe": {
+      "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+      "verificado2026": true
+    },
+    "vox": {
+      "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+      "verificado2026": true
+    },
+    "fa": {
+      "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+      "verificado2026": true
+    }
+  },
+  "propuestas": {
+    "pp": [
+      {
+        "texto": "Los nuevos autónomos no pagarán cuota a la Seguridad Social durante su primer año, ni durante el segundo si sus ingresos no llegan al salario mínimo.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 170",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Hoy el art. 38 ter LETA da una cuota reducida 12 meses, ampliable otros 12 si se ingresa menos del SMI. Pasar a cuota cero requiere ley, reduce ingresos del sistema y obliga a definir cómo se generan derechos. Sin dato oficial de coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 20/2007, Estatuto del Trabajo Autónomo",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Si eres autónomo y facturas menos de 85.000 euros, no tendrás que cobrar ni declarar el IVA.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 171",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Directiva (UE) 2020/285 permite eximir del IVA a las pequeñas empresas con un umbral de hasta 85.000 € anuales. España no la ha transpuesto aún. La medida encaja en el derecho de la UE.",
+          "fuentes": [
+            {
+              "nombre": "Unión Europea · Directiva (UE) 2020/285",
+              "url": "https://publications.europa.eu/resource/celex/32020L0285.SPA.xhtml"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Los autónomos podrán pasar de cuatro declaraciones trimestrales a dos semestrales en todos los impuestos sujetos a esa obligación.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 171",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La periodicidad trimestral de las liquidaciones del IVA la fija el Reglamento del IVA (art. 71), una norma estatal que el Gobierno puede modificar. Supondría que Hacienda ingresa más tarde.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Reglamento del IVA (RD 1624/1992)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1992-28925"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Bonificaremos el 100% de las cotizaciones empresariales por el primer trabajador durante un año y el 50% por el segundo.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 171",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Las bonificaciones a la contratación son competencia estatal y pueden aprobarse por ley. No consta estimación oficial del coste, ni de cuántas contrataciones se harían igualmente sin la ayuda. Sin dato oficial localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "El autónomo con una enfermedad grave tendrá bonificada su cuota desde el primer día de baja.",
+        "cita": {
+          "pagina": 59,
+          "apartado": "4.3 · Medida 172",
+          "nota": null
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "Hoy, pasados 60 días de baja, las cuotas del autónomo las paga la mutua o el SEPE (LGSS). Adelantar esa cobertura al primer día para enfermedades graves es una reforma estatal de alcance limitado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      }
+    ],
+    "psoe": [
+      {
+        "texto": "Desarrollar reglamentariamente la pasarela al RETA prevista en la Ley 2/2026 y poner fin progresivamente a la alternatividad de las mutualidades.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Trabajo digno · Compromiso 116",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La Ley 2/2026 obligaba a aprobar el reglamento en un plazo máximo de tres meses desde su aprobación (julio de 2026). No hemos localizado su publicación en el BOE. Eliminar la alternatividad requeriría otra ley.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 2/2026 (mutualidades alternativas)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2026-16653"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Avanzar en la cotización por ingresos reales y simplificar el acceso a la prestación por cese de actividad.",
+        "cita": {
+          "pagina": 42,
+          "apartado": "Trabajo digno · Compromiso 117",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "El sistema por tramos de rendimientos netos ya está en vigor (RDL 13/2022). Las bases definitivas por ingresos reales están previstas a partir de 2032. El cese de actividad se regula en la LGSS y es competencia estatal.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Real Decreto-ley 13/2022 (cotización por ingresos reales)",
+              "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2022-12482"
+            },
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      }
+    ],
+    "vox": [
+      {
+        "texto": "Cuota de cero euros si los ingresos no llegan al Salario Mínimo Interprofesional y, superado dicho umbral, una cuota progresiva desde los 50 euros.",
+        "cita": {
+          "pagina": 7,
+          "apartado": "Economía, industria y energía · punto 2",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Hoy la LGSS (art. 308) obliga a cotizar por una tabla reducida también por debajo del SMI. Con cuota cero no se generarían periodos cotizados ni derechos de pensión y se reducirían los ingresos del sistema. Sin dato oficial de coste.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Cualquier empresa, profesional o producto que ya opere legalmente en una Comunidad Autónoma podrá hacerlo en el resto sin trámites, licencias ni registros adicionales.",
+        "cita": {
+          "pagina": 24,
+          "apartado": "Desregulación",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "rojo",
+          "texto": "Es el principio de eficacia nacional de la Ley 20/2013. La STC 79/2017 lo declaró inconstitucional y nulo porque no respeta las competencias autonómicas. Tal como se plantea, choca con esa doctrina del Tribunal Constitucional.",
+          "fuentes": [
+            {
+              "nombre": "Tribunal Constitucional · STC 79/2017",
+              "url": "https://hj.tribunalconstitucional.es/es/Resolucion/Show/25387"
+            }
+          ]
+        }
+      }
+    ],
+    "fa": [
+      {
+        "texto": "Transpondremos de inmediato la directiva del IVA franquiciado: quienes facturen menos de 85.000 euros anuales quedarán exentos de liquidaciones periódicas.",
+        "cita": {
+          "pagina": 92,
+          "apartado": "8.1 Simplificación burocrática y fiscalidad",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "verde",
+          "texto": "La Directiva (UE) 2020/285 fija un umbral máximo de 85.000 € para eximir del IVA a las pequeñas empresas, así que la medida encaja en el derecho de la UE. España no ha completado aún la transposición.",
+          "fuentes": [
+            {
+              "nombre": "Unión Europea · Directiva (UE) 2020/285",
+              "url": "https://publications.europa.eu/resource/celex/32020L0285.SPA.xhtml"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Si los ingresos reales del autónomo son inferiores al SMI anual por causas objetivas, podrá acogerse a una cotización fija bonificada sin pérdida de derechos de protección.",
+        "cita": {
+          "pagina": 92,
+          "apartado": "8.1 Simplificación burocrática y fiscalidad",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "Hoy la LGSS ya prevé una tabla reducida de bases para rendimientos bajos (art. 308). Una cuota fija bonificada que mantenga todos los derechos traslada el coste al Estado. Sin dato oficial de coste localizado.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley General de la Seguridad Social (texto consolidado)",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Garantizaremos la aplicación de las condiciones del convenio de la empresa cliente para los autónomos dependientes (TRADE).",
+        "cita": {
+          "pagina": 94,
+          "apartado": "8.3 Impulsar la economía social",
+          "nota": "PDF 2026 alojado por democrata.es; no localizado enlace directo en la web del partido. Página = número de página del PDF."
+        },
+        "verificacion": {
+          "veredicto": "naranja",
+          "texto": "La LETA ya regula a los TRADE y sus acuerdos de interés profesional (art. 13). Aplicarles el convenio colectivo de la empresa cliente exige reformar esa ley y comprobar que encaja con las normas de competencia de la UE.",
+          "fuentes": [
+            {
+              "nombre": "BOE · Ley 20/2007, Estatuto del Trabajo Autónomo",
+              "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-13409"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
