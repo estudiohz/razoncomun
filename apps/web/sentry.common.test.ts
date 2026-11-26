@@ -56,6 +56,13 @@ describe('redact (CA3)', () => {
     expect(out).not.toContain('t'.repeat(30));
   });
 
+  it('redacta direcciones IPv4 e IPv6', () => {
+    const v6 = ['2001', 'db8', '85a3', '0', '0', '8a2e', '370', '7334'].join(':');
+    const v6short = ['2001', 'db8', '', '42'].join(':');
+    const out = redact(`ip ${IP} v6 ${v6} corta ${v6short}`);
+    expect(out).toBe(`ip ${REDACTED} v6 ${REDACTED} corta ${REDACTED}`);
+  });
+
   it('deja intacto un texto sin datos', () => {
     const msg = "Cannot read properties of undefined (reading 'id')";
     expect(redact(msg)).toBe(msg);
@@ -113,6 +120,16 @@ describe('beforeSend (CA2)', () => {
     for (const bad of ['a@b.es', '12345678Z', 'ES91', 'abc', 'Authorization', 'authorization', IP]) {
       expect(json).not.toContain(bad);
     }
+  });
+
+  it('no redacta los ids de traza de contexts.trace aunque parezcan un DNI', () => {
+    const spanId = '12345678' + 'z';
+    const out = beforeSend(
+      { contexts: { trace: { trace_id: 't'.repeat(4), span_id: spanId, data: { n: '12345678Z' } } } } as unknown as ErrorEvent,
+      {},
+    ) as ErrorEvent;
+    expect(out.contexts?.trace?.span_id).toBe(spanId);
+    expect(JSON.stringify(out.contexts?.trace?.data)).not.toContain('12345678Z');
   });
 
   it('borra contexts.user y redacta extra, contexts y tags', () => {
@@ -256,6 +273,36 @@ describe('beforeSendSpan y DSC (CA6)', () => {
     expect(out.data.nota).not.toContain('612345678');
   });
 
+  it('beforeSendSpan borra IP, cabeceras no permitidas, cookies, cuerpo y user.*', () => {
+    const span = {
+      span_id: 's2',
+      trace_id: 't2',
+      start_timestamp: 0,
+      data: {
+        'client.address': IP,
+        'network.peer.address': IP,
+        'url.fragment': 'email=a@b.es',
+        'user.ip_address': IP,
+        'http.request.header.x_forwarded_for': [IP],
+        'http.request.header.cookie': ['sid=abc'],
+        'http.request.header.referer': ['https://razoncomun.com/p?email=a@b.es'],
+        'http.request.header.user_agent': ['Mozilla/5.0'],
+        'http.response.header.set_cookie': ['sid=abc'],
+        'http.request.body.data': '{"email":"a@b.es","afiliado":true}',
+        'http.request.method': 'POST',
+        lista: ['a@b.es', 'ok'],
+        anidado: { dni: '12345678Z' },
+      },
+    };
+    const out = beforeSendSpan(span as never) as unknown as typeof span;
+    expect(Object.keys(out.data).sort()).toEqual(
+      ['anidado', 'http.request.header.user_agent', 'http.request.method', 'lista'],
+    );
+    expect(out.data.lista).toEqual([REDACTED, 'ok']);
+    const json = JSON.stringify(out);
+    for (const bad of [IP, 'a@b.es', 'sid=abc', '12345678Z', 'afiliado']) expect(json).not.toContain(bad);
+  });
+
   it('scrubDsc quita la query del nombre de transacción', () => {
     const dsc = { trace_id: 't', public_key: 'k', transaction: 'GET /p?email=a@b.es' };
     scrubDsc(dsc);
@@ -293,6 +340,21 @@ describe('buildSentryOptions (CA7)', () => {
       // Con el modo por defecto ('stream') el SDK ignora beforeSendTransaction.
       expect(o.traceLifecycle).toBe('static');
     }
+  });
+
+  it('dataCollection cierra en origen lo que el SDK recoge por defecto', () => {
+    const dc = buildSentryOptions({ dsn: 'x', environment: 'production' }).dataCollection;
+    expect(dc.userInfo).toBe(false);
+    expect(dc.cookies).toBe(false);
+    expect(dc.httpHeaders.response).toBe(false);
+    expect([...dc.httpHeaders.request.allow].sort()).toEqual([...ALLOWED_HEADERS].sort());
+    expect(dc.httpBodies).toEqual([]);
+    expect(dc.urlQueryParams).toBe(false);
+    expect(dc.stackFrameVariables).toBe(false);
+    expect(dc.databaseQueryData).toBe(false);
+    expect(dc.graphQL).toEqual({ document: false, variables: false });
+    expect(dc.genAI).toEqual({ inputs: false, outputs: false });
+    expect(dc.mcp).toEqual({ inputs: false, outputs: false });
   });
 
   it('la lista blanca de cabeceras es la acordada', () => {

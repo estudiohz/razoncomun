@@ -46,15 +46,26 @@ transacción raíz viaja sin pasar por `beforeSend*`.
 
 ## Qué se filtra (en todos los eventos y transacciones)
 
+Primera barrera, en origen: `dataCollection`. En `@sentry/core` 11 `sendDefaultPii` ya no se lee
+y, por defecto, el SDK recoge IP, cookies, todas las cabeceras, cuerpos HTTP, query y variables
+locales. `buildSentryOptions` lo cierra: `userInfo: false`, `cookies: false`, cabeceras de petición
+solo de la lista blanca y ninguna de respuesta, `httpBodies: []`, `urlQueryParams: false`,
+`stackFrameVariables: false`, y sin datos de GraphQL, IA generativa, MCP, consultas a BD ni colas.
+Segunda barrera, `beforeSend*` / `beforeSendSpan`:
+
 - `user` entero (id, email, IP) y `contexts.user`; `sendDefaultPii: false`.
+- Atributos de span con IP o datos de la petición: `client.address`, `network.peer.address`,
+  `url.fragment`, `user.*`, `http.request.body*`, `http.response.body*`, todas las
+  `http.response.header.*` y las `http.request.header.*` fuera de la lista blanca (cookie,
+  x-forwarded-for, referer…).
 - `request.cookies`, `request.data` (cuerpo), `request.query_string`, `request.env` y `server_name`.
 - Cabeceras: solo se conservan `user-agent`, `content-type` y `accept-language`.
 - Query string y fragmento de `request.url`, del nombre de la transacción, de los spans y de las
   migas de navegación (`from`/`to`) y de red (`fetch`/`xhr`, que además se quedan solo con
   `method`, `status_code` y `url`).
 - Variables locales de los frames de la traza (`frames[].vars`).
-- Redacción a `[redactado]` en mensajes, valores de excepción, migas, `extra`, `contexts` y `tags`:
-  emails, DNI, NIE, NIF/CIF, IBAN, teléfonos españoles, JWT (`eyJ…`), claves `sk_`/`pk_`/`rk_`/`whsec_`
+- Redacción a `[redactado]` en mensajes, valores de excepción, migas, `extra`, `contexts`, `tags` y atributos de span,
+  también dentro de arrays y objetos anidados: emails, direcciones IPv4/IPv6, DNI, NIE, NIF/CIF, IBAN, teléfonos españoles, JWT (`eyJ…`), claves `sk_`/`pk_`/`rk_`/`whsec_`
   y `Bearer <token>`.
 
 ## Lo que NO se usa (y no debe añadirse)

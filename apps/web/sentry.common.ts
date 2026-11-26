@@ -48,6 +48,10 @@ const PATTERNS: Array<[RegExp, string]> = [
   [/eyJ[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*/g, REDACTED],
   // Claves de Stripe y similares: sk_, pk_, rk_, whsec_.
   [/\b(?:sk|pk|rk|whsec)_[A-Za-z0-9_]+/g, REDACTED],
+  // Direcciones IP (v4 y v6, completas o abreviadas con `::`).
+  [/\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g, REDACTED],
+  [/\b(?:[0-9a-f]{1,4}:){7}[0-9a-f]{1,4}\b/gi, REDACTED],
+  [/\b(?:[0-9a-f]{1,4}:){1,6}(?::[0-9a-f]{1,4}){1,6}\b/gi, REDACTED],
   // Emails.
   [/[^\s@]+@[^\s@]+\.[^\s@]+/g, REDACTED],
   // IBAN (con y sin espacios/guiones).
@@ -92,16 +96,52 @@ const NETWORK_CATEGORIES = new Set(['fetch', 'xhr']);
 const SPAN_URL_KEYS = ['url', 'http.url', 'url.full'] as const;
 const SPAN_QUERY_KEYS = ['http.query', 'url.query'] as const;
 
+/**
+ * Atributos de span que pueden llevar IP, cabeceras, cookies, cuerpos o datos
+ * de usuario (los añaden `httpServerSpansIntegration`, `requestDataIntegration`
+ * y la instrumentación de fetch/undici). Se borran siempre.
+ */
+const SPAN_DROP_KEYS = new Set([
+  'client.address',
+  'client.port',
+  'network.peer.address',
+  'network.peer.port',
+  'network.local.address',
+  'url.fragment',
+  'http.client_ip',
+  'net.peer.ip',
+  'net.sock.peer.addr',
+  'enduser.id',
+]);
+const TRACE_ID_KEYS = new Set(['trace_id', 'span_id', 'parent_span_id']);
+const SPAN_DROP_PREFIXES = ['http.request.body', 'http.response.body', 'user.', 'enduser.'];
+/** Cabeceras como atributo de span: solo se conservan las de la lista blanca. */
+const SPAN_HEADER_PREFIXES = ['http.request.header.', 'http.response.header.'];
+
 type Dict = Record<string, unknown>;
 
 const isDict = (v: unknown): v is Dict => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-/** Redacta los strings de primer nivel de un objeto (in situ). */
-function redactShallow(obj: Dict | undefined): void {
-  if (!obj) return;
-  for (const [k, v] of Object.entries(obj)) {
-    if (typeof v === 'string') obj[k] = redact(v);
+/**
+ * Redacta en profundidad cualquier valor: strings, arrays (p. ej. los
+ * atributos `string[]` de los spans) y objetos anidados. Devuelve el valor
+ * limpio; los objetos y arrays se limpian in situ.
+ */
+export function redactDeep(value: unknown, depth = 0): unknown {
+  if (typeof value === 'string') return redact(value);
+  if (depth > 8 || typeof value !== 'object' || value === null) return value;
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i++) value[i] = redactDeep(value[i], depth + 1);
+    return value;
   }
+  const obj = value as Dict;
+  for (const [k, v] of Object.entries(obj)) obj[k] = redactDeep(v, depth + 1);
+  return obj;
+}
+
+/** Redacta todos los strings de un objeto, a cualquier profundidad (in situ). */
+function redactAll(obj: Dict | undefined): void {
+  if (obj) redactDeep(obj);
 }
 
 /** Limpia una miga: URLs sin query, mensaje redactado, `data` mínima en red. */
@@ -119,7 +159,7 @@ export function scrubBreadcrumb(crumb: Breadcrumb): Breadcrumb {
       for (const k of URL_DATA_KEYS) {
         if (typeof data[k] === 'string') data[k] = stripQuery(data[k] as string);
       }
-      redactShallow(data);
+      redactAll(data);
     }
   }
   return crumb;
@@ -146,11 +186,23 @@ function scrubRequest(event: Event): void {
 /** Limpia los atributos de un span: URLs sin query, sin `*.query`, strings redactados. */
 function scrubSpanData(data: Dict | undefined): void {
   if (!data) return;
+  for (const k of Object.keys(data)) {
+    const key = k.toLowerCase();
+    if (SPAN_DROP_KEYS.has(key) || SPAN_DROP_PREFIXES.some((p) => key.startsWith(p))) {
+      delete data[k];
+      continue;
+    }
+    const headerPrefix = SPAN_HEADER_PREFIXES.find((p) => key.startsWith(p));
+    if (headerPrefix) {
+      const header = key.slice(headerPrefix.length).replace(/_/g, '-');
+      if (!headerPrefix.startsWith('http.request.') || !ALLOWED_HEADER_SET.has(header)) delete data[k];
+    }
+  }
   for (const k of SPAN_URL_KEYS) {
     if (typeof data[k] === 'string') data[k] = stripQuery(data[k] as string);
   }
   for (const k of SPAN_QUERY_KEYS) delete data[k];
-  redactShallow(data);
+  redactAll(data);
 }
 
 /** Limpia un span en formato estático (in situ). */
@@ -187,11 +239,16 @@ export function scrubEvent<T extends Event>(event: T): T {
 
   if (event.breadcrumbs) event.breadcrumbs = event.breadcrumbs.map(scrubBreadcrumb);
 
-  redactShallow(event.extra as Dict | undefined);
+  redactAll(event.extra as Dict | undefined);
   if (event.contexts) {
     delete event.contexts.user;
     for (const ctx of Object.values(event.contexts)) {
-      if (isDict(ctx)) redactShallow(ctx);
+      if (!isDict(ctx)) continue;
+      // Los ids de traza son hex aleatorio: el redactor podría confundirlos
+      // con un DNI o un teléfono y romper el enlace error ↔ traza.
+      for (const [k, v] of Object.entries(ctx)) {
+        if (!TRACE_ID_KEYS.has(k)) ctx[k] = redactDeep(v);
+      }
     }
   }
   if (event.tags) {
@@ -249,6 +306,23 @@ export function buildSentryOptions({ dsn, environment }: SentryEnv) {
     enabled: !!dsn,
     environment: env,
     sendDefaultPii: false,
+    // En @sentry/core 11 `sendDefaultPii` ya no se lee: lo que recoge el SDK
+    // (IP, cookies, cabeceras, cuerpos, query, variables locales) lo decide
+    // `dataCollection`, cuyos valores por defecto lo recogen TODO. Se cierra
+    // aquí en origen; `beforeSend*` sigue limpiando como segunda barrera.
+    dataCollection: {
+      userInfo: false,
+      cookies: false,
+      httpHeaders: { request: { allow: [...ALLOWED_HEADERS] }, response: false },
+      httpBodies: [],
+      urlQueryParams: false,
+      graphQL: { document: false, variables: false },
+      genAI: { inputs: false, outputs: false },
+      mcp: { inputs: false, outputs: false },
+      databaseQueryData: false,
+      queues: false,
+      stackFrameVariables: false,
+    },
     tracesSampleRate: env === 'production' ? 0.1 : 0,
     // Sin esto (por defecto 'stream') el SDK no llama a beforeSendTransaction.
     traceLifecycle: 'static' as const,
