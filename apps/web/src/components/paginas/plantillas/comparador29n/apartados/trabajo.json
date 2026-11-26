@@ -165,7 +165,7 @@
         },
         "viabilidad": {
           "coste": null,
-          "texto": "Puede repartir trabajo y mejorar el bienestar, pero sube el coste por hora a las empresas, sobre todo pymes. Las experiencias son mixtas: en Francia el efecto en empleo sigue discutido; en Islandia funcionó en el sector público sin perder productividad.",
+          "texto": "Puede repartir trabajo y mejorar el bienestar, pero sube el coste por hora a las empresas, sobre todo pymes. Las experiencias son mixtas: en Francia el efecto en empleo sigue discutido; en Islandia funcionó en el sector público sin perder productividad. Las pymes, con menos margen y productividad, serían las más afectadas: la patronal CEPYME estima un coste directo de 13.900 M€. Para no ser contraproducente en empresas de margen estrecho, debería ir acompañada de una rebaja fiscal o de cotizaciones que compense el coste por hora; sin ella, el riesgo es destruir empleo o aumentar la economía sumergida.",
           "precedentes": [
             {
               "pais": "Francia (35 horas, 1998-2002)",
@@ -178,7 +178,12 @@
               "url": "https://autonomy.work/portfolio/icelandsww/"
             }
           ],
-          "fuentes": []
+          "fuentes": [
+            {
+              "nombre": "CEPYME · Impacto de la reducción de jornada (estimación de la patronal, 2025)",
+              "url": "https://cepyme.es/storage/2025/05/NdP-CEPYME-rechaza-la-reduccion-de-la-jornada-que-tendra-un-impacto-directo-de-13.900-millones-especialmente-en-la-pyme-y-que-de.pdf"
+            }
+          ]
         },
         "ficha": {
           "competencia": "Estado",
@@ -488,7 +493,7 @@
         },
         "viabilidad": {
           "coste": null,
-          "texto": "Ambiciosa: bajar a 32 h sin perder sueldo sube mucho el coste por hora. Solo hay pruebas con jornadas de 35-36 h (Islandia) y resultados discutidos en Francia. Riesgo alto en sectores de baja productividad y pymes.",
+          "texto": "Ambiciosa: bajar a 32 h sin perder sueldo sube mucho el coste por hora. Solo hay pruebas con jornadas de 35-36 h (Islandia) y resultados discutidos en Francia. Riesgo alto en sectores de baja productividad y pymes. Las pymes, con menos margen y productividad, serían las más afectadas (la patronal CEPYME estima 13.900 M€ solo por bajar a 37,5 h; a 32 h el impacto sería mayor). Para no ser contraproducente debería ir acompañada de una rebaja fiscal o de cotizaciones que compense el coste por hora; sin ella, el riesgo es destruir empleo o aumentar la economía sumergida.",
           "precedentes": [
             {
               "pais": "Islandia (2015-2019)",
@@ -501,7 +506,12 @@
               "url": "https://www.senat.fr/rap/r00-414/r00-4146.html"
             }
           ],
-          "fuentes": []
+          "fuentes": [
+            {
+              "nombre": "CEPYME · Impacto de la reducción de jornada (estimación de la patronal, 2025)",
+              "url": "https://cepyme.es/storage/2025/05/NdP-CEPYME-rechaza-la-reduccion-de-la-jornada-que-tendra-un-impacto-directo-de-13.900-millones-especialmente-en-la-pyme-y-que-de.pdf"
+            }
+          ]
         },
         "ficha": {
           "competencia": "Estado",
