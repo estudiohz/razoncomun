@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { requireEditor } from '@/lib/blog/guard';
 import { slugificar, sanitizarHtml } from '@/lib/paginas';
+import { plantillaValida } from '@/lib/plantillasPaginas';
 
 export interface ResultadoPagina {
   ok: boolean;
@@ -47,6 +48,7 @@ export async function guardarPagina(
     show_legal: flag(fd, 'show_legal'),
     position: Number(texto(fd, 'position')) || 0,
     published: flag(fd, 'published'),
+    template: plantillaValida(texto(fd, 'template')),
   };
 
   const errDup = (msg: string) =>

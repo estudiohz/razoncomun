@@ -13,6 +13,15 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
+function OjoIcono() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 export default async function PaginasAdminPage() {
   const { supabase } = await requireEditor();
   const { data } = await supabase.from('pages').select('*').order('position').order('title');
@@ -72,7 +81,17 @@ export default async function PaginasAdminPage() {
                     {p.published ? 'Publicada' : 'Borrador'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <a
+                    href={`/${p.slug}`}
+                    target="_blank"
+                    rel="noopener"
+                    title={p.published ? 'Ver en la web' : 'Borrador: no es visible en la web hasta publicarla'}
+                    aria-label={`Ver «${p.title}» en la web`}
+                    className="mr-4 inline-flex align-middle text-gris hover:text-titular"
+                  >
+                    <OjoIcono />
+                  </a>
                   <Link
                     href={`/admin/paginas/${p.id}`}
                     className="font-semibold text-titular no-underline hover:underline"

@@ -5,6 +5,7 @@ import { sanearHtml } from '@/lib/blog/html';
 import { Contenedor } from '@/components/layout/Contenedor';
 import { metadatosPagina } from '@/lib/seo';
 import type { Pagina } from '@/lib/paginas';
+import { componentePlantilla } from '@/components/paginas/plantillas';
 
 // Ruta comodín de nivel raíz para las páginas del CMS (/privacidad, /aviso-legal,
 // /cookies, /estatutos…). Las rutas estáticas (/blog, /pregunta, /admin…) tienen
@@ -83,6 +84,9 @@ export default async function PaginaCms({ params }: { params: Promise<{ slug: st
     if (destino) permanentRedirect(destino);
     notFound();
   }
+
+  const Plantilla = componentePlantilla(pagina.template);
+  if (Plantilla) return <Plantilla pagina={pagina} introHtml={sanearHtml(pagina.body_html)} />;
 
   return (
     <Contenedor as="section" className="py-14 min-[720px]:py-20">

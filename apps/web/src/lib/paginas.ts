@@ -12,6 +12,8 @@ export interface Pagina {
   show_legal: boolean;
   position: number;
   published: boolean;
+  /** Clave de plantilla (0083). Ver lib/plantillasPaginas.ts. */
+  template?: string | null;
   author_id: string | null;
   created_at: string;
   updated_at: string;

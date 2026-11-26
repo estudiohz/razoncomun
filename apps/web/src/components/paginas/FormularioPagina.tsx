@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { EditorRico } from '@/components/blog/EditorRico';
 import { guardarPagina, type ResultadoPagina } from '@/app/admin/paginas/actions';
 import type { Pagina } from '@/lib/paginas';
+import { PLANTILLAS_PAGINA, plantillaValida } from '@/lib/plantillasPaginas';
 
 const etiqueta = 'mb-1 block text-[12px] font-bold uppercase tracking-[.06em] text-gris';
 const check = 'flex items-center gap-2.5 text-[13.5px] text-cuerpo';
@@ -17,6 +18,7 @@ export function FormularioPagina({ pagina }: { pagina: Pagina | null }) {
   // El editor completo no pinta el input oculto: lo hace quien lo monta, para
   // que el nombre del campo sea cosa de cada formulario.
   const [html, setHtml] = useState(pagina?.body_html ?? '');
+  const [plantilla, setPlantilla] = useState(plantillaValida(pagina?.template));
 
   return (
     <form action={accion} className="grid gap-8 lg:grid-cols-[1fr_320px]">
@@ -63,6 +65,28 @@ export function FormularioPagina({ pagina }: { pagina: Pagina | null }) {
           <p className="mt-2 text-[12px] text-gris">
             La página se verá en <span className="font-mono">/{'{slug}'}</span>. Si lo dejas vacío se
             genera del título.
+          </p>
+        </div>
+
+        <div className="rounded-tarjeta border border-linea bg-white p-5">
+          <label className={etiqueta} htmlFor="template">
+            Plantilla
+          </label>
+          <select
+            id="template"
+            name="template"
+            value={plantilla}
+            onChange={(e) => setPlantilla(e.target.value)}
+            className="w-full rounded-boton border border-linea bg-white px-3 py-2.5 text-[14px] text-cuerpo"
+          >
+            {PLANTILLAS_PAGINA.map((p) => (
+              <option key={p.clave} value={p.clave}>
+                {p.nombre}
+              </option>
+            ))}
+          </select>
+          <p className="mt-2 text-[12px] text-gris">
+            {PLANTILLAS_PAGINA.find((p) => p.clave === plantilla)?.descripcion}
           </p>
         </div>
 
