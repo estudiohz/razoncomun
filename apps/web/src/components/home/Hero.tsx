@@ -66,6 +66,9 @@ export function Hero() {
               <Boton href="/manifiesto" variante="heroSuave">
                 Cómo funciona
               </Boton>
+              <Boton href="/comparador-29n" variante="heroSuave">
+                Comparador 29N
+              </Boton>
             </div>
           </div>
         </div>

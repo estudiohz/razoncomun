@@ -12,7 +12,8 @@ const VEREDICTO: Record<Veredicto, { color: string; etiqueta: string }> = {
   gris: { color: '#8A8F9C', etiqueta: 'No evaluable' },
 };
 const RC_COLOR = '#16B8A0';
-const GRADIENTE = 'linear-gradient(90deg,#1B3D9C,#8B30D9 25%,#C3369E 45%,#E8792F 65%,#16B8A0 85%,#2BC7E8)';
+// Degradado corporativo (indicado por Sergio).
+const GRADIENTE = 'linear-gradient(123deg, #0e57a5, #5158a7 30%, #a52b8ebf 50%, #ed1156b5 60%, #f05726bd 85%, #ed7547)';
 
 function Icono({ d, size = 16 }: { d: string[]; size?: number }) {
   return (
@@ -75,7 +76,7 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
 
       {columnas ? (
         <nav aria-label="Apartados" className="hidden w-full min-[900px]:block">
-          <div className="grid grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-4 gap-2.5 min-[1180px]:grid-cols-6">
             {apartados.map((a, i) => {
               const c = COLOR_APARTADO[a.id] ?? '#1B3D9C';
               const activo = i === sel;
@@ -100,7 +101,6 @@ export function Comparador({ apartados, partidos, rc }: { apartados: Apartado[];
               );
             })}
           </div>
-          <div className="mt-3 max-w-[520px]"><Leyenda /></div>
         </nav>
       ) : (
       <nav aria-label="Apartados" className="hidden w-[250px] flex-col gap-1 min-[900px]:sticky min-[900px]:top-24 min-[900px]:flex">
@@ -487,6 +487,22 @@ function BarraVeredictos({ propuestas }: { propuestas: PropuestaVerificada[] }) 
         ))}
       </div>
       <p className="text-[12px] text-gris">{resumen}</p>
+    </div>
+  );
+}
+
+/** Leyenda en línea para el diseño en columnas: va junto a «Cómo lo hemos hecho» para no empujar el contenido hacia abajo. */
+export function LeyendaSiColumnas() {
+  const [vista] = useVista();
+  if (vista !== 'columnas') return null;
+  return (
+    <div className="hidden flex-wrap items-center gap-x-4 gap-y-1.5 rounded-[12px] border border-linea bg-white px-4 py-3 text-[12.5px] text-cuerpo min-[900px]:flex">
+      <span className="text-[11px] font-bold uppercase tracking-[.1em] text-gris">Análisis</span>
+      {(Object.keys(VEREDICTO) as Veredicto[]).map((k) => (
+        <span key={k} className="inline-flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded-full" style={{ background: VEREDICTO[k].color }} /> {VEREDICTO[k].etiqueta}
+        </span>
+      ))}
     </div>
   );
 }
