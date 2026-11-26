@@ -100,7 +100,11 @@ export function Juego({
         <BloqueAfinidad fuerzas={fuerzas} titulo="Tu afinidad, desvelada" texto="Me gusta menos no me gusta, entre las propuestas que votaste de cada fuerza." />
 
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-[16px] px-6 py-5" style={{ background: 'linear-gradient(120deg,rgba(139,48,217,.10),rgba(22,184,160,.12))' }}>
-          <p className="max-w-[640px] text-[15.5px] font-bold leading-snug text-titular">¿Te ha sorprendido? En Razón Común las propuestas se votan así: por ideas, no por siglas. Regístrate y vota las nuestras.</p>
+          <p className="max-w-[640px] text-[15.5px] font-bold leading-snug text-titular">
+            {top[0]?.id === 'rc'
+              ? 'Sin saber de quién eran, las ideas que más te convencen son las de Razón Común. Aquí las propuestas las votan los socios: regístrate y decide con nosotros.'
+              : '¿Te ha sorprendido? En Razón Común las propuestas se votan así: por ideas, no por siglas. Regístrate y vota las nuestras.'}
+          </p>
           <a href="/registro" className="inline-flex min-h-[48px] items-center rounded-boton px-6 text-[15px] font-bold text-white no-underline shadow-boton" style={{ background: 'linear-gradient(120deg,#6A1FB8,#8B30D9 45%,#C3369E)' }}>Regístrate</a>
         </div>
 
