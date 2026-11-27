@@ -37,6 +37,19 @@ ENV NODE_ENV=production
 # Descomentar para no enviar telemetría de Next.js durante el build:
 # ENV NEXT_TELEMETRY_DISABLED=1
 
+# Sentry (T-0097, ver SENTRY.md): Next incrusta las NEXT_PUBLIC_* al compilar,
+# así que el DSN del navegador llega como build arg de Dokploy. Vacías por
+# defecto: sin ellas el build funciona y Sentry queda deshabilitado.
+ARG NEXT_PUBLIC_SENTRY_DSN=""
+ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT=""
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_SENTRY_ENVIRONMENT=$NEXT_PUBLIC_SENTRY_ENVIRONMENT
+# Opcionales, solo para subir source maps. SENTRY_AUTH_TOKEN es un secreto de
+# build: se usa aquí como ARG y nunca pasa al stage runner.
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
+
 RUN npm run build
 
 # ---------- Stage 3: runtime ----------

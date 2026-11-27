@@ -1,5 +1,8 @@
+// En @sentry/nextjs v11 el wrapper de build vive en el subpath `/config`.
+import { withSentryConfig } from '@sentry/nextjs/config';
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+export const nextConfig = {
   // Requerido por el Dockerfile de rc-01 (build en imagen ligera).
   output: 'standalone',
   reactStrictMode: true,
@@ -35,4 +38,23 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry (T-0097, ver SENTRY.md). Los source maps solo se generan/suben si hay
+// SENTRY_AUTH_TOKEN en el build, y los del cliente se borran tras subirlos:
+// nunca se sirven al público. Sin ruta túnel (no hay CSP connect-src global).
+/** @type {import('@sentry/nextjs/config').SentryBuildOptions} */
+export const sentryBuildOptions = {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  telemetry: false,
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+    deleteSourcemapsAfterUpload: true,
+  },
+  widenClientFileUpload: true,
+  // Equivalente en v11 del antiguo `disableLogger`: quita el logger de debug del bundle.
+  webpack: { treeshake: { removeDebugLogging: true } },
+};
+
+export default withSentryConfig(nextConfig, sentryBuildOptions);
